@@ -8,12 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */; };
-		614F56D72B11B81F00E21FE9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* ContentView.swift */; };
+		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
 		614F56E62B11B82000E21FE9 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56E52B11B82000E21FE9 /* YomikikaseTests.swift */; };
 		614F56F02B11B82000E21FE9 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56EF2B11B82000E21FE9 /* YomikikaseUITests.swift */; };
 		614F56F22B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56F12B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift */; };
+		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
+		614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */; };
+		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +39,7 @@
 /* Begin PBXFileReference section */
 		614F56D12B11B81F00E21FE9 /* Yomikikase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yomikikase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseApp.swift; sourceTree = "<group>"; };
-		614F56D62B11B81F00E21FE9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		614F56E12B11B82000E21FE9 /* YomikikaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YomikikaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +47,8 @@
 		614F56EB2B11B82000E21FE9 /* YomikikaseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YomikikaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56EF2B11B82000E21FE9 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
 		614F56F12B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
+		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,8 +100,9 @@
 		614F56D32B11B81F00E21FE9 /* Yomikikase */ = {
 			isa = PBXGroup;
 			children = (
+				614F57012B11D8F800E21FE9 /* data */,
 				614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */,
-				614F56D62B11B81F00E21FE9 /* ContentView.swift */,
+				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
 			);
@@ -127,6 +134,15 @@
 			path = YomikikaseUITests;
 			sourceTree = "<group>";
 		};
+		614F57012B11D8F800E21FE9 /* data */ = {
+			isa = PBXGroup;
+			children = (
+				614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */,
+				614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */,
+			);
+			path = data;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -143,6 +159,9 @@
 			dependencies = (
 			);
 			name = Yomikikase;
+			packageProductDependencies = (
+				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
+			);
 			productName = Yomikikase;
 			productReference = 614F56D12B11B81F00E21FE9 /* Yomikikase.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +234,9 @@
 				Base,
 			);
 			mainGroup = 614F56C82B11B81F00E21FE9;
+			packageReferences = (
+				614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -257,7 +279,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56D72B11B81F00E21FE9 /* ContentView.swift in Sources */,
+				614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */,
+				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
+				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
 				614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -588,6 +612,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.18.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+/* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */,
+			);
+			currentVersion = 614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */;
+			path = SpeechText.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 614F56C92B11B81F00E21FE9 /* Project object */;
 }
