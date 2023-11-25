@@ -61,7 +61,7 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func fetchAllSpeechText() -> [SpeechText] {
+    func fetchAllSpeechText() -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
 
         // 作成日順にソートするためのソート記述子を作成
@@ -69,11 +69,76 @@ class SpeechTextRepository: NSObject {
         fetchRequest.sortDescriptors = [sortDescriptor]
 
         do {
-            let coreDataPhotos = try managedContext.fetch(fetchRequest)
-            return coreDataPhotos
+            let coreDataSpeechTexts = try managedContext.fetch(fetchRequest)
+
+            // 結果が空の場合はデフォルト値を追加
+            if coreDataSpeechTexts.isEmpty {
+                return createGreetingSpeeches()
+            }
+
+            // SpeechTextからSpeeches.Speechに変換
+            return coreDataSpeechTexts.map { speechText in
+                Speeches.Speech(
+                    id: speechText.uuid ?? UUID(),
+                    text: speechText.text ?? "",
+                    createdAt: speechText.createdAt ?? Date(),
+                    updatedAt: speechText.updatedAt ?? Date()
+                )
+            }
         } catch let error {
             print(error.localizedDescription)
-            return []
+            return createGreetingSpeeches()
         }
     }
+
+
+    private func createGreetingSpeeches() -> [Speeches.Speech] {
+        let greetings = [
+            "おはようございます",
+            "こんにちは",
+            "こんばんは",
+            "おやすみなさい",
+            "いってきます",
+            "ただいま",
+            "いただきます",
+            "ごちそうさまでした",
+            "ありがとうございます",
+            "すみません",
+            "よろしくお願いします",
+            "こんにちは、いい天気ですね",
+            "今日は寒いですね",
+            "暑い日が続きますね",
+            "良い一日を",
+            "元気ですか",
+            "最近どうですか",
+            "久しぶりですね",
+            "お元気そうで何よりです",
+            "お疲れさまです",
+            "いい週末を",
+            "気をつけて",
+            "頑張ってください",
+            "お大事に",
+            "忙しいですか",
+            "早く良くなりますように",
+            "ご無沙汰しています",
+            "おめでとうございます",
+            "残念ですね",
+            "それは良かった"
+        ]
+
+        return greetings.map { greeting in
+            createDefaultSpeech(text: greeting)
+        }
+    }
+
+
+    private func createDefaultSpeech(text: String) -> Speeches.Speech {
+        return Speeches.Speech(
+            id: UUID(),
+            text: text,
+            createdAt: Date(),
+            updatedAt: Date()
+        )
+    }
+
 }

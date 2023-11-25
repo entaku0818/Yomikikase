@@ -6,12 +6,17 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
+
 
 @main
 struct YomikikaseApp: App {
     var body: some Scene {
         WindowGroup {
-            SpeechView()
+            SpeechView(store: Store(initialState:
+                                        Speeches.State(speechList: IdentifiedArrayOf(uniqueElements: []), currentText: "")) {
+                Speeches()
+            })
         }
     }
 }

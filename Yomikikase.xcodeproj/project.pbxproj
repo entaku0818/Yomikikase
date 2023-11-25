@@ -56,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				614F570B2B11EE7C00E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -161,6 +162,7 @@
 			name = Yomikikase;
 			packageProductDependencies = (
 				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
+				614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */,
 			);
 			productName = Yomikikase;
 			productReference = 614F56D12B11B81F00E21FE9 /* Yomikikase.app */;
@@ -236,6 +238,7 @@
 			mainGroup = 614F56C82B11B81F00E21FE9;
 			packageReferences = (
 				614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
@@ -622,6 +625,14 @@
 				minimumVersion = 10.18.0;
 			};
 		};
+		614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -629,6 +640,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
+		};
+		614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
 		};
 /* End XCSwiftPackageProductDependency section */
 

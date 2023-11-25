@@ -7,37 +7,92 @@
 
 import SwiftUI
 import AVFoundation
+import ComposableArchitecture
 
-struct SpeechView: View {
-    @State private var textToSpeak = "" // テキスト入力を保持するための変数
+struct Speeches: Reducer {
+    struct Speech: Identifiable, Equatable {
+        var id: UUID
+        var text: String
+        var createdAt: Date
+        var updatedAt: Date
+    }
+
+    struct State: Equatable {
+        var speechList: IdentifiedArrayOf<Speech> = []
+        var currentText: String
+    }
+
+    enum Action: Equatable, Sendable {
+        case onAppear
+        case onTap
+        case currentTextChanged(String)
+
+    }
+
+    var body: some Reducer<State, Action> {
+        Reduce { state, action in
+            switch action {
+            case .onAppear:
+
+                let texts = SpeechTextRepository.shared.fetchAllSpeechText()
+
+                state.speechList = IdentifiedArrayOf(uniqueElements: texts)
+
+                return .none
+            case .onTap:
+                return .none
+            case .currentTextChanged(let newText):
+                state.currentText = newText
+                return .none
+            }
+        }
+    }
+}
+
+struct SpeechView: View  {
     private let speechSynthesizer = AVSpeechSynthesizer() // AVSpeechSynthesizerのインスタンス
 
-    var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+    let store: Store<Speeches.State, Speeches.Action>
 
-            TextField("テキストを入力", text: $textToSpeak)
-                .textFieldStyle(.roundedBorder)
+    var body: some View {
+        WithViewStore(self.store, observe: { $0 }) {  viewStore in
+            VStack {
+                TextEditor(text: viewStore.binding(
+                    get: \.currentText,
+                    send: Speeches.Action.currentTextChanged
+                ))
+                .frame(height: 100)
+                .border(Color.gray, width: 1) 
                 .padding()
 
-            Button("読み上げる") {
-                speak(text: textToSpeak)
-            }
-            .padding()
+                Button("読み上げる") {
+                    speak(text: viewStore.currentText)
+                }
+                .padding()
 
-            Button("自分の声で読み上げる") {
-                speak(text: textToSpeak)
+                Button("自分の声で読み上げる") {
+                    speechMyVoice(text: viewStore.currentText)
+                }
+                .padding()
+
+                List {
+                    // SpeechListの表示
+                    ForEach(viewStore.speechList) { speech in
+                        SpeechRowView(text: speech.text)
+                    }
+                }
+            }
+            .onAppear {
+                viewStore.send(.onAppear)
             }
             .padding()
         }
-        .padding()
     }
 
     func speak(text: String) {
         let speechUtterance = AVSpeechUtterance(string: text)
+        speechUtterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+
         speechSynthesizer.speak(speechUtterance)
     }
 
@@ -54,58 +109,34 @@ struct SpeechView: View {
             }
         })
     }
+
 }
 
+struct SpeechRowView: View {
+    let text: String
 
-struct Speechs: Reducer {
-    struct Photo: Identifiable, Equatable {
-
-        var id: UUID
-        var name: String
-        var imageURL: URL
-    }
-
-    struct State: Equatable {
-        var photos: IdentifiedArrayOf<Photo> = []
-
-        var filteredPhotos: IdentifiedArrayOf<Photo> {
-            return self.photos  // 今回はフィルタリングのロジックを省略しています
-        }
-    }
-
-    enum Action: BindableAction, Equatable, Sendable {
-        case binding(BindingAction<State>)
-        case onAppear
-        case delete(IndexSet)
-        case photoTapped(id: Photo.ID)
-    }
-
-    var body: some Reducer<State, Action> {
-        Reduce { state, action in
-            switch action {
-            case .onAppear:
-
-                let repositoryPhotos = PhotoRepository.shared.fetchAllPhotos()
-
-                state.photos = IdentifiedArrayOf(uniqueElements: repositoryPhotos)
-
-                return .none
-            case .binding:
-                return .none
-
-            case let .delete(indexSet):
-                state.photos.remove(atOffsets: indexSet)
-                return .none
-
-            case .photoTapped(let id):
-                // ここで写真をタップしたときの処理を追加できます
-                return .none
-            }
+    var body: some View {
+        VStack{
+            Text(text)
         }
     }
 }
-struct ContentView_Previews: PreviewProvider {
+
+struct SpeechView_Previews: PreviewProvider {
     static var previews: some View {
-        SpeechView()
+        // ダミーの初期ステートを設定
+        let initialState = Speeches.State(
+            speechList: IdentifiedArrayOf(uniqueElements: [
+                Speeches.Speech(id: UUID(), text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
+                Speeches.Speech(id: UUID(), text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
+            ]), currentText: ""
+        )
+
+        // SpeechViewにStoreを渡してプレビュー
+        return SpeechView(store: 
+                Store(initialState: initialState, reducer: {
+
+            })
+        )
     }
 }
