@@ -17,6 +17,7 @@
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */; };
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
+		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F570B2B11EE7C00E21FE9 /* ComposableArchitecture in Frameworks */,
+				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

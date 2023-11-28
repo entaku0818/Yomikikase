@@ -26,7 +26,7 @@ struct Speeches: Reducer {
         case onAppear
         case onTap
         case currentTextChanged(String)
-
+        case speechSelected(String)
     }
 
     var body: some Reducer<State, Action> {
@@ -44,6 +44,9 @@ struct Speeches: Reducer {
             case .currentTextChanged(let newText):
                 state.currentText = newText
                 return .none
+            case .speechSelected(let selectedText):
+                state.currentText = selectedText
+                 return .none
             }
         }
     }
@@ -62,7 +65,7 @@ struct SpeechView: View  {
                     send: Speeches.Action.currentTextChanged
                 ))
                 .frame(height: 100)
-                .border(Color.gray, width: 1) 
+                .border(Color.gray, width: 1)
                 .padding()
 
                 Button("読み上げる") {
@@ -79,6 +82,9 @@ struct SpeechView: View  {
                     // SpeechListの表示
                     ForEach(viewStore.speechList) { speech in
                         SpeechRowView(text: speech.text)
+                            .onTapGesture {
+                                viewStore.send(.speechSelected(speech.text))
+                            }
                     }
                 }
             }

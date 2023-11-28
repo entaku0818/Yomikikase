@@ -63,21 +63,14 @@ class SpeechTextRepository: NSObject {
 
     func fetchAllSpeechText() -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
-
-        // 作成日順にソートするためのソート記述子を作成
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
         do {
             let coreDataSpeechTexts = try managedContext.fetch(fetchRequest)
 
-            // 結果が空の場合はデフォルト値を追加
-            if coreDataSpeechTexts.isEmpty {
-                return createGreetingSpeeches()
-            }
-
             // SpeechTextからSpeeches.Speechに変換
-            return coreDataSpeechTexts.map { speechText in
+            var speeches = coreDataSpeechTexts.map { speechText in
                 Speeches.Speech(
                     id: speechText.uuid ?? UUID(),
                     text: speechText.text ?? "",
@@ -85,16 +78,22 @@ class SpeechTextRepository: NSObject {
                     updatedAt: speechText.updatedAt ?? Date()
                 )
             }
-        } catch let error {
-            print(error.localizedDescription)
-            return createGreetingSpeeches()
+
+            // デフォルトの挨拶を追加
+            let greetings = createGreetingSpeeches()
+            speeches.append(contentsOf: greetings)
+
+            return speeches
+        } catch let error as NSError {
+            print("FetchRequest error: \(error), \(error.userInfo)")
+            return []
         }
     }
 
 
     private func createGreetingSpeeches() -> [Speeches.Speech] {
         let greetings = [
-            "おはようございます",
+            "それでは〜カンパ〜イ！！",
             "こんにちは",
             "こんばんは",
             "おやすみなさい",
@@ -105,25 +104,6 @@ class SpeechTextRepository: NSObject {
             "ありがとうございます",
             "すみません",
             "よろしくお願いします",
-            "こんにちは、いい天気ですね",
-            "今日は寒いですね",
-            "暑い日が続きますね",
-            "良い一日を",
-            "元気ですか",
-            "最近どうですか",
-            "久しぶりですね",
-            "お元気そうで何よりです",
-            "お疲れさまです",
-            "いい週末を",
-            "気をつけて",
-            "頑張ってください",
-            "お大事に",
-            "忙しいですか",
-            "早く良くなりますように",
-            "ご無沙汰しています",
-            "おめでとうございます",
-            "残念ですね",
-            "それは良かった"
         ]
 
         return greetings.map { greeting in
