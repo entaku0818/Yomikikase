@@ -46,7 +46,7 @@ struct Speeches: Reducer {
                 return .none
             case .speechSelected(let selectedText):
                 state.currentText = selectedText
-                 return .none
+                return .none
             }
         }
     }
@@ -59,45 +59,70 @@ struct SpeechView: View  {
 
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
-            VStack {
-                TextEditor(text: viewStore.binding(
-                    get: \.currentText,
-                    send: Speeches.Action.currentTextChanged
-                ))
-                .frame(height: 100)
-                .border(Color.gray, width: 1)
-                .padding()
+            NavigationStack {
+                VStack {
+                    TextEditor(text: viewStore.binding(
+                        get: \.currentText,
+                        send: Speeches.Action.currentTextChanged
+                    ))
+                    .frame(height: 100)
+                    .border(Color.gray, width: 1)
+                    .padding()
 
-                Button("読み上げる") {
-                    speak(text: viewStore.currentText)
-                }
-                .padding()
+                    Button("読み上げる") {
+                        speak(text: viewStore.currentText)
+                    }
+                    .padding()
 
-                Button("自分の声で読み上げる") {
-                    speechMyVoice(text: viewStore.currentText)
-                }
-                .padding()
+                    Button("自分の声で読み上げる") {
+                        speechMyVoice(text: viewStore.currentText)
+                    }
+                    .padding()
 
-                List {
-                    // SpeechListの表示
-                    ForEach(viewStore.speechList) { speech in
-                        SpeechRowView(text: speech.text)
-                            .onTapGesture {
-                                viewStore.send(.speechSelected(speech.text))
-                            }
+                    List {
+                        // SpeechListの表示
+                        ForEach(viewStore.speechList) { speech in
+                            SpeechRowView(text: speech.text)
+                                .onTapGesture {
+                                    viewStore.send(.speechSelected(speech.text))
+
+                                }
+                        }
                     }
                 }
-            }
-            .onAppear {
-                viewStore.send(.onAppear)
+                .navigationTitle("Speech Synthesizer")
+                 .toolbar {
+                     ToolbarItem(placement: .navigationBarTrailing) {
+                         Button(action: {
+                             // 設定ボタンのアクションをここに追加
+                         }) {
+                             Image(systemName: "gear")
+                         }
+                     }
+                 }
+                .onAppear {
+                    viewStore.send(.onAppear)
+                }
             }
             .padding()
         }
     }
 
     func speak(text: String) {
-        let speechUtterance = AVSpeechUtterance(string: text)
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
+
+
+        let speechUtterance:AVSpeechUtterance = AVSpeechUtterance.init(string: text)
+
+        // Retrieve the saved language setting
+        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
+        
+
+        // Adjust the rate, pitch, and volume for more natural sounding speech
+        speechUtterance.rate = AVSpeechUtteranceDefaultSpeechRate
+        speechUtterance.pitchMultiplier = 1.2 // Slightly higher pitch can sound more natural
+        speechUtterance.volume = 0.75 // Adjust volume if needed
+
 
         speechSynthesizer.speak(speechUtterance)
     }

@@ -93,7 +93,6 @@ class SpeechTextRepository: NSObject {
 
     private func createGreetingSpeeches() -> [Speeches.Speech] {
         let greetings = [
-            "それでは〜カンパ〜イ！！",
             "こんにちは",
             "こんばんは",
             "おやすみなさい",
