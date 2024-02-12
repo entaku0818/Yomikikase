@@ -19,8 +19,6 @@
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
-		61DCD11B2B2F2BCA009F8269 /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCD11A2B2F2BCA009F8269 /* AdmobBannerView.swift */; };
-		61DCD11E2B2F2C16009F8269 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 61DCD11D2B2F2C16009F8269 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,7 +52,6 @@
 		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
-		61DCD11A2B2F2BCA009F8269 /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,7 +59,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61DCD11E2B2F2C16009F8269 /* GoogleMobileAds in Frameworks */,
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 			);
@@ -113,7 +109,6 @@
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
-				61DCD11A2B2F2BCA009F8269 /* AdmobBannerView.swift */,
 			);
 			path = Yomikikase;
 			sourceTree = "<group>";
@@ -172,7 +167,6 @@
 			packageProductDependencies = (
 				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
 				614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */,
-				61DCD11D2B2F2C16009F8269 /* GoogleMobileAds */,
 			);
 			productName = Yomikikase;
 			productReference = 614F56D12B11B81F00E21FE9 /* Yomikikase.app */;
@@ -249,7 +243,6 @@
 			packageReferences = (
 				614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
-				61DCD11C2B2F2C16009F8269 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
@@ -295,7 +288,6 @@
 			files = (
 				614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */,
 				61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */,
-				61DCD11B2B2F2BCA009F8269 /* AdmobBannerView.swift in Sources */,
 				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
 				614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */,
@@ -648,14 +640,6 @@
 				version = 1.2.0;
 			};
 		};
-		61DCD11C2B2F2C16009F8269 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 10.14.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -668,11 +652,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
 			productName = ComposableArchitecture;
-		};
-		61DCD11D2B2F2C16009F8269 /* GoogleMobileAds */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 61DCD11C2B2F2C16009F8269 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
-			productName = GoogleMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 
