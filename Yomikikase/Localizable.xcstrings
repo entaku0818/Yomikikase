@@ -1,0 +1,19 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Speech Synthesizer" : {
+
+    },
+    "読み上げる" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "speech"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
