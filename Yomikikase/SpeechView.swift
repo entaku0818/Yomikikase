@@ -74,30 +74,30 @@ struct SpeechView: View  {
                     }
                     .padding()
 
-                    Button("自分の声で読み上げる") {
-                        speechMyVoice(text: viewStore.currentText)
-                    }
-                    .padding()
-
+//                    Button("自分の声で読み上げる") {
+//                        speechMyVoice(text: viewStore.currentText)
+//                    }
+//                    .padding()
                     List {
-                        // SpeechListの表示
                         ForEach(viewStore.speechList) { speech in
                             SpeechRowView(text: speech.text)
+                                .listRowBackground(Color.white)
                                 .onTapGesture {
                                     viewStore.send(.speechSelected(speech.text))
 
                                 }
                         }
                     }
+
                 }
                 .navigationTitle("Speech Synthesizer")
                  .toolbar {
                      ToolbarItem(placement: .navigationBarTrailing) {
-                         Button(action: {
-                             // 設定ボタンのアクションをここに追加
-                         }) {
-                             Image(systemName: "gear")
-                         }
+//                         Button(action: {
+//                             // 設定ボタンのアクションをここに追加
+//                         }) {
+//                             Image(systemName: "gear")
+//                         }
                      }
                  }
                 .onAppear {

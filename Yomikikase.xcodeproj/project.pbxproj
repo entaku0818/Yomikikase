@@ -19,6 +19,7 @@
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
+		61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
+				61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */,
 			);
 			path = Yomikikase;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			files = (
 				614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */,
 				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
+				61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -38,11 +38,12 @@ class UserDefaultsManager {
 
     var languageSetting: String? {
         get {
-            // デフォルト値として端末の言語設定を使用
-            return defaults.string(forKey: "LanguageSetting")
+            // "LanguageSetting"の値を取得、もしなければ"en"をデフォルト値として返す
+            return defaults.string(forKey: "LanguageSetting") ?? "en"
         }
         set {
             defaults.set(newValue, forKey: "LanguageSetting")
         }
     }
+
 }
