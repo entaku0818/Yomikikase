@@ -20,6 +20,7 @@
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */; };
+		61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,7 @@
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +108,7 @@
 		614F56D32B11B81F00E21FE9 /* Yomikikase */ = {
 			isa = PBXGroup;
 			children = (
+				61DEB60D2B7A628E00AB9967 /* setting */,
 				614F57012B11D8F800E21FE9 /* data */,
 				614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */,
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
@@ -149,6 +152,14 @@
 				614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */,
 			);
 			path = data;
+			sourceTree = "<group>";
+		};
+		61DEB60D2B7A628E00AB9967 /* setting */ = {
+			isa = PBXGroup;
+			children = (
+				61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */,
+			);
+			path = setting;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -295,6 +306,7 @@
 				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
 				614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */,
+				61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

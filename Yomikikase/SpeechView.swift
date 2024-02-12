@@ -57,6 +57,13 @@ struct SpeechView: View  {
 
     let store: Store<Speeches.State, Speeches.Action>
 
+    let settingStore = Store(
+        initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting))
+        {
+            SettingsReducer()
+        }
+
+
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
             NavigationStack {
@@ -93,18 +100,20 @@ struct SpeechView: View  {
                 .navigationTitle("Speech Synthesizer")
                  .toolbar {
                      ToolbarItem(placement: .navigationBarTrailing) {
-//                         Button(action: {
-//                             // 設定ボタンのアクションをここに追加
-//                         }) {
-//                             Image(systemName: "gear")
-//                         }
+                         NavigationLink(destination:
+                            LanguageSettingView(store:settingStore)
+                         ) {
+                                 Image(systemName: "gear")
+                                     .resizable()
+                         }
+                         .buttonStyle(PlainButtonStyle()) // ボタンのスタイルを調整
+
                      }
                  }
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
             }
-            .padding()
         }
     }
 
