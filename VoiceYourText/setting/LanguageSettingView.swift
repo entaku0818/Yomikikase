@@ -1,6 +1,6 @@
 //
 //  LanguageSettingView.swift
-//  Yomikikase
+//  VoiceYourText
 //
 //  Created by 遠藤拓弥 on 2024/02/12.
 //

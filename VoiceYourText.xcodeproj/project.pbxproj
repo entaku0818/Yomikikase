@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */; };
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
-		614F56E62B11B82000E21FE9 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56E52B11B82000E21FE9 /* YomikikaseTests.swift */; };
-		614F56F02B11B82000E21FE9 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56EF2B11B82000E21FE9 /* YomikikaseUITests.swift */; };
-		614F56F22B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56F12B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift */; };
+		614F56E62B11B82000E21FE9 /* VoiceYourTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */; };
+		614F56F02B11B82000E21FE9 /* VoiceYourTextUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */; };
+		614F56F22B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */; };
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
+		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */; };
 		61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */; };
@@ -29,30 +29,30 @@
 			containerPortal = 614F56C92B11B81F00E21FE9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 614F56D02B11B81F00E21FE9;
-			remoteInfo = Yomikikase;
+			remoteInfo = VoiceYourText;
 		};
 		614F56EC2B11B82000E21FE9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 614F56C92B11B81F00E21FE9 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 614F56D02B11B81F00E21FE9;
-			remoteInfo = Yomikikase;
+			remoteInfo = VoiceYourText;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		614F56D12B11B81F00E21FE9 /* Yomikikase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Yomikikase.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseApp.swift; sourceTree = "<group>"; };
+		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		614F56E12B11B82000E21FE9 /* YomikikaseTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YomikikaseTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56E52B11B82000E21FE9 /* YomikikaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseTests.swift; sourceTree = "<group>"; };
-		614F56EB2B11B82000E21FE9 /* YomikikaseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YomikikaseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56EF2B11B82000E21FE9 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
-		614F56F12B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextTests.swift; sourceTree = "<group>"; };
+		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextUITests.swift; sourceTree = "<group>"; };
+		614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
+		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
@@ -88,9 +88,9 @@
 		614F56C82B11B81F00E21FE9 = {
 			isa = PBXGroup;
 			children = (
-				614F56D32B11B81F00E21FE9 /* Yomikikase */,
-				614F56E42B11B82000E21FE9 /* YomikikaseTests */,
-				614F56EE2B11B82000E21FE9 /* YomikikaseUITests */,
+				614F56D32B11B81F00E21FE9 /* VoiceYourText */,
+				614F56E42B11B82000E21FE9 /* VoiceYourTextTests */,
+				614F56EE2B11B82000E21FE9 /* VoiceYourTextUITests */,
 				614F56D22B11B81F00E21FE9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -98,25 +98,25 @@
 		614F56D22B11B81F00E21FE9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				614F56D12B11B81F00E21FE9 /* Yomikikase.app */,
-				614F56E12B11B82000E21FE9 /* YomikikaseTests.xctest */,
-				614F56EB2B11B82000E21FE9 /* YomikikaseUITests.xctest */,
+				614F56D12B11B81F00E21FE9 /* VoiceYourText.app */,
+				614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */,
+				614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		614F56D32B11B81F00E21FE9 /* Yomikikase */ = {
+		614F56D32B11B81F00E21FE9 /* VoiceYourText */ = {
 			isa = PBXGroup;
 			children = (
+				6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */,
 				61DEB60D2B7A628E00AB9967 /* setting */,
 				614F57012B11D8F800E21FE9 /* data */,
-				614F56D42B11B81F00E21FE9 /* YomikikaseApp.swift */,
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
 				61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */,
 			);
-			path = Yomikikase;
+			path = VoiceYourText;
 			sourceTree = "<group>";
 		};
 		614F56DA2B11B82000E21FE9 /* Preview Content */ = {
@@ -127,21 +127,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
-		614F56E42B11B82000E21FE9 /* YomikikaseTests */ = {
+		614F56E42B11B82000E21FE9 /* VoiceYourTextTests */ = {
 			isa = PBXGroup;
 			children = (
-				614F56E52B11B82000E21FE9 /* YomikikaseTests.swift */,
+				614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */,
 			);
-			path = YomikikaseTests;
+			path = VoiceYourTextTests;
 			sourceTree = "<group>";
 		};
-		614F56EE2B11B82000E21FE9 /* YomikikaseUITests */ = {
+		614F56EE2B11B82000E21FE9 /* VoiceYourTextUITests */ = {
 			isa = PBXGroup;
 			children = (
-				614F56EF2B11B82000E21FE9 /* YomikikaseUITests.swift */,
-				614F56F12B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift */,
+				614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */,
+				614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */,
 			);
-			path = YomikikaseUITests;
+			path = VoiceYourTextUITests;
 			sourceTree = "<group>";
 		};
 		614F57012B11D8F800E21FE9 /* data */ = {
@@ -165,9 +165,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		614F56D02B11B81F00E21FE9 /* Yomikikase */ = {
+		614F56D02B11B81F00E21FE9 /* VoiceYourText */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 614F56F52B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "Yomikikase" */;
+			buildConfigurationList = 614F56F52B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourText" */;
 			buildPhases = (
 				614F56CD2B11B81F00E21FE9 /* Sources */,
 				614F56CE2B11B81F00E21FE9 /* Frameworks */,
@@ -177,18 +177,18 @@
 			);
 			dependencies = (
 			);
-			name = Yomikikase;
+			name = VoiceYourText;
 			packageProductDependencies = (
 				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
 				614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */,
 			);
-			productName = Yomikikase;
-			productReference = 614F56D12B11B81F00E21FE9 /* Yomikikase.app */;
+			productName = VoiceYourText;
+			productReference = 614F56D12B11B81F00E21FE9 /* VoiceYourText.app */;
 			productType = "com.apple.product-type.application";
 		};
-		614F56E02B11B82000E21FE9 /* YomikikaseTests */ = {
+		614F56E02B11B82000E21FE9 /* VoiceYourTextTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 614F56F82B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "YomikikaseTests" */;
+			buildConfigurationList = 614F56F82B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourTextTests" */;
 			buildPhases = (
 				614F56DD2B11B82000E21FE9 /* Sources */,
 				614F56DE2B11B82000E21FE9 /* Frameworks */,
@@ -199,14 +199,14 @@
 			dependencies = (
 				614F56E32B11B82000E21FE9 /* PBXTargetDependency */,
 			);
-			name = YomikikaseTests;
-			productName = YomikikaseTests;
-			productReference = 614F56E12B11B82000E21FE9 /* YomikikaseTests.xctest */;
+			name = VoiceYourTextTests;
+			productName = VoiceYourTextTests;
+			productReference = 614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		614F56EA2B11B82000E21FE9 /* YomikikaseUITests */ = {
+		614F56EA2B11B82000E21FE9 /* VoiceYourTextUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 614F56FB2B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "YomikikaseUITests" */;
+			buildConfigurationList = 614F56FB2B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourTextUITests" */;
 			buildPhases = (
 				614F56E72B11B82000E21FE9 /* Sources */,
 				614F56E82B11B82000E21FE9 /* Frameworks */,
@@ -217,9 +217,9 @@
 			dependencies = (
 				614F56ED2B11B82000E21FE9 /* PBXTargetDependency */,
 			);
-			name = YomikikaseUITests;
-			productName = YomikikaseUITests;
-			productReference = 614F56EB2B11B82000E21FE9 /* YomikikaseUITests.xctest */;
+			name = VoiceYourTextUITests;
+			productName = VoiceYourTextUITests;
+			productReference = 614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -245,7 +245,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 614F56CC2B11B81F00E21FE9 /* Build configuration list for PBXProject "Yomikikase" */;
+			buildConfigurationList = 614F56CC2B11B81F00E21FE9 /* Build configuration list for PBXProject "VoiceYourText" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -262,9 +262,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				614F56D02B11B81F00E21FE9 /* Yomikikase */,
-				614F56E02B11B82000E21FE9 /* YomikikaseTests */,
-				614F56EA2B11B82000E21FE9 /* YomikikaseUITests */,
+				614F56D02B11B81F00E21FE9 /* VoiceYourText */,
+				614F56E02B11B82000E21FE9 /* VoiceYourTextTests */,
+				614F56EA2B11B82000E21FE9 /* VoiceYourTextUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -305,8 +305,8 @@
 				61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */,
 				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
-				614F56D52B11B81F00E21FE9 /* YomikikaseApp.swift in Sources */,
 				61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */,
+				6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,7 +314,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56E62B11B82000E21FE9 /* YomikikaseTests.swift in Sources */,
+				614F56E62B11B82000E21FE9 /* VoiceYourTextTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,8 +322,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56F22B11B82000E21FE9 /* YomikikaseUITestsLaunchTests.swift in Sources */,
-				614F56F02B11B82000E21FE9 /* YomikikaseUITests.swift in Sources */,
+				614F56F22B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift in Sources */,
+				614F56F02B11B82000E21FE9 /* VoiceYourTextUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -332,12 +332,12 @@
 /* Begin PBXTargetDependency section */
 		614F56E32B11B82000E21FE9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 614F56D02B11B81F00E21FE9 /* Yomikikase */;
+			target = 614F56D02B11B81F00E21FE9 /* VoiceYourText */;
 			targetProxy = 614F56E22B11B82000E21FE9 /* PBXContainerItemProxy */;
 		};
 		614F56ED2B11B82000E21FE9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 614F56D02B11B81F00E21FE9 /* Yomikikase */;
+			target = 614F56D02B11B81F00E21FE9 /* VoiceYourText */;
 			targetProxy = 614F56EC2B11B82000E21FE9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -467,12 +467,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Yomikikase/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"VoiceYourText/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -482,10 +484,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.Yomikikase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -497,12 +500,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Yomikikase/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"VoiceYourText/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.navigation";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -512,10 +517,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.Yomikikase;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -533,12 +539,12 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.YomikikaseTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yomikikase.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Yomikikase";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoiceYourText.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VoiceYourText";
 			};
 			name = Debug;
 		};
@@ -553,12 +559,12 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.YomikikaseTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Yomikikase.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Yomikikase";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/VoiceYourText.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/VoiceYourText";
 			};
 			name = Release;
 		};
@@ -571,12 +577,12 @@
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.YomikikaseUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Yomikikase;
+				TEST_TARGET_NAME = VoiceYourText;
 			};
 			name = Debug;
 		};
@@ -589,19 +595,19 @@
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.YomikikaseUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Yomikikase;
+				TEST_TARGET_NAME = VoiceYourText;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		614F56CC2B11B81F00E21FE9 /* Build configuration list for PBXProject "Yomikikase" */ = {
+		614F56CC2B11B81F00E21FE9 /* Build configuration list for PBXProject "VoiceYourText" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				614F56F32B11B82000E21FE9 /* Debug */,
@@ -610,7 +616,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		614F56F52B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "Yomikikase" */ = {
+		614F56F52B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourText" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				614F56F62B11B82000E21FE9 /* Debug */,
@@ -619,7 +625,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		614F56F82B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "YomikikaseTests" */ = {
+		614F56F82B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourTextTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				614F56F92B11B82000E21FE9 /* Debug */,
@@ -628,7 +634,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		614F56FB2B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "YomikikaseUITests" */ = {
+		614F56FB2B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourTextUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				614F56FC2B11B82000E21FE9 /* Debug */,

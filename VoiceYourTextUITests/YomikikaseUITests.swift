@@ -1,13 +1,13 @@
 //
-//  YomikikaseUITests.swift
-//  YomikikaseUITests
+//  VoiceYourTextUITests.swift
+//  VoiceYourTextUITests
 //
 //  Created by 遠藤拓弥 on 25.11.2023.
 //
 
 import XCTest
 
-final class YomikikaseUITests: XCTestCase {
+final class VoiceYourTextUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.

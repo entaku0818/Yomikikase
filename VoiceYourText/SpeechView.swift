@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  Yomikikase
+//  VoiceYourText
 //
 //  Created by 遠藤拓弥 on 25.11.2023.
 //

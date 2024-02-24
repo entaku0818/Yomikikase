@@ -1,6 +1,6 @@
 //
-//  YomikikaseApp.swift
-//  Yomikikase
+//  VoiceYourTextApp.swift
+//  VoiceYourText
 //
 //  Created by 遠藤拓弥 on 25.11.2023.
 //
@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 @main
-struct YomikikaseApp: App {
+struct VoiceYourTextApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {

@@ -1,13 +1,13 @@
 //
-//  YomikikaseUITestsLaunchTests.swift
-//  YomikikaseUITests
+//  VoiceYourTextUITestsLaunchTests.swift
+//  VoiceYourTextUITests
 //
 //  Created by 遠藤拓弥 on 25.11.2023.
 //
 
 import XCTest
 
-final class YomikikaseUITestsLaunchTests: XCTestCase {
+final class VoiceYourTextUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
