@@ -38,7 +38,6 @@ class UserDefaultsManager {
 
     var languageSetting: String? {
         get {
-            // "LanguageSetting"の値を取得、もしなければ"en"をデフォルト値として返す
             return defaults.string(forKey: "LanguageSetting") ?? "en"
         }
         set {
