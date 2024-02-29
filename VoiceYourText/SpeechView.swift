@@ -73,8 +73,14 @@ struct SpeechView: View  {
                         send: Speeches.Action.currentTextChanged
                     ))
                     .frame(height: 100)
-                    .border(Color.gray, width: 1)
+                    .padding(4)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                    )
                     .padding()
+
 
                     Button("読み上げる") {
                         speak(text: viewStore.currentText)
@@ -88,7 +94,6 @@ struct SpeechView: View  {
                     List {
                         ForEach(viewStore.speechList) { speech in
                             SpeechRowView(text: speech.text)
-                                .listRowBackground(Color.white)
                                 .onTapGesture {
                                     viewStore.send(.speechSelected(speech.text))
 
@@ -97,7 +102,7 @@ struct SpeechView: View  {
                     }
 
                 }
-                .navigationTitle("Speech Synthesizer")
+                .navigationTitle("VoiceYourText")
                  .toolbar {
                      ToolbarItem(placement: .navigationBarTrailing) {
                          NavigationLink(destination:
@@ -106,7 +111,7 @@ struct SpeechView: View  {
                                  Image(systemName: "gear")
                                      .resizable()
                          }
-                         .buttonStyle(PlainButtonStyle()) // ボタンのスタイルを調整
+                         .buttonStyle(PlainButtonStyle())
 
                      }
                  }
