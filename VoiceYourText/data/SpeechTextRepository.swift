@@ -17,6 +17,11 @@ class SpeechTextRepository: NSObject {
 
     let entityName: String = "SpeechText"
 
+    enum LanguageSetting: String {
+         case japanese = "ja"
+         case english = "en"
+     }
+
     override init() {
 
         container = NSPersistentContainer(name: entityName)
@@ -61,7 +66,7 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func fetchAllSpeechText() -> [Speeches.Speech] {
+    func fetchAllSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
@@ -80,7 +85,7 @@ class SpeechTextRepository: NSObject {
             }
 
             // デフォルトの挨拶を追加
-            let greetings = createGreetingSpeeches()
+            let greetings = createGreetingSpeeches(language: language)
             speeches.append(contentsOf: greetings)
 
             return speeches
@@ -91,24 +96,44 @@ class SpeechTextRepository: NSObject {
     }
 
 
-    private func createGreetingSpeeches() -> [Speeches.Speech] {
-        let greetings = [
-            "こんにちは",
-            "こんばんは",
-            "おやすみなさい",
-            "いってきます",
-            "ただいま",
-            "いただきます",
-            "ごちそうさまでした",
-            "ありがとうございます",
-            "すみません",
-            "よろしくお願いします",
-        ]
+
+
+    private func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
+        let greetings: [String]
+        switch language {
+        case .japanese:
+            greetings = [
+                "こんにちは",
+                "こんばんは",
+                "おやすみなさい",
+                "いってきます",
+                "ただいま",
+                "いただきます",
+                "ごちそうさまでした",
+                "ありがとうございます",
+                "すみません",
+                "よろしくお願いします",
+            ]
+        case .english:
+            greetings = [
+                "Hello",
+                "Good evening",
+                "Good night",
+                "I'm leaving",
+                "I'm home",
+                "Let's eat",
+                "Thank you for the meal",
+                "Thank you",
+                "Excuse me",
+                "Please treat me well",
+            ]
+        }
 
         return greetings.map { greeting in
             createDefaultSpeech(text: greeting)
         }
     }
+
 
 
     private func createDefaultSpeech(text: String) -> Speeches.Speech {

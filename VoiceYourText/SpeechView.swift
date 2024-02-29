@@ -34,7 +34,11 @@ struct Speeches: Reducer {
             switch action {
             case .onAppear:
 
-                let texts = SpeechTextRepository.shared.fetchAllSpeechText()
+                let languageCode:String = UserDefaultsManager.shared.languageSetting ?? "en"
+
+                let languageSetting:SpeechTextRepository.LanguageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+
+                let texts = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
 

@@ -2,13 +2,34 @@
   "sourceLanguage" : "en",
   "strings" : {
     "Language" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語設定"
+          }
+        }
+      }
     },
     "Select Language" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語選択"
+          }
+        }
+      }
     },
     "Settings" : {
-
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "設定"
+          }
+        }
+      }
     },
     "VoiceYourText" : {
       "localizations" : {
@@ -26,6 +47,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "speech"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "読み上げる"
           }
         }
       }

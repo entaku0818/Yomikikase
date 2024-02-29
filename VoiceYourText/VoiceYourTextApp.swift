@@ -13,8 +13,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
-
-        UserDefaults.standard.set(["ja"], forKey: "AppleLocale")
+        let languageCode:String = UserDefaultsManager.shared.languageSetting ?? "en"
+        UserDefaults.standard.set([languageCode], forKey: "AppleLocale")
         UserDefaults.standard.synchronize()
         return true
     }

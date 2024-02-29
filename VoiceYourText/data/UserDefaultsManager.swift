@@ -38,7 +38,7 @@ class UserDefaultsManager {
 
     var languageSetting: String? {
         get {
-            return defaults.string(forKey: "LanguageSetting") ?? "en"
+            return defaults.string(forKey: "LanguageSetting")
         }
         set {
             defaults.set(newValue, forKey: "LanguageSetting")
