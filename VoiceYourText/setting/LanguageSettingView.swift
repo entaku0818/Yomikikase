@@ -15,18 +15,21 @@ struct LanguageSettingView: View {
     var body: some View {
         NavigationView {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
-                Form {
-                    Section(header: Text("Language")) {
-                        NavigationLink(destination: LanguageSelectionView(store: store)) {
-                            HStack(content: {
-                                Text("Select Language")
-                                Spacer()
-                                Text(viewStore.languageSetting ?? "")
-                            })
+                VStack{
+                    Form {
+                        Section(header: Text("Language")) {
+                            NavigationLink(destination: LanguageSelectionView(store: store)) {
+                                HStack(content: {
+                                    Text("Select Language")
+                                    Spacer()
+                                    Text(viewStore.languageSetting ?? "")
+                                })
+                            }
                         }
                     }
+                    Spacer()
                 }
-                .navigationBarTitle("Settings")
+                .navigationBarTitle("Settings",displayMode: .automatic)
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
@@ -77,7 +80,11 @@ struct SettingsReducer: Reducer {
                 }
                 return .none
             case .onAppear:
-                state.languageSetting = UserDefaultsManager.shared.languageSetting
+                if let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
+                    state.languageSetting = languageName
+                } else {
+                    state.languageSetting = "English"
+                }
                 return .none
             }
         }

@@ -4,14 +4,21 @@
     "Language" : {
 
     },
-    "Select English" : {
+    "Select Language" : {
 
     },
-    "Select Japanese" : {
+    "Settings" : {
 
     },
-    "Speech Synthesizer" : {
-
+    "VoiceYourText" : {
+      "localizations" : {
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "声で読み上げ"
+          }
+        }
+      }
     },
     "読み上げる" : {
       "localizations" : {
