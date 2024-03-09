@@ -29,7 +29,7 @@ struct LanguageSettingView: View {
                     }
                     Spacer()
                 }
-                .navigationBarTitle("Settings",displayMode: .automatic)
+                .navigationBarTitle("Settings",displayMode: .inline)
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
@@ -78,6 +78,7 @@ struct SettingsReducer: Reducer {
                 } else {
                     state.languageSetting = "English"
                 }
+
                 return .none
             case .onAppear:
                 if let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
