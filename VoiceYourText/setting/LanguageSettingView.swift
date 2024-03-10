@@ -13,7 +13,6 @@ struct LanguageSettingView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
 
     var body: some View {
-        NavigationView {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
                 VStack{
                     Form {
@@ -29,18 +28,19 @@ struct LanguageSettingView: View {
                     }
                     Spacer()
                 }
-                .navigationBarTitle("Settings",displayMode: .inline)
+                .navigationBarTitle("Settings")
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
             }
-        }
+        
     }
 }
 
 
 struct LanguageSelectionView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -48,6 +48,7 @@ struct LanguageSelectionView: View {
                 ForEach(SettingsReducer.State.availableLanguages, id: \.1) { language in
                     Button(language.0) {
                         viewStore.send(.setLanguage(language.1))
+                        self.presentationMode.wrappedValue.dismiss()
                     }
                 }
             }
@@ -75,16 +76,20 @@ struct SettingsReducer: Reducer {
                 UserDefaultsManager.shared.languageSetting = languageCode
                 if let code = languageCode, let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
+                    Bundle.setLanguage(code)
                 } else {
-                    state.languageSetting = "English"
+                    state.languageSetting = "en"
                 }
+
+
+
 
                 return .none
             case .onAppear:
                 if let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
                     state.languageSetting = languageName
                 } else {
-                    state.languageSetting = "English"
+                    state.languageSetting = "en"
                 }
                 return .none
             }
