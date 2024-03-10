@@ -33,7 +33,7 @@ struct LanguageSettingView: View {
                     viewStore.send(.onAppear)
                 }
             }
-        
+
     }
 }
 
@@ -76,7 +76,6 @@ struct SettingsReducer: Reducer {
                 UserDefaultsManager.shared.languageSetting = languageCode
                 if let code = languageCode, let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
-                    Bundle.setLanguage(code)
                 } else {
                     state.languageSetting = "en"
                 }
