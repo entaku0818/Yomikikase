@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */; };
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
@@ -41,6 +42,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 		614F56D32B11B81F00E21FE9 /* VoiceYourText */ = {
 			isa = PBXGroup;
 			children = (
+				610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */,
 				6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */,
 				61DEB60D2B7A628E00AB9967 /* setting */,
 				614F57012B11D8F800E21FE9 /* data */,
@@ -276,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */,
+				610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */,
 				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
 				61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */,
 			);
