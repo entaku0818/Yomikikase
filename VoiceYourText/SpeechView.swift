@@ -104,7 +104,7 @@ struct SpeechView: View  {
                                 }
                         }
                     }
-
+                    AdmobBannerView().frame(width: .infinity, height: 50)
                 }
                 .navigationTitle("VoiceYourText")
                  .toolbar {

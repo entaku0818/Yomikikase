@@ -16,7 +16,7 @@ struct AdmobBannerView: UIViewRepresentable {
 
 
         #if DEBUG
-        view.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        view.adUnitID = "ca-app-pub-3484697221349891/1120336868"
         #else
         view.adUnitID = "ca-app-pub-3484697221349891/5594336678"
         #endif
