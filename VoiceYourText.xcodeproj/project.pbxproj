@@ -22,6 +22,7 @@
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
+		619AE5F52BAD5F2500CE4C4C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 619AE5F72BAD5F2500CE4C4C /* InfoPlist.strings */; };
 		61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */; };
 		61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */; };
 /* End PBXBuildFile section */
@@ -60,6 +61,9 @@
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
 		619AE5F12BAD5BAD00CE4C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		619AE5F62BAD5F2500CE4C4C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		619AE5F82BAD5F2800CE4C4C /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		619AE5F92BAD5F2900CE4C4C /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -115,6 +119,7 @@
 		614F56D32B11B81F00E21FE9 /* VoiceYourText */ = {
 			isa = PBXGroup;
 			children = (
+				619AE5F22BAD5E4800CE4C4C /* locate */,
 				619AE5F12BAD5BAD00CE4C4C /* Info.plist */,
 				610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */,
 				6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */,
@@ -123,7 +128,6 @@
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
-				61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */,
 				619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */,
 			);
 			path = VoiceYourText;
@@ -162,6 +166,15 @@
 				614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */,
 			);
 			path = data;
+			sourceTree = "<group>";
+		};
+		619AE5F22BAD5E4800CE4C4C /* locate */ = {
+			isa = PBXGroup;
+			children = (
+				619AE5F72BAD5F2500CE4C4C /* InfoPlist.strings */,
+				61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */,
+			);
+			path = locate;
 			sourceTree = "<group>";
 		};
 		61DEB60D2B7A628E00AB9967 /* setting */ = {
@@ -264,6 +277,7 @@
 				en,
 				Base,
 				ja,
+				de,
 			);
 			mainGroup = 614F56C82B11B81F00E21FE9;
 			packageReferences = (
@@ -291,6 +305,7 @@
 				610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */,
 				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
 				61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */,
+				619AE5F52BAD5F2500CE4C4C /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +371,19 @@
 			targetProxy = 614F56EC2B11B82000E21FE9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		619AE5F72BAD5F2500CE4C4C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				619AE5F62BAD5F2500CE4C4C /* en */,
+				619AE5F82BAD5F2800CE4C4C /* de */,
+				619AE5F92BAD5F2900CE4C4C /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		614F56F32B11B82000E21FE9 /* Debug */ = {
@@ -500,7 +528,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -536,7 +564,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
