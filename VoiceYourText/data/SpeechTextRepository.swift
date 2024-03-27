@@ -18,9 +18,13 @@ class SpeechTextRepository: NSObject {
     let entityName: String = "SpeechText"
 
     enum LanguageSetting: String {
-         case japanese = "ja"
-         case english = "en"
-     }
+        case japanese = "ja"
+        case english = "en"
+        case german = "de"
+        case spanish = "es"
+        case turkish = "tr"
+        case french = "fr"
+    }
 
     override init() {
 
@@ -127,7 +131,60 @@ class SpeechTextRepository: NSObject {
                 "Excuse me",
                 "Please treat me well",
             ]
+        case .german:
+            greetings = [
+                "Hallo",
+                "Guten Abend",
+                "Gute Nacht",
+                "Ich gehe",
+                "Ich bin zu Hause",
+                "Lass uns essen",
+                "Danke für das Essen",
+                "Danke",
+                "Entschuldigung",
+                "Bitte behandle mich gut",
+            ]
+        case .spanish:
+            greetings = [
+                "Hola",
+                "Buenas noches",
+                "Buenas noches",
+                "Me estoy yendo",
+                "Ya llegué a casa",
+                "Vamos a comer",
+                "Gracias por la comida",
+                "Gracias",
+                "Disculpe",
+                "Por favor, trátame bien",
+            ]
+        case .turkish:
+            greetings = [
+                "Merhaba",
+                "İyi akşamlar",
+                "İyi geceler",
+                "Gidiyorum",
+                "Eve geldim",
+                "Hadi yemek yiyelim",
+                "Yemeğin için teşekkür ederim",
+                "Teşekkür ederim",
+                "Affedersiniz",
+                "Lütfen beni iyi tedavi et",
+            ]
+        case .french:
+            greetings = [
+                "Bonjour",
+                "Bonsoir",
+                "Bonne nuit",
+                "Je pars",
+                "Je suis à la maison",
+                "Mangeons",
+                "Merci pour le repas",
+                "Merci",
+                "Excusez-moi",
+                "S'il vous plaît, traitez-moi bien",
+            ]
         }
+
 
         return greetings.map { greeting in
             createDefaultSpeech(text: greeting)

@@ -62,7 +62,7 @@ struct LanguageSelectionView: View {
 struct SettingsReducer: Reducer {
     struct State: Equatable {
         var languageSetting: String?
-        static let availableLanguages = [("English", "en"), ("Japanese", "ja")]
+        static let availableLanguages = [("English", "en"), ("Japanese", "ja"), ("German", "de"), ("Spanish", "es"), ("Turkish", "tr"), ("French", "fr")]
     }
 
     enum Action: Equatable, Sendable {
@@ -78,7 +78,7 @@ struct SettingsReducer: Reducer {
                 if let code = languageCode, let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
                 } else {
-                    state.languageSetting = "en"
+                    state.languageSetting = "English"
                 }
 
 
@@ -89,7 +89,7 @@ struct SettingsReducer: Reducer {
                 if let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
                     state.languageSetting = languageName
                 } else {
-                    state.languageSetting = "en"
+                    state.languageSetting = "English"
                 }
                 return .none
             }

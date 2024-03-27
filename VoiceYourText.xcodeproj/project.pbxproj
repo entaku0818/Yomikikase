@@ -57,6 +57,9 @@
 		614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
+		6161C5732BB3A493009542A2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6161C5742BB3A4A9009542A2 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		6161C5752BB3A4AF009542A2 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
@@ -278,6 +281,9 @@
 				Base,
 				ja,
 				de,
+				fr,
+				tr,
+				es,
 			);
 			mainGroup = 614F56C82B11B81F00E21FE9;
 			packageReferences = (
@@ -379,6 +385,9 @@
 				619AE5F62BAD5F2500CE4C4C /* en */,
 				619AE5F82BAD5F2800CE4C4C /* de */,
 				619AE5F92BAD5F2900CE4C4C /* ja */,
+				6161C5732BB3A493009542A2 /* fr */,
+				6161C5742BB3A4A9009542A2 /* tr */,
+				6161C5752BB3A4AF009542A2 /* es */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";

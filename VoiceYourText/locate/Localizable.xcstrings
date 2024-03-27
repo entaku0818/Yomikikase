@@ -81,6 +81,12 @@
             "value" : "VoiceYourText"
           }
         },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "VoiceYourText"
+          }
+        },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
