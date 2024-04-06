@@ -62,7 +62,19 @@ struct LanguageSelectionView: View {
 struct SettingsReducer: Reducer {
     struct State: Equatable {
         var languageSetting: String?
-        static let availableLanguages = [("English", "en"), ("Japanese", "ja"), ("German", "de"), ("Spanish", "es"), ("Turkish", "tr"), ("French", "fr")]
+        static let availableLanguages = [
+            ("English", "en"),
+            ("Japanese", "ja"),
+            ("German", "de"),
+            ("Spanish", "es"),
+            ("Turkish", "tr"),
+            ("French", "fr"),
+            ("Vietnamese", "vi"),
+            ("Thai", "th"),
+            ("Korean", "ko"),
+            ("Italian", "it")    
+        ]
+
     }
 
     enum Action: Equatable, Sendable {

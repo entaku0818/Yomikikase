@@ -91,10 +91,6 @@ struct SpeechView: View  {
                     }
                     .padding()
 
-//                    Button("自分の声で読み上げる") {
-//                        speechMyVoice(text: viewStore.currentText)
-//                    }
-//                    .padding()
                     List {
                         ForEach(viewStore.speechList) { speech in
                             SpeechRowView(text: speech.text)

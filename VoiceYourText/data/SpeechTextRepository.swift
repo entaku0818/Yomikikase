@@ -24,7 +24,12 @@ class SpeechTextRepository: NSObject {
         case spanish = "es"
         case turkish = "tr"
         case french = "fr"
+        case vietnamese = "vi"
+        case thai = "th"
+        case korean = "ko"
+        case italian = "it"
     }
+
 
     override init() {
 
@@ -182,6 +187,58 @@ class SpeechTextRepository: NSObject {
                 "Merci",
                 "Excusez-moi",
                 "S'il vous plaît, traitez-moi bien",
+            ]
+        case .vietnamese:
+            greetings = [
+                "Xin chào", // Hello
+                "Chào buổi tối", // Good evening
+                "Chúc ngủ ngon", // Good night
+                "Tôi đi đây", // I'm leaving
+                "Tôi về", // I'm home
+                "Ăn thôi", // Let's eat
+                "Cảm ơn bữa ăn", // Thank you for the meal
+                "Cảm ơn", // Thank you
+                "Xin lỗi", // Excuse me
+                "Xin hãy đối xử tốt với tôi", // Please treat me well
+            ]
+        case .thai:
+            greetings = [
+                "สวัสดี", // Hello
+                "สวัสดีตอนเย็น", // Good evening
+                "ราตรีสวัสดิ์", // Good night
+                "ฉันกำลังจะไป", // I'm leaving
+                "ฉันกลับถึงบ้านแล้ว", // I'm home
+                "มากินกันเถอะ", // Let's eat
+                "ขอบคุณสำหรับอาหาร", // Thank you for the meal
+                "ขอบคุณ", // Thank you
+                "ขอโทษ", // Excuse me
+                "โปรดดูแลฉันด้วยนะ", // Please treat me well
+            ]
+        case .korean:
+            greetings = [
+                "안녕하세요", // Hello
+                "안녕하세요", // Good evening (same as Hello)
+                "안녕히 주무세요", // Good night
+                "잘 가요", // I'm leaving
+                "집에 돌아왔어요", // I'm home
+                "식사합시다", // Let's eat
+                "식사를 잘 했습니다", // Thank you for the meal
+                "감사합니다", // Thank you
+                "실례합니다", // Excuse me
+                "잘 부탁드립니다", // Please treat me well
+            ]
+        case .italian:
+            greetings = [
+                "Ciao", // Hello
+                "Buonasera", // Good evening
+                "Buonanotte", // Good night
+                "Sto andando", // I'm leaving
+                "Sono a casa", // I'm home
+                "Mangiamo", // Let's eat
+                "Grazie per il pasto", // Thank you for the meal
+                "Grazie", // Thank you
+                "Scusami", // Excuse me
+                "Per favore, trattami bene", // Please treat me well
             ]
         }
 
