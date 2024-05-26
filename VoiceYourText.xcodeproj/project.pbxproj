@@ -11,9 +11,6 @@
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
-		614F56E62B11B82000E21FE9 /* VoiceYourTextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */; };
-		614F56F02B11B82000E21FE9 /* VoiceYourTextUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */; };
-		614F56F22B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */; };
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
@@ -51,10 +48,7 @@
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextTests.swift; sourceTree = "<group>"; };
 		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextUITests.swift; sourceTree = "<group>"; };
-		614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceYourTextUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		614F57032B11D91800E21FE9 /* SpeechText.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SpeechText.xcdatamodel; sourceTree = "<group>"; };
 		614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechTextRepository.swift; sourceTree = "<group>"; };
 		6161C5732BB3A493009542A2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -151,7 +145,6 @@
 		614F56E42B11B82000E21FE9 /* VoiceYourTextTests */ = {
 			isa = PBXGroup;
 			children = (
-				614F56E52B11B82000E21FE9 /* VoiceYourTextTests.swift */,
 			);
 			path = VoiceYourTextTests;
 			sourceTree = "<group>";
@@ -159,8 +152,6 @@
 		614F56EE2B11B82000E21FE9 /* VoiceYourTextUITests */ = {
 			isa = PBXGroup;
 			children = (
-				614F56EF2B11B82000E21FE9 /* VoiceYourTextUITests.swift */,
-				614F56F12B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift */,
 			);
 			path = VoiceYourTextUITests;
 			sourceTree = "<group>";
@@ -358,7 +349,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56E62B11B82000E21FE9 /* VoiceYourTextTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,8 +356,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56F22B11B82000E21FE9 /* VoiceYourTextUITestsLaunchTests.swift in Sources */,
-				614F56F02B11B82000E21FE9 /* VoiceYourTextUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
