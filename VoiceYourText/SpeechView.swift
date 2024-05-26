@@ -12,6 +12,7 @@ import ComposableArchitecture
 struct Speeches: Reducer {
     struct Speech: Identifiable, Equatable {
         var id: UUID
+        var title: String
         var text: String
         var createdAt: Date
         var updatedAt: Date
@@ -86,14 +87,21 @@ struct SpeechView: View  {
                     .padding()
 
 
-                    Button("読み上げる") {
-                        speak(text: viewStore.currentText)
+                    HStack {
+                        Button("読み上げる") {
+                            speak(text: viewStore.currentText)
+                        }
+                        .padding()
+
+                        Button("停止する") {
+                            stopSpeaking()
+                        }
+                        .padding()
                     }
-                    .padding()
 
                     List {
                         ForEach(viewStore.speechList) { speech in
-                            SpeechRowView(text: speech.text)
+                            SpeechRowView(text: speech.title)
                                 .onTapGesture {
                                     viewStore.send(.speechSelected(speech.text))
 
@@ -102,7 +110,7 @@ struct SpeechView: View  {
                     }
                     AdmobBannerView().frame(width: .infinity, height: 50)
                 }
-                .navigationTitle("VoiceYourText")
+                .navigationTitle("Voice Narrator")
                  .toolbar {
                      ToolbarItem(placement: .navigationBarTrailing) {
                          NavigationLink(destination:
@@ -133,12 +141,18 @@ struct SpeechView: View  {
         
 
         // Adjust the rate, pitch, and volume for more natural sounding speech
-        speechUtterance.rate = AVSpeechUtteranceDefaultSpeechRate
-        speechUtterance.pitchMultiplier = 1.2 // Slightly higher pitch can sound more natural
+        speechUtterance.rate = 0.5
+        speechUtterance.pitchMultiplier = 1.0 // Slightly higher pitch can sound more natural
         speechUtterance.volume = 0.75 // Adjust volume if needed
 
 
         speechSynthesizer.speak(speechUtterance)
+    }
+
+    func stopSpeaking() {
+        if speechSynthesizer.isSpeaking {
+            speechSynthesizer.stopSpeaking(at: .immediate)
+        }
     }
 
     func speechMyVoice(text: String){
@@ -172,8 +186,8 @@ struct SpeechView_Previews: PreviewProvider {
         // ダミーの初期ステートを設定
         let initialState = Speeches.State(
             speechList: IdentifiedArrayOf(uniqueElements: [
-                Speeches.Speech(id: UUID(), text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
-                Speeches.Speech(id: UUID(), text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
+                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
+                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
             ]), currentText: ""
         )
 

@@ -26,6 +26,8 @@
 		61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
+		61E1FA0C2C03193700155D23 /* Setting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA0B2C03193700155D23 /* Setting.swift */; };
+		61E1FA0E2C03199200155D23 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA0D2C03199200155D23 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseTests.swift; sourceTree = "<group>"; };
 		61E1FA062C03121200155D23 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
 		61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		61E1FA0B2C03193700155D23 /* Setting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Setting.swift; sourceTree = "<group>"; };
+		61E1FA0D2C03199200155D23 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +178,8 @@
 			isa = PBXGroup;
 			children = (
 				61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */,
+				61E1FA0B2C03193700155D23 /* Setting.swift */,
+				61E1FA0D2C03199200155D23 /* SettingsView.swift */,
 			);
 			path = setting;
 			sourceTree = "<group>";
@@ -352,9 +358,11 @@
 				616AA36A2C02FF1000C7705A /* MainView.swift in Sources */,
 				61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */,
 				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
+				61E1FA0E2C03199200155D23 /* SettingsView.swift in Sources */,
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
 				61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */,
 				6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */,
+				61E1FA0C2C03193700155D23 /* Setting.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

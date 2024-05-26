@@ -89,7 +89,7 @@ class SpeechTextRepository: NSObject {
             // SpeechTextからSpeeches.Speechに変換
             var speeches = coreDataSpeechTexts.map { speechText in
                 Speeches.Speech(
-                    id: speechText.uuid ?? UUID(),
+                    id: speechText.uuid ?? UUID(), title: speechText.title ?? "",
                     text: speechText.text ?? "",
                     createdAt: speechText.createdAt ?? Date(),
                     updatedAt: speechText.updatedAt ?? Date()
@@ -255,7 +255,7 @@ class SpeechTextRepository: NSObject {
 
     private func createDefaultSpeech(text: String) -> Speeches.Speech {
         return Speeches.Speech(
-            id: UUID(),
+            id: UUID(), title: text,
             text: text,
             createdAt: Date(),
             updatedAt: Date()

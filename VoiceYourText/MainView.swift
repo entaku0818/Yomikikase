@@ -17,12 +17,17 @@ struct MainView: View {
             SpeechView(store: store)
                 .tabItem {
                     Image(systemName: "text.bubble")
-                    Text("VoiceYourText")
+                    Text("読み上げ")
                 }
-            Text("Tab 2")
+            SettingsView(store: Store(
+                initialState: SettingsReducer.State(languageSetting: "en"),
+                reducer: {
+                    SettingsReducer()
+                })
+            )
                 .tabItem {
                     Image(systemName: "star")
-                    Text("Tab 2")
+                    Text("読み上げ内容登録")
                 }
         }
     }
@@ -32,8 +37,8 @@ struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         let initialState = Speeches.State(
             speechList: IdentifiedArrayOf(uniqueElements: [
-                Speeches.Speech(id: UUID(), text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
-                Speeches.Speech(id: UUID(), text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
+                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
+                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
             ]), currentText: ""
         )
 

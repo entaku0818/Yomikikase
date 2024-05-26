@@ -67,33 +67,99 @@
         }
       }
     },
-    "Tab 2" : {
-
-    },
-    "VoiceYourText" : {
+    "Voice Narrator" : {
       "localizations" : {
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VoiceYourText"
-          }
-        },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "VoiceYourText"
+            "value" : "Voice Narrator"
           }
-        },
-        "fr" : {
+        }
+      }
+    },
+    "VoiceYourText" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "de" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "VoiceYourText"
           }
         },
         "ja" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "声で読み上げ"
+          }
+        }
+      }
+    },
+    "タイトル" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        }
+      }
+    },
+    "タイトルを入力" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "enter title"
+          }
+        }
+      }
+    },
+    "保存" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "停止する" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop"
+          }
+        }
+      }
+    },
+    "内容" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "detail"
+          }
+        }
+      }
+    },
+    "文字数: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Count: %lld"
+          }
+        }
+      }
+    },
+    "読み上げ" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Narrator"
           }
         }
       }
@@ -116,6 +182,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "読み上げる"
+          }
+        }
+      }
+    },
+    "読み上げ一覧" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech List"
+          }
+        }
+      }
+    },
+    "読み上げ内容登録" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech List"
+          }
+        }
+      }
+    },
+    "読み上げ設定" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Speech Setting"
           }
         }
       }
