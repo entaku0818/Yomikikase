@@ -58,11 +58,13 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func insert(text:String) {
+    func insert(title:String, text:String, languageSetting: LanguageSetting) {
         if let speechText = NSManagedObject(entity: self.entity!, insertInto: managedContext) as? SpeechText {
 
             speechText.uuid = UUID()
+            speechText.title = title
             speechText.text = text
+            speechText.languageSetting = languageSetting.rawValue
             speechText.createdAt = Date()
             speechText.updatedAt = Date()
 
@@ -77,6 +79,7 @@ class SpeechTextRepository: NSObject {
 
     func fetchAllSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@", language.rawValue)
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 

@@ -15,6 +15,7 @@
 		614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 614F57022B11D91800E21FE9 /* SpeechText.xcdatamodeld */; };
 		614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
+		616AA36A2C02FF1000C7705A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616AA3692C02FF1000C7705A /* MainView.swift */; };
 		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
@@ -22,6 +23,9 @@
 		619AE5F52BAD5F2500CE4C4C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 619AE5F72BAD5F2500CE4C4C /* InfoPlist.strings */; };
 		61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */; };
 		61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */; };
+		61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */; };
+		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
+		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +58,7 @@
 		6161C5732BB3A493009542A2 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6161C5742BB3A4A9009542A2 /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6161C5752BB3A4AF009542A2 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		616AA3692C02FF1000C7705A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
@@ -67,6 +72,9 @@
 		61B15DC22BC191AC0009EB6A /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		61DEB60B2B7A5CFF00AB9967 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSettingView.swift; sourceTree = "<group>"; };
+		61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseTests.swift; sourceTree = "<group>"; };
+		61E1FA062C03121200155D23 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
+		61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,8 +109,8 @@
 			isa = PBXGroup;
 			children = (
 				614F56D32B11B81F00E21FE9 /* VoiceYourText */,
-				614F56E42B11B82000E21FE9 /* VoiceYourTextTests */,
-				614F56EE2B11B82000E21FE9 /* VoiceYourTextUITests */,
+				61E1FA042C0311FD00155D23 /* VoiceYourTextTests */,
+				61E1FA082C03121200155D23 /* VoiceYourTextUITests */,
 				614F56D22B11B81F00E21FE9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,6 +138,7 @@
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
 				614F56DA2B11B82000E21FE9 /* Preview Content */,
 				619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */,
+				616AA3692C02FF1000C7705A /* MainView.swift */,
 			);
 			path = VoiceYourText;
 			sourceTree = "<group>";
@@ -140,20 +149,6 @@
 				614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		614F56E42B11B82000E21FE9 /* VoiceYourTextTests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = VoiceYourTextTests;
-			sourceTree = "<group>";
-		};
-		614F56EE2B11B82000E21FE9 /* VoiceYourTextUITests */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = VoiceYourTextUITests;
 			sourceTree = "<group>";
 		};
 		614F57012B11D8F800E21FE9 /* data */ = {
@@ -181,6 +176,23 @@
 				61DEB60E2B7A62B400AB9967 /* LanguageSettingView.swift */,
 			);
 			path = setting;
+			sourceTree = "<group>";
+		};
+		61E1FA042C0311FD00155D23 /* VoiceYourTextTests */ = {
+			isa = PBXGroup;
+			children = (
+				61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */,
+			);
+			path = VoiceYourTextTests;
+			sourceTree = "<group>";
+		};
+		61E1FA082C03121200155D23 /* VoiceYourTextUITests */ = {
+			isa = PBXGroup;
+			children = (
+				61E1FA062C03121200155D23 /* YomikikaseUITests.swift */,
+				61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */,
+			);
+			path = VoiceYourTextUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +349,7 @@
 			files = (
 				614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */,
 				619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */,
+				616AA36A2C02FF1000C7705A /* MainView.swift in Sources */,
 				61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */,
 				614F57042B11D91800E21FE9 /* SpeechText.xcdatamodeld in Sources */,
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
@@ -349,6 +362,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +370,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */,
+				61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,7 +554,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.2;
+				MARKETING_VERSION = 0.5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -575,7 +591,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.4.2;
+				MARKETING_VERSION = 0.5.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";

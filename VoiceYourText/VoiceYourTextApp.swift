@@ -24,12 +24,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 struct VoiceYourTextApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
+    let initialState = Speeches.State(
+        speechList: IdentifiedArrayOf(uniqueElements: []),
+        currentText: ""
+    )
+
     var body: some Scene {
         WindowGroup {
-            SpeechView(store: Store(initialState:
-                                        Speeches.State(speechList: IdentifiedArrayOf(uniqueElements: []), currentText: "")) {
+            MainView(store:
+                        Store(initialState: initialState, reducer: {
                 Speeches()
             })
+            )
         }
     }
 }
