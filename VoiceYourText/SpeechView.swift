@@ -8,8 +8,10 @@
 import SwiftUI
 import AVFoundation
 import ComposableArchitecture
+import StoreKit
 
 struct Speeches: Reducer {
+
     struct Speech: Identifiable, Equatable {
         var id: UUID
         var title: String
@@ -19,8 +21,11 @@ struct Speeches: Reducer {
     }
 
     struct State: Equatable {
+        @PresentationState var alert: AlertState<AlertAction>?
         var speechList: IdentifiedArrayOf<Speech> = []
         var currentText: String
+        var isMailComposePresented: Bool = false
+
     }
 
     enum Action: Equatable, Sendable {
@@ -28,6 +33,15 @@ struct Speeches: Reducer {
         case onTap
         case currentTextChanged(String)
         case speechSelected(String)
+        case alert(PresentationAction<AlertAction>)
+        case mailComposeDismissed
+    }
+
+    enum AlertAction: Equatable {
+        case onAddReview
+        case onGoodReview
+        case onBadReview
+        case onMailTap
     }
 
     var body: some Reducer<State, Action> {
@@ -43,6 +57,41 @@ struct Speeches: Reducer {
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
 
+
+              let installDate = UserDefaultsManager.shared.installDate
+              let reviewCount = UserDefaultsManager.shared.reviewRequestCount
+
+              // 初回起動時
+              if let installDate = installDate {
+                  let currentDate = Date()
+                  if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
+                      if interval >= 7 && reviewCount == 0 {
+                          if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                state.alert = AlertState {
+                                    TextState("このアプリについて")
+                                } actions: {
+                                    ButtonState(action: .send(.onGoodReview)) {
+                                        TextState("はい")
+                                    }
+                                    ButtonState(action: .send(.onBadReview)) {
+                                        TextState("いいえ、フィードバックを送信")
+                                    }
+                                } message: {
+                                    TextState(
+                                        "Voice Narratorに満足していますか？"
+                                    )
+                                }
+                              UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
+                          }
+                      }
+                  }
+              }else{
+                  UserDefaultsManager.shared.installDate = Date()
+              }
+
+
+              return .none
+
                 return .none
             case .onTap:
                 return .none
@@ -52,6 +101,44 @@ struct Speeches: Reducer {
             case .speechSelected(let selectedText):
                 state.currentText = selectedText
                 return .none
+
+            case .alert(.presented(.onAddReview)):
+
+
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        SKStoreReviewController.requestReview(in: scene)
+                    }
+                    return .none
+            case .alert(.presented(.onGoodReview)):
+
+                    state.alert = AlertState(
+                      title: TextState("Voice Narratorについて"),
+                      message: TextState("ご利用ありがとうございます！次の画面でアプリの評価をお願いします。"),
+                      dismissButton: .default(TextState("OK"),
+                                                               action: .send(.onAddReview))
+                    )
+                    return .none
+            case .alert(.presented(.onBadReview)):
+
+                    state.alert = AlertState(
+                      title: TextState("ご不便かけて申し訳ありません"),
+                      message: TextState("次の画面のメールにて詳細に状況を教えてください。"),
+                      dismissButton: .default(TextState("OK"),
+                      action: .send(.onMailTap))
+                    )
+                    return .none
+
+            case .alert(.presented(.onMailTap)):
+
+                state.alert = nil
+                state.isMailComposePresented.toggle()
+                return .none
+            case .mailComposeDismissed:
+                state.isMailComposePresented = false
+                return .none
+            case .alert(.dismiss):
+                return .none
+
             }
         }
     }
@@ -109,6 +196,19 @@ struct SpeechView: View  {
                         }
                     }
                     AdmobBannerView().frame(width: .infinity, height: 50)
+                }
+                .sheet(
+                  isPresented: viewStore.binding(
+                    get: \.isMailComposePresented,
+                    send: Speeches.Action.mailComposeDismissed // Use the new action here
+                  )
+                ) {
+                  MailComposeViewControllerWrapper(
+                    isPresented: viewStore.binding(
+                      get: \.isMailComposePresented,
+                      send: Speeches.Action.mailComposeDismissed // And also here
+                    )
+                  )
                 }
                 .navigationTitle("Voice Narrator")
                  .toolbar {

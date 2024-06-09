@@ -15,22 +15,10 @@
             "value" : "Language"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "言語設定"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Idioma"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dil"
           }
         },
         "fr" : {
@@ -39,16 +27,16 @@
             "value" : "Langue"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ngôn ngữ"
+            "value" : "Lingua"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ภาษา"
+            "value" : "言語設定"
           }
         },
         "ko" : {
@@ -57,10 +45,80 @@
             "value" : "언어"
           }
         },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ภาษา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngôn ngữ"
+          }
+        }
+      }
+    },
+    "OK" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lingua"
+            "value" : "OK"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "확인"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตกลง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tamam"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đồng ý"
           }
         }
       }
@@ -79,22 +137,10 @@
             "value" : "Select Language"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "言語選択"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Seleccionar idioma"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dil Seç"
           }
         },
         "fr" : {
@@ -103,16 +149,16 @@
             "value" : "Sélectionner la langue"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chọn ngôn ngữ"
+            "value" : "Seleziona lingua"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เลือกภาษา"
+            "value" : "言語選択"
           }
         },
         "ko" : {
@@ -121,10 +167,22 @@
             "value" : "언어 선택"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seleziona lingua"
+            "value" : "เลือกภาษา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil Seç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chọn ngôn ngữ"
           }
         }
       }
@@ -143,22 +201,10 @@
             "value" : "Settings"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "設定"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Configuraciones"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayarlar"
           }
         },
         "fr" : {
@@ -167,16 +213,16 @@
             "value" : "Paramètres"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cài đặt"
+            "value" : "Impostazioni"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การตั้งค่า"
+            "value" : "設定"
           }
         },
         "ko" : {
@@ -185,10 +231,22 @@
             "value" : "설정"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impostazioni"
+            "value" : "การตั้งค่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayarlar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cài đặt"
           }
         }
       }
@@ -207,28 +265,22 @@
             "value" : "Narrador de voz"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ses Anlatıcısı"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrateur vocal"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Người kể chuyện bằng giọng nói"
+            "value" : "Narratore vocale"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ผู้บรรยายเสียง"
+            "value" : "読み上げ"
           }
         },
         "ko" : {
@@ -237,10 +289,144 @@
             "value" : "음성 내레이터"
           }
         },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ผู้บรรยายเสียง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ses Anlatıcısı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Người kể chuyện bằng giọng nói"
+          }
+        }
+      }
+    },
+    "Voice Narratorについて" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über Voice Narrator"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acerca de Voice Narrator"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "À propos de Voice Narrator"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Narratore vocale"
+            "value" : "Informazioni su Voice Narrator"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice Narratorについて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice Narrator에 대하여"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เกี่ยวกับ Voice Narrator"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice Narrator Hakkında"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Về Voice Narrator"
+          }
+        }
+      }
+    },
+    "Voice Narratorに満足していますか？" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sind Sie zufrieden mit Voice Narrator?"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you satisfied with Voice Narrator?"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "¿Está satisfecho con Voice Narrator?"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Êtes-vous satisfait de Voice Narrator?"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Sei soddisfatto di Voice Narrator?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Voice Narratorに満足していますか？"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Voice Narrator에 만족하십니까?"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "คุณพอใจกับ Voice Narrator หรือไม่?"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice Narrator'dan memnun musunuz?"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bạn có hài lòng với Voice Narrator không?"
           }
         }
       }
@@ -254,10 +440,10 @@
             "value" : "VoiceYourText"
           }
         },
-        "ja" : {
+        "en" : {
           "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "声で読み上げ"
+            "state" : "translated",
+            "value" : "Voice Narrator"
           }
         },
         "es" : {
@@ -266,28 +452,22 @@
             "value" : "Voz tu texto"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "needs_review",
-            "value" : "Ses Metniniz"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "needs_review",
             "value" : "Voix votre texte"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Giọng nói của bạn"
+            "value" : "Voce il tuo testo"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "เสียงของคุณ"
+            "value" : "声で読み上げ"
           }
         },
         "ko" : {
@@ -296,10 +476,278 @@
             "value" : "텍스트 음성"
           }
         },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "เสียงของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ses Metniniz"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Giọng nói của bạn"
+          }
+        }
+      }
+    },
+    "いいえ、フィードバックを送信" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nein, Feedback senden"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No, send feedback"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "No, enviar comentarios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Non, envoyer des commentaires"
+          }
+        },
         "it" : {
           "stringUnit" : {
             "state" : "needs_review",
-            "value" : "Voce il tuo testo"
+            "value" : "No, inviare feedback"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "いいえ、フィードバックを送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "아니오, 피드백 전송"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ไม่, ส่งความคิดเห็น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hayır, geri bildirim gönder"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Không, gửi phản hồi"
+          }
+        }
+      }
+    },
+    "このアプリについて" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Über diese App"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About this app"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Acerca de esta aplicación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "À propos de cette application"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Informazioni su questa app"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "このアプリについて"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "이 앱에 대하여"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "เกี่ยวกับแอปนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bu uygulama hakkında"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Về ứng dụng này"
+          }
+        }
+      }
+    },
+    "ご不便かけて申し訳ありません" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Wir entschuldigen uns für die Unannehmlichkeiten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We apologize for any inconvenience"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Lamentamos las molestias"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Nous nous excusons pour les inconvénients"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ci scusiamo per gli inconvenienti"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ご不便かけて申し訳ありません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "불편을 드려 죄송합니다"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ขออภัยในความไม่สะดวก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verdiğimiz rahatsızlıktan dolayı özür dileriz"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Chúng tôi xin lỗi vì sự bất tiện này"
+          }
+        }
+      }
+    },
+    "ご利用ありがとうございます！次の画面でアプリの評価をお願いします。" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Danke für die Nutzung! Bitte bewerten Sie die App im nächsten Bildschirm."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thank you for using our app! Please rate the app on the next screen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "¡Gracias por usar! Por favor, califica la aplicación en la siguiente pantalla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Merci pour votre utilisation ! Veuillez évaluer l'application à l'écran suivant."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Grazie per l'utilizzo! Per favore valuta l'applicazione nella schermata successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ご利用ありがとうございます！次の画面でアプリの評価をお願いします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "사용해 주셔서 감사합니다! 다음 화면에서 앱을 평가해 주세요."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "ขอขอบคุณที่ใช้งาน! กรุณาประเมินแอปในหน้าจอถัดไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kullandığınız için teşekkürler! Lütfen bir sonraki ekranda uygulamayı değerlendirin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Cảm ơn bạn đã sử dụng! Vui lòng đánh giá ứng dụng trên màn hình tiếp theo."
           }
         }
       }
@@ -318,22 +766,28 @@
             "value" : "Título"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Başlık"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Titre"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiêu đề"
+            "value" : "Titolo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "タイトル"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제목"
           }
         },
         "th" : {
@@ -342,18 +796,16 @@
             "value" : "ชื่อเรื่อง"
           }
         },
-        "ko" : {
+        "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제목"
-
-
+            "value" : "Başlık"
           }
         },
-        "it" : {
+        "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Titolo"
+            "value" : "Tiêu đề"
           }
         }
       }
@@ -372,28 +824,22 @@
             "value" : "Introduzca el título"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Başlık girin"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entrer le titre"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhập tiêu đề"
+            "value" : "Inserisci il titolo"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ใส่ชื่อเรื่อง"
+            "value" : "タイトルを入力"
           }
         },
         "ko" : {
@@ -402,10 +848,38 @@
             "value" : "제목 입력"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inserisci il titolo"
+            "value" : "ใส่ชื่อเรื่อง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başlık girin"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập tiêu đề"
+          }
+        }
+      }
+    },
+    "はい" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yes"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "はい"
           }
         }
       }
@@ -424,28 +898,22 @@
             "value" : "Guardar"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kaydet"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sauver"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lưu"
+            "value" : "Salva"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "บันทึก"
+            "value" : "保存"
           }
         },
         "ko" : {
@@ -454,10 +922,22 @@
             "value" : "저장"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Salva"
+            "value" : "บันทึก"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaydet"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lưu"
           }
         }
       }
@@ -476,28 +956,22 @@
             "value" : "Parar"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Durdur"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Arrêter"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dừng lại"
+            "value" : "Fermare"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "หยุด"
+            "value" : "停止する"
           }
         },
         "ko" : {
@@ -506,10 +980,22 @@
             "value" : "멈추다"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fermare"
+            "value" : "หยุด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Durdur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dừng lại"
           }
         }
       }
@@ -528,28 +1014,16 @@
             "value" : "Detalle"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detay"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Détail"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chi tiết"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "รายละเอียด"
+            "value" : "Dettaglio"
           }
         },
         "ko" : {
@@ -558,10 +1032,22 @@
             "value" : "세부 사항"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dettaglio"
+            "value" : "รายละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detay"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chi tiết"
           }
         }
       }
@@ -580,28 +1066,16 @@
             "value" : "Conteo: %lld"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sayı: %lld"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Nombre: %lld"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Số lượng: %lld"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "จำนวน: %lld"
+            "value" : "Conteggio: %lld"
           }
         },
         "ko" : {
@@ -610,10 +1084,86 @@
             "value" : "수량: %lld"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Conteggio: %lld"
+            "value" : "จำนวน: %lld"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sayı: %lld"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Số lượng: %lld"
+          }
+        }
+      }
+    },
+    "次の画面のメールにて詳細に状況を教えてください。" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Bitte teilen Sie uns die Details per E-Mail auf dem nächsten Bildschirm mit."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please provide detailed information about the situation via email on the next screen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Por favor, infórmenos los detalles por correo electrónico en la siguiente pantalla."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Veuillez nous informer des détails par e-mail sur l'écran suivant."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Si prega di comunicarci i dettagli via e-mail nella schermata successiva."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "次の画面のメールにて詳細に状況を教えてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "다음 화면의 이메일을 통해 세부 상황을 알려 주세요."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "กรุณาบอกรายละเอียดให้เราทราบทางอีเมลในหน้าจอถัดไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lütfen sonraki ekrandaki e-posta ile ayrıntıları bize bildirin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Vui lòng cho chúng tôi biết chi tiết qua email trên màn hình tiếp theo."
           }
         }
       }
@@ -632,28 +1182,16 @@
             "value" : "Narrador"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anlatıcı"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Narrateur"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Người kể chuyện"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ผู้บรรยาย"
+            "value" : "Narratore"
           }
         },
         "ko" : {
@@ -662,10 +1200,22 @@
             "value" : "내레이터"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Narratore"
+            "value" : "ผู้บรรยาย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anlatıcı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Người kể chuyện"
           }
         }
       }
@@ -684,42 +1234,28 @@
             "value" : "Speech"
           }
         },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "読み上げる"
-          }
-        },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Habla"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuşma"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Discours"
-
-
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lời nói"
+            "value" : "Discorso"
           }
         },
-        "th" : {
+        "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คำพูด"
+            "value" : "読み上げる"
           }
         },
         "ko" : {
@@ -728,10 +1264,22 @@
             "value" : "연설"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Discorso"
+            "value" : "คำพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lời nói"
           }
         }
       }
@@ -750,28 +1298,16 @@
             "value" : "Lista de discursos"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuşma Listesi"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Liste des discours"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Danh sách bài phát biểu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "รายการคำพูด"
+            "value" : "Elenco dei discorsi"
           }
         },
         "ko" : {
@@ -780,10 +1316,22 @@
             "value" : "연설 목록"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elenco dei discorsi"
+            "value" : "รายการคำพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşma Listesi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danh sách bài phát biểu"
           }
         }
       }
@@ -802,28 +1350,16 @@
             "value" : "Registrar contenido de discurso"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuşma İçeriğini Kaydet"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enregistrer le contenu du discours"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đăng ký nội dung bài phát biểu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ลงทะเบียนเนื้อหาคำพูด"
+            "value" : "Registrare il contenuto del discorso"
           }
         },
         "ko" : {
@@ -832,10 +1368,22 @@
             "value" : "연설 내용 등록"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registrare il contenuto del discorso"
+            "value" : "ลงทะเบียนเนื้อหาคำพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşma İçeriğini Kaydet"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký nội dung bài phát biểu"
           }
         }
       }
@@ -854,28 +1402,16 @@
             "value" : "Configuración de discurso"
           }
         },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuşma Ayarı"
-          }
-        },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Paramètre de discours"
           }
         },
-        "vi" : {
+        "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cài đặt bài phát biểu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การตั้งค่าคำพูด"
+            "value" : "Impostazione del discorso"
           }
         },
         "ko" : {
@@ -884,10 +1420,22 @@
             "value" : "연설 설정"
           }
         },
-        "it" : {
+        "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impostazione del discorso"
+            "value" : "การตั้งค่าคำพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Konuşma Ayarı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cài đặt bài phát biểu"
           }
         }
       }
@@ -895,4 +1443,3 @@
   },
   "version" : "1.0"
 }
-
