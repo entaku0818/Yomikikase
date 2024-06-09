@@ -65,7 +65,7 @@ struct Speeches: Reducer {
               if let installDate = installDate {
                   let currentDate = Date()
                   if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
-                      if interval >= 7 && reviewCount == 0 {
+                      if interval >= 2 && reviewCount == 0 {
                           if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                                 state.alert = AlertState {
                                     TextState("このアプリについて")
@@ -140,8 +140,10 @@ struct Speeches: Reducer {
                 return .none
 
             }
-        }
+        }.ifLet(\.$alert, action: /Action.alert)
+
     }
+
 }
 
 struct SpeechView: View  {
@@ -226,6 +228,7 @@ struct SpeechView: View  {
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
+                .alert(store: self.store.scope(state: \.$alert, action: Speeches.Action.alert))
             }
         }
     }
