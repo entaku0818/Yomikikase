@@ -389,7 +389,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Êtes-vous satisfait de Voice Narrator?"
           }
         },
@@ -518,7 +518,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Non, envoyer des commentaires"
           }
         },
@@ -582,7 +582,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "À propos de cette application"
           }
         },
@@ -646,7 +646,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Nous nous excusons pour les inconvénients"
           }
         },
@@ -710,7 +710,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Merci pour votre utilisation ! Veuillez évaluer l'application à l'écran suivant."
           }
         },
@@ -871,6 +871,12 @@
     "はい" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "yes"
+          }
+        },
+        "fr" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "yes"
@@ -1052,6 +1058,12 @@
         }
       }
     },
+    "声の速さ" : {
+
+    },
+    "声の高さ" : {
+
+    },
     "文字数: %lld" : {
       "localizations" : {
         "en" : {
@@ -1126,7 +1138,7 @@
         },
         "fr" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Veuillez nous informer des détails par e-mail sur l'écran suivant."
           }
         },

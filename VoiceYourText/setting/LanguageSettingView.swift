@@ -25,6 +25,29 @@ struct LanguageSettingView: View {
                                 })
                             }
                         }
+                        Section(header: Text("声の速さ")) {
+                            HStack {
+                                Image(systemName: "tortoise.fill")
+
+                                Slider(value: viewStore.binding(
+                                    get: \.speechRate,
+                                    send: SettingsReducer.Action.setSpeechRate
+                                ), in: 0.0...2.0, step: 0.1)
+                                Image(systemName: "hare.fill")
+
+                            }
+                        }
+                        Section(header: Text("声の高さ")) {
+                            HStack {
+                                Image(systemName: "speaker.wave.1")
+                                Slider(value: viewStore.binding(
+                                    get: \.speechPitch,
+                                    send: SettingsReducer.Action.setSpeechPitch
+                                ), in: 0.5...2.0, step: 0.1)
+                                Image(systemName: "speaker.wave.3")
+
+                            }
+                        }
                     }
                     Spacer()
                     AdmobBannerView().frame(width: .infinity, height: 50)

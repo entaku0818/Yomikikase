@@ -27,6 +27,8 @@ struct SettingsReducer: Reducer {
         var title: String = ""
         var text: String = ""
         var speeches: [Speeches.Speech] = []
+        var speechRate: Float = 1.0
+        var speechPitch: Float = 1.0
     }
 
     enum Action: Equatable, Sendable {
@@ -34,6 +36,8 @@ struct SettingsReducer: Reducer {
         case onAppear
         case setTitle(String)
         case setText(String)
+        case setSpeechRate(Float)
+        case setSpeechPitch(Float)
         case insert
         case fetchSpeeches
     }
@@ -56,6 +60,9 @@ struct SettingsReducer: Reducer {
                 } else {
                     state.languageSetting = "English"
                 }
+                state.speechPitch = UserDefaultsManager.shared.speechPitch
+                state.speechRate = UserDefaultsManager.shared.speechRate
+
                 return .none
 
             case .setTitle(let title):
@@ -65,6 +72,16 @@ struct SettingsReducer: Reducer {
             case .setText(let text):
                 state.text = text
                 return .none
+            case .setSpeechRate(let rate):
+                state.speechRate = rate
+                UserDefaultsManager.shared.speechRate = state.speechRate
+
+                return .none
+            case .setSpeechPitch(let pitch):
+                state.speechPitch = pitch
+                UserDefaultsManager.shared.speechPitch = state.speechPitch
+                return .none
+
 
             case .insert:
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }

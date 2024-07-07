@@ -45,4 +45,25 @@ class UserDefaultsManager {
         }
     }
 
+    // レートを保存するプロパティ
+     var speechRate: Float {
+         get {
+             let rate = defaults.float(forKey: "SpeechRate")
+             return rate == 0 ? 0.5 : rate // デフォルト値を設定
+         }
+         set {
+             defaults.set(newValue, forKey: "SpeechRate")
+         }
+     }
+
+     // ピッチを保存するプロパティ
+     var speechPitch: Float {
+         get {
+             let pitch = defaults.float(forKey: "SpeechPitch")
+             return pitch == 0 ? 1.0 : pitch // デフォルト値を設定
+         }
+         set {
+             defaults.set(newValue, forKey: "SpeechPitch")
+         }
+     }
 }

@@ -234,20 +234,20 @@ struct SpeechView: View  {
     }
 
     func speak(text: String) {
+        let speechUtterance = AVSpeechUtterance(string: text)
 
-
-        let speechUtterance:AVSpeechUtterance = AVSpeechUtterance.init(string: text)
-
-        // Retrieve the saved language setting
+        // 保存された言語設定を取得
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-        
 
-        // Adjust the rate, pitch, and volume for more natural sounding speech
-        speechUtterance.rate = 0.5
-        speechUtterance.pitchMultiplier = 1.0 // Slightly higher pitch can sound more natural
-        speechUtterance.volume = 0.75 // Adjust volume if needed
+        // 保存されたレートとピッチを取得し、デフォルト値を設定
+        let rate = UserDefaultsManager.shared.speechRate
+        let pitch = UserDefaultsManager.shared.speechPitch
+        let volume: Float = 0.75 // 音量は固定
 
+        speechUtterance.rate = rate
+        speechUtterance.pitchMultiplier = pitch
+        speechUtterance.volume = volume
 
         speechSynthesizer.speak(speechUtterance)
     }
