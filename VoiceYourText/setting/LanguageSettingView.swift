@@ -25,6 +25,7 @@ struct LanguageSettingView: View {
                                 })
                             }
                         }
+
                         Section(header: Text("声の速さ")) {
                             HStack {
                                 Image(systemName: "tortoise.fill")
@@ -48,6 +49,14 @@ struct LanguageSettingView: View {
 
                             }
                         }
+                            Button(action: {
+                                            viewStore.send(.resetToDefault)
+                                        }) {
+                                            Text("読み上げ設定をデフォルト値に戻す")
+                                                .foregroundColor(.red)
+                                        }
+                        
+
                     }
                     Spacer()
                     AdmobBannerView().frame(width: .infinity, height: 50)

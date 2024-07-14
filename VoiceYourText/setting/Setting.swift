@@ -40,6 +40,7 @@ struct SettingsReducer: Reducer {
         case setSpeechPitch(Float)
         case insert
         case fetchSpeeches
+        case resetToDefault
     }
 
     var body: some Reducer<State, Action> {
@@ -98,7 +99,13 @@ struct SettingsReducer: Reducer {
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 state.speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
                 return .none
-
+            case .resetToDefault:
+                  state.speechRate = 1.0
+                  state.speechPitch = 1.0
+                  UserDefaultsManager.shared.speechRate = state.speechRate
+                  UserDefaultsManager.shared.speechPitch = state.speechPitch
+                  return .none
+    
             }
         }
     }
