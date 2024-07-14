@@ -234,6 +234,13 @@ struct SpeechView: View  {
     }
 
     func speak(text: String) {
+        let audioSession = AVAudioSession.sharedInstance()
+         do {
+             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+             try audioSession.setActive(true)
+         } catch {
+             print("Failed to set audio session category: \(error)")
+         }
         let speechUtterance = AVSpeechUtterance(string: text)
 
         // 保存された言語設定を取得
