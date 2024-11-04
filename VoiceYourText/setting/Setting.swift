@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import AVFoundation
 
 struct SettingsReducer: Reducer {
     struct State: Equatable {
@@ -28,7 +29,7 @@ struct SettingsReducer: Reducer {
         var text: String = ""
         var speeches: [Speeches.Speech] = []
         var speechRate: Float = 1.0
-        var speechPitch: Float = 1.0
+        var speechPitch: Float = AVSpeechUtteranceDefaultSpeechRate
     }
 
     enum Action: Equatable, Sendable {
@@ -101,7 +102,7 @@ struct SettingsReducer: Reducer {
                 return .none
             case .resetToDefault:
                   state.speechRate = 1.0
-                  state.speechPitch = 1.0
+                  state.speechPitch = AVSpeechUtteranceDefaultSpeechRate
                   UserDefaultsManager.shared.speechRate = state.speechRate
                   UserDefaultsManager.shared.speechPitch = state.speechPitch
                   return .none
