@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */; };
+		6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */; };
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReducerTests.swift; sourceTree = "<group>"; };
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -191,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */,
+				6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */,
 			);
 			path = VoiceYourTextTests;
 			sourceTree = "<group>";
@@ -375,6 +378,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */,
+				6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -28,8 +28,8 @@ struct SettingsReducer: Reducer {
         var title: String = ""
         var text: String = ""
         var speeches: [Speeches.Speech] = []
-        var speechRate: Float = 1.0
-        var speechPitch: Float = AVSpeechUtteranceDefaultSpeechRate
+        var speechRate: Float = 0.5
+        var speechPitch: Float = 1.0
     }
 
     enum Action: Equatable, Sendable {
@@ -101,8 +101,8 @@ struct SettingsReducer: Reducer {
                 state.speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
                 return .none
             case .resetToDefault:
-                  state.speechRate = 1.0
-                  state.speechPitch = AVSpeechUtteranceDefaultSpeechRate
+                state.speechRate = 0.5
+                state.speechPitch = 1.0
                   UserDefaultsManager.shared.speechRate = state.speechRate
                   UserDefaultsManager.shared.speechPitch = state.speechPitch
                   return .none
