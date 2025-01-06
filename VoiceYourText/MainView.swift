@@ -8,7 +8,6 @@
 import SwiftUI
 import ComposableArchitecture
 
-
 struct MainView: View {
     let store: Store<Speeches.State, Speeches.Action>
 
@@ -20,10 +19,9 @@ struct MainView: View {
                     Text("読み上げ")
                 }
             SettingsView(store: Store(
-                initialState: SettingsReducer.State(languageSetting: "en"),
-                reducer: {
+                initialState: SettingsReducer.State(languageSetting: "en"))                {
                     SettingsReducer()
-                })
+                }
             )
                 .tabItem {
                     Image(systemName: "star")
@@ -43,9 +41,9 @@ struct MainView_Previews: PreviewProvider {
         )
 
         return MainView(store:
-                Store(initialState: initialState, reducer: {
+                Store(initialState: initialState) {
                     Speeches()
-                })
+                }
         )
     }
 }

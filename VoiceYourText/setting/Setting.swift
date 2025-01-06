@@ -84,7 +84,6 @@ struct SettingsReducer: Reducer {
                 UserDefaultsManager.shared.speechPitch = state.speechPitch
                 return .none
 
-
             case .insert:
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
@@ -106,9 +105,8 @@ struct SettingsReducer: Reducer {
                   UserDefaultsManager.shared.speechRate = state.speechRate
                   UserDefaultsManager.shared.speechPitch = state.speechPitch
                   return .none
-    
+
             }
         }
     }
 }
-

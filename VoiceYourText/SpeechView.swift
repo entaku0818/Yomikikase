@@ -49,14 +49,13 @@ struct Speeches: Reducer {
             switch action {
             case .onAppear:
 
-                let languageCode:String = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageCode: String = UserDefaultsManager.shared.languageSetting ?? "en"
 
-                let languageSetting:SpeechTextRepository.LanguageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                let languageSetting: SpeechTextRepository.LanguageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
 
                 let texts = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
-
 
               let installDate = UserDefaultsManager.shared.installDate
               let reviewCount = UserDefaultsManager.shared.reviewRequestCount
@@ -85,10 +84,9 @@ struct Speeches: Reducer {
                           }
                       }
                   }
-              }else{
+              } else {
                   UserDefaultsManager.shared.installDate = Date()
               }
-
 
               return .none
 
@@ -103,7 +101,6 @@ struct Speeches: Reducer {
                 return .none
 
             case .alert(.presented(.onAddReview)):
-
 
                     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         SKStoreReviewController.requestReview(in: scene)
@@ -146,17 +143,15 @@ struct Speeches: Reducer {
 
 }
 
-struct SpeechView: View  {
+struct SpeechView: View {
     private let speechSynthesizer = AVSpeechSynthesizer() // AVSpeechSynthesizerのインスタンス
 
     let store: Store<Speeches.State, Speeches.Action>
 
     let settingStore = Store(
-        initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting))
-        {
+        initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting)) {
             SettingsReducer()
-        }
-
+    }
 
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
@@ -174,7 +169,6 @@ struct SpeechView: View  {
                             .stroke(Color.gray, lineWidth: 1)
                     )
                     .padding()
-
 
                     HStack {
                         Button("読み上げる") {
@@ -216,7 +210,7 @@ struct SpeechView: View  {
                  .toolbar {
                      ToolbarItem(placement: .navigationBarTrailing) {
                          NavigationLink(destination:
-                            LanguageSettingView(store:settingStore)
+                            LanguageSettingView(store: settingStore)
                          ) {
                                  Image(systemName: "gear")
                                      .resizable()
@@ -265,18 +259,18 @@ struct SpeechView: View  {
         }
     }
 
-    func speechMyVoice(text: String){
+    func speechMyVoice(text: String) {
 
         let synthesizer = AVSpeechSynthesizer()
 
-        AVSpeechSynthesizer.requestPersonalVoiceAuthorization(completionHandler: { status in
+        AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
             if status == .authorized {
-                let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter{$0.voiceTraits.contains(.isPersonalVoice)}
+                let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
                 let myUtterance = AVSpeechUtterance(string: text)
                 myUtterance.voice = personalVoices.first
                 synthesizer.speak(myUtterance)
             }
-        })
+        }
     }
 
 }
@@ -285,7 +279,7 @@ struct SpeechRowView: View {
     let text: String
 
     var body: some View {
-        VStack{
+        VStack {
             Text(text)
         }
     }
@@ -302,10 +296,10 @@ struct SpeechView_Previews: PreviewProvider {
         )
 
         // SpeechViewにStoreを渡してプレビュー
-        return SpeechView(store: 
-                Store(initialState: initialState, reducer: {
+        return SpeechView(store:
+                Store(initialState: initialState) {
 
-            })
+            }
         )
     }
 }

@@ -30,11 +30,10 @@ class SpeechTextRepository: NSObject {
         case italian = "it"
     }
 
-
     override init() {
 
         container = NSPersistentContainer(name: entityName)
-        container.loadPersistentStores(completionHandler: { (_, error) in
+        container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -49,7 +48,7 @@ class SpeechTextRepository: NSObject {
                  */
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
-        })
+        }
         container.viewContext.automaticallyMergesChangesFromParent = true
 
         self.managedContext = container.viewContext
@@ -58,7 +57,7 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func insert(title:String, text:String, languageSetting: LanguageSetting) {
+    func insert(title: String, text: String, languageSetting: LanguageSetting) {
         if let speechText = NSManagedObject(entity: self.entity!, insertInto: managedContext) as? SpeechText {
 
             speechText.uuid = UUID()
@@ -68,10 +67,9 @@ class SpeechTextRepository: NSObject {
             speechText.createdAt = Date()
             speechText.updatedAt = Date()
 
-
             do {
                 try managedContext.save()
-            } catch let error {
+            } catch {
                 print(error.localizedDescription)
             }
         }
@@ -107,9 +105,6 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-
-
-
     private func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
         let greetings: [String]
         switch language {
@@ -124,7 +119,7 @@ class SpeechTextRepository: NSObject {
                 "ごちそうさまでした",
                 "ありがとうございます",
                 "すみません",
-                "よろしくお願いします",
+                "よろしくお願いします"
             ]
         case .english:
             greetings = [
@@ -137,7 +132,7 @@ class SpeechTextRepository: NSObject {
                 "Thank you for the meal",
                 "Thank you",
                 "Excuse me",
-                "Please treat me well",
+                "Please treat me well"
             ]
         case .german:
             greetings = [
@@ -150,7 +145,7 @@ class SpeechTextRepository: NSObject {
                 "Danke für das Essen",
                 "Danke",
                 "Entschuldigung",
-                "Bitte behandle mich gut",
+                "Bitte behandle mich gut"
             ]
         case .spanish:
             greetings = [
@@ -163,7 +158,7 @@ class SpeechTextRepository: NSObject {
                 "Gracias por la comida",
                 "Gracias",
                 "Disculpe",
-                "Por favor, trátame bien",
+                "Por favor, trátame bien"
             ]
         case .turkish:
             greetings = [
@@ -176,7 +171,7 @@ class SpeechTextRepository: NSObject {
                 "Yemeğin için teşekkür ederim",
                 "Teşekkür ederim",
                 "Affedersiniz",
-                "Lütfen beni iyi tedavi et",
+                "Lütfen beni iyi tedavi et"
             ]
         case .french:
             greetings = [
@@ -189,7 +184,7 @@ class SpeechTextRepository: NSObject {
                 "Merci pour le repas",
                 "Merci",
                 "Excusez-moi",
-                "S'il vous plaît, traitez-moi bien",
+                "S'il vous plaît, traitez-moi bien"
             ]
         case .vietnamese:
             greetings = [
@@ -202,7 +197,7 @@ class SpeechTextRepository: NSObject {
                 "Cảm ơn bữa ăn", // Thank you for the meal
                 "Cảm ơn", // Thank you
                 "Xin lỗi", // Excuse me
-                "Xin hãy đối xử tốt với tôi", // Please treat me well
+                "Xin hãy đối xử tốt với tôi" // Please treat me well
             ]
         case .thai:
             greetings = [
@@ -215,7 +210,7 @@ class SpeechTextRepository: NSObject {
                 "ขอบคุณสำหรับอาหาร", // Thank you for the meal
                 "ขอบคุณ", // Thank you
                 "ขอโทษ", // Excuse me
-                "โปรดดูแลฉันด้วยนะ", // Please treat me well
+                "โปรดดูแลฉันด้วยนะ" // Please treat me well
             ]
         case .korean:
             greetings = [
@@ -228,7 +223,7 @@ class SpeechTextRepository: NSObject {
                 "식사를 잘 했습니다", // Thank you for the meal
                 "감사합니다", // Thank you
                 "실례합니다", // Excuse me
-                "잘 부탁드립니다", // Please treat me well
+                "잘 부탁드립니다" // Please treat me well
             ]
         case .italian:
             greetings = [
@@ -241,20 +236,17 @@ class SpeechTextRepository: NSObject {
                 "Grazie per il pasto", // Thank you for the meal
                 "Grazie", // Thank you
                 "Scusami", // Excuse me
-                "Per favore, trattami bene", // Please treat me well
+                "Per favore, trattami bene" // Please treat me well
             ]
         }
-
 
         return greetings.map { greeting in
             createDefaultSpeech(text: greeting)
         }
     }
 
-
-
     private func createDefaultSpeech(text: String) -> Speeches.Speech {
-        return Speeches.Speech(
+        Speeches.Speech(
             id: UUID(), title: text,
             text: text,
             createdAt: Date(),

@@ -15,11 +15,10 @@ class UserDefaultsManager {
         defaults = UserDefaults.standard
     }
 
-
     // インストール日を保存するプロパティ
     var installDate: Date? {
         get {
-            return defaults.object(forKey: "InstallDate") as? Date
+            defaults.object(forKey: "InstallDate") as? Date
         }
         set {
             defaults.set(newValue, forKey: "InstallDate")
@@ -29,7 +28,7 @@ class UserDefaultsManager {
     // レビューのリクエストカウントを保存する
     var reviewRequestCount: Int {
         get {
-            return defaults.object(forKey: "ReviewRequestCount") as? Int ?? 0
+            defaults.object(forKey: "ReviewRequestCount") as? Int ?? 0
         }
         set {
             defaults.set(newValue, forKey: "ReviewRequestCount")
@@ -38,7 +37,7 @@ class UserDefaultsManager {
 
     var languageSetting: String? {
         get {
-            return defaults.string(forKey: "LanguageSetting")
+            defaults.string(forKey: "LanguageSetting")
         }
         set {
             defaults.set(newValue, forKey: "LanguageSetting")

@@ -1,4 +1,3 @@
-
 //
 //  MailComposeViewControllerWrapper.swift
 //  VoiLog

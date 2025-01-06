@@ -14,15 +14,15 @@ struct LanguageSettingView: View {
 
     var body: some View {
             WithViewStore(self.store, observe: { $0 }) { viewStore in
-                VStack{
+                VStack {
                     Form {
                         Section(header: Text("Language")) {
                             NavigationLink(destination: LanguageSelectionView(store: store)) {
-                                HStack(content: {
+                                HStack {
                                     Text("Select Language")
                                     Spacer()
                                     Text(viewStore.languageSetting ?? "")
-                                })
+                                }
                             }
                         }
 
@@ -54,8 +54,7 @@ struct LanguageSettingView: View {
                                         }) {
                                             Text("読み上げ設定をデフォルト値に戻す")
                                                 .foregroundColor(.red)
-                                        }
-                        
+                            }
 
                     }
                     Spacer()
@@ -69,7 +68,6 @@ struct LanguageSettingView: View {
 
     }
 }
-
 
 struct LanguageSelectionView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
@@ -89,5 +87,3 @@ struct LanguageSelectionView: View {
         }
     }
 }
-
-

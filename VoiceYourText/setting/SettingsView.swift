@@ -5,7 +5,6 @@
 //  Created by 遠藤拓弥 on 2024/05/26.
 //
 
-
 import SwiftUI
 import ComposableArchitecture
 
@@ -39,7 +38,7 @@ struct SettingsView: View {
                                    .frame(maxWidth: .infinity, alignment: .trailing)
                                    .padding(.top, 4)
                            }
-                       }
+                    }
                     Button(action: {
                         viewStore.send(.insert)
                     }) {
@@ -67,14 +66,12 @@ struct SettingsView: View {
     }
 }
 
-
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        return SettingsView(store: Store(
-            initialState: SettingsReducer.State(languageSetting: "en"),
-            reducer: {
+        SettingsView(store: Store(
+            initialState: SettingsReducer.State(languageSetting: "en"))            {
                 SettingsReducer()
-            })
+            }
         )
     }
 }

@@ -32,9 +32,9 @@ struct VoiceYourTextApp: App {
     var body: some Scene {
         WindowGroup {
             MainView(store:
-                        Store(initialState: initialState, reducer: {
+                        Store(initialState: initialState) {
                 Speeches()
-            })
+            }
             )
         }
     }
