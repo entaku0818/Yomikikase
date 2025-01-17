@@ -70,7 +70,8 @@ struct PDFReaderFeature {
                 guard let text = page.string,
                       let selection = page.selection(for: NSRange(location: location, length: 1)) else { return .none }
 
-                let highlight = PDFAnnotation(bounds: selection.bounds, forType: .highlight, withProperties: nil)
+                let bounds = selection.bounds(for: page)
+                let highlight = PDFAnnotation(bounds: bounds, forType: .highlight, withProperties: nil)
                 highlight.color = .yellow.withAlphaComponent(0.5)
                 page.addAnnotation(highlight)
                 state.currentHighlight = highlight

@@ -18,6 +18,17 @@ struct MainView: View {
                     Image(systemName: "text.bubble")
                     Text("読み上げ")
                 }
+            PDFReaderView(
+                store: Store(
+                    initialState: PDFReaderFeature.State()
+                ) {
+                    PDFReaderFeature()
+                }
+            )
+                .tabItem {
+                    Image(systemName: "doc.text")
+                    Text("PDF")
+                }
             SettingsView(store: Store(
                 initialState: SettingsReducer.State(languageSetting: "en"))                {
                     SettingsReducer()

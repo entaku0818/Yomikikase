@@ -20,6 +20,7 @@
 		616AA36A2C02FF1000C7705A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616AA3692C02FF1000C7705A /* MainView.swift */; };
 		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
 		618A34112D3A718D00F33F69 /* PDFReaderFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */; };
+		618A34132D3A722B00F33F69 /* sample.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 618A34122D3A722B00F33F69 /* sample.pdf */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
@@ -68,6 +69,7 @@
 		616AA3692C02FF1000C7705A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
 		618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderFeature.swift; sourceTree = "<group>"; };
+		618A34122D3A722B00F33F69 /* sample.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = sample.pdf; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
 		619AE5F12BAD5BAD00CE4C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 		618A340F2D3A716900F33F69 /* PDFReader */ = {
 			isa = PBXGroup;
 			children = (
+				618A34122D3A722B00F33F69 /* sample.pdf */,
 				618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */,
 			);
 			path = PDFReader;
@@ -343,6 +346,7 @@
 			files = (
 				614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */,
 				610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */,
+				618A34132D3A722B00F33F69 /* sample.pdf in Resources */,
 				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
 				61DEB60C2B7A5CFF00AB9967 /* Localizable.xcstrings in Resources */,
 				619AE5F52BAD5F2500CE4C4C /* InfoPlist.strings in Resources */,
