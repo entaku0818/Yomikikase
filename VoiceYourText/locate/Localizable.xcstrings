@@ -123,6 +123,9 @@
         }
       }
     },
+    "PDF" : {
+
+    },
     "Select Language" : {
       "localizations" : {
         "de" : {

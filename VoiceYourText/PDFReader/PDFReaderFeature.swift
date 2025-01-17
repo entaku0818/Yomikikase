@@ -10,6 +10,13 @@ import ComposableArchitecture
 import PDFKit
 import AVFoundation
 import SwiftUI
+import os.log
+
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
+    category: "PDFReader"
+)
+
 
 @Reducer
 struct PDFReaderFeature {
@@ -37,16 +44,26 @@ struct PDFReaderFeature {
         Reduce { state, action in
             switch action {
             case let .loadPDF(url):
+                logger.info("Loading PDF from URL: \(url.absoluteString)")
                 if let document = PDFDocument(url: url) {
+                    logger.info("Successfully loaded PDF document with \(document.pageCount) pages")
                     state.pdfDocument = document
                     state.currentPage = 0
+                } else {
+                    logger.error("Failed to load PDF document from \(url.absoluteString)")
                 }
                 return .none
 
             case .startReading:
-                guard let page = state.pdfDocument?.page(at: state.currentPage),
-                      let text = page.string else { return .none }
+                logger.info("Starting reading process")
+                guard let page = state.pdfDocument?.page(at: state.currentPage) else {
+                    return .none
+                }
+                guard let text = page.string else {
+                    return .none
+                }
 
+                logger.debug("Extracted text length: \(text.count) characters")
                 state.isPlaying = true
 
                 let utterance = AVSpeechUtterance(string: text)
@@ -54,23 +71,35 @@ struct PDFReaderFeature {
                 utterance.rate = 0.5
                 utterance.pitchMultiplier = 1.0
 
-                return .run { send in
+                return .run { [utterance] send in
+                    logger.info("Initializing speech synthesis")
                     await send(.clearHighlight)
-                    await speechSynthesizer.speak(utterance)
+                    do {
+                        try await speechSynthesizer.speak(utterance)
+                        logger.info("Speech synthesis started successfully")
+                    } catch {
+                        logger.error("Speech synthesis failed: \(error.localizedDescription)")
+                    }
                 }
 
             case .stopReading:
+                logger.info("Stopping reading process")
                 state.isPlaying = false
-                return .run { send in
+                return .run { _ in
                     await speechSynthesizer.stopSpeaking()
-                    await send(.clearHighlight)
+                    logger.info("Reading stopped successfully")
                 }
 
             case let .highlightWord(location, page):
-                guard let text = page.string,
-                      let selection = page.selection(for: NSRange(location: location, length: 1)) else { return .none }
+                logger.debug("Attempting to highlight word at location: \(location)")
+                guard let selection = page.selection(for: NSRange(location: location, length: 1)) else {
+                    logger.error("Failed to create selection at location \(location)")
+                    return .none
+                }
 
                 let bounds = selection.bounds(for: page)
+                logger.debug("Created highlight bounds: \(bounds.debugDescription)")
+
                 let highlight = PDFAnnotation(bounds: bounds, forType: .highlight, withProperties: nil)
                 highlight.color = .yellow.withAlphaComponent(0.5)
                 page.addAnnotation(highlight)
@@ -78,18 +107,25 @@ struct PDFReaderFeature {
                 return .none
 
             case .clearHighlight:
+                logger.debug("Clearing current highlight")
                 if let highlight = state.currentHighlight,
                    let page = highlight.page {
                     page.removeAnnotation(highlight)
                     state.currentHighlight = nil
+                    logger.debug("Highlight cleared successfully")
                 }
                 return .none
 
             case let .speechWillSpeak(characterRange, _):
-                guard let page = state.pdfDocument?.page(at: state.currentPage) else { return .none }
+                logger.debug("Speech will speak range: \(characterRange.location) to \(NSMaxRange(characterRange))")
+                guard let page = state.pdfDocument?.page(at: state.currentPage) else {
+                    logger.error("Failed to find page for highlighting")
+                    return .none
+                }
                 return .send(.highlightWord(location: characterRange.location, page: page))
 
             case .speechDidFinish:
+                logger.info("Speech synthesis completed")
                 state.isPlaying = false
                 return .send(.clearHighlight)
             }
@@ -97,38 +133,6 @@ struct PDFReaderFeature {
     }
 }
 
-// MARK: - Dependencies
-
-struct SpeechSynthesizerClient {
-    var speak: (AVSpeechUtterance) async -> Void
-    var stopSpeaking: () async -> Void
-}
-
-extension SpeechSynthesizerClient: DependencyKey {
-    static let liveValue = Self(
-        speak: { utterance in
-            await withCheckedContinuation { continuation in
-                let synthesizer = AVSpeechSynthesizer()
-                synthesizer.speak(utterance)
-                continuation.resume()
-            }
-        },
-        stopSpeaking: {
-            await withCheckedContinuation { continuation in
-                let synthesizer = AVSpeechSynthesizer()
-                synthesizer.stopSpeaking(at: .immediate)
-                continuation.resume()
-            }
-        }
-    )
-}
-
-extension DependencyValues {
-    var speechSynthesizer: SpeechSynthesizerClient {
-        get { self[SpeechSynthesizerClient.self] }
-        set { self[SpeechSynthesizerClient.self] = newValue }
-    }
-}
 
 // MARK: - Views
 

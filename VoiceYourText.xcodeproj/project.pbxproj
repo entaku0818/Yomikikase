@@ -21,6 +21,7 @@
 		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
 		618A34112D3A718D00F33F69 /* PDFReaderFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */; };
 		618A34132D3A722B00F33F69 /* sample.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 618A34122D3A722B00F33F69 /* sample.pdf */; };
+		618A34152D3A744B00F33F69 /* SpeechSynthesizerClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A34142D3A744B00F33F69 /* SpeechSynthesizerClient.swift */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
@@ -70,6 +71,7 @@
 		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
 		618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderFeature.swift; sourceTree = "<group>"; };
 		618A34122D3A722B00F33F69 /* sample.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = sample.pdf; sourceTree = "<group>"; };
+		618A34142D3A744B00F33F69 /* SpeechSynthesizerClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechSynthesizerClient.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
 		619AE5F12BAD5BAD00CE4C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -180,6 +182,7 @@
 			children = (
 				618A34122D3A722B00F33F69 /* sample.pdf */,
 				618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */,
+				618A34142D3A744B00F33F69 /* SpeechSynthesizerClient.swift */,
 			);
 			path = PDFReader;
 			sourceTree = "<group>";
@@ -384,6 +387,7 @@
 				614F57062B11DC8E00E21FE9 /* SpeechTextRepository.swift in Sources */,
 				61DEB60F2B7A62B400AB9967 /* LanguageSettingView.swift in Sources */,
 				6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */,
+				618A34152D3A744B00F33F69 /* SpeechSynthesizerClient.swift in Sources */,
 				616965A92C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift in Sources */,
 				61E1FA0C2C03193700155D23 /* Setting.swift in Sources */,
 			);
