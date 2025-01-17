@@ -19,6 +19,7 @@
 		616965A92C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */; };
 		616AA36A2C02FF1000C7705A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616AA3692C02FF1000C7705A /* MainView.swift */; };
 		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
+		618A34112D3A718D00F33F69 /* PDFReaderFeature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */; };
 		61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */; };
 		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
@@ -66,6 +67,7 @@
 		616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposeViewControllerWrapper.swift; sourceTree = "<group>"; };
 		616AA3692C02FF1000C7705A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
+		618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderFeature.swift; sourceTree = "<group>"; };
 		61958AF42B2DF38D00C09949 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
 		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
 		619AE5F12BAD5BAD00CE4C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */,
 				6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */,
 				61DEB60D2B7A628E00AB9967 /* setting */,
+				618A340F2D3A716900F33F69 /* PDFReader */,
 				614F57012B11D8F800E21FE9 /* data */,
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
@@ -168,6 +171,14 @@
 				614F57052B11DC8E00E21FE9 /* SpeechTextRepository.swift */,
 			);
 			path = data;
+			sourceTree = "<group>";
+		};
+		618A340F2D3A716900F33F69 /* PDFReader */ = {
+			isa = PBXGroup;
+			children = (
+				618A34102D3A718D00F33F69 /* PDFReaderFeature.swift */,
+			);
+			path = PDFReader;
 			sourceTree = "<group>";
 		};
 		619AE5F22BAD5E4800CE4C4C /* locate */ = {
@@ -360,6 +371,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */,
+				618A34112D3A718D00F33F69 /* PDFReaderFeature.swift in Sources */,
 				619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */,
 				616AA36A2C02FF1000C7705A /* MainView.swift in Sources */,
 				61958AF52B2DF38D00C09949 /* UserDefaultsManager.swift in Sources */,
