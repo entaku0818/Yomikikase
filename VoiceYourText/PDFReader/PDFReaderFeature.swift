@@ -55,10 +55,30 @@ struct PDFReaderFeature: Reducer {
 
             case let .pdfLoaded(document):
                 state.pdfDocument = document
-                // PDFからテキストを抽出
-                let text = document.string ?? ""
-                logger.info("document\(text)")
-                return .send(.extractTextCompleted(text))
+
+                // PDFSelectionを初期化
+                let mainSelection = PDFSelection(document: document)
+
+                // ページ全体を選択する（より確実な方法）
+                if let page = document.page(at: 0) {
+                    let pageLength = page.numberOfCharacters
+                    // ページの先頭から最後までを選択
+                    if let pageContent = page.selection(for: NSRange(location: 0, length: pageLength)) {
+                        mainSelection.add(pageContent)
+                    }
+                }
+
+                // 抽出したテキストを整形
+                if let extractedText = mainSelection.string {
+                    logger.log("extractedText \(extractedText)")
+                    // 不要な文字列を除去
+                    let cleanedText = extractedText
+                        .replacingOccurrences(of: "Powered by TCPDF \\(www\\.tcpdf\\.org\\)\n*", with: "", options: .regularExpression)
+                        .trimmingCharacters(in: .whitespacesAndNewlines)
+
+                    return .send(.extractTextCompleted(cleanedText))
+                }
+                return .none
 
             case let .extractTextCompleted(text):
                 state.pdfText = text
