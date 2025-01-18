@@ -18,167 +18,126 @@ private let logger = Logger(
 )
 
 
-@Reducer
-struct PDFReaderFeature {
-    @ObservableState
+
+struct PDFReaderFeature: Reducer {
     struct State: Equatable {
-        var currentPage: Int = 0
-        var isPlaying: Bool = false
+        var pdfText: String = ""
+        var isReading: Bool = false
+        var selectedPage: Int = 0
         var pdfDocument: PDFDocument?
-        var currentHighlight: PDFAnnotation?
     }
 
-    enum Action {
-        case loadPDF(URL)
+    enum Action: Equatable {
+        case loadPDF
         case startReading
         case stopReading
-        case highlightWord(location: Int, page: PDFPage)
-        case clearHighlight
-        case speechWillSpeak(characterRange: NSRange, utterance: AVSpeechUtterance)
-        case speechDidFinish
+        case pdfLoaded(PDFDocument)
+        case extractTextCompleted(String)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
 
-    var body: some ReducerOf<Self> {
+    var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case let .loadPDF(url):
-                logger.info("Loading PDF from URL: \(url.absoluteString)")
-                if let document = PDFDocument(url: url) {
-                    logger.info("Successfully loaded PDF document with \(document.pageCount) pages")
-                    state.pdfDocument = document
-                    state.currentPage = 0
-                } else {
-                    logger.error("Failed to load PDF document from \(url.absoluteString)")
+            case .loadPDF:
+                // PDFファイルのパスを取得
+                guard let pdfURL = Bundle.main.url(forResource: "sample", withExtension: "pdf") else {
+                    return .none
                 }
+
+                // PDFドキュメントを読み込み
+                guard let document = PDFDocument(url: pdfURL) else {
+                    return .none
+                }
+
+                return .send(.pdfLoaded(document))
+
+            case let .pdfLoaded(document):
+                state.pdfDocument = document
+                // PDFからテキストを抽出
+                let text = document.string ?? ""
+                logger.info("document\(text)")
+                return .send(.extractTextCompleted(text))
+
+            case let .extractTextCompleted(text):
+                state.pdfText = text
                 return .none
 
             case .startReading:
-                logger.info("Starting reading process")
-                guard let page = state.pdfDocument?.page(at: state.currentPage) else {
-                    return .none
-                }
-                guard let text = page.string else {
-                    return .none
-                }
+                guard !state.isReading else { return .none }
+                state.isReading = true
 
-                logger.debug("Extracted text length: \(text.count) characters")
-                state.isPlaying = true
-
-                let utterance = AVSpeechUtterance(string: text)
+                let utterance = AVSpeechUtterance(string: state.pdfText)
                 utterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
                 utterance.rate = 0.5
                 utterance.pitchMultiplier = 1.0
 
-                return .run { [utterance] send in
-                    logger.info("Initializing speech synthesis")
-                    await send(.clearHighlight)
-                    do {
-                        try await speechSynthesizer.speak(utterance)
-                        logger.info("Speech synthesis started successfully")
-                    } catch {
-                        logger.error("Speech synthesis failed: \(error.localizedDescription)")
-                    }
+                return .run { send in
+                    try await speechSynthesizer.speak(utterance)
+                    await send(.stopReading)
                 }
 
             case .stopReading:
-                logger.info("Stopping reading process")
-                state.isPlaying = false
+                state.isReading = false
                 return .run { _ in
                     await speechSynthesizer.stopSpeaking()
-                    logger.info("Reading stopped successfully")
                 }
-
-            case let .highlightWord(location, page):
-                logger.debug("Attempting to highlight word at location: \(location)")
-                guard let selection = page.selection(for: NSRange(location: location, length: 1)) else {
-                    logger.error("Failed to create selection at location \(location)")
-                    return .none
-                }
-
-                let bounds = selection.bounds(for: page)
-                logger.debug("Created highlight bounds: \(bounds.debugDescription)")
-
-                let highlight = PDFAnnotation(bounds: bounds, forType: .highlight, withProperties: nil)
-                highlight.color = .yellow.withAlphaComponent(0.5)
-                page.addAnnotation(highlight)
-                state.currentHighlight = highlight
-                return .none
-
-            case .clearHighlight:
-                logger.debug("Clearing current highlight")
-                if let highlight = state.currentHighlight,
-                   let page = highlight.page {
-                    page.removeAnnotation(highlight)
-                    state.currentHighlight = nil
-                    logger.debug("Highlight cleared successfully")
-                }
-                return .none
-
-            case let .speechWillSpeak(characterRange, _):
-                logger.debug("Speech will speak range: \(characterRange.location) to \(NSMaxRange(characterRange))")
-                guard let page = state.pdfDocument?.page(at: state.currentPage) else {
-                    logger.error("Failed to find page for highlighting")
-                    return .none
-                }
-                return .send(.highlightWord(location: characterRange.location, page: page))
-
-            case .speechDidFinish:
-                logger.info("Speech synthesis completed")
-                state.isPlaying = false
-                return .send(.clearHighlight)
             }
         }
     }
 }
 
-
-// MARK: - Views
-
+// PDFReaderView.swift
 struct PDFReaderView: View {
     let store: StoreOf<PDFReaderFeature>
+    @ObservedObject var viewStore: ViewStoreOf<PDFReaderFeature>
+
+    init(store: StoreOf<PDFReaderFeature>) {
+        self.store = store
+        self.viewStore = ViewStore(self.store, observe: { $0 })
+    }
 
     var body: some View {
-        WithViewStore(store, observe: { $0 }) { viewStore in
-            VStack {
-                PDFKitView(document: viewStore.pdfDocument)
+        VStack {
+            if let pdfDocument = viewStore.pdfDocument {
+                PDFKitView(document: pdfDocument)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
 
-                HStack {
-                    Button {
-                        if viewStore.isPlaying {
-                            store.send(.stopReading)
-                        } else {
-                            store.send(.startReading)
-                        }
-                    } label: {
-                        Image(systemName: viewStore.isPlaying ? "stop.fill" : "play.fill")
-                            .font(.title)
-                            .padding()
-                    }
+            HStack {
+                Button(action: { viewStore.send(.startReading) }) {
+                    Image(systemName: "play.fill")
+                    Text("読み上げ開始")
                 }
-                .padding()
-            }
-            .onAppear {
-                if let url = Bundle.main.url(forResource: "sample", withExtension: "pdf") {
-                    store.send(.loadPDF(url))
+                .disabled(viewStore.isReading)
+
+                Button(action: { viewStore.send(.stopReading) }) {
+                    Image(systemName: "stop.fill")
+                    Text("停止")
                 }
+                .disabled(!viewStore.isReading)
             }
+            .padding()
+        }
+        .onAppear {
+            viewStore.send(.loadPDF)
         }
     }
 }
 
+// PDFKitView.swift
 struct PDFKitView: UIViewRepresentable {
-    let document: PDFDocument?
+    let document: PDFDocument
 
     func makeUIView(context: Context) -> PDFView {
         let pdfView = PDFView()
+        pdfView.document = document
         pdfView.autoScales = true
         return pdfView
     }
 
-    func updateUIView(_ uiView: PDFView, context: Context) {
-        uiView.document = document
+    func updateUIView(_ pdfView: PDFView, context: Context) {
+        pdfView.document = document
     }
 }

@@ -15,28 +15,7 @@ struct SpeechSynthesizerClient {
     var stopSpeaking: () async -> Void
 }
 
-extension SpeechSynthesizerClient:TestDependencyKey {
-    static var testValue: SpeechSynthesizerClient {
-        Self(
-            speak: { utterance in
-                logger.info("Test: Starting speech synthesis simulation")
-                logger.debug("Test: Speaking text: \(utterance.speechString)")
-                // Simulate some async work
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-                logger.debug("Test: Speech simulation completed")
-            },
-            stopSpeaking: {
-                logger.info("Test: Stopping speech synthesis simulation")
-                logger.debug("Test: Speech simulation stopped")
-            }
-        )
-    }
-
-    private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
-        category: "SpeechSynthesizer"
-    )
-
+extension SpeechSynthesizerClient: DependencyKey {
     static let liveValue = Self(
         speak: { utterance in
             logger.info("Starting speech synthesis")
@@ -56,6 +35,27 @@ extension SpeechSynthesizerClient:TestDependencyKey {
                 continuation.resume()
             }
         }
+    )
+
+    static var testValue: SpeechSynthesizerClient {
+        Self(
+            speak: { utterance in
+                logger.info("Test: Starting speech synthesis simulation")
+                logger.debug("Test: Speaking text: \(utterance.speechString)")
+                // Simulate some async work
+                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                logger.debug("Test: Speech simulation completed")
+            },
+            stopSpeaking: {
+                logger.info("Test: Stopping speech synthesis simulation")
+                logger.debug("Test: Speech simulation stopped")
+            }
+        )
+    }
+
+    private static let logger = Logger(
+        subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
+        category: "SpeechSynthesizer"
     )
 }
 
