@@ -18,11 +18,11 @@ struct MainView: View {
                     Image(systemName: "text.bubble")
                     Text("読み上げ")
                 }
-            PDFReaderView(
+            PDFListView(
                 store: Store(
-                    initialState: PDFReaderFeature.State()
+                    initialState: PDFListFeature.State()
                 ) {
-                    PDFReaderFeature()
+                    PDFListFeature()
                 }
             )
                 .tabItem {
