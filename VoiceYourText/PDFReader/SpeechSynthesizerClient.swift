@@ -21,9 +21,15 @@ extension SpeechSynthesizerClient: DependencyKey {
             logger.info("Starting speech synthesis")
             await withCheckedContinuation { continuation in
                 let synthesizer = AVSpeechSynthesizer()
+
+                // 読み上げ完了を検知するデリゲートを設定
+                let delegate = SpeechCompletionDelegate {
+                    continuation.resume()
+                }
+                synthesizer.delegate = delegate
+
                 synthesizer.speak(utterance)
                 logger.debug("Speech utterance started")
-                continuation.resume()
             }
         },
         stopSpeaking: {
@@ -57,6 +63,20 @@ extension SpeechSynthesizerClient: DependencyKey {
         subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
         category: "SpeechSynthesizer"
     )
+}
+
+// 完了検知用のデリゲートクラス
+private class SpeechCompletionDelegate: NSObject, AVSpeechSynthesizerDelegate {
+    private let onComplete: () -> Void
+
+    init(onComplete: @escaping () -> Void) {
+        self.onComplete = onComplete
+        super.init()
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        onComplete()
+    }
 }
 
 extension DependencyValues {
