@@ -127,15 +127,23 @@ struct PDFListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(viewStore.pdfFiles) { file in
-                    VStack(alignment: .leading) {
-                        Text(file.fileName)
-                            .font(.headline)
-                        Text(file.createdAt.formatted())
-                            .font(.caption)
-                            .foregroundColor(.gray)
+                    NavigationLink(destination: PDFReaderView(
+                        store: Store(
+                            initialState: PDFReaderFeature.State(currentPDFURL: file.url)
+                        ) {
+                            PDFReaderFeature()
+                        }
+                    )) {
+                        VStack(alignment: .leading) {
+                            Text(file.fileName)
+                                .font(.headline)
+                            Text(file.createdAt.formatted())
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
                     }
                 }
                 .onDelete { indexSet in

@@ -25,10 +25,11 @@ struct PDFReaderFeature: Reducer {
         var isReading: Bool = false
         var selectedPage: Int = 0
         var pdfDocument: PDFDocument?
+        var currentPDFURL: URL?
     }
 
     enum Action: Equatable {
-        case loadPDF
+        case loadPDF(URL)
         case startReading
         case stopReading
         case pdfLoaded(PDFDocument)
@@ -40,17 +41,11 @@ struct PDFReaderFeature: Reducer {
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .loadPDF:
-                // PDFファイルのパスを取得
-                guard let pdfURL = Bundle.main.url(forResource: "sample", withExtension: "pdf") else {
+            case let .loadPDF(url):
+                guard let document = PDFDocument(url: url) else {
                     return .none
                 }
-
-                // PDFドキュメントを読み込み
-                guard let document = PDFDocument(url: pdfURL) else {
-                    return .none
-                }
-
+                state.currentPDFURL = url
                 return .send(.pdfLoaded(document))
 
             case let .pdfLoaded(document):
@@ -141,7 +136,9 @@ struct PDFReaderView: View {
             .padding()
         }
         .onAppear {
-            viewStore.send(.loadPDF)
+            if let url = viewStore.currentPDFURL {
+                viewStore.send(.loadPDF(url))
+            }
         }
     }
 }
