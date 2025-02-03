@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  SpeechSynthesizerClient.swift
 //  VoiceYourText
 //
 //  Created by 遠藤拓弥 on 2025/01/17.
@@ -9,79 +9,115 @@ import Foundation
 import AVFAudio
 import Dependencies
 import os
+import ComposableArchitecture
 
+
+@DependencyClient
 struct SpeechSynthesizerClient {
-    var speak: (AVSpeechUtterance) async -> Void
-    var stopSpeaking: () async -> Void
+    var speak: @Sendable (AVSpeechUtterance) async throws -> Bool
+    var stopSpeaking: @Sendable () async -> Bool = { false }
 }
 
 extension SpeechSynthesizerClient: DependencyKey {
-    static let liveValue = Self(
-        speak: { utterance in
-            logger.info("Starting speech synthesis")
-            await withCheckedContinuation { continuation in
-                let synthesizer = AVSpeechSynthesizer()
-
-                // 読み上げ完了を検知するデリゲートを設定
-                let delegate = SpeechCompletionDelegate {
-                    continuation.resume()
-                }
-                synthesizer.delegate = delegate
-
-                synthesizer.speak(utterance)
-                logger.debug("Speech utterance started")
-            }
-        },
-        stopSpeaking: {
-            logger.info("Stopping speech synthesis")
-            await withCheckedContinuation { continuation in
-                let synthesizer = AVSpeechSynthesizer()
-                synthesizer.stopSpeaking(at: .immediate)
-                logger.debug("Speech stopped")
-                continuation.resume()
-            }
-        }
-    )
-
-    static var testValue: SpeechSynthesizerClient {
-        Self(
-            speak: { utterance in
-                logger.info("Test: Starting speech synthesis simulation")
-                logger.debug("Test: Speaking text: \(utterance.speechString)")
-                // Simulate some async work
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
-                logger.debug("Test: Speech simulation completed")
-            },
-            stopSpeaking: {
-                logger.info("Test: Stopping speech synthesis simulation")
-                logger.debug("Test: Speech simulation stopped")
-            }
+    static var liveValue: Self {
+        let speechSynthesizer = SpeechSynthesizer()
+        return Self(
+            speak: { utterance in try await speechSynthesizer.speak(utterance: utterance) },
+            stopSpeaking: { await speechSynthesizer.stop() }
         )
     }
-
-    private static let logger = Logger(
-        subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
-        category: "SpeechSynthesizer"
-    )
 }
 
-// 完了検知用のデリゲートクラス
-private class SpeechCompletionDelegate: NSObject, AVSpeechSynthesizerDelegate {
-    private let onComplete: () -> Void
-
-    init(onComplete: @escaping () -> Void) {
-        self.onComplete = onComplete
-        super.init()
-    }
-
-    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
-        onComplete()
-    }
+extension SpeechSynthesizerClient: TestDependencyKey {
+    static let testValue = Self(
+        speak: { _ in true },
+        stopSpeaking: { true }
+    )
 }
 
 extension DependencyValues {
     var speechSynthesizer: SpeechSynthesizerClient {
         get { self[SpeechSynthesizerClient.self] }
         set { self[SpeechSynthesizerClient.self] = newValue }
+    }
+}
+
+private actor SpeechSynthesizer {
+    var delegate: Delegate?
+    var synthesizer: AVSpeechSynthesizer?
+
+    func stop() -> Bool {
+        self.synthesizer?.stopSpeaking(at: .immediate)
+        return true
+    }
+
+    func speak(utterance: AVSpeechUtterance) async throws -> Bool {
+        self.stop()
+        let stream = AsyncThrowingStream<Bool, Error> { continuation in
+            do {
+                self.delegate = Delegate(
+                    didFinish: { flag in
+                        continuation.yield(flag)
+                        continuation.finish()
+                    },
+                    didError: { error in
+                        if let error = error {
+                            continuation.finish(throwing: error)
+                        }
+                    }
+                )
+                let synthesizer = AVSpeechSynthesizer()
+                self.synthesizer = synthesizer
+                synthesizer.delegate = self.delegate
+
+                continuation.onTermination = { [synthesizer = UncheckedSendable(synthesizer)] _ in
+                    synthesizer.wrappedValue.stopSpeaking(at: .immediate)
+                }
+
+                synthesizer.speak(utterance)
+            } catch {
+                continuation.finish(throwing: error)
+            }
+        }
+
+        for try await didFinish in stream {
+            return didFinish
+        }
+        throw CancellationError()
+    }
+}
+
+private final class Delegate: NSObject, AVSpeechSynthesizerDelegate {
+    let didFinish: @Sendable (Bool) -> Void
+    let didError: @Sendable (Error?) -> Void
+
+    init(
+        didFinish: @escaping @Sendable (Bool) -> Void,
+        didError: @escaping @Sendable (Error?) -> Void
+    ) {
+        self.didFinish = didFinish
+        self.didError = didError
+        super.init()
+    }
+
+    func speechSynthesizer(
+        _ synthesizer: AVSpeechSynthesizer,
+        didFinish utterance: AVSpeechUtterance
+    ) {
+        self.didFinish(true)
+    }
+
+    func speechSynthesizer(
+        _ synthesizer: AVSpeechSynthesizer,
+        didCancel utterance: AVSpeechUtterance
+    ) {
+        self.didFinish(false)
+    }
+
+    func speechSynthesizer(
+        _ synthesizer: AVSpeechSynthesizer,
+        didPause utterance: AVSpeechUtterance
+    ) {
+        self.didFinish(false)
     }
 }
