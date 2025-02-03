@@ -9,7 +9,14 @@ import SwiftUI
 import UniformTypeIdentifiers
 import PDFKit
 import ComposableArchitecture
+import os.log
 // PDFListFeature.swift
+
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "com.app.pdfreader",
+    category: "PDFReader"
+)
+
 struct PDFListFeature: Reducer {
     struct State: Equatable {
         var pdfFiles: [PDFFile] = []
@@ -94,22 +101,72 @@ struct PDFListFeature: Reducer {
     }
 
     private func savePDFFile(from sourceURL: URL) async throws -> PDFFile {
+        logger.info("Starting PDF file save operation")
+        logger.info("Source URL: \(sourceURL.absoluteString)")
+
+        // Security Scoped Resource を取得
+        let isSecured = sourceURL.startAccessingSecurityScopedResource()
+        defer {
+            if isSecured {
+                sourceURL.stopAccessingSecurityScopedResource()
+            }
+        }
+
         guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            logger.error("❌ Failed to get document directory")
             throw URLError(.cannotCreateFile)
         }
 
         let destinationURL = documentDirectory.appendingPathComponent(sourceURL.lastPathComponent)
-        try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+        logger.info("Destination URL: \(destinationURL.absoluteString)")
 
-        let attributes = try FileManager.default.attributesOfItem(atPath: destinationURL.path)
-        let creationDate = attributes[.creationDate] as? Date ?? Date()
+        return try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let fileManager = FileManager.default
 
-        return PDFFile(
-            url: destinationURL,
-            fileName: destinationURL.lastPathComponent,
-            createdAt: creationDate
-        )
+                // ファイルを安全に読み込むための `NSFileCoordinator`
+                let coordinator = NSFileCoordinator()
+                var error: NSError?
+
+                coordinator.coordinate(readingItemAt: sourceURL, options: [], error: &error) { secureURL in
+                    do {
+                        // 既に存在する場合は削除
+                        if fileManager.fileExists(atPath: destinationURL.path) {
+                            try fileManager.removeItem(at: destinationURL)
+                            logger.info("✅ Removed existing file at destination")
+                        }
+
+                        // ✅ ファイルのデータを取得して書き込む（copyItem ではなく Data で確実に取得）
+                        let fileData = try Data(contentsOf: secureURL)
+                        try fileData.write(to: destinationURL)
+                        logger.info("✅ Successfully copied file to destination")
+
+                        let attributes = try fileManager.attributesOfItem(atPath: destinationURL.path)
+                        let creationDate = attributes[.creationDate] as? Date ?? Date()
+
+                        let pdfFile = PDFFile(
+                            url: destinationURL,
+                            fileName: destinationURL.lastPathComponent,
+                            createdAt: creationDate
+                        )
+
+                        logger.info("📂 Created PDFFile object - URL: \(pdfFile.url.absoluteString), Filename: \(pdfFile.fileName)")
+                        continuation.resume(returning: pdfFile)
+                    } catch {
+                        logger.error("❌ Failed to copy PDF file: \(error.localizedDescription)")
+                        continuation.resume(throwing: error)
+                    }
+                }
+
+                if let coordinatorError = error {
+                    logger.error("❌ NSFileCoordinator error: \(coordinatorError.localizedDescription)")
+                    continuation.resume(throwing: coordinatorError)
+                }
+            }
+        }
     }
+
+
 
     private func deletePDFFile(_ file: PDFFile) async throws {
         try FileManager.default.removeItem(at: file.url)
