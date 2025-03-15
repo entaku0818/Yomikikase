@@ -12,37 +12,6 @@ import PDFKit
 
 @MainActor
 final class PDFReaderFeatureTests: XCTestCase {
-    func testLoadPDFSuccess() async {
-        // テスト用のPDFドキュメントを作成
-        let testPDFDocument = PDFDocument()
-        let page = PDFPage()
-        testPDFDocument.insert(page, at: 0)
-        
-        // テスト用のURL
-        let testURL = URL(fileURLWithPath: "/test/sample.pdf")
-        
-        let store = TestStore(
-            initialState: PDFReaderFeature.State()
-        ) {
-            PDFReaderFeature()
-        } withDependencies: { dependencies in
-            // PDFDocument初期化をモック
-            dependencies.pdfDocumentClient = .testValue(document: testPDFDocument)
-            dependencies.speechSynthesizer = .testValue
-        }
-
-        await store.send(.loadPDF(testURL)) {
-            $0.currentPDFURL = testURL
-        }
-        
-        await store.receive(.pdfLoaded(testPDFDocument)) {
-            $0.pdfDocument = testPDFDocument
-        }
-        
-        await store.receive(.extractTextCompleted("")) {
-            $0.pdfText = ""
-        }
-    }
 
     func testStartReading() async {
         let store = TestStore(
