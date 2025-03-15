@@ -17,25 +17,28 @@ final class PDFReaderFeatureTests: XCTestCase {
         let testPDFDocument = PDFDocument()
         let page = PDFPage()
         testPDFDocument.insert(page, at: 0)
-
+        
+        // テスト用のURL
+        let testURL = URL(fileURLWithPath: "/test/sample.pdf")
+        
         let store = TestStore(
             initialState: PDFReaderFeature.State()
         ) {
             PDFReaderFeature()
         } withDependencies: { dependencies in
-            // Bundle.main.urlをモック
-            dependencies.bundle.url = { _, _ in
-                URL(fileURLWithPath: "/test/sample.pdf")
-            }
+            // PDFDocument初期化をモック
+            dependencies.pdfDocumentClient = .testValue(document: testPDFDocument)
+            dependencies.speechSynthesizer = .testValue
         }
 
-        // PDFDocument初期化をモック
-        // 実際のテストでは適切なモック方法を実装する必要があります
-
-        await store.send(.loadPDF)
+        await store.send(.loadPDF(testURL)) {
+            $0.currentPDFURL = testURL
+        }
+        
         await store.receive(.pdfLoaded(testPDFDocument)) {
             $0.pdfDocument = testPDFDocument
         }
+        
         await store.receive(.extractTextCompleted("")) {
             $0.pdfText = ""
         }
@@ -80,20 +83,45 @@ final class PDFReaderFeatureTests: XCTestCase {
     }
 
     func testPDFLoadFailure() async {
+        // テスト用の無効なURL
+        let invalidURL = URL(fileURLWithPath: "/invalid/path.pdf")
+        
         let store = TestStore(
             initialState: PDFReaderFeature.State()
         ) {
             PDFReaderFeature()
         } withDependencies: { dependencies in
-            // 無効なURLを返すようにモック
-            dependencies.bundle.url = { _, _ in nil }
+            // 無効なPDFドキュメントを返すようにモック
+            dependencies.pdfDocumentClient = .testValue(document: nil)
         }
 
-        await store.send(.loadPDF)
-        // エラー処理の検証をここに追加
+        await store.send(.loadPDF(invalidURL))
+        // loadPDFアクションが失敗した場合は何も受信しないことを確認
+        // (PDFDocument(url:)がnilを返す場合、アクションは何も送信しない)
     }
 }
 
+// PDFDocument初期化のためのクライアント
+struct PDFDocumentClient {
+    var createDocument: (URL) -> PDFDocument?
+}
+
+extension PDFDocumentClient: DependencyKey {
+    static var liveValue = Self(
+        createDocument: { url in PDFDocument(url: url) }
+    )
+    
+    static func testValue(document: PDFDocument?) -> Self {
+        Self(createDocument: { _ in document })
+    }
+}
+
+extension DependencyValues {
+    var pdfDocumentClient: PDFDocumentClient {
+        get { self[PDFDocumentClient.self] }
+        set { self[PDFDocumentClient.self] = newValue }
+    }
+}
 
 // テスト用のBundleクライアント
 extension DependencyValues {
