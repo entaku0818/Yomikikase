@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */; };
 		6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */; };
+		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
@@ -74,6 +75,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */,
 				619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */,
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
@@ -190,6 +192,7 @@
 				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
 				614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */,
 				619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */,
+				612C8A312D85769B00614ED0 /* RevenueCat */,
 			);
 			productName = VoiceYourText;
 			productReference = 614F56D12B11B81F00E21FE9 /* VoiceYourText.app */;
@@ -276,6 +279,7 @@
 				614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 				619AE5EE2BAD5AEB00CE4C4C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
@@ -674,6 +678,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.0;
+			};
+		};
 		614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -701,6 +713,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		612C8A312D85769B00614ED0 /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
 		614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
