@@ -251,13 +251,17 @@ struct SpeechView: View {
 
         let synthesizer = AVSpeechSynthesizer()
 
-        AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
-            if status == .authorized {
-                let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
-                let myUtterance = AVSpeechUtterance(string: text)
-                myUtterance.voice = personalVoices.first
-                synthesizer.speak(myUtterance)
+        if #available(iOS 17.0, *) {
+            AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
+                if status == .authorized {
+                    let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
+                    let myUtterance = AVSpeechUtterance(string: text)
+                    myUtterance.voice = personalVoices.first
+                    synthesizer.speak(myUtterance)
+                }
             }
+        } else {
+            // Fallback on earlier versions
         }
     }
 
