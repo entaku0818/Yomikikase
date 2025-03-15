@@ -48,12 +48,14 @@ struct MainView: View {
                         Text("読み上げ内容登録")
                     }
                     .tag(2)
-                LanguageSettingView(store: settingStore)
-                    .tabItem {
-                        Image(systemName: "gear")
-                        Text("設定")
-                    }
-                    .tag(3)
+                NavigationStack {
+                    LanguageSettingView(store: settingStore)
+                }
+                .tabItem {
+                    Image(systemName: "gear")
+                    Text("設定")
+                }
+                .tag(3)
             }
         }
     }
