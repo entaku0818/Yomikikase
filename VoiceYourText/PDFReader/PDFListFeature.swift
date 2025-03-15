@@ -166,8 +166,6 @@ struct PDFListFeature: Reducer {
         }
     }
 
-
-
     private func deletePDFFile(_ file: PDFFile) async throws {
         try FileManager.default.removeItem(at: file.url)
     }
@@ -185,30 +183,35 @@ struct PDFListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(viewStore.pdfFiles) { file in
-                    NavigationLink(destination: PDFReaderView(
-                        store: Store(
-                            initialState: PDFReaderFeature.State(currentPDFURL: file.url)
-                        ) {
-                            PDFReaderFeature()
+            VStack {
+                List {
+                    ForEach(viewStore.pdfFiles) { file in
+                        NavigationLink(destination: PDFReaderView(
+                            store: Store(
+                                initialState: PDFReaderFeature.State(currentPDFURL: file.url)
+                            ) {
+                                PDFReaderFeature()
+                            }
+                        )) {
+                            VStack(alignment: .leading) {
+                                Text(file.fileName)
+                                    .font(.headline)
+                                Text(file.createdAt.formatted())
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
                         }
-                    )) {
-                        VStack(alignment: .leading) {
-                            Text(file.fileName)
-                                .font(.headline)
-                            Text(file.createdAt.formatted())
-                                .font(.caption)
-                                .foregroundColor(.gray)
+                    }
+                    .onDelete { indexSet in
+                        indexSet.forEach { index in
+                            let file = viewStore.pdfFiles[index]
+                            viewStore.send(.deletePDFFile(file))
                         }
                     }
                 }
-                .onDelete { indexSet in
-                    indexSet.forEach { index in
-                        let file = viewStore.pdfFiles[index]
-                        viewStore.send(.deletePDFFile(file))
-                    }
-                }
+                
+                // 広告バナーを追加
+                AdmobBannerView().frame(width: .infinity, height: 50)
             }
             .navigationTitle("PDFファイル")
             .toolbar {
