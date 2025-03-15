@@ -10,34 +10,51 @@ import ComposableArchitecture
 
 struct MainView: View {
     let store: Store<Speeches.State, Speeches.Action>
+    
+    // 設定画面用のストアを作成
+    let settingStore = Store(
+        initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting)) {
+            SettingsReducer()
+    }
 
     var body: some View {
-        TabView {
-            SpeechView(store: store)
-                .tabItem {
-                    Image(systemName: "text.bubble")
-                    Text("読み上げ")
-                }
-            PDFListView(
-                store: Store(
-                    initialState: PDFListFeature.State()
-                ) {
-                    PDFListFeature()
-                }
-            )
-                .tabItem {
-                    Image(systemName: "doc.text")
-                    Text("PDF")
-                }
-            SettingsView(store: Store(
-                initialState: SettingsReducer.State(languageSetting: "en"))                {
-                    SettingsReducer()
-                }
-            )
-                .tabItem {
-                    Image(systemName: "star")
-                    Text("読み上げ内容登録")
-                }
+        VStack(spacing: 0) {
+            TabView {
+                SpeechView(store: store)
+                    .tabItem {
+                        Image(systemName: "text.bubble")
+                        Text("読み上げ")
+                    }
+                    .tag(0)
+                PDFListView(
+                    store: Store(
+                        initialState: PDFListFeature.State()
+                    ) {
+                        PDFListFeature()
+                    }
+                )
+                    .tabItem {
+                        Image(systemName: "doc.text")
+                        Text("PDF")
+                    }
+                    .tag(1)
+                SettingsView(store: Store(
+                    initialState: SettingsReducer.State(languageSetting: "en"))                {
+                        SettingsReducer()
+                    }
+                )
+                    .tabItem {
+                        Image(systemName: "star")
+                        Text("読み上げ内容登録")
+                    }
+                    .tag(2)
+                LanguageSettingView(store: settingStore)
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("設定")
+                    }
+                    .tag(3)
+            }
         }
     }
 }

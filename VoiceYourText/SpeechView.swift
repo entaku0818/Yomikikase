@@ -196,29 +196,17 @@ struct SpeechView: View {
                 .sheet(
                   isPresented: viewStore.binding(
                     get: \.isMailComposePresented,
-                    send: Speeches.Action.mailComposeDismissed // Use the new action here
+                    send: Speeches.Action.mailComposeDismissed
                   )
                 ) {
                   MailComposeViewControllerWrapper(
                     isPresented: viewStore.binding(
                       get: \.isMailComposePresented,
-                      send: Speeches.Action.mailComposeDismissed // And also here
+                      send: Speeches.Action.mailComposeDismissed
                     )
                   )
                 }
                 .navigationTitle("Voice Narrator")
-                 .toolbar {
-                     ToolbarItem(placement: .navigationBarTrailing) {
-                         NavigationLink(destination:
-                            LanguageSettingView(store: settingStore)
-                         ) {
-                                 Image(systemName: "gear")
-                                     .resizable()
-                         }
-                         .buttonStyle(PlainButtonStyle())
-
-                     }
-                 }
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
