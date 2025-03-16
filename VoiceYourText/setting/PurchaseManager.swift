@@ -66,7 +66,6 @@ class PurchaseManager: PurchaseManagerProtocol {
             let (_, customerInfo, _) = try await Purchases.shared.purchase(package: package)
 
             if customerInfo.entitlements["premium"]?.isActive == true {
-                // MainActor.runブロックを削除
                 os_log("Pro purchase successful", log: logger, type: .debug)
                 return true
             } else {
