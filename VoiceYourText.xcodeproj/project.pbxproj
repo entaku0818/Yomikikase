@@ -12,7 +12,6 @@
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
 		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
-		614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		616965A92C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */; };
@@ -49,7 +48,6 @@
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
 		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposeViewControllerWrapper.swift; sourceTree = "<group>"; };
@@ -68,6 +66,7 @@
 		612C89E92D856CA400614ED0 /* data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = data; sourceTree = "<group>"; };
 		612C89F42D856CA700614ED0 /* PDFReader */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PDFReader; sourceTree = "<group>"; };
 		612C8A052D856CAB00614ED0 /* locate */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = locate; sourceTree = "<group>"; };
+		61D51EDC2D86FAF2005524A7 /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -131,20 +130,12 @@
 				612C89E92D856CA400614ED0 /* data */,
 				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
 				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
-				614F56DA2B11B82000E21FE9 /* Preview Content */,
+				61D51EDC2D86FAF2005524A7 /* Preview Content */,
 				619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */,
 				616AA3692C02FF1000C7705A /* MainView.swift */,
 				616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */,
 			);
 			path = VoiceYourText;
-			sourceTree = "<group>";
-		};
-		614F56DA2B11B82000E21FE9 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				614F56DB2B11B82000E21FE9 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		61E1FA042C0311FD00155D23 /* VoiceYourTextTests */ = {
@@ -186,6 +177,7 @@
 				612C89E92D856CA400614ED0 /* data */,
 				612C89F42D856CA700614ED0 /* PDFReader */,
 				612C8A052D856CAB00614ED0 /* locate */,
+				61D51EDC2D86FAF2005524A7 /* Preview Content */,
 			);
 			name = VoiceYourText;
 			packageProductDependencies = (
@@ -297,7 +289,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56DC2B11B82000E21FE9 /* Preview Assets.xcassets in Resources */,
 				610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */,
 				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
 			);
