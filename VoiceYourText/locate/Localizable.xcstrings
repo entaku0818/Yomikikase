@@ -944,7 +944,7 @@
       }
     },
     "VoiceYourText" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -2414,5 +2414,4 @@
     }
   },
   "version" : "1.0"
-}
 }
