@@ -151,11 +151,20 @@ struct SettingsReducer: Reducer {
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
-                // デフォルトの挨拶は削除できないようにする
+                // デフォルトの挨拶かどうかをチェック
                 let defaultSpeeches = SpeechTextRepository.shared.createGreetingSpeeches(language: languageSetting)
                 let isDefaultSpeech = defaultSpeeches.contains { $0.id == id }
                 
-                if !isDefaultSpeech {
+                if isDefaultSpeech {
+                    // デフォルトの挨拶は削除できないのでエラーメッセージを表示
+                    state.showError = true
+                    state.errorMessage = "デフォルトの挨拶は削除できません"
+                    
+                    return .run { send in
+                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
+                        await send(.dismissError)
+                    }
+                } else {
                     SpeechTextRepository.shared.delete(id: id)
                     
                     // 削除後にリストを更新
@@ -170,15 +179,31 @@ struct SettingsReducer: Reducer {
                         await send(.dismissSuccess)
                     }
                 }
-                
-                return .none
             case .setKeyboardFocus(let isFocused):
                 state.isKeyboardFocused = isFocused
                 return .none
             case .confirmDelete(let id):
-                state.showDeleteConfirmation = true
-                state.itemToDelete = id
-                return .none
+                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
+                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                
+                // デフォルトの挨拶かどうかをチェック
+                let defaultSpeeches = SpeechTextRepository.shared.createGreetingSpeeches(language: languageSetting)
+                let isDefaultSpeech = defaultSpeeches.contains { $0.id == id }
+                
+                if isDefaultSpeech {
+                    // デフォルトの挨拶は削除できないのでエラーメッセージを表示
+                    state.showError = true
+                    state.errorMessage = "デフォルトの挨拶は削除できません"
+                    
+                    return .run { send in
+                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
+                        await send(.dismissError)
+                    }
+                } else {
+                    state.showDeleteConfirmation = true
+                    state.itemToDelete = id
+                    return .none
+                }
             case .cancelDelete:
                 state.showDeleteConfirmation = false
                 state.itemToDelete = nil
