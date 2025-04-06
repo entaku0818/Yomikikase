@@ -46,10 +46,27 @@ struct SettingsView: View {
                                        }
                                    }
 
-                                   Text("文字数: \(viewStore.text.count)")
-                                       .foregroundColor(.gray)
-                                       .frame(maxWidth: .infinity, alignment: .trailing)
-                                       .padding(.top, 4)
+                                   HStack {
+                                       Text("文字数: \(viewStore.text.count)")
+                                           .foregroundColor(.gray)
+                                       
+                                       Spacer()
+                                       
+                                       Button(action: {
+                                           viewStore.send(.insert)
+                                           isTextFieldFocused = false
+                                       }) {
+                                           Text("保存")
+                                               .foregroundColor(.blue)
+                                               .padding(.horizontal, 12)
+                                               .padding(.vertical, 6)
+                                               .background(
+                                                   RoundedRectangle(cornerRadius: 8)
+                                                       .stroke(Color.blue, lineWidth: 1)
+                                               )
+                                       }
+                                   }
+                                   .padding(.top, 4)
                                }
                         }
                         
@@ -64,7 +81,7 @@ struct SettingsView: View {
                                 }
                                 .swipeActions(edge: .trailing) {
                                     Button(role: .destructive) {
-                                        viewStore.send(.deleteSpeech(speech.id))
+                                        viewStore.send(.confirmDelete(speech.id))
                                     } label: {
                                         Label("削除", systemImage: "trash")
                                     }
@@ -91,7 +108,7 @@ struct SettingsView: View {
                                 HStack {
                                     Image(systemName: "checkmark.circle.fill")
                                         .foregroundColor(.white)
-                                    Text("保存しました")
+                                    Text(viewStore.successMessage)
                                         .foregroundColor(.white)
                                         .bold()
                                 }
@@ -118,6 +135,19 @@ struct SettingsView: View {
                             .animation(.easeInOut, value: viewStore.showError)
                         ) : AnyView(EmptyView())
                 )
+                .alert("削除の確認", isPresented: viewStore.binding(
+                    get: \.showDeleteConfirmation,
+                    send: { _ in .cancelDelete }
+                )) {
+                    Button("キャンセル", role: .cancel) {
+                        viewStore.send(.cancelDelete)
+                    }
+                    Button("削除", role: .destructive) {
+                        viewStore.send(.executeDelete)
+                    }
+                } message: {
+                    Text("このアイテムを削除してもよろしいですか？")
+                }
             }
         }
     }

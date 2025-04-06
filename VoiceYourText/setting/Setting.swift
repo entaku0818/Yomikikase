@@ -34,6 +34,9 @@ struct SettingsReducer: Reducer {
         var showError: Bool = false
         var errorMessage: String = ""
         var isKeyboardFocused: Bool = false
+        var successMessage: String = "保存しました"
+        var showDeleteConfirmation: Bool = false
+        var itemToDelete: UUID?
     }
 
     enum Action: Equatable, Sendable {
@@ -50,6 +53,9 @@ struct SettingsReducer: Reducer {
         case dismissError
         case deleteSpeech(UUID)
         case setKeyboardFocus(Bool)
+        case confirmDelete(UUID)
+        case cancelDelete
+        case executeDelete
     }
 
     var body: some Reducer<State, Action> {
@@ -112,6 +118,7 @@ struct SettingsReducer: Reducer {
                 state.title = ""
                 state.text = ""
                 state.showSuccess = true
+                state.successMessage = "保存しました"
                 state.isKeyboardFocused = false
                 
                 // 自動的に成功表示を隠す
@@ -156,6 +163,7 @@ struct SettingsReducer: Reducer {
                     
                     // 削除成功のフィードバックを表示
                     state.showSuccess = true
+                    state.successMessage = "削除できました"
                     
                     return .run { send in
                         try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
@@ -167,6 +175,19 @@ struct SettingsReducer: Reducer {
             case .setKeyboardFocus(let isFocused):
                 state.isKeyboardFocused = isFocused
                 return .none
+            case .confirmDelete(let id):
+                state.showDeleteConfirmation = true
+                state.itemToDelete = id
+                return .none
+            case .cancelDelete:
+                state.showDeleteConfirmation = false
+                state.itemToDelete = nil
+                return .none
+            case .executeDelete:
+                guard let id = state.itemToDelete else { return .none }
+                return .run { send in
+                    await send(.deleteSpeech(id))
+                }
             }
         }
     }
