@@ -1674,7 +1674,7 @@
         },
         "it" : {
           "stringUnit" : {
-            "state" : "needs_review",
+            "state" : "translated",
             "value" : "Si prega di comunicarci i dettagli via e-mail nella schermata successiva."
           }
         },
