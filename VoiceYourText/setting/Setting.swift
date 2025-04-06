@@ -30,6 +30,9 @@ struct SettingsReducer: Reducer {
         var speeches: [Speeches.Speech] = []
         var speechRate: Float = 0.5
         var speechPitch: Float = 1.0
+        var showSuccess: Bool = false
+        var showError: Bool = false
+        var errorMessage: String = ""
     }
 
     enum Action: Equatable, Sendable {
@@ -42,6 +45,8 @@ struct SettingsReducer: Reducer {
         case insert
         case fetchSpeeches
         case resetToDefault
+        case dismissSuccess
+        case dismissError
     }
 
     var body: some Reducer<State, Action> {
@@ -86,14 +91,32 @@ struct SettingsReducer: Reducer {
 
             case .insert:
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
+                
+                // テキストが空の場合はエラーメッセージを表示
+                if state.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    state.showError = true
+                    state.errorMessage = "テキストを入力してください"
+                    
+                    return .run { send in
+                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
+                        await send(.dismissError)
+                    }
+                }
+                
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-                SpeechTextRepository.shared.insert(title: state.title, text: state.text, languageSetting: languageSetting)
+                SpeechTextRepository.shared.insert(title: state.text, text: state.text, languageSetting: languageSetting)
 
                 state.title = ""
                 state.text = ""
-
-                return .none
-
+                state.showSuccess = true
+                
+                // 自動的に成功表示を隠す
+                return .run { send in
+                    try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
+                    await send(.dismissSuccess)
+                    await send(.fetchSpeeches) // 保存後にリストを更新
+                }
+                
             case .fetchSpeeches:
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
@@ -105,7 +128,13 @@ struct SettingsReducer: Reducer {
                   UserDefaultsManager.shared.speechRate = state.speechRate
                   UserDefaultsManager.shared.speechPitch = state.speechPitch
                   return .none
-
+            case .dismissSuccess:
+                state.showSuccess = false
+                return .none
+                
+            case .dismissError:
+                state.showError = false
+                return .none
             }
         }
     }

@@ -16,12 +16,6 @@ struct SettingsView: View {
             NavigationStack {
                 VStack {
                     Form {
-                        Section(header: Text("タイトル")) {
-                            TextField("タイトルを入力", text: viewStore.binding(
-                                get: \.title,
-                                send: SettingsReducer.Action.setTitle
-                            ))
-                        }
                         Section(header: Text("内容")) {
                                VStack {
                                    TextEditor(text: viewStore.binding(
@@ -66,6 +60,44 @@ struct SettingsView: View {
                 .onAppear {
                     viewStore.send(.fetchSpeeches)
                 }
+                .overlay(
+                    viewStore.showSuccess ? 
+                        AnyView(
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.green.opacity(0.8))
+                                    .frame(width: 200, height: 50)
+                                
+                                HStack {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.white)
+                                    Text("保存しました")
+                                        .foregroundColor(.white)
+                                        .bold()
+                                }
+                            }
+                            .transition(.opacity)
+                            .animation(.easeInOut, value: viewStore.showSuccess)
+                        ) : 
+                    viewStore.showError ?
+                        AnyView(
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(Color.red.opacity(0.8))
+                                    .frame(width: 250, height: 50)
+                                
+                                HStack {
+                                    Image(systemName: "exclamationmark.circle.fill")
+                                        .foregroundColor(.white)
+                                    Text(viewStore.errorMessage)
+                                        .foregroundColor(.white)
+                                        .bold()
+                                }
+                            }
+                            .transition(.opacity)
+                            .animation(.easeInOut, value: viewStore.showError)
+                        ) : AnyView(EmptyView())
+                )
             }
         }
     }
