@@ -33,6 +33,7 @@ struct SettingsReducer: Reducer {
         var showSuccess: Bool = false
         var showError: Bool = false
         var errorMessage: String = ""
+        var isKeyboardFocused: Bool = false
     }
 
     enum Action: Equatable, Sendable {
@@ -48,6 +49,7 @@ struct SettingsReducer: Reducer {
         case dismissSuccess
         case dismissError
         case deleteSpeech(UUID)
+        case setKeyboardFocus(Bool)
     }
 
     var body: some Reducer<State, Action> {
@@ -110,6 +112,7 @@ struct SettingsReducer: Reducer {
                 state.title = ""
                 state.text = ""
                 state.showSuccess = true
+                state.isKeyboardFocused = false
                 
                 // 自動的に成功表示を隠す
                 return .run { send in
@@ -160,6 +163,9 @@ struct SettingsReducer: Reducer {
                     }
                 }
                 
+                return .none
+            case .setKeyboardFocus(let isFocused):
+                state.isKeyboardFocused = isFocused
                 return .none
             }
         }

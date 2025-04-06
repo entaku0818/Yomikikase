@@ -10,6 +10,7 @@ import ComposableArchitecture
 
 struct SettingsView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
+    @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) { viewStore in
@@ -27,6 +28,23 @@ struct SettingsView: View {
                                        RoundedRectangle(cornerRadius: 8)
                                            .stroke(Color.gray, lineWidth: 1)
                                    )
+                                   .focused($isTextFieldFocused)
+                                   .onChange(of: isTextFieldFocused) { newValue in
+                                       viewStore.send(.setKeyboardFocus(newValue))
+                                   }
+                                   .onChange(of: viewStore.isKeyboardFocused) { newValue in
+                                       if !newValue {
+                                           isTextFieldFocused = false
+                                       }
+                                   }
+                                   .toolbar {
+                                       ToolbarItemGroup(placement: .keyboard) {
+                                           Spacer()
+                                           Button("保存") {
+                                               viewStore.send(.insert)
+                                           }
+                                       }
+                                   }
 
                                    Text("文字数: \(viewStore.text.count)")
                                        .foregroundColor(.gray)
@@ -34,12 +52,7 @@ struct SettingsView: View {
                                        .padding(.top, 4)
                                }
                         }
-                        Button(action: {
-                            viewStore.send(.insert)
-                        }) {
-                            Text("保存")
-                        }
-
+                        
                         Section(header: Text("読み上げ一覧")) {
                             List(viewStore.speeches) { speech in
                                 VStack(alignment: .leading) {
