@@ -105,7 +105,7 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    private func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
+    func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
         let greetings: [String]
         switch language {
         case .japanese:
@@ -252,6 +252,21 @@ class SpeechTextRepository: NSObject {
             createdAt: Date(),
             updatedAt: Date()
         )
+    }
+
+    func delete(id: UUID) {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+        
+        do {
+            let fetchedItems = try managedContext.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                managedContext.delete(itemToDelete)
+                try managedContext.save()
+            }
+        } catch {
+            print("Delete error: \(error.localizedDescription)")
+        }
     }
 
 }

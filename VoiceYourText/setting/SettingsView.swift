@@ -49,6 +49,13 @@ struct SettingsView: View {
                                         .font(.subheadline)
                                         .foregroundColor(.gray)
                                 }
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        viewStore.send(.deleteSpeech(speech.id))
+                                    } label: {
+                                        Label("削除", systemImage: "trash")
+                                    }
+                                }
                             }
                         }
                     }

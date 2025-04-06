@@ -47,6 +47,7 @@ struct SettingsReducer: Reducer {
         case resetToDefault
         case dismissSuccess
         case dismissError
+        case deleteSpeech(UUID)
     }
 
     var body: some Reducer<State, Action> {
@@ -134,6 +135,31 @@ struct SettingsReducer: Reducer {
                 
             case .dismissError:
                 state.showError = false
+                return .none
+                
+            case .deleteSpeech(let id):
+                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
+                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                
+                // デフォルトの挨拶は削除できないようにする
+                let defaultSpeeches = SpeechTextRepository.shared.createGreetingSpeeches(language: languageSetting)
+                let isDefaultSpeech = defaultSpeeches.contains { $0.id == id }
+                
+                if !isDefaultSpeech {
+                    SpeechTextRepository.shared.delete(id: id)
+                    
+                    // 削除後にリストを更新
+                    state.speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
+                    
+                    // 削除成功のフィードバックを表示
+                    state.showSuccess = true
+                    
+                    return .run { send in
+                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
+                        await send(.dismissSuccess)
+                    }
+                }
+                
                 return .none
             }
         }
