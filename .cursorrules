@@ -1,0 +1,28 @@
+# VoiceYourTextプロジェクト学習記録
+
+## 2024年6月の学び
+
+### ローカライゼーション管理
+- **ファイル分割アプローチ**: ローカライゼーションファイル（.xcstrings）を画面ごとに分けることで管理性を向上
+  - Common.xcstrings: 共通文字列
+  - MainScreen.xcstrings: メイン画面用
+  - Settings.xcstrings: 設定画面用
+  - WordRegister.xcstrings: 音声登録画面用
+  - PDFReader.xcstrings: PDF読み上げ画面用
+
+- **ファイル参照構造**: Localizations.xcstringsから各ファイルを参照する構造
+
+- **課題点**: 複数ファイルへの分割は理論上は良いが、実際の開発では単一ファイル（Localizable.xcstrings）で管理したほうが簡便なケースもある
+  - 特に小規模プロジェクトや頻繁に文字列を更新する場合
+
+- **解決策**: 重要な文字列（キャンセル、削除、確認ダイアログなど）は単一ファイルで管理
+
+### バージョン管理とリリース
+- **タグ付け**: `git tag -a v0.7.3 -m "メッセージ"`でタグを作成
+- **タグの削除**: `git tag -d タグ名`（ローカル）と`git push origin :refs/tags/タグ名`（リモート）
+- **タグの確認**: `git tag`コマンドで一覧表示
+- **リリース作成**: GitHub CLIを使用 `gh release create タグ名 --title "タイトル" --notes "説明"`
+
+### SwiftUI多言語対応の基本
+- **文字列参照**: `Text("キー")` または `Text(LocalizedStringKey("キー"))`で自動的に適切な翻訳を表示
+- **フォーマット文字列**: `"Count: %lld"`のような数値フォーマットにも対応 
