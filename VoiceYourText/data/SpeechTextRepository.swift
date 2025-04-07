@@ -88,7 +88,7 @@ class SpeechTextRepository: NSObject {
             var speeches = coreDataSpeechTexts.map { speechText in
                 Speeches.Speech(
                     id: speechText.uuid ?? UUID(), title: speechText.title ?? "",
-                    text: speechText.text ?? "",
+                    text: speechText.text ?? "", isDefault: false,
                     createdAt: speechText.createdAt ?? Date(),
                     updatedAt: speechText.updatedAt ?? Date()
                 )
@@ -105,7 +105,7 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
+    private func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
         let greetings: [String]
         switch language {
         case .japanese:
@@ -249,6 +249,7 @@ class SpeechTextRepository: NSObject {
         Speeches.Speech(
             id: UUID(), title: text,
             text: text,
+            isDefault: true,
             createdAt: Date(),
             updatedAt: Date()
         )

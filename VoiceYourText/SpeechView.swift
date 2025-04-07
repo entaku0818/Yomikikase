@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  Speeches.swift
 //  VoiceYourText
 //
 //  Created by 遠藤拓弥 on 25.11.2023.
@@ -16,6 +16,7 @@ struct Speeches: Reducer {
         var id: UUID
         var title: String
         var text: String
+        var isDefault: Bool  // デフォルトの言葉かどうかを示すフラグ
         var createdAt: Date
         var updatedAt: Date
     }
@@ -282,8 +283,8 @@ struct SpeechView_Previews: PreviewProvider {
         // ダミーの初期ステートを設定
         let initialState = Speeches.State(
             speechList: IdentifiedArrayOf(uniqueElements: [
-                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
-                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
+                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", isDefault: false, createdAt: Date(), updatedAt: Date()),
+                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", isDefault: false, createdAt: Date(), updatedAt: Date())
             ]), currentText: ""
         )
 

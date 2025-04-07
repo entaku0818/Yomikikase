@@ -151,14 +151,13 @@ struct SettingsReducer: Reducer {
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
-                // デフォルトの挨拶かどうかをチェック
-                let defaultSpeeches = SpeechTextRepository.shared.createGreetingSpeeches(language: languageSetting)
-                let isDefaultSpeech = defaultSpeeches.contains { $0.id == id }
+                // 削除対象のSpeechを取得
+                guard let speechToDelete = state.speeches.first(where: { $0.id == id }) else { return .none }
                 
-                if isDefaultSpeech {
-                    // デフォルトの挨拶は削除できないのでエラーメッセージを表示
+                if speechToDelete.isDefault {
+                    // デフォルトの言葉は削除できないのでエラーメッセージを表示
                     state.showError = true
-                    state.errorMessage = "デフォルトの挨拶は削除できません"
+                    state.errorMessage = "この言葉は事前登録されているため削除できません"
                     
                     return .run { send in
                         try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
@@ -186,14 +185,13 @@ struct SettingsReducer: Reducer {
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
-                // デフォルトの挨拶かどうかをチェック
-                let defaultSpeeches = SpeechTextRepository.shared.createGreetingSpeeches(language: languageSetting)
-                let isDefaultSpeech = defaultSpeeches.contains { $0.id == id }
+                // 削除対象のSpeechを取得
+                guard let speechToDelete = state.speeches.first(where: { $0.id == id }) else { return .none }
                 
-                if isDefaultSpeech {
-                    // デフォルトの挨拶は削除できないのでエラーメッセージを表示
+                if speechToDelete.isDefault {
+                    // デフォルトの言葉は削除できないのでエラーメッセージを表示
                     state.showError = true
-                    state.errorMessage = "デフォルトの挨拶は削除できません"
+                    state.errorMessage = "この言葉は事前登録されているため削除できません"
                     
                     return .run { send in
                         try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機

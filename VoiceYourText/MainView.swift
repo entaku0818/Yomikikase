@@ -65,8 +65,8 @@ struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         let initialState = Speeches.State(
             speechList: IdentifiedArrayOf(uniqueElements: [
-                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", createdAt: Date(), updatedAt: Date()),
-                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", createdAt: Date(), updatedAt: Date())
+                Speeches.Speech(id: UUID(), title: "スピーチ1", text: "テストスピーチ1", isDefault: false, createdAt: Date(), updatedAt: Date()),
+                Speeches.Speech(id: UUID(), title: "スピーチ2", text: "テストスピーチ2", isDefault: false, createdAt: Date(), updatedAt: Date())
             ]), currentText: ""
         )
 
