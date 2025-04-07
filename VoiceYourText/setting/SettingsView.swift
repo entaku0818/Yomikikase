@@ -121,7 +121,8 @@ struct SettingsView: View {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
                                     .fill(Color.red.opacity(0.8))
-                                    .frame(width: 250, height: 50)
+                                    .frame(minWidth: 250, maxWidth: .infinity, minHeight: 50, maxHeight: 100)
+                                    .padding(.horizontal)
                                 
                                 HStack {
                                     Image(systemName: "exclamationmark.circle.fill")
@@ -129,7 +130,11 @@ struct SettingsView: View {
                                     Text(viewStore.errorMessage)
                                         .foregroundColor(.white)
                                         .bold()
+                                        .multilineTextAlignment(.leading)
+                                        .lineLimit(3)
                                 }
+                                .padding(.horizontal)
+                                .padding(.vertical, 8)
                             }
                             .transition(.opacity)
                             .animation(.easeInOut, value: viewStore.showError)
