@@ -6,6 +6,10 @@ xcuserdata/
 *.xcconfig
 !*.xcconfig.sample
 
+# 明示的にこれらのファイルを除外
+/VoiceYourText/config/Debug.xcconfig
+/VoiceYourText/config/Release.xcconfig
+
 # その他
 GoogleService-Info.plist
 
