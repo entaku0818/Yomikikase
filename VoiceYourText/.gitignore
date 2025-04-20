@@ -1,0 +1,13 @@
+# Xcode
+.DS_Store
+xcuserdata/
+
+# APIキーや機密情報を含むファイル
+*.xcconfig
+!*.xcconfig.sample
+
+# その他
+GoogleService-Info.plist
+
+# SwiftPM
+.build/ 

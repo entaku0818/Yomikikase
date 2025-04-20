@@ -16,10 +16,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         Purchases.logLevel = .debug
-        Purchases.configure(withAPIKey: Config.revenueCatAPIKey)
+        
+        // 環境変数から取得したAPIキーを使用
+        let apiKey = getRevenueCatAPIKey()
+        Purchases.configure(withAPIKey: apiKey)
+        
         return true
     }
-
+    
+    // RevenueCatのAPIキーを取得するメソッド
+    private func getRevenueCatAPIKey() -> String {
+        // Info.plistからAPIキーを取得
+        if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String,
+           !apiKey.isEmpty {
+            print("Using RevenueCat API key from Info.plist")
+            return apiKey
+        }
+        
+        // 環境変数から取得
+        if let envAPIKey = ProcessInfo.processInfo.environment["REVENUECAT_API_KEY"],
+           !envAPIKey.isEmpty {
+            print("Using RevenueCat API key from environment variable")
+            return envAPIKey
+        }
+        
+        // フォールバックとしてConfigから読み込み
+        print("Warning: Using hardcoded API key from Config. Consider setting up environment variables.")
+        return Config.revenueCatAPIKey
+    }
 }
 
 @main
