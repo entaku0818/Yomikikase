@@ -10,56 +10,55 @@ struct SubscriptionView: View {
     @State private var alertMessage = ""
     
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 24) {
-                    // Header
-                    Text("Premium Features")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                        .padding(.top)
-                    
-                    // Features list
-                    featuresSection
-                    
-                    // Subscription options
-                    subscriptionOptionsSection
-                    
-                    // Restore purchases button
-                    Button(action: {
-                        Task {
-                            await restorePurchases()
-                        }
-                    }) {
-                        Text("Restore Purchases")
-                            .foregroundColor(.blue)
-                    }
+        ScrollView {
+            VStack(spacing: 24) {
+                // Header
+                Text("Premium Features")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
                     .padding(.top)
-                    
-                    Spacer()
-                }
-                .padding()
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button("Close") {
-                        dismiss()
+                
+                // Features list
+                featuresSection
+                
+                // Subscription options
+                subscriptionOptionsSection
+                
+                // Restore purchases button
+                Button(action: {
+                    Task {
+                        await restorePurchases()
                     }
+                }) {
+                    Text("Restore Purchases")
+                        .foregroundColor(.blue)
+                }
+                .padding(.top)
+                
+                Spacer()
+            }
+            .padding()
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationTitle("Premium")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("Close") {
+                    dismiss()
                 }
             }
-            .alert(isPresented: $showingAlert) {
-                Alert(
-                    title: Text(alertTitle),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
-            .onAppear {
-                Task {
-                    await viewModel.fetchSubscriptionPlan()
-                    isLoading = false
-                }
+        }
+        .alert(isPresented: $showingAlert) {
+            Alert(
+                title: Text(alertTitle),
+                message: Text(alertMessage),
+                dismissButton: .default(Text("OK"))
+            )
+        }
+        .onAppear {
+            Task {
+                await viewModel.fetchSubscriptionPlan()
+                isLoading = false
             }
         }
     }

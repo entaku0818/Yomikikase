@@ -37,6 +37,7 @@ struct SettingsReducer: Reducer {
         var successMessage: String = "保存しました"
         var showDeleteConfirmation: Bool = false
         var itemToDelete: UUID?
+        var showSubscriptionView: Bool = false
     }
 
     enum Action: Equatable, Sendable {
@@ -56,6 +57,8 @@ struct SettingsReducer: Reducer {
         case confirmDelete(UUID)
         case cancelDelete
         case executeDelete
+        case navigateToSubscription
+        case setSubscriptionNavigation(Bool)
     }
 
     var body: some Reducer<State, Action> {
@@ -211,6 +214,13 @@ struct SettingsReducer: Reducer {
                 return .run { send in
                     await send(.deleteSpeech(id))
                 }
+            case .navigateToSubscription:
+                state.showSubscriptionView = true
+                return .none
+                
+            case .setSubscriptionNavigation(let isPresented):
+                state.showSubscriptionView = isPresented
+                return .none
             }
         }
     }

@@ -49,12 +49,29 @@ struct LanguageSettingView: View {
 
                             }
                         }
+                        
+                        Section(header: Text("プレミアム機能")) {
                             Button(action: {
-                                            viewStore.send(.resetToDefault)
-                                        }) {
-                                            Text("読み上げ設定をデフォルト値に戻す")
-                                                .foregroundColor(.red)
+                                viewStore.send(.navigateToSubscription)
+                            }) {
+                                HStack {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
+                                    Text("プレミアム機能を購入する")
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.gray)
+                                }
                             }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        Button(action: {
+                                    viewStore.send(.resetToDefault)
+                                }) {
+                                    Text("読み上げ設定をデフォルト値に戻す")
+                                        .foregroundColor(.red)
+                        }
 
                     }
                     Spacer()
@@ -63,6 +80,14 @@ struct LanguageSettingView: View {
                 .navigationBarTitle("Settings")
                 .onAppear {
                     viewStore.send(.onAppear)
+                }
+                .navigationDestination(
+                    isPresented: viewStore.binding(
+                        get: \.showSubscriptionView,
+                        send: SettingsReducer.Action.setSubscriptionNavigation
+                    )
+                ) {
+                    SubscriptionView()
                 }
             }
 
