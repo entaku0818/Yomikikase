@@ -37,6 +37,9 @@ struct SettingsReducer: Reducer {
         var successMessage: String = "保存しました"
         var showDeleteConfirmation: Bool = false
         var itemToDelete: UUID?
+        
+        // サブスクリプション画面遷移用フラグ
+        var path = NavigationPath()
     }
 
     enum Action: Equatable, Sendable {
@@ -56,6 +59,10 @@ struct SettingsReducer: Reducer {
         case confirmDelete(UUID)
         case cancelDelete
         case executeDelete
+        
+        // サブスクリプション関連のアクション
+        case navigateToSubscription
+        case navigateBack
     }
 
     var body: some Reducer<State, Action> {
@@ -211,6 +218,13 @@ struct SettingsReducer: Reducer {
                 return .run { send in
                     await send(.deleteSpeech(id))
                 }
+            case .navigateToSubscription:
+                state.path.append("subscription")
+                return .none
+                
+            case .navigateBack:
+                state.path.removeLast()
+                return .none
             }
         }
     }
