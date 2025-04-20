@@ -7,17 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */; };
 		6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */; };
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
-		614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 614F56D62B11B81F00E21FE9 /* SpeechView.swift */; };
-		614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 614F56D82B11B82000E21FE9 /* Assets.xcassets */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
-		616965A92C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */; };
-		616AA36A2C02FF1000C7705A /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 616AA3692C02FF1000C7705A /* MainView.swift */; };
-		6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */; };
-		619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
 		61DCF80A2D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCF8092D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift */; };
 		61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */; };
@@ -43,30 +36,28 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReducerTests.swift; sourceTree = "<group>"; };
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		614F56D62B11B81F00E21FE9 /* SpeechView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeechView.swift; sourceTree = "<group>"; };
-		614F56D82B11B82000E21FE9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposeViewControllerWrapper.swift; sourceTree = "<group>"; };
-		616AA3692C02FF1000C7705A /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
-		6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceYourTextApp.swift; sourceTree = "<group>"; };
-		619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdmobBannerView.swift; sourceTree = "<group>"; };
-		619AE5F12BAD5BAD00CE4C4C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		61DCF8092D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderFeatureTests.swift; sourceTree = "<group>"; };
 		61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseTests.swift; sourceTree = "<group>"; };
 		61E1FA062C03121200155D23 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
 		61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		61D9D32F2DB52E9A0001F08F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 614F56D02B11B81F00E21FE9 /* VoiceYourText */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		612C89DC2D856C8700614ED0 /* setting */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = setting; sourceTree = "<group>"; };
-		612C89E92D856CA400614ED0 /* data */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = data; sourceTree = "<group>"; };
-		612C89F42D856CA700614ED0 /* PDFReader */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = PDFReader; sourceTree = "<group>"; };
-		612C8A052D856CAB00614ED0 /* locate */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = locate; sourceTree = "<group>"; };
-		61D51EDC2D86FAF2005524A7 /* Preview Content */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Preview Content"; sourceTree = "<group>"; };
+		61D9D3152DB52E9A0001F08F /* VoiceYourText */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (61D9D32F2DB52E9A0001F08F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VoiceYourText; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,7 +92,7 @@
 		614F56C82B11B81F00E21FE9 = {
 			isa = PBXGroup;
 			children = (
-				614F56D32B11B81F00E21FE9 /* VoiceYourText */,
+				61D9D3152DB52E9A0001F08F /* VoiceYourText */,
 				61E1FA042C0311FD00155D23 /* VoiceYourTextTests */,
 				61E1FA082C03121200155D23 /* VoiceYourTextUITests */,
 				614F56D22B11B81F00E21FE9 /* Products */,
@@ -116,26 +107,6 @@
 				614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		614F56D32B11B81F00E21FE9 /* VoiceYourText */ = {
-			isa = PBXGroup;
-			children = (
-				612C8A052D856CAB00614ED0 /* locate */,
-				619AE5F12BAD5BAD00CE4C4C /* Info.plist */,
-				610329FA2B9D948600EBB3AC /* GoogleService-Info.plist */,
-				6183DC5B2B89732600183220 /* VoiceYourTextApp.swift */,
-				612C89DC2D856C8700614ED0 /* setting */,
-				612C89F42D856CA700614ED0 /* PDFReader */,
-				612C89E92D856CA400614ED0 /* data */,
-				614F56D62B11B81F00E21FE9 /* SpeechView.swift */,
-				614F56D82B11B82000E21FE9 /* Assets.xcassets */,
-				61D51EDC2D86FAF2005524A7 /* Preview Content */,
-				619AE5EC2BAD5AA300CE4C4C /* AdmobBannerView.swift */,
-				616AA3692C02FF1000C7705A /* MainView.swift */,
-				616965A82C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift */,
-			);
-			path = VoiceYourText;
 			sourceTree = "<group>";
 		};
 		61E1FA042C0311FD00155D23 /* VoiceYourTextTests */ = {
@@ -173,11 +144,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				612C89DC2D856C8700614ED0 /* setting */,
-				612C89E92D856CA400614ED0 /* data */,
-				612C89F42D856CA700614ED0 /* PDFReader */,
-				612C8A052D856CAB00614ED0 /* locate */,
-				61D51EDC2D86FAF2005524A7 /* Preview Content */,
+				61D9D3152DB52E9A0001F08F /* VoiceYourText */,
 			);
 			name = VoiceYourText;
 			packageProductDependencies = (
@@ -289,8 +256,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				610329FB2B9D948600EBB3AC /* GoogleService-Info.plist in Resources */,
-				614F56D92B11B82000E21FE9 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,11 +280,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				614F56D72B11B81F00E21FE9 /* SpeechView.swift in Sources */,
-				619AE5ED2BAD5AA300CE4C4C /* AdmobBannerView.swift in Sources */,
-				616AA36A2C02FF1000C7705A /* MainView.swift in Sources */,
-				6183DC5C2B89732600183220 /* VoiceYourTextApp.swift in Sources */,
-				616965A92C15F5D6008F97AE /* MailComposeViewControllerWrapper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -554,7 +514,6 @@
 		614F56F92B11B82000E21FE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -574,7 +533,6 @@
 		614F56FA2B11B82000E21FE9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -594,7 +552,6 @@
 		614F56FC2B11B82000E21FE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
@@ -612,7 +569,6 @@
 		614F56FD2B11B82000E21FE9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
