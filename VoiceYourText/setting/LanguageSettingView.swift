@@ -13,28 +13,9 @@ struct LanguageSettingView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
 
     var body: some View {
-        WithViewStore(self.store, observe: { $0 }) { viewStore in
-            NavigationStack(path: viewStore.binding(
-                get: \.path,
-                send: { _ in .navigateBack }
-            )) {
+            WithViewStore(self.store, observe: { $0 }) { viewStore in
                 VStack {
                     Form {
-                        Section(header: Text("プレミアム")) {
-                            Button(action: {
-                                viewStore.send(.navigateToSubscription)
-                            }) {
-                                HStack {
-                                    Image(systemName: "crown.fill")
-                                        .foregroundColor(.yellow)
-                                    Text("プレミアムプランにアップグレード")
-                                    Spacer()
-                                    Image(systemName: "chevron.right")
-                                        .foregroundColor(.gray)
-                                }
-                            }
-                        }
-                        
                         Section(header: Text("Language")) {
                             NavigationLink(destination: LanguageSelectionView(store: store)) {
                                 HStack {
@@ -83,15 +64,8 @@ struct LanguageSettingView: View {
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
-                .navigationDestination(for: String.self) { destination in
-                    if destination == "subscription" {
-                        SubscriptionView()
-                            .navigationTitle("プレミアムプラン")
-                            .navigationBarTitleDisplayMode(.inline)
-                    }
-                }
             }
-        }
+
     }
 }
 

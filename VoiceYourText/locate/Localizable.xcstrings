@@ -2,6 +2,7 @@
   "sourceLanguage" : "en",
   "strings" : {
     "Close" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {
@@ -1349,6 +1350,15 @@
           }
         }
       }
+    },
+    "プレミアム" : {
+
+    },
+    "プレミアムプラン" : {
+
+    },
+    "プレミアムプランにアップグレード" : {
+
     },
     "保存" : {
       "localizations" : {

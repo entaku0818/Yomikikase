@@ -3,9 +3,15 @@ import Foundation
 enum Config {
     // RevenueCat API Keys
     #if DEBUG
-    static let revenueCatAPIKey = "appl_YOUR_SANDBOX_API_KEY" // Replace with your sandbox API key
+    // サンドボックス環境（開発時）のAPIキー
+    // RevenueCatダッシュボード（https://app.revenuecat.com/）の
+    // Project Settings > API Keys からSandbox用のAPIキーを取得してください
+    static let revenueCatAPIKey = "appl_YOUR_ACTUAL_SANDBOX_API_KEY"
     #else
-    static let revenueCatAPIKey = "appl_YOUR_SANDBOX_API_KEY" // Replace with your production API key
+    // 本番環境のAPIキー
+    // RevenueCatダッシュボード（https://app.revenuecat.com/）の
+    // Project Settings > API Keys から本番用のAPIキーを取得してください
+    static let revenueCatAPIKey = "appl_YOUR_ACTUAL_PRODUCTION_API_KEY"
     #endif
     
 } 

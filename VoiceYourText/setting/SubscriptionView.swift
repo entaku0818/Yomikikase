@@ -10,46 +10,56 @@ struct SubscriptionView: View {
     @State private var alertMessage = ""
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 24) {
-                // Header
-                Text("Premium Features")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.top)
-                
-                // Features list
-                featuresSection
-                
-                // Subscription options
-                subscriptionOptionsSection
-                
-                // Restore purchases button
-                Button(action: {
-                    Task {
-                        await restorePurchases()
+        NavigationView {
+            ScrollView {
+                VStack(spacing: 24) {
+                    // Header
+                    Text("Premium Features")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.top)
+                    
+                    // Features list
+                    featuresSection
+                    
+                    // Subscription options
+                    subscriptionOptionsSection
+                    
+                    // Restore purchases button
+                    Button(action: {
+                        Task {
+                            await restorePurchases()
+                        }
+                    }) {
+                        Text("Restore Purchases")
+                            .foregroundColor(.blue)
                     }
-                }) {
-                    Text("Restore Purchases")
-                        .foregroundColor(.blue)
+                    .padding(.top)
+                    
+                    Spacer()
                 }
-                .padding(.top)
-                
-                Spacer()
+                .padding()
             }
-            .padding()
-        }
-        .alert(isPresented: $showingAlert) {
-            Alert(
-                title: Text(alertTitle),
-                message: Text(alertMessage),
-                dismissButton: .default(Text("OK"))
-            )
-        }
-        .onAppear {
-            Task {
-                await viewModel.fetchSubscriptionPlan()
-                isLoading = false
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Close") {
+                        dismiss()
+                    }
+                }
+            }
+            .alert(isPresented: $showingAlert) {
+                Alert(
+                    title: Text(alertTitle),
+                    message: Text(alertMessage),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            .onAppear {
+                Task {
+                    await viewModel.fetchSubscriptionPlan()
+                    isLoading = false
+                }
             }
         }
     }
