@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 71;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -320,6 +320,8 @@
 /* Begin XCBuildConfiguration section */
 		614F56F32B11B82000E21FE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 61D9D3152DB52E9A0001F08F /* VoiceYourText */;
+			baseConfigurationReferenceRelativePath = config/Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
@@ -383,6 +385,8 @@
 		};
 		614F56F42B11B82000E21FE9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 61D9D3152DB52E9A0001F08F /* VoiceYourText */;
+			baseConfigurationReferenceRelativePath = config/Release.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

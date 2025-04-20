@@ -12,7 +12,7 @@ class PurchaseManager: PurchaseManagerProtocol {
     static let shared = PurchaseManager()
 
     private enum Package {
-        static let pro = "$rc_monthly"
+        static let pro = "voiceNarrator_Pro_Mounthly"
         static let developerSupport = "developerSupport"
     }
 
