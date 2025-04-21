@@ -40,7 +40,7 @@ struct FeatureReducer {
       case .binding:
         return .none
 
-      case let .itemTapped(id):
+      case .itemTapped(_):
         // ここに処理を追加
         return .none
 
