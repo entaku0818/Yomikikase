@@ -23,12 +23,18 @@ struct FeatureReducer {
     }
   }
 
-  enum Action: BindableAction, Sendable {
+  enum Action: ViewAction, BindableAction {
     case binding(BindingAction<State>)
-    case itemTapped(Item.ID)
-    case toggleFavorite(Item.ID)
-    case loadItems
     case itemsLoaded([Item])
+    case toggleFavorite(Item.ID)
+    case view(View)
+
+    enum View {
+      case itemSelected(Item.ID)
+      case itemFavoriteToggled(Item.ID)
+      case refreshRequested
+      case loadItems // loadItems を View に移動
+    }
   }
 
   @Dependency(\.continuousClock) var clock
@@ -40,30 +46,39 @@ struct FeatureReducer {
       case .binding:
         return .none
 
-      case .itemTapped(_):
-        // ここに処理を追加
-        return .none
+      case let .view(viewAction):
+        switch viewAction {
+        case let .itemSelected(id):
+          // アイテム選択の処理
+          return .none
+
+        case let .itemFavoriteToggled(id):
+          return .send(.toggleFavorite(id))
+
+        case .refreshRequested:
+          return .send(.view(.loadItems))
+
+        case .loadItems:
+          state.isLoading = true
+          return .run { send in
+            // データのロードをシミュレート
+            try await clock.sleep(for: .seconds(1))
+
+            let items = [
+              Item(title: "アイテム1", description: "説明1"),
+              Item(title: "アイテム2", description: "説明2"),
+              Item(title: "アイテム3", description: "説明3")
+            ]
+
+            await send(.itemsLoaded(items))
+          }
+        }
 
       case let .toggleFavorite(id):
         if let index = state.items.firstIndex(where: { $0.id == id }) {
           state.items[index].isFavorite.toggle()
         }
         return .none
-
-      case .loadItems:
-        state.isLoading = true
-        return .run { send in
-          // データのロードをシミュレート
-          try await clock.sleep(for: .seconds(1))
-
-          let items = [
-            Item(title: "アイテム1", description: "説明1"),
-            Item(title: "アイテム2", description: "説明2"),
-            Item(title: "アイテム3", description: "説明3")
-          ]
-
-          await send(.itemsLoaded(items))
-        }
 
       case let .itemsLoaded(items):
         state.items = items
@@ -74,6 +89,7 @@ struct FeatureReducer {
   }
 }
 
+@ViewAction(for: FeatureReducer.self)
 struct FeatureView: View {
     @Perception.Bindable var store: StoreOf<FeatureReducer>
 
@@ -81,14 +97,13 @@ struct FeatureView: View {
     NavigationStack {
       VStack {
         // 検索フィールド
-          HStack {
-            Image(systemName: "magnifyingglass")
-              .foregroundColor(.gray)
-            TextField("検索...", text: $store.searchQuery)
+        HStack {
+          Image(systemName: "magnifyingglass")
+            .foregroundColor(.gray)
+          TextField("検索...", text: $store.searchQuery)
             .textFieldStyle(.roundedBorder)
-          }
-          .padding(.horizontal)
-
+        }
+        .padding(.horizontal)
 
         // リスト
         List {
@@ -108,7 +123,7 @@ struct FeatureView: View {
               Spacer()
 
               Button {
-                store.send(.toggleFavorite(item.id))
+                send(.itemFavoriteToggled(item.id))
               } label: {
                 Image(systemName: item.isFavorite ? "star.fill" : "star")
                   .foregroundColor(item.isFavorite ? .yellow : .gray)
@@ -117,11 +132,14 @@ struct FeatureView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-              store.send(.itemTapped(item.id))
+              send(.itemSelected(item.id))
             }
           }
         }
         .listStyle(.plain)
+        .refreshable {
+            await send(.refreshRequested).finish()
+        }
         .overlay {
           if store.isLoading {
             ProgressView()
@@ -132,7 +150,7 @@ struct FeatureView: View {
       }
       .navigationTitle("機能名")
       .onAppear {
-        store.send(.loadItems)
+          send(.loadItems)
       }
     }
   }
