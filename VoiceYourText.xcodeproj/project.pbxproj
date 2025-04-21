@@ -7,13 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */; };
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
-		61DCF80A2D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61DCF8092D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift */; };
-		61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
@@ -36,12 +33,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsReducerTests.swift; sourceTree = "<group>"; };
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		61DCF8092D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFReaderFeatureTests.swift; sourceTree = "<group>"; };
-		61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseTests.swift; sourceTree = "<group>"; };
 		61E1FA062C03121200155D23 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
 		61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -57,6 +51,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		616D02572DB661FC00244A56 /* VoiceYourTextTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = VoiceYourTextTests; sourceTree = "<group>"; };
 		61D9D3152DB52E9A0001F08F /* VoiceYourText */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (61D9D32F2DB52E9A0001F08F /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = VoiceYourText; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
@@ -93,7 +88,7 @@
 			isa = PBXGroup;
 			children = (
 				61D9D3152DB52E9A0001F08F /* VoiceYourText */,
-				61E1FA042C0311FD00155D23 /* VoiceYourTextTests */,
+				616D02572DB661FC00244A56 /* VoiceYourTextTests */,
 				61E1FA082C03121200155D23 /* VoiceYourTextUITests */,
 				614F56D22B11B81F00E21FE9 /* Products */,
 			);
@@ -107,16 +102,6 @@
 				614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		61E1FA042C0311FD00155D23 /* VoiceYourTextTests */ = {
-			isa = PBXGroup;
-			children = (
-				61E1FA032C0311FD00155D23 /* YomikikaseTests.swift */,
-				6115A0C12CD9191F00554C0F /* SettingsReducerTests.swift */,
-				61DCF8092D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift */,
-			);
-			path = VoiceYourTextTests;
 			sourceTree = "<group>";
 		};
 		61E1FA082C03121200155D23 /* VoiceYourTextUITests */ = {
@@ -169,6 +154,9 @@
 			);
 			dependencies = (
 				614F56E32B11B82000E21FE9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				616D02572DB661FC00244A56 /* VoiceYourTextTests */,
 			);
 			name = VoiceYourTextTests;
 			productName = VoiceYourTextTests;
@@ -287,9 +275,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				61E1FA052C0311FD00155D23 /* YomikikaseTests.swift in Sources */,
-				61DCF80A2D3F1A70005F7DF1 /* PDFReaderFeatureTests.swift in Sources */,
-				6115A0C22CD9191F00554C0F /* SettingsReducerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
