@@ -8,12 +8,11 @@ protocol PurchaseManagerProtocol {
 }
 
 class PurchaseManager: PurchaseManagerProtocol {
-    private let logger = OSLog(subsystem: "com.entaku.VoiLog", category: "Purchase")
+    private let logger = OSLog(subsystem: "com.entaku.VoiceYourText", category: "Purchase")
     static let shared = PurchaseManager()
 
     private enum Package {
-        static let pro = "voiceNarrator_Pro_Mounthly"
-        static let developerSupport = "developerSupport"
+        static let pro = "$rc_monthly"
     }
 
     private init() {}
