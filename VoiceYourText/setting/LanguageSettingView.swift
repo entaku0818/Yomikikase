@@ -50,21 +50,21 @@ struct LanguageSettingView: View {
                             }
                         }
                         
-//                        Section(header: Text("プレミアム機能")) {
-//                            Button(action: {
-//                                viewStore.send(.navigateToSubscription)
-//                            }) {
-//                                HStack {
-//                                    Image(systemName: "star.fill")
-//                                        .foregroundColor(.yellow)
-//                                    Text("プレミアム機能を購入する")
-//                                    Spacer()
-//                                    Image(systemName: "chevron.right")
-//                                        .foregroundColor(.gray)
-//                                }
-//                            }
-//                            .buttonStyle(PlainButtonStyle())
-//                        }
+                        Section(header: Text("プレミアム機能")) {
+                            Button(action: {
+                                viewStore.send(.navigateToSubscription)
+                            }) {
+                                HStack {
+                                    Image(systemName: "star.fill")
+                                        .foregroundColor(.yellow)
+                                    Text("プレミアム機能を購入する")
+                                    Spacer()
+                                    Image(systemName: "chevron.right")
+                                        .foregroundColor(.gray)
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
                         
                         Button(action: {
                                     viewStore.send(.resetToDefault)
