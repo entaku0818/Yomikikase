@@ -1,5 +1,6 @@
 import SwiftUI
 import RevenueCat
+import SafariServices
 
 struct SubscriptionView: View {
     @Environment(\.dismiss) private var dismiss
@@ -8,6 +9,12 @@ struct SubscriptionView: View {
     @State private var showingAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
+    @State private var showSafari = false
+    @State private var safariURL: URL?
+    
+    // プライバシーポリシーと利用規約のURL
+    private let privacyPolicyURL = URL(string: "https://voiceyourtext.web.app/privacy_policy.html")!
+    private let termsOfServiceURL = URL(string: "https://voiceyourtext.web.app/terms_of_service.html")!
     
     var body: some View {
         ScrollView {
@@ -23,6 +30,12 @@ struct SubscriptionView: View {
                 
                 // Subscription options
                 subscriptionOptionsSection
+                
+                // サブスクリプション詳細説明
+                subscriptionDetailsSection
+                
+                // プライバシーポリシーと利用規約リンク
+                legalLinksSection
                 
                 // Restore purchases button
                 Button(action: {
@@ -54,6 +67,11 @@ struct SubscriptionView: View {
                 message: Text(alertMessage),
                 dismissButton: .default(Text("OK"))
             )
+        }
+        .sheet(isPresented: $showSafari) {
+            if let url = safariURL {
+                SafariView(url: url)
+            }
         }
         .onAppear {
             Task {
@@ -125,6 +143,65 @@ struct SubscriptionView: View {
         }
     }
     
+    // サブスクリプションの詳細情報セクション
+    private var subscriptionDetailsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("サブスクリプション情報")
+                .font(.headline)
+                .padding(.bottom, 4)
+            
+            Text("• プラン名: VoiceYourText Premium（月額）")
+                .font(.subheadline)
+            
+            Text("• 料金: 480円/月（税込）")
+                .font(.subheadline)
+            
+            Text("• 期間: 1ヶ月間（自動更新）")
+                .font(.subheadline)
+            
+            Text("• 更新: 各期間の終了日の24時間前までに自動更新されます")
+                .font(.subheadline)
+            
+            Text("• 解約: いつでもApp Storeの設定からキャンセル可能です")
+                .font(.subheadline)
+                .padding(.bottom, 4)
+            
+            Text("※ お支払いはiTunesアカウントに請求されます。\n※ 現在の期間が終了する24時間以上前に自動更新をオフにしない限り、サブスクリプションは自動的に更新されます。\n※ 更新料金は期間終了の24時間以内にアカウントに請求されます。")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(12)
+    }
+    
+    // 利用規約とプライバシーポリシーへのリンクセクション
+    private var legalLinksSection: some View {
+        HStack(spacing: 20) {
+            Button(action: {
+                safariURL = privacyPolicyURL
+                showSafari = true
+            }) {
+                Text("プライバシーポリシー")
+                    .font(.footnote)
+                    .foregroundColor(.blue)
+                    .underline()
+            }
+            
+            Button(action: {
+                safariURL = termsOfServiceURL
+                showSafari = true
+            }) {
+                Text("利用規約")
+                    .font(.footnote)
+                    .foregroundColor(.blue)
+                    .underline()
+            }
+        }
+        .padding(.top, 8)
+    }
+    
     private func purchaseMonthly() async {
         viewModel.isProcessing = true
         defer { viewModel.isProcessing = false }
@@ -177,6 +254,18 @@ struct SubscriptionView: View {
             alertMessage = "予期せぬエラーが発生しました: \(error.localizedDescription)"
         }
         showingAlert = true
+    }
+}
+
+// SafariView for displaying web content
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+    
+    func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+    
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: UIViewControllerRepresentableContext<SafariView>) {
     }
 }
 
