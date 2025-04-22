@@ -80,22 +80,17 @@ struct SubscriptionView: View {
     private var subscriptionOptionsSection: some View {
         VStack(spacing: 16) {
             if isLoading {
-                ProgressView()
-                    .padding()
-                
-                // バックアップとして読み込み中でも購入ボタンを表示
+                // 読み込み中はローディング状態のカードを表示
                 SubscriptionOptionCard(
-                    title: "Premium Plan",
-                    price: "¥480",
+                    title: "",  // ローディング中は空文字
+                    price: "",  // ローディング中は空文字
                     period: "Monthly",
                     isPopular: true,
                     action: {
-                        Task {
-                            await purchaseMonthly()
-                        }
-                    }
+                        // 読み込み中は何もしない
+                    },
+                    isLoading: true
                 )
-                .opacity(0.5) // 読み込み中は半透明に
             } else {
                 // 情報取得成功時
                 if let monthlyPlan = viewModel.monthlyPlan {
@@ -108,20 +103,22 @@ struct SubscriptionView: View {
                             Task {
                                 await purchaseMonthly()
                             }
-                        }
+                        },
+                        isLoading: viewModel.isProcessing
                     )
                 } else {
-                    // 情報取得失敗時もデフォルト値で表示
+                    // 情報取得失敗時もローディング状態のカードを表示
                     SubscriptionOptionCard(
-                        title: "Premium Plan",
-                        price: "¥480",
+                        title: "",
+                        price: "",
                         period: "Monthly",
                         isPopular: true,
                         action: {
                             Task {
                                 await purchaseMonthly()
                             }
-                        }
+                        },
+                        isLoading: true
                     )
                 }
             }
@@ -129,8 +126,8 @@ struct SubscriptionView: View {
     }
     
     private func purchaseMonthly() async {
-        isLoading = true
-        defer { isLoading = false }
+        viewModel.isProcessing = true
+        defer { viewModel.isProcessing = false }
         
         do {
             let success = try await PurchaseManager.shared.purchasePro()
@@ -145,8 +142,8 @@ struct SubscriptionView: View {
     }
     
     private func restorePurchases() async {
-        isLoading = true
-        defer { isLoading = false }
+        viewModel.isProcessing = true
+        defer { viewModel.isProcessing = false }
         
         do {
             let success = try await PurchaseManager.shared.restorePurchases()
@@ -213,6 +210,7 @@ struct SubscriptionOptionCard: View {
     let period: String
     let isPopular: Bool
     let action: () -> Void
+    var isLoading: Bool = false
     
     var body: some View {
         VStack {
@@ -229,26 +227,51 @@ struct SubscriptionOptionCard: View {
             }
             
             VStack(spacing: 12) {
-                Text(title)
-                    .font(.headline)
-                
-                Text(price)
-                    .font(.title)
-                    .fontWeight(.bold)
+                if isLoading {
+                    // ローディング中はプレースホルダーを表示
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 20)
+                        .cornerRadius(4)
+                        .padding(.horizontal, 30)
+                        
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 30)
+                        .cornerRadius(4)
+                        .padding(.horizontal, 60)
+                } else {
+                    Text(title)
+                        .font(.headline)
+                    
+                    Text(price)
+                        .font(.title)
+                        .fontWeight(.bold)
+                }
                 
                 Text(period)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                 
                 Button(action: action) {
-                    Text("購入する")
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .cornerRadius(12)
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                    } else {
+                        Text("購入する")
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(12)
+                    }
                 }
+                .disabled(isLoading)
                 .padding(.top, 8)
             }
             .padding()
@@ -258,12 +281,14 @@ struct SubscriptionOptionCard: View {
                 RoundedRectangle(cornerRadius: 16)
                     .stroke(isPopular ? Color.blue : Color.clear, lineWidth: 2)
             )
+            .opacity(isLoading ? 0.7 : 1)
         }
     }
 }
 
 class SubscriptionViewModel: ObservableObject {
     @Published var monthlyPlan: (name: String, price: String)?
+    @Published var isProcessing: Bool = false
     
     func fetchSubscriptionPlan() async {
         do {
