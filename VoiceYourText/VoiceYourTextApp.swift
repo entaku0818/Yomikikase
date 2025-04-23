@@ -45,9 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return envAPIKey
         }
         
-        // フォールバックとしてConfigから読み込み
-        print("Warning: Using hardcoded API key from Config. Consider setting up environment variables.")
-        return Config.revenueCatAPIKey
+        // APIキーが見つからない場合はエラーメッセージを表示して終了
+        fatalError("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
     }
 }
 
