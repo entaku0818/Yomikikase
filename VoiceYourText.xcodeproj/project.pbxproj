@@ -428,6 +428,8 @@
 		};
 		614F56F62B11B82000E21FE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 61D9D3152DB52E9A0001F08F /* VoiceYourText */;
+			baseConfigurationReferenceRelativePath = config/Debug.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -465,6 +467,8 @@
 		};
 		614F56F72B11B82000E21FE9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 61D9D3152DB52E9A0001F08F /* VoiceYourText */;
+			baseConfigurationReferenceRelativePath = config/Release.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
