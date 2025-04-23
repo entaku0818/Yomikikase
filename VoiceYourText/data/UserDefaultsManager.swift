@@ -65,4 +65,39 @@ class UserDefaultsManager {
              defaults.set(newValue, forKey: "SpeechPitch")
          }
      }
+    
+    // プレミアムユーザーフラグを保存するプロパティ
+    var isPremiumUser: Bool {
+        get {
+            defaults.bool(forKey: "IsPremiumUser")
+        }
+        set {
+            defaults.set(newValue, forKey: "IsPremiumUser")
+            // 変更を即座に同期して他の場所でも反映されるようにする
+            defaults.synchronize()
+            
+            // 通知を送信して、アプリの他の部分に変更を知らせる
+            NotificationCenter.default.post(
+                name: Notification.Name("PremiumStatusDidChange"),
+                object: nil,
+                userInfo: ["isPremium": newValue]
+            )
+        }
+    }
+    
+    // プレミアムユーザーの購入日を保存するプロパティ
+    var premiumPurchaseDate: Date? {
+        get {
+            defaults.object(forKey: "PremiumPurchaseDate") as? Date
+        }
+        set {
+            defaults.set(newValue, forKey: "PremiumPurchaseDate")
+        }
+    }
+    
+    // すべてのプレミアム関連データをリセット
+    func resetPremiumStatus() {
+        isPremiumUser = false
+        premiumPurchaseDate = nil
+    }
 }

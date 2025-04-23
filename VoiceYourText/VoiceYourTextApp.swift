@@ -21,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let apiKey = getRevenueCatAPIKey()
         Purchases.configure(withAPIKey: apiKey)
         
+        // アプリ起動時にプレミアムステータスを確認
+        Task {
+            await PurchaseManager.shared.checkPremiumStatus()
+        }
+        
         return true
     }
     
@@ -49,6 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 @main
 struct VoiceYourTextApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @State private var isPremiumChecked = false
 
     let initialState = Speeches.State(
         speechList: IdentifiedArrayOf(uniqueElements: []),
@@ -62,6 +68,15 @@ struct VoiceYourTextApp: App {
                 Speeches()
             }
             )
+            .onAppear {
+                // UIアプリケーションデリゲートの初期化後にもう一度チェック
+                if !isPremiumChecked {
+                    isPremiumChecked = true
+                    Task {
+                        await PurchaseManager.shared.checkPremiumStatus()
+                    }
+                }
+            }
         }
     }
 }
