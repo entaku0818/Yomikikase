@@ -51,13 +51,6 @@ struct SubscriptionView: View {
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("Premium")
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("Close") {
-                    dismiss()
-                }
-            }
-        }
         .alert(isPresented: $showingAlert) {
             Alert(
                 title: Text(alertTitle),
@@ -85,7 +78,7 @@ struct SubscriptionView: View {
                 .padding(.bottom, 4)
             
             FeatureRow(icon: "xmark.circle.fill", title: "広告の削除", description: "アプリ内の広告をすべて削除します")
-            FeatureRow(icon: "doc.fill", title: "PDFファイルの登録", description: "PDFファイルを登録して音声読み上げに利用できます")
+            FeatureRow(icon: "doc.fill", title: "PDFファイルの登録", description: "PDFファイルを3つ以上登録できるようになります")
         }
         .padding()
         .background(Color(.secondarySystemBackground))
@@ -97,9 +90,8 @@ struct SubscriptionView: View {
             if isLoading {
                 // 読み込み中はローディング状態のカードを表示
                 SubscriptionOptionCard(
-                    title: "",  // ローディング中は空文字
-                    price: "",  // ローディング中は空文字
-                    period: "Monthly",
+                    title: viewModel.monthlyPlan?.name ?? "",  // ローディング中は空文字
+                    price: viewModel.monthlyPlan?.price ?? "",  // ローディング中は空文字
                     isPopular: true,
                     action: {
                         // 読み込み中は何もしない
@@ -112,7 +104,6 @@ struct SubscriptionView: View {
                     SubscriptionOptionCard(
                         title: monthlyPlan.name,
                         price: monthlyPlan.price,
-                        period: "Monthly",
                         isPopular: true,
                         action: {
                             Task {
@@ -126,7 +117,6 @@ struct SubscriptionView: View {
                     SubscriptionOptionCard(
                         title: "",
                         price: "",
-                        period: "Monthly",
                         isPopular: true,
                         action: {
                             Task {
@@ -260,7 +250,6 @@ struct FeatureRow: View {
 struct SubscriptionOptionCard: View {
     let title: String
     let price: String
-    let period: String
     let isPopular: Bool
     let action: () -> Void
     var isLoading: Bool = false
@@ -301,10 +290,6 @@ struct SubscriptionOptionCard: View {
                         .font(.title)
                         .fontWeight(.bold)
                 }
-                
-                Text(period)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
                 
                 Button(action: action) {
                     if isLoading {
