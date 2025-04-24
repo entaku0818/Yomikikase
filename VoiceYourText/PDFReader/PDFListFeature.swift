@@ -34,6 +34,7 @@ struct PDFListFeature: Reducer {
         case loadPDFFiles
         case pdfFilesLoaded([PDFFile])
         case showFilePicker
+        case hideFilePicker
         case selectPDFFile(URL)
         case deletePDFFile(PDFFile)
     }
@@ -54,6 +55,10 @@ struct PDFListFeature: Reducer {
 
             case .showFilePicker:
                 state.showingFilePicker = true
+                return .none
+
+            case .hideFilePicker:
+                state.showingFilePicker = false
                 return .none
 
             case let .selectPDFFile(url):
@@ -224,7 +229,7 @@ struct PDFListView: View {
             .fileImporter(
                 isPresented: viewStore.binding(
                     get: \.showingFilePicker,
-                    send: { _ in .showFilePicker }
+                    send: { value in value ? .showFilePicker : .hideFilePicker }
                 ),
                 allowedContentTypes: [UTType.pdf],
                 allowsMultipleSelection: false
