@@ -140,6 +140,12 @@ struct PDFReaderView: View {
                 viewStore.send(.loadPDF(url))
             }
         }
+        .onDisappear {
+            // 画面を離れる時に音声を停止
+            if viewStore.isReading {
+                viewStore.send(.stopReading)
+            }
+        }
     }
 }
 
