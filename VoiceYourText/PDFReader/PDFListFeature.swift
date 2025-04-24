@@ -21,6 +21,15 @@ struct PDFListFeature: Reducer {
     struct State: Equatable {
         var pdfFiles: [PDFFile] = []
         var showingFilePicker = false
+        var showingPremiumAlert = false // プレミアムアラート表示フラグ
+        
+        // 最大登録可能なPDFファイル数 (無料版)
+        let maxFreePDFCount = 3
+        
+        // 無料ユーザーの場合に登録制限に達しているかチェック
+        var hasReachedFreeLimit: Bool {
+            !UserDefaultsManager.shared.isPremiumUser && pdfFiles.count >= maxFreePDFCount
+        }
     }
 
     struct PDFFile: Equatable, Identifiable {
@@ -37,6 +46,8 @@ struct PDFListFeature: Reducer {
         case hideFilePicker
         case selectPDFFile(URL)
         case deletePDFFile(PDFFile)
+        case showPremiumAlert
+        case hidePremiumAlert
     }
 
     var body: some Reducer<State, Action> {
@@ -54,11 +65,23 @@ struct PDFListFeature: Reducer {
                 return .none
 
             case .showFilePicker:
+                // 登録制限に達している場合はアラートを表示
+                if state.hasReachedFreeLimit {
+                    return .send(.showPremiumAlert)
+                }
                 state.showingFilePicker = true
                 return .none
 
             case .hideFilePicker:
                 state.showingFilePicker = false
+                return .none
+                
+            case .showPremiumAlert:
+                state.showingPremiumAlert = true
+                return .none
+                
+            case .hidePremiumAlert:
+                state.showingPremiumAlert = false
                 return .none
 
             case let .selectPDFFile(url):
@@ -180,6 +203,7 @@ struct PDFListFeature: Reducer {
 struct PDFListView: View {
     let store: StoreOf<PDFListFeature>
     @ObservedObject var viewStore: ViewStoreOf<PDFListFeature>
+    @State private var showingSubscription = false
 
     init(store: StoreOf<PDFListFeature>) {
         self.store = store
@@ -215,6 +239,25 @@ struct PDFListView: View {
                     }
                 }
                 
+                // 無料ユーザーの場合に登録制限の表示
+                if !UserDefaultsManager.shared.isPremiumUser {
+                    HStack {
+                        Text("無料版: \(viewStore.pdfFiles.count)/\(viewStore.maxFreePDFCount)ファイル")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        Spacer()
+                        
+                        Button("プレミアムにアップグレード") {
+                            showingSubscription = true
+                        }
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 4)
+                }
+                
                 // 広告バナーを追加
                 AdmobBannerView().frame(width: .infinity, height: 50)
             }
@@ -242,6 +285,20 @@ struct PDFListView: View {
                 case .failure(let error):
                     print("Error selecting file: \(error.localizedDescription)")
                 }
+            }
+            .alert("プレミアム機能が必要です", isPresented: viewStore.binding(
+                get: \.showingPremiumAlert,
+                send: { _ in .hidePremiumAlert }
+            )) {
+                Button("キャンセル", role: .cancel) { }
+                Button("詳細を見る") {
+                    showingSubscription = true
+                }
+            } message: {
+                Text("無料版では最大\(viewStore.maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
+            }
+            .sheet(isPresented: $showingSubscription) {
+                SubscriptionView()
             }
         }
         .onAppear {
