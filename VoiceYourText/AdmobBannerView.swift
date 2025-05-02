@@ -9,16 +9,25 @@ import UIKit
 import SwiftUI
 
 struct AdmobBannerView: UIViewRepresentable {
+    @EnvironmentObject private var adConfig: AdConfig
+    
     func makeUIView(context: Context) -> GADBannerView {
-        let adSize = GADAdSizeFromCGSize(CGSize(width: 300, height: 50))
-        let view = GADBannerView(adSize: adSize)
+        // 画面の幅を取得
+        let screenWidth = UIScreen.main.bounds.width
 
-        #if DEBUG
-        view.adUnitID = "ca-app-pub-3940256099942544/2435281174"
-        #else
-        view.adUnitID = "ca-app-pub-3484697221349891/1120336868"
-        #endif
-        view.rootViewController = UIApplication.shared.windows.first?.rootViewController
+        // バナーサイズを画面幅に合わせる
+        let adaptiveSize = GADCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(screenWidth)
+
+        let view = GADBannerView(adSize: adaptiveSize)
+
+        view.adUnitID = adConfig.bannerAdUnitID
+
+        // iOS 13以降での推奨方法
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let rootViewController = windowScene.windows.first?.rootViewController {
+            view.rootViewController = rootViewController
+        }
+
         view.delegate = context.coordinator
         view.load(GADRequest())
         return view

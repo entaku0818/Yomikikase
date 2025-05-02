@@ -50,10 +50,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+// 広告設定を管理するクラス
+class AdConfig: ObservableObject {
+    static let shared = AdConfig()
+    let bannerAdUnitID: String
+    
+    private init() {
+        self.bannerAdUnitID = AdConfig.getAdUnitID()
+    }
+    
+    // 広告ユニットIDを取得するメソッド
+    private static func getAdUnitID() -> String {
+        #if DEBUG
+        return "ca-app-pub-3940256099942544/2435281174" // テスト用広告ユニットID
+        #else
+        // 環境変数から取得
+        if let envAdUnitID = ProcessInfo.processInfo.environment["ADMOB_BANNER_ID"],
+           !envAdUnitID.isEmpty {
+            print("Using AdMob banner ID from environment variable")
+            return envAdUnitID
+        }
+        
+        // 環境変数から取得できない場合はInfo.plistから取得
+        if let adUnitID = Bundle.main.infoDictionary?["ADMOB_BANNER_ID"] as? String,
+           !adUnitID.isEmpty {
+            print("Using AdMob banner ID from Info.plist")
+            return adUnitID
+        }
+        
+        // 広告ユニットIDが見つからない場合はエラーメッセージを表示して終了
+        fatalError("AdMob banner ID not found. Please set it in Info.plist or environment variable.")
+        #endif
+    }
+}
+
 @main
 struct VoiceYourTextApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var isPremiumChecked = false
+    @StateObject private var adConfig = AdConfig.shared
 
     let initialState = Speeches.State(
         speechList: IdentifiedArrayOf(uniqueElements: []),
@@ -67,6 +102,7 @@ struct VoiceYourTextApp: App {
                 Speeches()
             }
             )
+            .environmentObject(adConfig)
             .onAppear {
                 // UIアプリケーションデリゲートの初期化後にもう一度チェック
                 if !isPremiumChecked {
