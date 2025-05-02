@@ -1,0 +1,35 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# 広告設定管理ガイド
+
+## 概要
+プロジェクトの広告管理は [VoiceYourText/VoiceYourTextApp.swift](mdc:VoiceYourText/VoiceYourTextApp.swift) で `AdConfig` クラスを使用して一元管理されています。広告バナーの実装は [VoiceYourText/AdmobBannerView.swift](mdc:VoiceYourText/AdmobBannerView.swift) で行われています。
+
+## 広告ユニットID管理
+- デバッグ環境: テスト用広告ユニットIDを自動的に使用
+- 本番環境: 以下の優先順位で広告ユニットIDを取得
+  1. 環境変数 (`ADMOB_BANNER_ID`)
+  2. Info.plist (`ADMOB_BANNER_ID` キー)
+
+## 実装ガイドライン
+1. 新しいビューで広告を表示する場合:
+   ```swift
+   struct SomeView: View {
+       var body: some View {
+           VStack {
+               AdmobBannerView()
+               // 他のコンテンツ
+           }
+       }
+   }
+   ```
+
+2. 広告サイズは画面幅に応じて自動調整されます
+3. デバッグ/本番環境の切り替えは自動的に行われます
+
+## セキュリティ注意事項
+- 本番の広告ユニットIDは必ず環境変数または Info.plist で管理
+- ソースコード内での直接的な広告ユニットIDの記述は禁止

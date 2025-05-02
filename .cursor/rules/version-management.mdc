@@ -1,0 +1,49 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# バージョン管理とリリースガイド
+
+## バージョニング規則
+- バージョン形式: `v0.7.x`
+- パッチバージョン（x）は機能追加や重要なバグ修正時にインクリメント
+
+## リリースプロセス
+1. 変更をコミット
+   ```bash
+   git add .
+   git commit -m "feat/fix/refactor: 変更内容の説明"
+   git push origin main
+   ```
+
+2. タグ作成とプッシュ
+   ```bash
+   git tag -a v0.7.x -m "リリースの説明"
+   git push origin v0.7.x
+   ```
+
+3. GitHubリリース作成
+   ```bash
+   gh release create v0.7.x --title "Version 0.7.x" --notes "変更内容をマークダウンで記述"
+   ```
+
+## リリースノート形式
+```markdown
+## 変更内容
+
+### カテゴリ1
+- 変更点1
+- 変更点2
+
+### カテゴリ2
+- 変更点1
+- 変更点2
+```
+
+## タグ管理
+- タグの削除（必要な場合）
+  ```bash
+  git tag -d タグ名
+  git push origin :refs/tags/タグ名
+  ```
