@@ -90,7 +90,6 @@ struct Speeches: Reducer {
 
               return .none
 
-                return .none
             case .onTap:
                 return .none
             case .currentTextChanged(let newText):
@@ -170,14 +169,15 @@ struct SpeechView: View {
                     )
                     .padding()
 
-                    HStack {
-                        Button("読み上げる") {
-                            speak(text: viewStore.currentText)
+                    HStack (spacing: 8){
+                        Button(action: { speak(text: viewStore.currentText) }) {
+                            Image(systemName: "play.fill")
+                            Text("読み上げ開始")
                         }
-                        .padding()
 
-                        Button("停止する") {
-                            stopSpeaking()
+                        Button(action: { stopSpeaking() }) {
+                            Image(systemName: "stop.fill")
+                            Text("停止")
                         }
                         .padding()
                     }
