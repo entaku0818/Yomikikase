@@ -191,7 +191,9 @@ struct SpeechView: View {
                                 }
                         }
                     }
-                    AdmobBannerView().frame(width: .infinity, height: 50)
+                    if !UserDefaultsManager.shared.isPremiumUser {
+                        AdmobBannerView().frame(width: .infinity, height: 50)
+                    }
                 }
                 .sheet(
                   isPresented: viewStore.binding(

@@ -75,7 +75,9 @@ struct LanguageSettingView: View {
 
                     }
                     Spacer()
-                    AdmobBannerView().frame(width: .infinity, height: 50)
+                    if !UserDefaultsManager.shared.isPremiumUser {
+                        AdmobBannerView().frame(width: .infinity, height: 50)
+                    }
                 }
                 .navigationBarTitle("Settings")
                 .onAppear {

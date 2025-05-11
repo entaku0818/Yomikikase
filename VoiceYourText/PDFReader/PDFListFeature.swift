@@ -259,7 +259,9 @@ struct PDFListView: View {
                 }
                 
                 // 広告バナーを追加
-                AdmobBannerView().frame(width: .infinity, height: 50)
+                if !UserDefaultsManager.shared.isPremiumUser {
+                    AdmobBannerView().frame(width: .infinity, height: 50)
+                }
             }
             .navigationTitle("PDFファイル")
             .toolbar {
