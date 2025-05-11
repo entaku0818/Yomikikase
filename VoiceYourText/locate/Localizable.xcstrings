@@ -1080,6 +1080,7 @@
       }
     },
     "インポート" : {
+      "extractionState" : "stale",
       "localizations" : {
         "de" : {
           "stringUnit" : {

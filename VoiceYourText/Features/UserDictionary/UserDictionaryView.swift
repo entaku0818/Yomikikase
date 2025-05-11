@@ -20,30 +20,6 @@ struct UserDictionaryView: View {
                         Image(systemName: "plus")
                     }
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if UserDefaultsManager.shared.isPremiumUser {
-                        DictionaryMenu(
-                            onExport: { send(.exportButtonTapped) },
-                            onImport: { send(.importButtonTapped) }
-                        )
-                    } else {
-                        Menu {
-                            Button(action: {
-                                // プレミアム機能の購入画面に遷移
-                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                                   let rootViewController = windowScene.windows.first?.rootViewController {
-                                    let subscriptionView = SubscriptionView()
-                                    let hostingController = UIHostingController(rootView: subscriptionView)
-                                    rootViewController.present(hostingController, animated: true)
-                                }
-                            }) {
-                                Label("プレミアム機能を購入", systemImage: "star.fill")
-                            }
-                        } label: {
-                            Image(systemName: "ellipsis.circle")
-                        }
-                    }
-                }
             }
             .sheet(isPresented: $store.showingAddSheet) {
                 AddEntrySheet(
@@ -101,15 +77,11 @@ private struct DictionaryEntryRow: View {
 
 private struct DictionaryMenu: View {
     let onExport: () -> Void
-    let onImport: () -> Void
     
     var body: some View {
         Menu {
             Button(action: onExport) {
                 Label("エクスポート", systemImage: "square.and.arrow.up")
-            }
-            Button(action: onImport) {
-                Label("インポート", systemImage: "square.and.arrow.down")
             }
         } label: {
             Image(systemName: "ellipsis.circle")

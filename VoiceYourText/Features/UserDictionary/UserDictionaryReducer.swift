@@ -10,8 +10,6 @@ struct UserDictionaryReducer {
         var word: String = ""
         var reading: String = ""
         var showingAddSheet: Bool = false
-        var showingExportSheet: Bool = false
-        var showingImportSheet: Bool = false
         var showingAlert: Bool = false
         var alertMessage: String = ""
         var isLoading: Bool = false
@@ -21,17 +19,13 @@ struct UserDictionaryReducer {
         case binding(BindingAction<State>)
         case view(View)
         case entriesLoaded([UserDictionaryEntry])
-        case exportCompleted(Result<Void, Error>)
-        case importCompleted(Result<Data, Error>)
-        
+
         enum View {
             case onAppear
             case addButtonTapped
             case addEntry
             case cancelAdd
             case deleteEntry(id: UUID)
-            case exportButtonTapped
-            case importButtonTapped
             case alertDismissed
         }
     }
@@ -77,24 +71,7 @@ struct UserDictionaryReducer {
                 userDictionary.removeEntry(id)
                 state.entries = userDictionary.entries()
                 return .none
-                
-            case .view(.exportButtonTapped):
-                if UserDefaultsManager.shared.isPremiumUser {
-                    state.showingExportSheet = true
-                } else {
-                    state.showingAlert = true
-                    state.alertMessage = "この機能はプレミアムユーザーのみ利用できます。"
-                }
-                return .none
-                
-            case .view(.importButtonTapped):
-                if UserDefaultsManager.shared.isPremiumUser {
-                    state.showingImportSheet = true
-                } else {
-                    state.showingAlert = true
-                    state.alertMessage = "この機能はプレミアムユーザーのみ利用できます。"
-                }
-                return .none
+
                 
             case .view(.alertDismissed):
                 state.showingAlert = false
@@ -105,32 +82,6 @@ struct UserDictionaryReducer {
                 state.isLoading = false
                 return .none
                 
-            case let .exportCompleted(result):
-                state.showingExportSheet = false
-                switch result {
-                case .success:
-                    state.alertMessage = "辞書をエクスポートしました"
-                case .failure:
-                    state.alertMessage = "エクスポートに失敗しました"
-                }
-                state.showingAlert = true
-                return .none
-                
-            case let .importCompleted(result):
-                state.showingImportSheet = false
-                switch result {
-                case .success(let data):
-                    if userDictionary.importDictionary(data) {
-                        state.entries = userDictionary.entries()
-                        state.alertMessage = "辞書をインポートしました"
-                    } else {
-                        state.alertMessage = "インポートに失敗しました"
-                    }
-                case .failure:
-                    state.alertMessage = "インポートに失敗しました"
-                }
-                state.showingAlert = true
-                return .none
             }
         }
     }

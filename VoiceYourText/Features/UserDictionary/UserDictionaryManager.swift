@@ -6,8 +6,6 @@ struct UserDictionaryClient {
     var addEntry: (String, String) -> Void
     var removeEntry: (UUID) -> Void
     var getReading: (String) -> String?
-    var exportDictionary: () -> Data?
-    var importDictionary: (Data) -> Bool
 }
 
 extension UserDictionaryClient: DependencyKey {
@@ -45,31 +43,13 @@ extension UserDictionaryClient: DependencyKey {
             }
             return entries.first { $0.word == word }?.reading
         },
-        exportDictionary: {
-            guard let data = UserDefaults.standard.data(forKey: "userDictionary") else {
-                return nil
-            }
-            return data
-        },
-        importDictionary: { data in
-            guard let importedEntries = try? JSONDecoder().decode([UserDictionaryEntry].self, from: data) else {
-                return false
-            }
-            if let encodedData = try? JSONEncoder().encode(importedEntries) {
-                UserDefaults.standard.set(encodedData, forKey: "userDictionary")
-                return true
-            }
-            return false
-        }
     )
     
     static let testValue = Self(
         entries: { [] },
         addEntry: { _, _ in },
         removeEntry: { _ in },
-        getReading: { _ in nil },
-        exportDictionary: { nil },
-        importDictionary: { _ in false }
+        getReading: { _ in nil }
     )
 }
 
