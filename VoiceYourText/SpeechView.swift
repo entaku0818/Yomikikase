@@ -66,23 +66,22 @@ struct Speeches: Reducer {
                   let currentDate = Date()
                   if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
                       if interval >= 2 && reviewCount == 0 {
-                          if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                                state.alert = AlertState {
-                                    TextState("このアプリについて")
-                                } actions: {
-                                    ButtonState(action: .send(.onGoodReview)) {
-                                        TextState("はい")
-                                    }
-                                    ButtonState(action: .send(.onBadReview)) {
-                                        TextState("いいえ、フィードバックを送信")
-                                    }
-                                } message: {
-                                    TextState(
-                                        "Voice Narratorに満足していますか？"
-                                    )
+                            state.alert = AlertState {
+                                TextState("このアプリについて")
+                            } actions: {
+                                ButtonState(action: .send(.onGoodReview)) {
+                                    TextState("はい")
                                 }
-                              UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
-                          }
+                                ButtonState(action: .send(.onBadReview)) {
+                                    TextState("いいえ、フィードバックを送信")
+                                }
+                            } message: {
+                                TextState(
+                                    "Voice Narratorに満足していますか？"
+                                )
+                            }
+                          UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
+
                       }
                   }
               } else {

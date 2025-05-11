@@ -1,0 +1,93 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# TCA Implementation Patterns
+
+## Reducer Structure
+The reducer should follow the modern pattern as shown in [ModernReducerTemplate.swift](mdc:VoiceYourText/Templates/ModernReducerTemplate.swift):
+
+```swift
+@Reducer
+struct FeatureReducer {
+    @ObservableState
+    struct State: Equatable {
+        // State properties
+    }
+
+    enum Action: ViewAction, BindableAction {
+        case binding(BindingAction<State>)
+        case view(View)
+        
+        enum View {
+            // View actions
+        }
+    }
+
+    var body: some Reducer<State, Action> {
+        BindingReducer()
+        Reduce { state, action in
+            switch action {
+            case .binding:
+                return .none
+            case let .view(viewAction):
+                // Handle view actions
+            }
+        }
+    }
+}
+```
+
+## View Implementation
+Views should use the `@ViewAction` macro and follow this pattern:
+
+```swift
+@ViewAction(for: FeatureReducer.self)
+struct FeatureView: View {
+    @Perception.Bindable var store: StoreOf<FeatureReducer>
+    
+    var body: some View {
+        // Use send(.actionName) for view actions
+        // Use $store.property for bindings
+    }
+}
+```
+
+## Key Points
+1. Always use `@ViewAction` macro for views
+2. Separate view actions into `Action.View` enum
+3. Use `BindingReducer()` for state bindings
+4. Use `@Perception.Bindable` for store property
+5. Use `send(.actionName)` instead of `store.send(.view(.actionName))`
+6. Use `$store.property` for bindings
+
+## Async Operations
+For async operations, use the `.run` effect:
+
+```swift
+return .run { send in
+    try await clock.sleep(for: .seconds(1))
+    // Async work
+    await send(.resultAction)
+}
+```
+
+## Component Structure
+Break down complex views into smaller components:
+1. Pass only necessary data and callbacks
+2. Avoid passing the entire store
+3. Use `@Binding` for two-way bindings
+4. Use closure properties for actions
+
+Example:
+```swift
+struct SubComponent: View {
+    @Binding var value: String
+    let onAction: () -> Void
+    
+    var body: some View {
+        // Component implementation
+    }
+}
+```
