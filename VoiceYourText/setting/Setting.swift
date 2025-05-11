@@ -38,6 +38,7 @@ struct SettingsReducer: Reducer {
         var showDeleteConfirmation: Bool = false
         var itemToDelete: UUID?
         var showSubscriptionView: Bool = false
+        var showUserDictionaryView: Bool = false
     }
 
     enum Action: Equatable, Sendable {
@@ -59,6 +60,8 @@ struct SettingsReducer: Reducer {
         case executeDelete
         case navigateToSubscription
         case setSubscriptionNavigation(Bool)
+        case navigateToUserDictionary
+        case setUserDictionaryNavigation(Bool)
     }
 
     var body: some Reducer<State, Action> {
@@ -220,6 +223,13 @@ struct SettingsReducer: Reducer {
                 
             case .setSubscriptionNavigation(let isPresented):
                 state.showSubscriptionView = isPresented
+                return .none
+            case .navigateToUserDictionary:
+                state.showUserDictionaryView = true
+                return .none
+                
+            case .setUserDictionaryNavigation(let isPresented):
+                state.showUserDictionaryView = isPresented
                 return .none
             }
         }

@@ -50,6 +50,22 @@ struct LanguageSettingView: View {
                             }
                         }
                         
+                        Section(header: Text("辞書")) {
+                            NavigationLink(destination: UserDictionaryView(
+                                store: Store(
+                                    initialState: UserDictionaryReducer.State()
+                                ) {
+                                    UserDictionaryReducer()
+                                }
+                            )) {
+                                HStack {
+                                    Image(systemName: "book.fill")
+                                    Text("ユーザー辞書")
+                                    Spacer()
+                                }
+                            }
+                        }
+                        
                         Section(header: Text("プレミアム機能")) {
                             Button(action: {
                                 viewStore.send(.navigateToSubscription)
