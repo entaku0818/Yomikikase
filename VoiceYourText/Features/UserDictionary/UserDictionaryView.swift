@@ -21,10 +21,28 @@ struct UserDictionaryView: View {
                     }
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    DictionaryMenu(
-                        onExport: { send(.exportButtonTapped) },
-                        onImport: { send(.importButtonTapped) }
-                    )
+                    if UserDefaultsManager.shared.isPremiumUser {
+                        DictionaryMenu(
+                            onExport: { send(.exportButtonTapped) },
+                            onImport: { send(.importButtonTapped) }
+                        )
+                    } else {
+                        Menu {
+                            Button(action: {
+                                // プレミアム機能の購入画面に遷移
+                                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let rootViewController = windowScene.windows.first?.rootViewController {
+                                    let subscriptionView = SubscriptionView()
+                                    let hostingController = UIHostingController(rootView: subscriptionView)
+                                    rootViewController.present(hostingController, animated: true)
+                                }
+                            }) {
+                                Label("プレミアム機能を購入", systemImage: "star.fill")
+                            }
+                        } label: {
+                            Image(systemName: "ellipsis.circle")
+                        }
+                    }
                 }
             }
             .sheet(isPresented: $store.showingAddSheet) {

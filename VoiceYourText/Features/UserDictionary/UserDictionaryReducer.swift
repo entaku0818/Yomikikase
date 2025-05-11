@@ -79,11 +79,21 @@ struct UserDictionaryReducer {
                 return .none
                 
             case .view(.exportButtonTapped):
-                state.showingExportSheet = true
+                if UserDefaultsManager.shared.isPremiumUser {
+                    state.showingExportSheet = true
+                } else {
+                    state.showingAlert = true
+                    state.alertMessage = "この機能はプレミアムユーザーのみ利用できます。"
+                }
                 return .none
                 
             case .view(.importButtonTapped):
-                state.showingImportSheet = true
+                if UserDefaultsManager.shared.isPremiumUser {
+                    state.showingImportSheet = true
+                } else {
+                    state.showingAlert = true
+                    state.alertMessage = "この機能はプレミアムユーザーのみ利用できます。"
+                }
                 return .none
                 
             case .view(.alertDismissed):
