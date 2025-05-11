@@ -21,8 +21,30 @@ struct SpeechSynthesizerClient {
 extension SpeechSynthesizerClient: DependencyKey {
     static var liveValue: Self {
         let speechSynthesizer = SpeechSynthesizer()
+        @Dependency(\.userDictionary) var userDictionary
+        
         return Self(
-            speak: { utterance in try await speechSynthesizer.speak(utterance: utterance) },
+            speak: { utterance in
+                // ユーザー辞書の読み方を適用
+                let text = utterance.speechString
+                let words = text.components(separatedBy: .whitespacesAndNewlines)
+                var modifiedText = text
+                
+                for word in words {
+                    if let reading = userDictionary.getReading(word) {
+                        modifiedText = modifiedText.replacingOccurrences(of: word, with: reading)
+                    }
+                }
+                
+                // 新しいAVSpeechUtteranceを作成
+                let modifiedUtterance = AVSpeechUtterance(string: modifiedText)
+                modifiedUtterance.rate = utterance.rate
+                modifiedUtterance.pitchMultiplier = utterance.pitchMultiplier
+                modifiedUtterance.volume = utterance.volume
+                modifiedUtterance.voice = utterance.voice
+                
+                return try await speechSynthesizer.speak(utterance: modifiedUtterance)
+            },
             stopSpeaking: { await speechSynthesizer.stop() }
         )
     }

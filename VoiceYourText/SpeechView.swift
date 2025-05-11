@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 import ComposableArchitecture
 import StoreKit
+import Dependencies
 
 struct Speeches: Reducer {
 
@@ -143,8 +144,7 @@ struct Speeches: Reducer {
 }
 
 struct SpeechView: View {
-    private let speechSynthesizer = AVSpeechSynthesizer() // AVSpeechSynthesizerのインスタンス
-
+    @Dependency(\.speechSynthesizer) var speechSynthesizer
     let store: Store<Speeches.State, Speeches.Action>
 
     let settingStore = Store(
@@ -187,7 +187,6 @@ struct SpeechView: View {
                             SpeechRowView(text: speech.title)
                                 .onTapGesture {
                                     viewStore.send(.speechSelected(speech.text))
-
                                 }
                         }
                     }
@@ -240,33 +239,31 @@ struct SpeechView: View {
         speechUtterance.pitchMultiplier = pitch
         speechUtterance.volume = volume
 
-        speechSynthesizer.speak(speechUtterance)
+        Task {
+            try? await speechSynthesizer.speak(speechUtterance)
+        }
     }
 
     func stopSpeaking() {
-        if speechSynthesizer.isSpeaking {
-            speechSynthesizer.stopSpeaking(at: .immediate)
+        Task {
+            _ = await speechSynthesizer.stopSpeaking()
         }
     }
 
     func speechMyVoice(text: String) {
-
-        let synthesizer = AVSpeechSynthesizer()
-
         if #available(iOS 17.0, *) {
             AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
                 if status == .authorized {
                     let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
                     let myUtterance = AVSpeechUtterance(string: text)
                     myUtterance.voice = personalVoices.first
-                    synthesizer.speak(myUtterance)
+                    Task {
+                        try? await speechSynthesizer.speak(myUtterance)
+                    }
                 }
             }
-        } else {
-            // Fallback on earlier versions
         }
     }
-
 }
 
 struct SpeechRowView: View {
