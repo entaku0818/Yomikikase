@@ -42,7 +42,7 @@ extension UserDictionaryClient: DependencyKey {
                 return nil
             }
             return entries.first { $0.word == word }?.reading
-        },
+        }
     )
     
     static let testValue = Self(
