@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import ComposableArchitecture
+import AVFAudio
 
 struct LanguageSettingView: View {
     let store: Store<SettingsReducer.State, SettingsReducer.Action>
@@ -22,6 +23,20 @@ struct LanguageSettingView: View {
                                     Text("Select Language")
                                     Spacer()
                                     Text(viewStore.languageSetting ?? "")
+                                }
+                            }
+                        }
+
+                        Section(header: Text("音声設定")) {
+                            NavigationLink(destination: VoiceSettingView(store: store)) {
+                                HStack {
+                                    Text("音声の選択")
+                                    Spacer()
+                                    if let identifier = viewStore.selectedVoiceIdentifier,
+                                       let voice = AVSpeechSynthesisVoice(identifier: identifier) {
+                                        Text(voice.name)
+                                            .foregroundColor(.gray)
+                                    }
                                 }
                             }
                         }

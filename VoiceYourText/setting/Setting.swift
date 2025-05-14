@@ -25,6 +25,11 @@ struct SettingsReducer: Reducer {
             ("Italian", "it")
         ]
 
+        // 音声設定
+        var selectedVoiceIdentifier: String?
+        var showVoiceSettingView: Bool = false
+
+        // 既存のプロパティ
         var title: String = ""
         var text: String = ""
         var speeches: [Speeches.Speech] = []
@@ -42,6 +47,13 @@ struct SettingsReducer: Reducer {
     }
 
     enum Action: Equatable, Sendable {
+        // 音声設定関連のアクション
+        case setVoiceIdentifier(String?)
+        case previewVoice(String)
+        case navigateToVoiceSetting
+        case setVoiceSettingNavigation(Bool)
+
+        // 既存のアクション
         case setLanguage(String?)
         case onAppear
         case setTitle(String)
@@ -64,9 +76,38 @@ struct SettingsReducer: Reducer {
         case setUserDictionaryNavigation(Bool)
     }
 
+    @Dependency(\.speechSynthesizer) var speechSynthesizer
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            // 音声設定関連のケース
+            case .navigateToVoiceSetting:
+                state.showVoiceSettingView = true
+                return .none
+
+            case .setVoiceSettingNavigation(let isPresented):
+                state.showVoiceSettingView = isPresented
+                return .none
+
+            case .setVoiceIdentifier(let identifier):
+                state.selectedVoiceIdentifier = identifier
+                UserDefaultsManager.shared.selectedVoiceIdentifier = identifier
+                return .none
+
+            case .previewVoice(let text):
+                let utterance = AVSpeechUtterance(string: text)
+                if let identifier = state.selectedVoiceIdentifier {
+                    utterance.voice = AVSpeechSynthesisVoice(identifier: identifier)
+                }
+                utterance.rate = state.speechRate
+                utterance.pitchMultiplier = state.speechPitch
+                
+                return .run { _ in
+                    try? await speechSynthesizer.speak(utterance)
+                }
+
+            // 既存のケース
             case .setLanguage(let languageCode):
                 UserDefaultsManager.shared.languageSetting = languageCode
                 if let code = languageCode, let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == code })?.0 {

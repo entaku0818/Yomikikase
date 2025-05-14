@@ -35,6 +35,7 @@ class UserDefaultsManager {
         }
     }
 
+    // 言語設定
     var languageSetting: String? {
         get {
             defaults.string(forKey: "LanguageSetting")
@@ -44,27 +45,37 @@ class UserDefaultsManager {
         }
     }
 
-    // レートを保存するプロパティ
-     var speechRate: Float {
-         get {
-             let rate = defaults.float(forKey: "SpeechRate")
-             return rate == 0 ? 0.5 : rate // デフォルト値を設定
-         }
-         set {
-             defaults.set(newValue, forKey: "SpeechRate")
-         }
-     }
+    // 音声設定
+    var selectedVoiceIdentifier: String? {
+        get {
+            defaults.string(forKey: "SelectedVoiceIdentifier")
+        }
+        set {
+            defaults.set(newValue, forKey: "SelectedVoiceIdentifier")
+        }
+    }
 
-     // ピッチを保存するプロパティ
-     var speechPitch: Float {
-         get {
-             let pitch = defaults.float(forKey: "SpeechPitch")
-             return pitch == 0 ? 1.0 : pitch // デフォルト値を設定
-         }
-         set {
-             defaults.set(newValue, forKey: "SpeechPitch")
-         }
-     }
+    // 音声の速度設定
+    var speechRate: Float {
+        get {
+            let rate = defaults.float(forKey: "SpeechRate")
+            return rate == 0 ? 0.5 : rate // デフォルト値を設定
+        }
+        set {
+            defaults.set(newValue, forKey: "SpeechRate")
+        }
+    }
+
+    // 音声の高さ設定
+    var speechPitch: Float {
+        get {
+            let pitch = defaults.float(forKey: "SpeechPitch")
+            return pitch == 0 ? 1.0 : pitch // デフォルト値を設定
+        }
+        set {
+            defaults.set(newValue, forKey: "SpeechPitch")
+        }
+    }
     
     // プレミアムユーザーフラグを保存するプロパティ
     var isPremiumUser: Bool {
