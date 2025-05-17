@@ -9,7 +9,9 @@ import SwiftUI
 import ComposableArchitecture
 import AVFoundation
 
-struct SettingsReducer: Reducer {
+@Reducer
+struct SettingsReducer {
+    @ObservableState
     struct State: Equatable {
         var languageSetting: String?
         static let availableLanguages = [
@@ -46,56 +48,61 @@ struct SettingsReducer: Reducer {
         var showUserDictionaryView: Bool = false
     }
 
-    enum Action: Equatable, Sendable {
-        // 音声設定関連のアクション
-        case setVoiceIdentifier(String?)
-        case previewVoice(String)
-        case navigateToVoiceSetting
-        case setVoiceSettingNavigation(Bool)
+    enum Action: ViewAction, BindableAction {
+        case binding(BindingAction<State>)
+        case view(View)
 
-        // 既存のアクション
-        case setLanguage(String?)
-        case onAppear
-        case setTitle(String)
-        case setText(String)
-        case setSpeechRate(Float)
-        case setSpeechPitch(Float)
-        case insert
-        case fetchSpeeches
-        case resetToDefault
-        case dismissSuccess
-        case dismissError
-        case deleteSpeech(UUID)
-        case setKeyboardFocus(Bool)
-        case confirmDelete(UUID)
-        case cancelDelete
-        case executeDelete
-        case navigateToSubscription
-        case setSubscriptionNavigation(Bool)
-        case navigateToUserDictionary
-        case setUserDictionaryNavigation(Bool)
+        enum View {
+            case onAppear
+            case setVoiceIdentifier(String?)
+            case previewVoice(String)
+            case navigateToVoiceSetting
+            case setVoiceSettingNavigation(Bool)
+            case setLanguage(String?)
+            case setTitle(String)
+            case setText(String)
+            case setSpeechRate(Float)
+            case setSpeechPitch(Float)
+            case insert
+            case fetchSpeeches
+            case resetToDefault
+            case dismissSuccess
+            case dismissError
+            case deleteSpeech(UUID)
+            case setKeyboardFocus(Bool)
+            case confirmDelete(UUID)
+            case cancelDelete
+            case executeDelete
+            case navigateToSubscription
+            case setSubscriptionNavigation(Bool)
+            case navigateToUserDictionary
+            case setUserDictionaryNavigation(Bool)
+        }
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
 
     var body: some Reducer<State, Action> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
-            // 音声設定関連のケース
-            case .navigateToVoiceSetting:
+            case .binding:
+                return .none
+
+            case .view(.navigateToVoiceSetting):
                 state.showVoiceSettingView = true
                 return .none
 
-            case .setVoiceSettingNavigation(let isPresented):
+            case .view(.setVoiceSettingNavigation(let isPresented)):
                 state.showVoiceSettingView = isPresented
                 return .none
 
-            case .setVoiceIdentifier(let identifier):
+            case .view(.setVoiceIdentifier(let identifier)):
                 state.selectedVoiceIdentifier = identifier
                 UserDefaultsManager.shared.selectedVoiceIdentifier = identifier
                 return .none
 
-            case .previewVoice(let text):
+            case .view(.previewVoice(let text)):
                 let utterance = AVSpeechUtterance(string: text)
                 if let identifier = state.selectedVoiceIdentifier {
                     utterance.voice = AVSpeechSynthesisVoice(identifier: identifier)
@@ -107,170 +114,91 @@ struct SettingsReducer: Reducer {
                     try? await speechSynthesizer.speak(utterance)
                 }
 
-            // 既存のケース
-            case .setLanguage(let languageCode):
+            case .view(.setLanguage(let languageCode)):
                 UserDefaultsManager.shared.languageSetting = languageCode
-                if let code = languageCode, let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == code })?.0 {
+                if let code = languageCode, let languageName = State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
                 } else {
                     state.languageSetting = "English"
                 }
                 return .none
 
-            case .onAppear:
-                if let languageName = SettingsReducer.State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
+            case .view(.onAppear):
+                if let languageName = State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
                     state.languageSetting = languageName
                 } else {
                     state.languageSetting = "English"
                 }
                 state.speechPitch = UserDefaultsManager.shared.speechPitch
                 state.speechRate = UserDefaultsManager.shared.speechRate
-
                 return .none
 
-            case .setTitle(let title):
+            case .view(.setTitle(let title)):
                 state.title = title
                 return .none
 
-            case .setText(let text):
+            case .view(.setText(let text)):
                 state.text = text
                 return .none
-            case .setSpeechRate(let rate):
+
+            case .view(.setSpeechRate(let rate)):
                 state.speechRate = rate
                 UserDefaultsManager.shared.speechRate = state.speechRate
-
                 return .none
-            case .setSpeechPitch(let pitch):
+
+            case .view(.setSpeechPitch(let pitch)):
                 state.speechPitch = pitch
                 UserDefaultsManager.shared.speechPitch = state.speechPitch
                 return .none
 
-            case .insert:
-                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
-                
-                // テキストが空の場合はエラーメッセージを表示
-                if state.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                    state.showError = true
-                    state.errorMessage = "テキストを入力してください"
-                    
-                    return .run { send in
-                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
-                        await send(.dismissError)
-                    }
-                }
-                
-                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-                SpeechTextRepository.shared.insert(title: state.text, text: state.text, languageSetting: languageSetting)
-
-                state.title = ""
-                state.text = ""
-                state.showSuccess = true
-                state.successMessage = "保存しました"
-                state.isKeyboardFocused = false
-                
-                // 自動的に成功表示を隠す
-                return .run { send in
-                    try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
-                    await send(.dismissSuccess)
-                    await send(.fetchSpeeches) // 保存後にリストを更新
-                }
-                
-            case .fetchSpeeches:
-                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
-                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-                state.speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
-                return .none
-            case .resetToDefault:
-                state.speechRate = 0.5
-                state.speechPitch = 1.0
-                  UserDefaultsManager.shared.speechRate = state.speechRate
-                  UserDefaultsManager.shared.speechPitch = state.speechPitch
-                  return .none
-            case .dismissSuccess:
-                state.showSuccess = false
-                return .none
-                
-            case .dismissError:
-                state.showError = false
-                return .none
-                
-            case .deleteSpeech(let id):
+            case .view(.confirmDelete(let id)):
                 guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
-                // 削除対象のSpeechを取得
                 guard let speechToDelete = state.speeches.first(where: { $0.id == id }) else { return .none }
                 
                 if speechToDelete.isDefault {
-                    // デフォルトの言葉は削除できないのでエラーメッセージを表示
                     state.showError = true
                     state.errorMessage = "この言葉は事前登録されているため削除できません"
                     
                     return .run { send in
-                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
-                        await send(.dismissError)
-                    }
-                } else {
-                    SpeechTextRepository.shared.delete(id: id)
-                    
-                    // 削除後にリストを更新
-                    state.speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
-                    
-                    // 削除成功のフィードバックを表示
-                    state.showSuccess = true
-                    state.successMessage = "削除できました"
-                    
-                    return .run { send in
-                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
-                        await send(.dismissSuccess)
-                    }
-                }
-            case .setKeyboardFocus(let isFocused):
-                state.isKeyboardFocused = isFocused
-                return .none
-            case .confirmDelete(let id):
-                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
-                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-                
-                // 削除対象のSpeechを取得
-                guard let speechToDelete = state.speeches.first(where: { $0.id == id }) else { return .none }
-                
-                if speechToDelete.isDefault {
-                    // デフォルトの言葉は削除できないのでエラーメッセージを表示
-                    state.showError = true
-                    state.errorMessage = "この言葉は事前登録されているため削除できません"
-                    
-                    return .run { send in
-                        try await Task.sleep(nanoseconds: 2_000_000_000) // 2秒待機
-                        await send(.dismissError)
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        await send(.view(.dismissError))
                     }
                 } else {
                     state.showDeleteConfirmation = true
                     state.itemToDelete = id
                     return .none
                 }
-            case .cancelDelete:
+
+            case .view(.cancelDelete):
                 state.showDeleteConfirmation = false
                 state.itemToDelete = nil
                 return .none
-            case .executeDelete:
+
+            case .view(.executeDelete):
                 guard let id = state.itemToDelete else { return .none }
                 return .run { send in
-                    await send(.deleteSpeech(id))
+                    await send(.view(.deleteSpeech(id)))
                 }
-            case .navigateToSubscription:
+
+            case .view(.navigateToSubscription):
                 state.showSubscriptionView = true
                 return .none
                 
-            case .setSubscriptionNavigation(let isPresented):
+            case .view(.setSubscriptionNavigation(let isPresented)):
                 state.showSubscriptionView = isPresented
                 return .none
-            case .navigateToUserDictionary:
+
+            case .view(.navigateToUserDictionary):
                 state.showUserDictionaryView = true
                 return .none
                 
-            case .setUserDictionaryNavigation(let isPresented):
+            case .view(.setUserDictionaryNavigation(let isPresented)):
                 state.showUserDictionaryView = isPresented
+                return .none
+
+            default:
                 return .none
             }
         }
