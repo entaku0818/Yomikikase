@@ -131,6 +131,7 @@ struct SettingsReducer {
                 }
                 state.speechPitch = UserDefaultsManager.shared.speechPitch
                 state.speechRate = UserDefaultsManager.shared.speechRate
+                state.selectedVoiceIdentifier = UserDefaultsManager.shared.selectedVoiceIdentifier
                 return .none
 
             case .view(.setTitle(let title)):

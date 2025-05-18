@@ -64,20 +64,6 @@ struct VoiceSettingView: View {
                     }
                 }
             }
-
-            Section(header: Text("音声の調整")) {
-                HStack {
-                    Image(systemName: "tortoise.fill")
-                    Slider(value: $store.speechRate, in: 0.0...2.0, step: 0.1)
-                    Image(systemName: "hare.fill")
-                }
-
-                HStack {
-                    Image(systemName: "speaker.wave.1")
-                    Slider(value: $store.speechPitch, in: 0.5...2.0, step: 0.1)
-                    Image(systemName: "speaker.wave.3")
-                }
-            }
         }
         .onAppear {
             // 言語が選択されていない場合、デフォルトで英語を設定
