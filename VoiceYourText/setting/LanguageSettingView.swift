@@ -17,6 +17,48 @@ struct LanguageSettingView: View {
     var body: some View {
         VStack {
             Form {
+
+                Section(header: Text("プレミアム機能")) {
+                    VStack(spacing: 16) {
+                        HStack(spacing: 12) {
+                            Image(systemName: "crown.fill")
+                                .font(.title2)
+                                .foregroundColor(.yellow)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("プレミアムにアップグレード")
+                                    .font(.headline)
+                                Text("より快適な読み上げ体験を")
+                                    .font(.subheadline)
+                                    .foregroundColor(.gray)
+                            }
+                            Spacer()
+                        }
+
+
+                        Button(action: {
+                            send(.navigateToSubscription)
+                        }) {
+                            HStack {
+                                Text("今すぐアップグレード")
+                                    .fontWeight(.bold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(
+                                LinearGradient(
+                                    gradient: Gradient(colors: [Color.blue, Color.purple]),
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                        }
+                    }
+                    .padding()
+                    .background(Color(UIColor.secondarySystemBackground))
+                    .cornerRadius(12)
+                }
                 Section(header: Text("音声設定")) {
                     NavigationLink(destination: VoiceSettingView(store: store)) {
                         VStack(alignment: .leading, spacing: 8) {
@@ -78,62 +120,7 @@ struct LanguageSettingView: View {
                     }
                 }
                 
-                Section(header: Text("プレミアム機能")) {
-                    VStack(spacing: 16) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "crown.fill")
-                                .font(.title2)
-                                .foregroundColor(.yellow)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("プレミアムにアップグレード")
-                                    .font(.headline)
-                                Text("より快適な読み上げ体験を")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
-                        }
-                        
-                        VStack(spacing: 12) {
-                            PremiumFeatureRow(
-                                iconName: "xmark.circle.fill",
-                                text: "広告の完全削除"
-                            )
-                            PremiumFeatureRow(
-                                iconName: "text.bubble.fill",
-                                text: "無制限の読み上げ保存"
-                            )
-                            PremiumFeatureRow(
-                                iconName: "wand.and.stars",
-                                text: "高度な音声カスタマイズ"
-                            )
-                        }
-                        .padding(.vertical, 8)
-                        
-                        Button(action: {
-                            send(.navigateToSubscription)
-                        }) {
-                            HStack {
-                                Text("今すぐアップグレード")
-                                    .fontWeight(.bold)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [Color.blue, Color.purple]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .foregroundColor(.white)
-                            .cornerRadius(12)
-                        }
-                    }
-                    .padding()
-                    .background(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(12)
-                }
+
 
                 Section(header: Text("言語設定")) {
                     NavigationLink(destination: LanguageSelectionView(store: store)) {
