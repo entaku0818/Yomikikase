@@ -1,4 +1,6 @@
-New Features
-- Implementation of User Dictionary feature
-- Registration of words and their pronunciation
-- Automatic application of registered pronunciations to speech synthesis
+Nouvelles Fonctionnalités
+- Implémentation de la fonction Dictionnaire Utilisateur
+- Enregistrement des mots et leur prononciation
+- Application automatique des prononciations enregistrées
+- Suivi amélioré des abonnements avec Firebase Analytics
+- Amélioration de la gestion des abonnements et du traitement des erreurs

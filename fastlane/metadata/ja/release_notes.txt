@@ -1,4 +1,3 @@
 New Features
-- Implementation of User Dictionary feature
-- Registration of words and their pronunciation
-- Automatic application of registered pronunciations to speech synthesis
+- Firebase Analyticsによるサブスクリプション追跡機能の強化
+- サブスクリプション管理とエラー処理の改善

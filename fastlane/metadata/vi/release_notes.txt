@@ -2,3 +2,5 @@ New Features
 - Implementation of User Dictionary feature
 - Registration of words and their pronunciation
 - Automatic application of registered pronunciations to speech synthesis
+- Improved user registration tracking with Firebase Analytics
+- Improved user registration management and error handling
