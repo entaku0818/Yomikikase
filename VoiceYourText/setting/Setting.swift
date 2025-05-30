@@ -81,6 +81,7 @@ struct SettingsReducer {
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
+    @Dependency(\.analytics) var analytics
 
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -103,6 +104,7 @@ struct SettingsReducer {
                 return .none
 
             case .view(.previewVoice(let text)):
+
                 let utterance = AVSpeechUtterance(string: text)
                 if let identifier = state.selectedVoiceIdentifier {
                     utterance.voice = AVSpeechSynthesisVoice(identifier: identifier)
@@ -115,6 +117,7 @@ struct SettingsReducer {
                 }
 
             case .view(.setLanguage(let languageCode)):
+
                 UserDefaultsManager.shared.languageSetting = languageCode
                 if let code = languageCode, let languageName = State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
@@ -124,6 +127,7 @@ struct SettingsReducer {
                 return .none
 
             case .view(.onAppear):
+                analytics.logEvent("view_settings", nil)
                 if let languageName = State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
                     state.languageSetting = languageName
                 } else {
@@ -143,11 +147,13 @@ struct SettingsReducer {
                 return .none
 
             case .view(.setSpeechRate(let rate)):
+
                 state.speechRate = rate
                 UserDefaultsManager.shared.speechRate = state.speechRate
                 return .none
 
             case .view(.setSpeechPitch(let pitch)):
+
                 state.speechPitch = pitch
                 UserDefaultsManager.shared.speechPitch = state.speechPitch
                 return .none
@@ -184,6 +190,9 @@ struct SettingsReducer {
                 }
 
             case .view(.navigateToSubscription):
+                analytics.logEvent("subscription_view_opened", [
+                    "source": "settings"
+                ])
                 state.showSubscriptionView = true
                 return .none
                 

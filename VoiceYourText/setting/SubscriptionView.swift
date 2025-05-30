@@ -1,6 +1,7 @@
 import SwiftUI
 import RevenueCat
 import SafariServices
+import Dependencies
 
 struct SubscriptionView: View {
     @Environment(\.dismiss) private var dismiss
@@ -134,6 +135,7 @@ struct SubscriptionView: View {
     private var legalLinksSection: some View {
         HStack(spacing: 20) {
             Button(action: {
+                viewModel.trackPrivacyPolicyTap()
                 safariURL = privacyPolicyURL
                 showSafari = true
             }) {
@@ -144,6 +146,7 @@ struct SubscriptionView: View {
             }
             
             Button(action: {
+                viewModel.trackTermsOfServiceTap()
                 safariURL = termsOfServiceURL
                 showSafari = true
             }) {
@@ -157,56 +160,16 @@ struct SubscriptionView: View {
     }
     
     private func purchaseMonthly() async {
-        viewModel.isProcessing = true
-        defer { viewModel.isProcessing = false }
-        
-        do {
-            let success = try await PurchaseManager.shared.purchasePro()
-            if success {
-                alertTitle = "購入完了"
-                alertMessage = "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。"
-                showingAlert = true
-            }
-        } catch {
-            handlePurchaseError(error)
-        }
+        let result = await viewModel.handlePurchase()
+        alertTitle = result.title
+        alertMessage = result.message
+        showingAlert = true
     }
     
     private func restorePurchases() async {
-        viewModel.isProcessing = true
-        defer { viewModel.isProcessing = false }
-        
-        do {
-            let success = try await PurchaseManager.shared.restorePurchases()
-            if success {
-                alertTitle = "復元完了"
-                alertMessage = "購入履歴の復元が完了しました。"
-                showingAlert = true
-            }
-        } catch {
-            alertTitle = "復元失敗"
-            alertMessage = "購入履歴を復元できませんでした。後ほど再度お試しください。"
-            showingAlert = true
-        }
-    }
-    
-    private func handlePurchaseError(_ error: Error) {
-        if let purchaseError = error as? PurchaseManager.PurchaseError {
-            switch purchaseError {
-            case .productNotFound:
-                alertTitle = "商品が見つかりません"
-                alertMessage = "サブスクリプション商品が見つかりませんでした。後ほど再度お試しください。"
-            case .purchaseFailed:
-                alertTitle = "購入失敗"
-                alertMessage = "購入処理を完了できませんでした。後ほど再度お試しください。"
-            case .noEntitlements:
-                alertTitle = "購入履歴なし"
-                alertMessage = "復元できる購入履歴が見つかりませんでした。"
-            }
-        } else {
-            alertTitle = "エラー"
-            alertMessage = "予期せぬエラーが発生しました: \(error.localizedDescription)"
-        }
+        let result = await viewModel.handleRestore()
+        alertTitle = result.title
+        alertMessage = result.message
         showingAlert = true
     }
 }
@@ -327,6 +290,7 @@ struct SubscriptionOptionCard: View {
 class SubscriptionViewModel: ObservableObject {
     @Published var monthlyPlan: (name: String, price: String)?
     @Published var isProcessing: Bool = false
+    @Dependency(\.analytics) private var analytics
     
     func fetchSubscriptionPlan() async {
         do {
@@ -337,8 +301,84 @@ class SubscriptionViewModel: ObservableObject {
             }
         } catch {
             print("Failed to fetch subscription plan: \(error)")
-            // エラー時にはnilのままになるが、UIではデフォルト値を表示する
+            analytics.logEvent("subscription_plan_fetch_failed", [
+                "error": error.localizedDescription
+            ])
         }
+    }
+    
+    func handlePurchase() async -> (success: Bool, title: String, message: String) {
+        isProcessing = true
+        defer { isProcessing = false }
+        
+        do {
+            let success = try await PurchaseManager.shared.purchasePro()
+            if success {
+                analytics.logEvent("subscription_purchase_success", [
+                    "plan_type": "monthly",
+                    "source": "subscription_view"
+                ])
+                return (true, "購入完了", "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。")
+            } else {
+                analytics.logEvent("subscription_purchase_cancelled", nil)
+                return (false, "購入キャンセル", "購入がキャンセルされました。")
+            }
+        } catch {
+            analytics.logEvent("subscription_purchase_failed", [
+                "plan_type": "monthly",
+                "error": error.localizedDescription
+            ])
+            return handlePurchaseError(error)
+        }
+    }
+    
+    func handleRestore() async -> (success: Bool, title: String, message: String) {
+        isProcessing = true
+        defer { isProcessing = false }
+        
+        do {
+            let success = try await PurchaseManager.shared.restorePurchases()
+            if success {
+                analytics.logEvent("subscription_restore_success", nil)
+                return (true, "復元完了", "購入履歴の復元が完了しました。")
+            } else {
+                analytics.logEvent("subscription_restore_failed", [
+                    "reason": "no_purchases_found"
+                ])
+                return (false, "復元失敗", "復元可能な購入履歴が見つかりませんでした。")
+            }
+        } catch {
+            analytics.logEvent("subscription_restore_failed", [
+                "error": error.localizedDescription
+            ])
+            return (false, "復元失敗", "購入履歴を復元できませんでした。後ほど再度お試しください。")
+        }
+    }
+    
+    func trackPrivacyPolicyTap() {
+        analytics.logEvent("privacy_policy_tap", [
+            "source": "subscription_view"
+        ])
+    }
+    
+    func trackTermsOfServiceTap() {
+        analytics.logEvent("terms_of_service_tap", [
+            "source": "subscription_view"
+        ])
+    }
+    
+    private func handlePurchaseError(_ error: Error) -> (success: Bool, title: String, message: String) {
+        if let purchaseError = error as? PurchaseManager.PurchaseError {
+            switch purchaseError {
+            case .productNotFound:
+                return (false, "商品が見つかりません", "サブスクリプション商品が見つかりませんでした。後ほど再度お試しください。")
+            case .purchaseFailed:
+                return (false, "購入失敗", "購入処理を完了できませんでした。後ほど再度お試しください。")
+            case .noEntitlements:
+                return (false, "購入履歴なし", "復元できる購入履歴が見つかりませんでした。")
+            }
+        }
+        return (false, "エラー", "予期せぬエラーが発生しました: \(error.localizedDescription)")
     }
 }
 
