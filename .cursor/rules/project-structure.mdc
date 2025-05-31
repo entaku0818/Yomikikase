@@ -1,0 +1,29 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Project Structure Guide
+
+VoiceYourText is a SwiftUI app for text-to-speech with subscription features and analytics tracking.
+
+## Key Components
+
+### Localization
+- Localization strings are managed in [locate/Localizable.xcstrings](mdc:locate/Localizable.xcstrings)
+- Supports multiple languages: English, Japanese, German, Spanish, French, Italian, Korean, Thai, Turkish, and Vietnamese
+- App store metadata is maintained in [fastlane/metadata](mdc:fastlane/metadata) directory for each language
+
+### Subscription System
+- Subscription management is handled through StoreKit integration
+- Analytics tracking implemented using Firebase Analytics
+- Tracks events:
+  - Subscription purchase success/failure
+  - Subscription restore success/failure
+  - Subscription plan fetch failure
+  - Purchase cancellation
+
+### User Dictionary Feature
+- Allows users to register custom pronunciations
+- Automatically applies registered pronunciations during text-to-speech
+- Supports multiple languages

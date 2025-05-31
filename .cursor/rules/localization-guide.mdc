@@ -1,0 +1,37 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Localization Guide
+
+## Supported Languages
+
+The app supports the following languages:
+- English (en-US)
+- Japanese (ja)
+- German (de-DE)
+- Spanish (es-ES)
+- French (fr-FR)
+- Italian (it)
+- Korean (ko)
+- Thai (th)
+- Turkish (tr)
+- Vietnamese (vi)
+
+## Key Files
+- [locate/Localizable.xcstrings](mdc:locate/Localizable.xcstrings): Contains all localized strings
+- [fastlane/metadata](mdc:fastlane/metadata): Contains app store metadata for each language
+
+## String Categories
+- UI Elements
+- Error Messages
+- Subscription Messages
+- Analytics Events
+- Feature Names
+
+## Adding New Strings
+1. Add the string to [locate/Localizable.xcstrings](mdc:locate/Localizable.xcstrings)
+2. Provide translations for all supported languages
+3. Use descriptive keys that reflect the string's purpose
+4. Group related strings together (e.g., all subscription-related strings)

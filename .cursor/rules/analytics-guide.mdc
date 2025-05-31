@@ -1,0 +1,21 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Analytics Implementation Guide
+
+## Firebase Analytics Events
+
+The app tracks subscription-related events using Firebase Analytics. All analytics logic is separated from the view layer and handled in the ViewModel.
+
+### Tracked Events
+- `subscription_purchase_success`: When a user successfully purchases a subscription
+- `subscription_purchase_failed`: When a subscription purchase fails
+- `subscription_restore_success`: When a user successfully restores their subscription
+- `subscription_restore_failed`: When subscription restoration fails
+- `subscription_plan_fetch_failed`: When fetching subscription plans fails
+- `subscription_purchase_cancelled`: When user cancels a subscription purchase
+
+### Localization
+All analytics event names are localized in [locate/Localizable.xcstrings](mdc:locate/Localizable.xcstrings) to ensure consistent tracking across all supported languages.
