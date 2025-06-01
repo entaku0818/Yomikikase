@@ -42,7 +42,7 @@ platform :ios do
     UI.success("Xcodeプロジェクトからバージョン番号を取得しました: #{version_number}")
     
     deliver(
-      skip_binary_upload: true,      # バイナリのアップロードをスキップ
+      skip_binary_upload: false,     # バイナリのアップロードを実行
       skip_app_version_update: false, # アプリバージョンの更新をスキップしない
       app_version: version_number,    # アプリのバージョン番号を指定
       skip_metadata: false,          # メタデータの更新をスキップしない
@@ -52,13 +52,14 @@ platform :ios do
       ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
       run_precheck_before_submit: true,  # 提出前の事前チェックを実行
       precheck_include_in_app_purchases: false,  # In-app purchasesのチェックをスキップ
-      submit_for_review: false,      # 審査提出はスキップ（メタデータ更新のみ）
+      submit_for_review: true,       # 審査提出を実行
       automatic_release: false,      # 審査通過後の自動リリースは無効
       submission_information: {
         add_id_info_uses_idfa: false,  # IDFAの使用なし
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
-      }
+      },
+      build_number: "latest"  # 最新のビルド番号を自動選択
     )
   end
 end 
