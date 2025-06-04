@@ -1,6 +1,4 @@
-Nouvelles Fonctionnalités
-- Implémentation de la fonction Dictionnaire Utilisateur
-- Enregistrement des mots et leur prononciation
+Métadonnées mises à jour
 - Application automatique des prononciations enregistrées
 - Suivi amélioré des abonnements avec Firebase Analytics
 - Amélioration de la gestion des abonnements et du traitement des erreurs

@@ -1,6 +1,1 @@
-Nuevas Funciones
-- Implementación de la función de Diccionario de Usuario
-- Registro de palabras y su pronunciación
-- Aplicación automática de pronunciaciones registradas
-- Seguimiento mejorado de suscripciones con Firebase Analytics
-- Gestión mejorada de suscripciones y manejo de errores
+Metadatos actualizados

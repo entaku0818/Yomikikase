@@ -1,5 +1,4 @@
-New Features
-- Implementation of User Dictionary feature
+메타데이터를 업데이트했습니다
 - Registration of words and their pronunciation
 - Automatic application of registered pronunciations to speech synthesis
 - Enhanced subscription tracking feature through Firebase Analytics

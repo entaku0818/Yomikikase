@@ -1,5 +1,4 @@
-Neue Funktionen
-- Implementierung der Benutzerwörterbuch-Funktion
+Metadaten aktualisiert
 - Registrierung von Wörtern und deren Aussprache
 - Automatische Anwendung registrierter Aussprachen
 - Verbesserte Abonnement-Verfolgung mit Firebase Analytics
