@@ -10,133 +10,140 @@ import ComposableArchitecture
 
 struct HomeView: View {
     let store: Store<Speeches.State, Speeches.Action>
+    let onDevelopmentFeature: (String) -> Void
     @State private var showingTextInput = false
     @State private var showingPDFPicker = false
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 20) {
-                    // ヘッダーカード（グラデーション）
-                    VStack(alignment: .leading, spacing: 16) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("テキストや文書を読み上げる")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.white)
-                                
-                                Button(action: {
-                                    showingTextInput = true
-                                }) {
-                                    Text("今すぐ試す")
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.black)
-                                        .padding(.horizontal, 20)
-                                        .padding(.vertical, 10)
-                                        .background(Color.white)
-                                        .cornerRadius(20)
-                                }
-                            }
-                            Spacer()
+            WithViewStore(store, observe: { $0 }) { viewStore in
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // 機能ボタングリッド
+                        LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
-                            // スマートフォンアイコン
-                            Image(systemName: "iphone")
-                                .font(.system(size: 60))
-                                .foregroundColor(.white.opacity(0.8))
-                        }
-                    }
-                    .padding(24)
-                    .background(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color.purple.opacity(0.8),
-                                Color.blue.opacity(0.6)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-                    .cornerRadius(16)
-                    .padding(.horizontal)
-                    
-                    // インポート&リスニング
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("インポート&リスニング")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .padding(.horizontal)
-                        
-                        HStack(spacing: 20) {
-                            // テキストボタン
-                            Button(action: {
-                                showingTextInput = true
-                            }) {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "doc.text")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.blue)
-                                    Text("テキスト")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(.primary)
-                                }
-                                .frame(width: 80, height: 80)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(16)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                            // テキスト（有効）
+                            createButtonCard(
+                                icon: "doc.text.fill",
+                                iconColor: .blue,
+                                title: "テキスト",
+                                isEnabled: true,
+                                action: { showingTextInput = true }
+                            )
                             
-                            // PDFボタン
-                            Button(action: {
-                                showingPDFPicker = true
-                            }) {
-                                VStack(spacing: 8) {
-                                    Image(systemName: "doc.richtext")
-                                        .font(.system(size: 32))
-                                        .foregroundColor(.red)
-                                    Text("PDF")
-                                        .font(.system(size: 14, weight: .medium))
-                                        .foregroundColor(.primary)
-                                }
-                                .frame(width: 80, height: 80)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(16)
-                            }
-                            .buttonStyle(PlainButtonStyle())
+                            // PDF（有効）
+                            createButtonCard(
+                                icon: "doc.richtext.fill",
+                                iconColor: .red,
+                                title: "PDF",
+                                isEnabled: true,
+                                action: { showingPDFPicker = true }
+                            )
                             
-                            Spacer()
+                            // Googleドライブ（無効）
+                            createButtonCard(
+                                icon: "externaldrive.fill",
+                                iconColor: .green,
+                                title: "Gドライブ",
+                                isEnabled: false,
+                                action: { onDevelopmentFeature("Googleドライブ") }
+                            )
+                            
+                            // Kindle（無効）
+                            createButtonCard(
+                                icon: "book.fill",
+                                iconColor: .orange,
+                                title: "Kindle",
+                                isEnabled: false,
+                                action: { onDevelopmentFeature("Kindle") }
+                            )
+                            
+                            // 本（無効）
+                            createButtonCard(
+                                icon: "books.vertical.fill",
+                                iconColor: .brown,
+                                title: "本",
+                                isEnabled: false,
+                                action: { onDevelopmentFeature("本") }
+                            )
+                            
+                            // スキャン（無効）
+                            createButtonCard(
+                                icon: "camera.fill",
+                                iconColor: .gray,
+                                title: "スキャン",
+                                isEnabled: false,
+                                action: { onDevelopmentFeature("スキャン") }
+                            )
+                            
+                            // リンク（無効）
+                            createButtonCard(
+                                icon: "link",
+                                iconColor: .cyan,
+                                title: "リンク",
+                                isEnabled: false,
+                                action: { onDevelopmentFeature("リンク") }
+                            )
                         }
                         .padding(.horizontal)
-                    }
-                    
-                    // 最近の読み上げ
-                    VStack(alignment: .leading, spacing: 16) {
-                        Text("最近の読み上げ")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                            .padding(.horizontal)
+                        .padding(.top)
                         
-                        WithViewStore(store, observe: { $0 }) { viewStore in
-                            LazyVStack(spacing: 8) {
-                                ForEach(Array(viewStore.speechList.prefix(3))) { speech in
-                                    RecentItemView(
-                                        title: speech.title,
-                                        subtitle: "テキスト",
-                                        date: speech.updatedAt,
-                                        progress: 0
-                                    )
-                                    .onTapGesture {
-                                        // 読み上げ開始
-                                        viewStore.send(.speechSelected(speech.text))
-                                        showingTextInput = true
+                        // 最近のファイル
+                        if !viewStore.speechList.isEmpty {
+                            VStack(alignment: .leading, spacing: 16) {
+                                HStack {
+                                    Text("最近のファイル")
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                    Spacer()
+                                }
+                                .padding(.horizontal)
+                                
+                                LazyVStack(spacing: 8) {
+                                    ForEach(Array(viewStore.speechList.prefix(3))) { speech in
+                                        HStack {
+                                            Image(systemName: "doc.text.fill")
+                                                .font(.system(size: 20))
+                                                .foregroundColor(.blue)
+                                                .frame(width: 32, height: 32)
+                                                .background(Color.blue.opacity(0.1))
+                                                .cornerRadius(6)
+                                            
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                Text(speech.title)
+                                                    .font(.system(size: 16, weight: .medium))
+                                                    .lineLimit(1)
+                                                
+                                                Text(speech.updatedAt, style: .date)
+                                                    .font(.system(size: 14))
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            
+                                            Spacer()
+                                            
+                                            Button(action: {
+                                                viewStore.send(.speechSelected(speech.text))
+                                                showingTextInput = true
+                                            }) {
+                                                Image(systemName: "play.circle")
+                                                    .font(.system(size: 24))
+                                                    .foregroundColor(.blue)
+                                            }
+                                            .buttonStyle(PlainButtonStyle())
+                                        }
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 8)
+                                        .background(Color.white)
+                                        .cornerRadius(12)
+                                        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
                                     }
                                 }
+                                .padding(.horizontal)
                             }
-                            .padding(.horizontal)
                         }
+                        
+                        Spacer(minLength: 100)
                     }
-                    
-                    Spacer(minLength: 100)
                 }
             }
             .navigationTitle("Voice Narrator")
@@ -148,6 +155,40 @@ struct HomeView: View {
         .sheet(isPresented: $showingPDFPicker) {
             PDFPickerView()
         }
+    }
+    
+    @ViewBuilder
+    private func createButtonCard(
+        icon: String,
+        iconColor: Color,
+        title: String,
+        isEnabled: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            VStack(spacing: 12) {
+                Image(systemName: icon)
+                    .font(.system(size: 32))
+                    .foregroundColor(isEnabled ? iconColor : Color.gray.opacity(0.5))
+                    .frame(width: 50, height: 50)
+                    .background((isEnabled ? iconColor : Color.gray).opacity(0.1))
+                    .cornerRadius(12)
+                
+                Text(title)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(isEnabled ? .primary : .secondary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 100)
+            .background(isEnabled ? Color.white : Color.gray.opacity(0.1))
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
+            .opacity(isEnabled ? 1.0 : 0.6)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(!isEnabled)
     }
 }
 
@@ -219,7 +260,10 @@ struct RecentItemView: View {
 }
 
 #Preview {
-    HomeView(store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
-        Speeches()
-    })
+    HomeView(
+        store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
+            Speeches()
+        },
+        onDevelopmentFeature: { _ in }
+    )
 }
