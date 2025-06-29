@@ -18,45 +18,29 @@ struct MainView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            TabView {
-                SpeechView(store: store)
-                    .tabItem {
-                        Image(systemName: "text.bubble")
-                        Text("読み上げ")
-                    }
-                    .tag(0)
-                PDFListView(
-                    store: Store(
-                        initialState: PDFListFeature.State()
-                    ) {
-                        PDFListFeature()
-                    }
-                )
-                    .tabItem {
-                        Image(systemName: "doc.text")
-                        Text("PDF")
-                    }
-                    .tag(1)
-                SettingsView(store: Store(
-                    initialState: SettingsReducer.State(languageSetting: "en"))                {
-                        SettingsReducer()
-                    }
-                )
-                    .tabItem {
-                        Image(systemName: "star")
-                        Text("読み上げ内容登録")
-                    }
-                    .tag(2)
-                NavigationStack {
-                    LanguageSettingView(store: settingStore)
-                }
+        TabView {
+            HomeView(store: store)
                 .tabItem {
-                    Image(systemName: "gear")
-                    Text("設定")
+                    Image(systemName: "house")
+                    Text("ホーム")
                 }
-                .tag(3)
+                .tag(0)
+            
+            MyFilesView()
+                .tabItem {
+                    Image(systemName: "doc")
+                    Text("マイファイル")
+                }
+                .tag(1)
+            
+            NavigationStack {
+                LanguageSettingView(store: settingStore)
             }
+            .tabItem {
+                Image(systemName: "gear")
+                Text("設定")
+            }
+            .tag(2)
         }
     }
 }
