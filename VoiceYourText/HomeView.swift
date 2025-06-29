@@ -11,8 +11,6 @@ import ComposableArchitecture
 struct HomeView: View {
     let store: Store<Speeches.State, Speeches.Action>
     let onDevelopmentFeature: (String) -> Void
-    @State private var showingTextInput = false
-    @State private var showingPDFPicker = false
     
     var body: some View {
         NavigationStack {
@@ -23,22 +21,26 @@ struct HomeView: View {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
                             // テキスト（有効）
-                            createButtonCard(
-                                icon: "doc.text.fill",
-                                iconColor: .blue,
-                                title: "テキスト",
-                                isEnabled: true,
-                                action: { showingTextInput = true }
-                            )
+                            NavigationLink(destination: TextInputView(store: store)) {
+                                createButtonContent(
+                                    icon: "doc.text.fill",
+                                    iconColor: .blue,
+                                    title: "テキスト",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             
                             // PDF（有効）
-                            createButtonCard(
-                                icon: "doc.richtext.fill",
-                                iconColor: .red,
-                                title: "PDF",
-                                isEnabled: true,
-                                action: { showingPDFPicker = true }
-                            )
+                            NavigationLink(destination: PDFPickerView()) {
+                                createButtonContent(
+                                    icon: "doc.richtext.fill",
+                                    iconColor: .red,
+                                    title: "PDF",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             
                             // Googleドライブ（無効）
                             createButtonCard(
@@ -121,15 +123,14 @@ struct HomeView: View {
                                             
                                             Spacer()
                                             
-                                            Button(action: {
-                                                viewStore.send(.speechSelected(speech.text))
-                                                showingTextInput = true
-                                            }) {
+                                            NavigationLink(destination: TextInputView(store: store)) {
                                                 Image(systemName: "play.circle")
                                                     .font(.system(size: 24))
                                                     .foregroundColor(.blue)
                                             }
-                                            .buttonStyle(PlainButtonStyle())
+                                            .simultaneousGesture(TapGesture().onEnded {
+                                                viewStore.send(.speechSelected(speech.text))
+                                            })
                                         }
                                         .padding(.horizontal)
                                         .padding(.vertical, 8)
@@ -149,12 +150,35 @@ struct HomeView: View {
             .navigationTitle("Voice Narrator")
             .navigationBarTitleDisplayMode(.large)
         }
-        .sheet(isPresented: $showingTextInput) {
-            TextInputView(store: store)
+    }
+    
+    @ViewBuilder
+    private func createButtonContent(
+        icon: String,
+        iconColor: Color,
+        title: String,
+        isEnabled: Bool
+    ) -> some View {
+        VStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 32))
+                .foregroundColor(isEnabled ? iconColor : Color.gray.opacity(0.5))
+                .frame(width: 50, height: 50)
+                .background((isEnabled ? iconColor : Color.gray).opacity(0.1))
+                .cornerRadius(12)
+            
+            Text(title)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isEnabled ? .primary : .secondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
         }
-        .sheet(isPresented: $showingPDFPicker) {
-            PDFPickerView()
-        }
+        .frame(maxWidth: .infinity)
+        .frame(height: 100)
+        .background(isEnabled ? Color.white : Color.gray.opacity(0.1))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
+        .opacity(isEnabled ? 1.0 : 0.6)
     }
     
     @ViewBuilder
@@ -188,7 +212,6 @@ struct HomeView: View {
             .opacity(isEnabled ? 1.0 : 0.6)
         }
         .buttonStyle(PlainButtonStyle())
-        .disabled(!isEnabled)
     }
 }
 
