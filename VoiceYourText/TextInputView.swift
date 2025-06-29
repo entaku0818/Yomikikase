@@ -8,6 +8,7 @@
 import SwiftUI
 import ComposableArchitecture
 import AVFoundation
+import Dependencies
 
 struct TextInputView: View {
     @Environment(\.dismiss) private var dismiss
@@ -15,6 +16,7 @@ struct TextInputView: View {
     @State private var text: String = ""
     @State private var title: String = ""
     @State private var showingSaveAlert = false
+    @Dependency(\.speechSynthesizer) var speechSynthesizer
     
     var body: some View {
         NavigationStack {
@@ -124,34 +126,69 @@ struct TextInputView: View {
     }
     
     private func speak() {
-        // 音声合成の実装は既存のSpeechViewから移植
+        guard !text.isEmpty else { 
+            print("❌ TextInputView: Cannot speak - text is empty")
+            return 
+        }
+        
+        print("🎤 TextInputView: Starting speech synthesis")
+        print("📝 Text to speak: \(text)")
+        
+        // 音声セッションの設定
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
             try audioSession.setActive(true)
+            print("✅ Audio session configured successfully")
         } catch {
-            print("Failed to set audio session category: \(error)")
+            print("❌ Failed to set audio session category: \(error)")
+            return
         }
         
-        let speechUtterance = AVSpeechUtterance(string: text)
+        // 音声設定の取得
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-        
         let rate = UserDefaultsManager.shared.speechRate
         let pitch = UserDefaultsManager.shared.speechPitch
         let volume: Float = 0.75
         
+        print("🌐 Language: \(language)")
+        print("⚡ Rate: \(rate), Pitch: \(pitch), Volume: \(volume)")
+        
+        // 音声合成の設定
+        let speechUtterance = AVSpeechUtterance(string: text)
+        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
         speechUtterance.rate = rate
         speechUtterance.pitchMultiplier = pitch
         speechUtterance.volume = volume
         
-        let synthesizer = AVSpeechSynthesizer()
-        synthesizer.speak(speechUtterance)
+        // 利用可能な音声確認
+        let availableVoices = AVSpeechSynthesisVoice.speechVoices()
+        print("🎵 Available voices for \(language): \(availableVoices.filter { $0.language == language }.count)")
+        
+        if let selectedVoice = speechUtterance.voice {
+            print("✅ Selected voice: \(selectedVoice.name) (\(selectedVoice.language))")
+        } else {
+            print("⚠️ No voice selected, using default")
+        }
+        
+        // 音声合成開始
+        Task {
+            do {
+                print("🚀 Starting speech synthesis...")
+                try await speechSynthesizer.speak(speechUtterance)
+                print("✅ Speech synthesis completed")
+            } catch {
+                print("❌ Speech synthesis failed: \(error)")
+            }
+        }
     }
     
     private func stopSpeaking() {
-        let synthesizer = AVSpeechSynthesizer()
-        synthesizer.stopSpeaking(at: .immediate)
+        print("🛑 TextInputView: Stopping speech synthesis")
+        Task {
+            _ = await speechSynthesizer.stopSpeaking()
+            print("✅ Speech synthesis stopped")
+        }
     }
     
     private func saveText() {
