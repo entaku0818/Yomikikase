@@ -6,100 +6,126 @@
 //
 
 import SwiftUI
+import ComposableArchitecture
 import UniformTypeIdentifiers
 
 struct PDFPickerView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var showingFilePicker = false
-    
+    let store = Store(
+        initialState: PDFListFeature.State()
+    ) {
+        PDFListFeature()
+    }
+    @ObservedObject var viewStore: ViewStoreOf<PDFListFeature>
+    @State private var showingSubscription = false
+
+    init() {
+        self.store = Store(
+            initialState: PDFListFeature.State()
+        ) {
+            PDFListFeature()
+        }
+        self.viewStore = ViewStore(self.store, observe: { $0 })
+    }
+
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Spacer()
-                
-                // アイコン
-                Image(systemName: "doc.richtext")
-                    .font(.system(size: 80))
-                    .foregroundColor(.red)
-                
-                // タイトルと説明
-                VStack(spacing: 12) {
-                    Text("PDFファイルを選択")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                    
-                    Text("読み上げたいPDFファイルを選択してください")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                }
-                
-                Spacer()
-                
-                // ファイル選択ボタン
-                Button(action: {
-                    showingFilePicker = true
-                }) {
-                    HStack {
-                        Image(systemName: "folder")
-                        Text("ファイルを選択")
+        VStack {
+            List {
+                ForEach(viewStore.pdfFiles) { file in
+                    NavigationLink(destination: PDFReaderView(
+                        store: Store(
+                            initialState: PDFReaderFeature.State(currentPDFURL: file.url)
+                        ) {
+                            PDFReaderFeature()
+                        }
+                    )) {
+                        VStack(alignment: .leading) {
+                            Text(file.fileName)
+                                .font(.headline)
+                            Text(file.createdAt.formatted())
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
                 }
-                .padding(.horizontal)
-                
-                // キャンセルボタン
-                Button(action: {
-                    dismiss()
-                }) {
-                    Text("キャンセル")
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .foregroundColor(.primary)
-                        .cornerRadius(12)
+                .onDelete { indexSet in
+                    indexSet.forEach { index in
+                        let file = viewStore.pdfFiles[index]
+                        viewStore.send(.deletePDFFile(file))
+                    }
                 }
-                .padding(.horizontal)
-                
-                Spacer()
             }
-            .navigationTitle("PDF選択")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("完了") {
-                        dismiss()
+            
+            // 無料ユーザーの場合に登録制限の表示
+            if !UserDefaultsManager.shared.isPremiumUser {
+                HStack {
+                    Text("無料版: \(viewStore.pdfFiles.count)/\(viewStore.maxFreePDFCount)ファイル")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    Button("プレミアムにアップグレード") {
+                        showingSubscription = true
                     }
+                    .font(.caption)
+                    .foregroundColor(.blue)
+                }
+                .padding(.horizontal)
+                .padding(.top, 4)
+            }
+            
+            // 広告バナーを追加
+            if !UserDefaultsManager.shared.isPremiumUser {
+                AdmobBannerView().frame(width: .infinity, height: 50)
+            }
+        }
+        .navigationTitle("PDFファイル")
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: { viewStore.send(.showFilePicker) }) {
+                    Image(systemName: "plus")
                 }
             }
         }
         .fileImporter(
-            isPresented: $showingFilePicker,
+            isPresented: viewStore.binding(
+                get: \.showingFilePicker,
+                send: { value in value ? .showFilePicker : .hideFilePicker }
+            ),
             allowedContentTypes: [UTType.pdf],
             allowsMultipleSelection: false
         ) { result in
             switch result {
             case .success(let urls):
                 if let url = urls.first {
-                    handlePDFSelection(url: url)
+                    viewStore.send(.selectPDFFile(url))
                 }
             case .failure(let error):
-                print("PDF selection failed: \(error)")
+                print("Error selecting file: \(error.localizedDescription)")
             }
         }
-    }
-    
-    private func handlePDFSelection(url: URL) {
-        // PDFファイルの処理
-        // 後でPDFListFeatureと統合
-        dismiss()
+        .alert("プレミアム機能が必要です", isPresented: viewStore.binding(
+            get: \.showingPremiumAlert,
+            send: { _ in .hidePremiumAlert }
+        )) {
+            Button("キャンセル", role: .cancel) { }
+            Button("詳細を見る") {
+                showingSubscription = true
+            }
+        } message: {
+            Text("無料版では最大\(viewStore.maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
+        }
+        .sheet(isPresented: $showingSubscription) {
+            SubscriptionView()
+        }
+        .onAppear {
+            viewStore.send(.loadPDFFiles)
+        }
     }
 }
 
 #Preview {
-    PDFPickerView()
+    NavigationStack {
+        PDFPickerView()
+    }
 }
