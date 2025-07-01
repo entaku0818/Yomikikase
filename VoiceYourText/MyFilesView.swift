@@ -37,6 +37,11 @@ struct MyFilesView: View {
                     Spacer(minLength: 100)
                 }
                 
+                // 広告バナー（最下部）
+                if !UserDefaultsManager.shared.isPremiumUser {
+                    AdmobBannerView()
+                        .frame(height: 50)
+                }
             }
             .navigationTitle("マイファイル")
             .navigationBarTitleDisplayMode(.large)
