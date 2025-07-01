@@ -208,7 +208,88 @@ struct SettingsReducer {
                 state.showUserDictionaryView = isPresented
                 return .none
 
-            default:
+            case .view(.insert):
+                guard !state.title.isEmpty && !state.text.isEmpty else {
+                    state.showError = true
+                    state.errorMessage = "タイトルと本文を入力してください"
+                    return .run { send in
+                        try await Task.sleep(nanoseconds: 2_000_000_000)
+                        await send(.view(.dismissError))
+                    }
+                }
+                
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                
+                SpeechTextRepository.shared.insert(
+                    title: state.title,
+                    text: state.text,
+                    languageSetting: languageSetting
+                )
+                
+                state.showSuccess = true
+                state.title = ""
+                state.text = ""
+                
+                return .run { send in
+                    try await Task.sleep(nanoseconds: 2_000_000_000)
+                    await send(.view(.dismissSuccess))
+                    await send(.view(.fetchSpeeches))
+                }
+
+            case .view(.fetchSpeeches):
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                let fetchedSpeeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
+                
+                state.speeches = fetchedSpeeches.map { speechText in
+                    Speeches.Speech(
+                        id: speechText.id,
+                        title: speechText.title,
+                        text: speechText.text,
+                        isDefault: speechText.isDefault,
+                        createdAt: speechText.createdAt,
+                        updatedAt: speechText.updatedAt
+                    )
+                }
+                return .none
+
+            case .view(.resetToDefault):
+                state.speechRate = 0.5
+                state.speechPitch = 1.0
+                UserDefaultsManager.shared.speechRate = state.speechRate
+                UserDefaultsManager.shared.speechPitch = state.speechPitch
+                return .none
+
+            case .view(.dismissSuccess):
+                state.showSuccess = false
+                return .none
+
+            case .view(.dismissError):
+                state.showError = false
+                state.errorMessage = ""
+                return .none
+
+            case .view(.deleteSpeech(let id)):
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+                
+                SpeechTextRepository.shared.delete(id: id)
+                state.speeches.removeAll { $0.id == id }
+                state.showDeleteConfirmation = false
+                state.itemToDelete = nil
+                
+                state.successMessage = "削除しました"
+                state.showSuccess = true
+                
+                return .run { send in
+                    try await Task.sleep(nanoseconds: 2_000_000_000)
+                    await send(.view(.dismissSuccess))
+                    await send(.view(.fetchSpeeches))
+                }
+
+            case .view(.setKeyboardFocus(let focused)):
+                state.isKeyboardFocused = focused
                 return .none
             }
         }

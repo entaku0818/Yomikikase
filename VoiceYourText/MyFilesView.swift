@@ -12,26 +12,16 @@ struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
     @State private var pdfFiles: [SavedPDFFile] = []
     @State private var searchText = ""
-    @State private var selectedTab = "全てのファイル"
-    
-    private let tabs = ["全てのファイル", "書籍"]
+    @State private var showingSubscription = false
+    let store: StoreOf<Speeches>
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // タブ選択
+                // 検索とメニューボタン
                 HStack {
-                    ForEach(tabs, id: \.self) { tab in
-                        tabButton(for: tab)
-                        
-                        if tab != tabs.last {
-                            Spacer()
-                        }
-                    }
-                    
                     Spacer()
                     
-                    // 検索とメニューボタン
                     HStack(spacing: 16) {
                         Button(action: {}) {
                             Image(systemName: "magnifyingglass")
@@ -53,10 +43,17 @@ struct MyFilesView: View {
                 ScrollView {
                     LazyVStack(spacing: 12) {
                         ForEach(combinedFiles) { file in
-                            FileItemView(file: file)
-                                .onTapGesture {
-                                    // ファイルを開く処理
+                            if file.type == .text {
+                                NavigationLink(destination: TextInputView(store: store)) {
+                                    FileItemView(file: file)
                                 }
+                                .buttonStyle(PlainButtonStyle())
+                            } else {
+                                FileItemView(file: file)
+                                    .onTapGesture {
+                                        // PDFファイルを開く処理
+                                    }
+                            }
                         }
                     }
                     .padding(.horizontal)
@@ -69,19 +66,19 @@ struct MyFilesView: View {
                                     .font(.system(size: 16))
                                     .foregroundColor(.blue)
                                 
-                                Text("\(maxFreeFiles)の\(freeFileCount)ファイル")
+                                Text("PDFファイル: \(maxFreePDFFiles)の\(pdfFiles.count)ファイル")
                                     .font(.system(size: 16, weight: .medium))
                                 
                                 Spacer()
                             }
                             
-                            Text("アップグレードでさらに追加")
+                            Text("アップグレードでPDFファイルをさらに追加")
                                 .font(.system(size: 14))
                                 .foregroundColor(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             
                             Button(action: {
-                                // プレミアム画面へ遷移
+                                showingSubscription = true
                             }) {
                                 Text("アップグレード")
                                     .font(.system(size: 16, weight: .semibold))
@@ -102,47 +99,12 @@ struct MyFilesView: View {
                     Spacer(minLength: 100)
                 }
                 
-                // 最近再生した項目（下部）
-                if !combinedFiles.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Divider()
-                        
-                        if let recentFile = combinedFiles.first {
-                            HStack {
-                                Image(systemName: recentFile.type == .pdf ? "doc.richtext.fill" : "doc.text.fill")
-                                    .font(.system(size: 20))
-                                    .foregroundColor(recentFile.type == .pdf ? .red : .blue)
-                                    .frame(width: 32, height: 32)
-                                    .background(Color.gray.opacity(0.1))
-                                    .cornerRadius(6)
-                                
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(recentFile.title)
-                                        .font(.system(size: 14, weight: .medium))
-                                        .lineLimit(1)
-                                    
-                                    Text("1分")
-                                        .font(.system(size: 12))
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                Spacer()
-                                
-                                Button(action: {}) {
-                                    Image(systemName: "play.fill")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.primary)
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 8)
-                        }
-                    }
-                    .background(Color(UIColor.systemBackground))
-                }
             }
             .navigationTitle("マイファイル")
             .navigationBarTitleDisplayMode(.large)
+        }
+        .sheet(isPresented: $showingSubscription) {
+            SubscriptionView()
         }
         .onAppear {
             loadFiles()
@@ -179,28 +141,8 @@ struct MyFilesView: View {
         return files.sorted { $0.date > $1.date }
     }
     
-    private var maxFreeFiles: Int { 5 }
-    private var freeFileCount: Int { min(combinedFiles.count, maxFreeFiles) }
+    private var maxFreePDFFiles: Int { 3 }
     
-    @ViewBuilder
-    private func tabButton(for tab: String) -> some View {
-        Button(action: {
-            selectedTab = tab
-        }) {
-            let isSelected = selectedTab == tab
-            Text(tab)
-                .font(.system(size: 16, weight: isSelected ? .semibold : .medium))
-                .foregroundColor(isSelected ? .primary : .secondary)
-                .padding(.bottom, 8)
-                .overlay(
-                    Rectangle()
-                        .frame(height: 2)
-                        .foregroundColor(isSelected ? Color.blue : Color.clear),
-                    alignment: .bottom
-                )
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
     
     private func loadFiles() {
         // テキストファイルの読み込み
@@ -325,5 +267,7 @@ struct FileItemView: View {
 }
 
 #Preview {
-    MyFilesView()
+    MyFilesView(store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
+        Speeches()
+    })
 }

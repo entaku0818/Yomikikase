@@ -38,7 +38,7 @@ struct MainView: View {
                     trackTabClick("home")
                 }
             
-            MyFilesView()
+            MyFilesView(store: store)
                 .tabItem {
                     Image(systemName: "doc")
                     Text("マイファイル")
