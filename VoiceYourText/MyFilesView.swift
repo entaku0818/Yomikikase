@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Foundation
 
 struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
@@ -24,6 +25,17 @@ struct MyFilesView: View {
                         ForEach(combinedFiles) { file in
                             if file.type == .text {
                                 NavigationLink(destination: TextInputView(store: store, initialText: getTextForFile(file.id), fileId: file.id)) {
+                                    FileItemView(file: file)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            } else if file.type == .pdf {
+                                NavigationLink(destination: PDFReaderView(
+                                    store: Store(
+                                        initialState: PDFReaderFeature.State(currentPDFURL: getPDFURLForFile(file.id))
+                                    ) {
+                                        PDFReaderFeature()
+                                    }
+                                )) {
                                     FileItemView(file: file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -60,7 +72,6 @@ struct MyFilesView: View {
                 id: textFile.id,
                 title: textFile.title,
                 subtitle: "あああああああ",
-                progress: 100,
                 date: textFile.updatedAt,
                 type: .text
             )
@@ -72,7 +83,6 @@ struct MyFilesView: View {
                 id: pdfFile.id,
                 title: pdfFile.fileName,
                 subtitle: pdfFile.fileName,
-                progress: Int.random(in: 0...100),
                 date: pdfFile.createdAt,
                 type: .pdf
             )
@@ -99,12 +109,48 @@ struct MyFilesView: View {
             )
         }
         
-        // PDFファイルの読み込み（実装は後で）
-        // pdfFiles = loadPDFFiles()
+        // PDFファイルの読み込み
+        loadPDFFiles()
+    }
+    
+    private func loadPDFFiles() {
+        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            return
+        }
+        
+        do {
+            let fileURLs = try FileManager.default.contentsOfDirectory(
+                at: documentDirectory,
+                includingPropertiesForKeys: [.creationDateKey],
+                options: [.skipsHiddenFiles]
+            )
+            
+            pdfFiles = fileURLs
+                .filter { $0.pathExtension.lowercased() == "pdf" }
+                .compactMap { url -> SavedPDFFile? in
+                    guard let attributes = try? FileManager.default.attributesOfItem(atPath: url.path),
+                          let creationDate = attributes[.creationDate] as? Date else {
+                        return nil
+                    }
+                    return SavedPDFFile(
+                        id: UUID(),
+                        fileName: url.lastPathComponent,
+                        url: url,
+                        createdAt: creationDate
+                    )
+                }
+                .sorted { $0.createdAt > $1.createdAt }
+        } catch {
+            print("Error loading PDF files: \(error.localizedDescription)")
+        }
     }
     
     private func getTextForFile(_ fileId: UUID) -> String {
         return textFiles.first { $0.id == fileId }?.text ?? ""
+    }
+    
+    private func getPDFURLForFile(_ fileId: UUID) -> URL? {
+        return pdfFiles.first { $0.id == fileId }?.url
     }
 }
 
@@ -112,7 +158,6 @@ struct FileItem: Identifiable {
     let id: UUID
     let title: String
     let subtitle: String
-    let progress: Int
     let date: Date
     let type: FileType
     
@@ -172,14 +217,6 @@ struct FileItemView: View {
                     .lineLimit(2)
                 
                 HStack {
-                    Text("\(file.progress)%")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text("•")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
                     Text(dateFormatter.string(from: file.date))
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
