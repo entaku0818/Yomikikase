@@ -16,18 +16,32 @@ struct TextInputView: View {
     @State private var text: String = ""
     @State private var showingSaveAlert = false
     @State private var isSpeaking = false
+    @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     
     var body: some View {
         NavigationStack {
             ZStack {
                 // フルスクリーンのテキストエディタ
-                TextEditor(text: $text)
-                    .padding(.horizontal)
-                    .padding(.top, 8)
-                    .font(.system(size: 16))
-                    .scrollContentBackground(.hidden)
-                    .background(Color(UIColor.systemBackground))
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $text)
+                        .padding(.horizontal)
+                        .padding(.top, 60) // ボタンとの重なりを防ぐ
+                        .font(.system(size: 20)) // 文字サイズを拡大
+                        .scrollContentBackground(.hidden)
+                        .background(Color(UIColor.systemBackground))
+                        .focused($isTextEditorFocused)
+                    
+                    // プレースホルダー
+                    if text.isEmpty {
+                        Text("読み上げたいテキストを入力してください...")
+                            .foregroundColor(.secondary)
+                            .font(.system(size: 20))
+                            .padding(.horizontal)
+                            .padding(.top, 70)
+                            .allowsHitTesting(false)
+                    }
+                }
                 
                 // フローティング再生ボタン
                 VStack {
@@ -82,6 +96,12 @@ struct TextInputView: View {
                     .padding(.trailing, 16)
                 }
                 .padding(.top, 8)
+            }
+            .onAppear {
+                // 画面表示時にキーボードを自動表示
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    isTextEditorFocused = true
+                }
             }
             .alert("保存", isPresented: $showingSaveAlert) {
                 Button("保存") {
