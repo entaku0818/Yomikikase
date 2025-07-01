@@ -12,32 +12,11 @@ struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
     @State private var pdfFiles: [SavedPDFFile] = []
     @State private var searchText = ""
-    @State private var showingSubscription = false
     let store: StoreOf<Speeches>
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // 検索とメニューボタン
-                HStack {
-                    Spacer()
-                    
-                    HStack(spacing: 16) {
-                        Button(action: {}) {
-                            Image(systemName: "magnifyingglass")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary)
-                        }
-                        
-                        Button(action: {}) {
-                            Image(systemName: "ellipsis.circle")
-                                .font(.system(size: 18))
-                                .foregroundColor(.primary)
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 16)
                 
                 // ファイルリスト
                 ScrollView {
@@ -50,51 +29,10 @@ struct MyFilesView: View {
                                 .buttonStyle(PlainButtonStyle())
                             } else {
                                 FileItemView(file: file)
-                                    .onTapGesture {
-                                        // PDFファイルを開く処理
-                                    }
                             }
                         }
                     }
                     .padding(.horizontal)
-                    
-                    // プレミアム広告（無料ユーザーの場合）
-                    if !UserDefaultsManager.shared.isPremiumUser {
-                        VStack(spacing: 12) {
-                            HStack {
-                                Image(systemName: "info.circle")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.blue)
-                                
-                                Text("PDFファイル: \(maxFreePDFFiles)の\(pdfFiles.count)ファイル")
-                                    .font(.system(size: 16, weight: .medium))
-                                
-                                Spacer()
-                            }
-                            
-                            Text("アップグレードでPDFファイルをさらに追加")
-                                .font(.system(size: 14))
-                                .foregroundColor(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            
-                            Button(action: {
-                                showingSubscription = true
-                            }) {
-                                Text("アップグレード")
-                                    .font(.system(size: 16, weight: .semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity)
-                                    .padding()
-                                    .background(Color.blue)
-                                    .cornerRadius(12)
-                            }
-                        }
-                        .padding()
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(12)
-                        .padding(.horizontal)
-                        .padding(.top, 20)
-                    }
                     
                     Spacer(minLength: 100)
                 }
@@ -102,9 +40,6 @@ struct MyFilesView: View {
             }
             .navigationTitle("マイファイル")
             .navigationBarTitleDisplayMode(.large)
-        }
-        .sheet(isPresented: $showingSubscription) {
-            SubscriptionView()
         }
         .onAppear {
             loadFiles()
@@ -141,7 +76,6 @@ struct MyFilesView: View {
         return files.sorted { $0.date > $1.date }
     }
     
-    private var maxFreePDFFiles: Int { 3 }
     
     
     private func loadFiles() {
@@ -253,11 +187,6 @@ struct FileItemView: View {
             
             Spacer()
             
-            Button(action: {}) {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 16))
-                    .foregroundColor(.secondary)
-            }
         }
         .padding()
         .background(Color(.systemBackground))
