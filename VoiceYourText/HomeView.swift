@@ -134,7 +134,7 @@ struct HomeView: View {
                                         }
                                         .padding(.horizontal)
                                         .padding(.vertical, 8)
-                                        .background(Color.white)
+                                        .background(Color(.systemBackground))
                                         .cornerRadius(12)
                                         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
                                     }
@@ -175,7 +175,7 @@ struct HomeView: View {
         }
         .frame(maxWidth: .infinity)
         .frame(height: 100)
-        .background(isEnabled ? Color.white : Color.gray.opacity(0.1))
+        .background(isEnabled ? Color(.systemBackground) : Color(.systemGray6))
         .cornerRadius(16)
         .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
         .opacity(isEnabled ? 1.0 : 0.6)
@@ -206,7 +206,7 @@ struct HomeView: View {
             }
             .frame(maxWidth: .infinity)
             .frame(height: 100)
-            .background(isEnabled ? Color.white : Color.gray.opacity(0.1))
+            .background(isEnabled ? Color(.systemBackground) : Color(.systemGray6))
             .cornerRadius(16)
             .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
             .opacity(isEnabled ? 1.0 : 0.6)
@@ -276,7 +276,7 @@ struct RecentItemView: View {
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 16)
-        .background(Color.white)
+        .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
