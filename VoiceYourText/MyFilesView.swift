@@ -13,6 +13,8 @@ struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
     @State private var pdfFiles: [SavedPDFFile] = []
     @State private var searchText = ""
+    @State private var showingDeleteAlert = false
+    @State private var fileToDelete: FileItem?
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -28,6 +30,12 @@ struct MyFilesView: View {
                                     FileItemView(file: file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button("削除", role: .destructive) {
+                                        fileToDelete = file
+                                        showingDeleteAlert = true
+                                    }
+                                }
                             } else if file.type == .pdf {
                                 NavigationLink(destination: PDFReaderView(
                                     store: Store(
@@ -39,6 +47,12 @@ struct MyFilesView: View {
                                     FileItemView(file: file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
+                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                    Button("削除", role: .destructive) {
+                                        fileToDelete = file
+                                        showingDeleteAlert = true
+                                    }
+                                }
                             } else {
                                 FileItemView(file: file)
                             }
@@ -60,6 +74,25 @@ struct MyFilesView: View {
         }
         .onAppear {
             loadFiles()
+        }
+        .alert("削除の確認", isPresented: $showingDeleteAlert) {
+            Button("キャンセル", role: .cancel) {
+                fileToDelete = nil
+            }
+            Button("削除", role: .destructive) {
+                if let file = fileToDelete {
+                    if file.type == .text {
+                        deleteTextFile(file.id)
+                    } else if file.type == .pdf {
+                        deletePDFFile(file.id)
+                    }
+                }
+                fileToDelete = nil
+            }
+        } message: {
+            if let file = fileToDelete {
+                Text("「\(file.title)」を削除しますか？")
+            }
         }
     }
     
@@ -151,6 +184,26 @@ struct MyFilesView: View {
     
     private func getPDFURLForFile(_ fileId: UUID) -> URL? {
         return pdfFiles.first { $0.id == fileId }?.url
+    }
+    
+    private func deleteTextFile(_ fileId: UUID) {
+        // Core Dataから削除
+        SpeechTextRepository.shared.delete(id: fileId)
+        // ローカルリストから削除
+        textFiles.removeAll { $0.id == fileId }
+    }
+    
+    private func deletePDFFile(_ fileId: UUID) {
+        guard let pdfFile = pdfFiles.first(where: { $0.id == fileId }) else { return }
+        
+        do {
+            // ファイルシステムから削除
+            try FileManager.default.removeItem(at: pdfFile.url)
+            // ローカルリストから削除
+            pdfFiles.removeAll { $0.id == fileId }
+        } catch {
+            print("Error deleting PDF file: \(error.localizedDescription)")
+        }
     }
 }
 

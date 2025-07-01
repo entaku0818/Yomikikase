@@ -32,7 +32,7 @@ struct HomeView: View {
                             .buttonStyle(PlainButtonStyle())
                             
                             // PDF（有効）
-                            NavigationLink(destination: PDFPickerView()) {
+                            NavigationLink(destination: SimplePDFPickerView()) {
                                 createButtonContent(
                                     icon: "doc.richtext.fill",
                                     iconColor: .red,
