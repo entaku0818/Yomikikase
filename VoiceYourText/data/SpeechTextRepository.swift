@@ -255,6 +255,23 @@ class SpeechTextRepository: NSObject {
         )
     }
 
+    func updateSpeechText(id: UUID, title: String, text: String) {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+        
+        do {
+            let fetchedItems = try managedContext.fetch(fetchRequest)
+            if let itemToUpdate = fetchedItems.first {
+                itemToUpdate.title = title
+                itemToUpdate.text = text
+                itemToUpdate.updatedAt = Date()
+                try managedContext.save()
+            }
+        } catch {
+            print("Update error: \(error.localizedDescription)")
+        }
+    }
+
     func delete(id: UUID) {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)

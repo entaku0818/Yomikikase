@@ -23,7 +23,7 @@ struct MyFilesView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(combinedFiles) { file in
                             if file.type == .text {
-                                NavigationLink(destination: TextInputView(store: store)) {
+                                NavigationLink(destination: TextInputView(store: store, initialText: getTextForFile(file.id), fileId: file.id)) {
                                     FileItemView(file: file)
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -101,6 +101,10 @@ struct MyFilesView: View {
         
         // PDFファイルの読み込み（実装は後で）
         // pdfFiles = loadPDFFiles()
+    }
+    
+    private func getTextForFile(_ fileId: UUID) -> String {
+        return textFiles.first { $0.id == fileId }?.text ?? ""
     }
 }
 

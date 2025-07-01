@@ -21,7 +21,7 @@ struct HomeView: View {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
                             // テキスト（有効）
-                            NavigationLink(destination: TextInputView(store: store)) {
+                            NavigationLink(destination: TextInputView(store: store, initialText: "", fileId: nil)) {
                                 createButtonContent(
                                     icon: "doc.text.fill",
                                     iconColor: .blue,
@@ -123,7 +123,7 @@ struct HomeView: View {
                                             
                                             Spacer()
                                             
-                                            NavigationLink(destination: TextInputView(store: store)) {
+                                            NavigationLink(destination: TextInputView(store: store, initialText: speech.text, fileId: speech.id)) {
                                                 Image(systemName: "play.circle")
                                                     .font(.system(size: 24))
                                                     .foregroundColor(.blue)

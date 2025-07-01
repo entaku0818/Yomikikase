@@ -19,6 +19,9 @@ struct TextInputView: View {
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     
+    let initialText: String
+    let fileId: UUID?
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -98,9 +101,13 @@ struct TextInputView: View {
                 .padding(.top, 8)
             }
             .onAppear {
-                // 画面表示時にキーボードを自動表示
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    isTextEditorFocused = true
+                // 初期テキストを設定
+                text = initialText
+                // 画面表示時にキーボードを自動表示（新規作成時のみ）
+                if initialText.isEmpty {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        isTextEditorFocused = true
+                    }
                 }
             }
             .alert("保存", isPresented: $showingSaveAlert) {
@@ -190,16 +197,30 @@ struct TextInputView: View {
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
         let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
         
-        SpeechTextRepository.shared.insert(
-            title: finalTitle,
-            text: text,
-            languageSetting: languageSetting
-        )
+        if let fileId = fileId {
+            // 既存ファイルの更新
+            SpeechTextRepository.shared.updateSpeechText(
+                id: fileId,
+                title: finalTitle,
+                text: text
+            )
+        } else {
+            // 新規ファイルの作成
+            SpeechTextRepository.shared.insert(
+                title: finalTitle,
+                text: text,
+                languageSetting: languageSetting
+            )
+        }
     }
 }
 
 #Preview {
-    TextInputView(store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
-        Speeches()
-    })
+    TextInputView(
+        store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
+            Speeches()
+        },
+        initialText: "",
+        fileId: nil
+    )
 }

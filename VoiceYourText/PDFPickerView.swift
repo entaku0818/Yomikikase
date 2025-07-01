@@ -10,7 +10,7 @@ import ComposableArchitecture
 import UniformTypeIdentifiers
 
 struct PDFPickerView: View {
-    let store = Store(
+    var store = Store(
         initialState: PDFListFeature.State()
     ) {
         PDFListFeature()
