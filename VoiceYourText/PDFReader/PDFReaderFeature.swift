@@ -83,12 +83,28 @@ struct PDFReaderFeature: Reducer {
                 guard !state.isReading else { return .none }
                 state.isReading = true
 
+                // ユーザー設定から音声設定を取得
+                let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                let rate = UserDefaultsManager.shared.speechRate
+                let pitch = UserDefaultsManager.shared.speechPitch
+                let volume: Float = 0.75
+
                 let utterance = AVSpeechUtterance(string: state.pdfText)
-                utterance.voice = AVSpeechSynthesisVoice(language: "ja-JP")
-                utterance.rate = 0.5
-                utterance.pitchMultiplier = 1.0
+                utterance.voice = AVSpeechSynthesisVoice(language: language)
+                utterance.rate = rate
+                utterance.pitchMultiplier = pitch
+                utterance.volume = volume
 
                 return .run { send in
+                    // 音声セッションの設定
+                    let audioSession = AVAudioSession.sharedInstance()
+                    do {
+                        try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                        try audioSession.setActive(true)
+                    } catch {
+                        logger.error("Failed to set audio session category: \(error)")
+                    }
+                    
                     try await speechSynthesizer.speak(utterance)
                     await send(.stopReading)
                 }
