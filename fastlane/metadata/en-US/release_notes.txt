@@ -1,4 +1,19 @@
-Updated metadata
+New Feature: Text Highlighting
+
+Added real-time text highlighting during speech synthesis for better user experience.
+
+Key Features:
+• Highlights currently spoken words in yellow
+• Automatic scrolling to follow audio playback
+• PDF highlighting during document reading
+• Available across all text input screens
+
+Improvements:
+• Visual speech tracking for easier following
+• Enhanced accessibility features
+• Smooth animations and responsive performance
+
+Reading aloud is now more intuitive and accessible!
 - Registration of words and their pronunciation
 - Automatic application of registered pronunciations to speech synthesis
 - Enhanced subscription tracking with Firebase Analytics

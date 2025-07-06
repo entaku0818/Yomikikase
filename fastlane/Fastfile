@@ -27,6 +27,56 @@ platform :ios do
     )
   end
 
+  # スクリーンショットのダウンロード
+  desc "Download screenshots from App Store Connect"
+  lane :download_screenshots do
+    # Xcodeプロジェクトからバージョン番号を取得
+    version_number = get_version_number(
+      xcodeproj: "VoiceYourText.xcodeproj",
+      target: "VoiceYourText"
+    )
+    
+    deliver(
+      skip_binary_upload: true,      # バイナリのアップロードをスキップ
+      skip_metadata: true,           # メタデータの更新をスキップ
+      skip_screenshots: true,        # スクリーンショットのアップロードをスキップ
+      app_version: version_number,   # アプリのバージョン番号を指定
+      force: true,                   # 確認なしで強制的に実行
+      sync_screenshots: true,        # スクリーンショットを同期（ダウンロード）
+      run_precheck_before_submit: false,  # 事前チェックをスキップ
+      precheck_include_in_app_purchases: false  # In-app purchasesのチェックをスキップ
+    )
+  end
+
+  # メタデータとスクリーンショットのアップロードのみ（審査提出なし）
+  desc "Upload metadata and screenshots to App Store Connect only"
+  lane :upload_metadata_only do
+    # Xcodeプロジェクトからバージョン番号を取得
+    version_number = get_version_number(
+      xcodeproj: "VoiceYourText.xcodeproj",
+      target: "VoiceYourText"
+    )
+    
+    # バージョン番号が取得できなかった場合はエラー
+    UI.user_error!("バージョン番号をXcodeプロジェクトから取得できませんでした。") unless version_number && !version_number.empty?
+    
+    UI.success("Xcodeプロジェクトからバージョン番号を取得しました: #{version_number}")
+    
+    deliver(
+      skip_binary_upload: true,      # バイナリのアップロードをスキップ
+      skip_app_version_update: false, # アプリバージョンの更新をスキップしない
+      app_version: version_number,    # アプリのバージョン番号を指定
+      skip_metadata: false,          # メタデータの更新をスキップしない
+      skip_screenshots: false,       # スクリーンショットのアップロードをスキップしない
+      force: true,                   # 確認なしで強制的に実行
+      overwrite_screenshots: true,   # 既存のスクリーンショットを上書き
+      ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
+      submit_for_review: false,      # 審査提出をスキップ
+      run_precheck_before_submit: false,  # 事前チェックをスキップ
+      precheck_include_in_app_purchases: false  # In-app purchasesのチェックをスキップ
+    )
+  end
+
   # メタデータとスクリーンショットのアップロード、審査提出
   desc "Upload metadata and screenshots to App Store Connect and submit for review"
   lane :upload_metadata do
