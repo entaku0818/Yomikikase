@@ -16,6 +16,7 @@ struct TextInputView: View {
     @State private var text: String = ""
     @State private var showingSaveAlert = false
     @State private var isSpeaking = false
+    @State private var highlightedRange: NSRange? = nil
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     
@@ -27,13 +28,15 @@ struct TextInputView: View {
             ZStack {
                 // フルスクリーンのテキストエディタ
                 ZStack(alignment: .topLeading) {
-                    TextEditor(text: $text)
-                        .padding(.horizontal)
-                        .padding(.top, 60) // ボタンとの重なりを防ぐ
-                        .font(.system(size: 20)) // 文字サイズを拡大
-                        .scrollContentBackground(.hidden)
-                        .background(Color(UIColor.systemBackground))
-                        .focused($isTextEditorFocused)
+                    HighlightableTextView(
+                        text: $text,
+                        highlightedRange: $highlightedRange,
+                        isEditable: true,
+                        fontSize: 20
+                    )
+                    .padding(.horizontal)
+                    .padding(.top, 60)
+                    .background(Color(UIColor.systemBackground))
                     
                     // プレースホルダー
                     if text.isEmpty {
@@ -56,7 +59,7 @@ struct TextInputView: View {
                             if isSpeaking {
                                 stopSpeaking()
                             } else {
-                                speak()
+                                speakWithHighlight()
                             }
                         }) {
                             Image(systemName: isSpeaking ? "stop.fill" : "play.fill")
@@ -183,9 +186,78 @@ struct TextInputView: View {
         }
     }
     
+    private func speakWithHighlight() {
+        guard !text.isEmpty else { 
+            print("❌ TextInputView: Cannot speak - text is empty")
+            return 
+        }
+        
+        isSpeaking = true
+        print("🎤 TextInputView: Starting speech synthesis with highlighting")
+        print("📝 Text to speak: \(text)")
+        
+        // 音声セッションの設定
+        let audioSession = AVAudioSession.sharedInstance()
+        do {
+            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+            try audioSession.setActive(true)
+            print("✅ Audio session configured successfully")
+        } catch {
+            print("❌ Failed to set audio session category: \(error)")
+            return
+        }
+        
+        // 音声設定の取得
+        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+        let rate = UserDefaultsManager.shared.speechRate
+        let pitch = UserDefaultsManager.shared.speechPitch
+        let volume: Float = 0.75
+        
+        print("🌐 Language: \(language)")
+        print("⚡ Rate: \(rate), Pitch: \(pitch), Volume: \(volume)")
+        
+        // 音声合成の設定
+        let speechUtterance = AVSpeechUtterance(string: text)
+        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
+        speechUtterance.rate = rate
+        speechUtterance.pitchMultiplier = pitch
+        speechUtterance.volume = volume
+        
+        // 音声合成開始
+        Task {
+            do {
+                print("🚀 Starting speech synthesis with highlighting...")
+                try await speechSynthesizer.speakWithHighlight(
+                    speechUtterance,
+                    { range, speechString in
+                        // ハイライト更新
+                        DispatchQueue.main.async {
+                            highlightedRange = range
+                        }
+                    },
+                    {
+                        // 読み上げ完了
+                        DispatchQueue.main.async {
+                            print("✅ Speech synthesis completed")
+                            isSpeaking = false
+                            highlightedRange = nil
+                        }
+                    }
+                )
+            } catch {
+                print("❌ Speech synthesis failed: \(error)")
+                DispatchQueue.main.async {
+                    isSpeaking = false
+                    highlightedRange = nil
+                }
+            }
+        }
+    }
+
     private func stopSpeaking() {
         print("🛑 TextInputView: Stopping speech synthesis")
         isSpeaking = false
+        highlightedRange = nil
         Task {
             _ = await speechSynthesizer.stopSpeaking()
             print("✅ Speech synthesis stopped")

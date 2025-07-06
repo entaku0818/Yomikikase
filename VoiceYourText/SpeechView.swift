@@ -27,6 +27,8 @@ struct Speeches: Reducer {
         var speechList: IdentifiedArrayOf<Speech> = []
         var currentText: String
         var isMailComposePresented: Bool = false
+        var highlightedRange: NSRange? = nil
+        var isSpeaking: Bool = false
 
     }
 
@@ -37,6 +39,10 @@ struct Speeches: Reducer {
         case speechSelected(String)
         case alert(PresentationAction<AlertAction>)
         case mailComposeDismissed
+        case startSpeaking
+        case stopSpeaking
+        case highlightRange(NSRange?)
+        case speechFinished
     }
 
     enum AlertAction: Equatable {
@@ -135,6 +141,20 @@ struct Speeches: Reducer {
                 return .none
             case .alert(.dismiss):
                 return .none
+            case .startSpeaking:
+                state.isSpeaking = true
+                return .none
+            case .stopSpeaking:
+                state.isSpeaking = false
+                state.highlightedRange = nil
+                return .none
+            case .highlightRange(let range):
+                state.highlightedRange = range
+                return .none
+            case .speechFinished:
+                state.isSpeaking = false
+                state.highlightedRange = nil
+                return .none
 
             }
         }.ifLet(\.$alert, action: /Action.alert)
@@ -156,10 +176,18 @@ struct SpeechView: View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
             NavigationStack {
                 VStack {
-                    TextEditor(text: viewStore.binding(
-                        get: \.currentText,
-                        send: Speeches.Action.currentTextChanged
-                    ))
+                    HighlightableTextView(
+                        text: viewStore.binding(
+                            get: \.currentText,
+                            send: Speeches.Action.currentTextChanged
+                        ),
+                        highlightedRange: viewStore.binding(
+                            get: \.highlightedRange,
+                            send: Speeches.Action.highlightRange
+                        ),
+                        isEditable: true,
+                        fontSize: 16
+                    )
                     .frame(height: 100)
                     .padding(4)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -170,15 +198,17 @@ struct SpeechView: View {
                     .padding()
 
                     HStack (spacing: 8){
-                        Button(action: { speak(text: viewStore.currentText) }) {
+                        Button(action: { speakWithHighlight(text: viewStore.currentText, viewStore: viewStore) }) {
                             Image(systemName: "play.fill")
                             Text("読み上げ開始")
                         }
+                        .disabled(viewStore.isSpeaking)
 
-                        Button(action: { stopSpeaking() }) {
+                        Button(action: { stopSpeaking(viewStore: viewStore) }) {
                             Image(systemName: "stop.fill")
                             Text("停止")
                         }
+                        .disabled(!viewStore.isSpeaking)
                         .padding()
                     }
 
@@ -245,6 +275,65 @@ struct SpeechView: View {
     }
 
     func stopSpeaking() {
+        Task {
+            _ = await speechSynthesizer.stopSpeaking()
+        }
+    }
+
+    func speakWithHighlight(text: String, viewStore: ViewStoreOf<Speeches>) {
+        let audioSession = AVAudioSession.sharedInstance()
+         do {
+             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+             try audioSession.setActive(true)
+         } catch {
+             print("Failed to set audio session category: \(error)")
+         }
+        
+        let speechUtterance = AVSpeechUtterance(string: text)
+
+        // 保存された言語設定を取得
+        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
+
+        // 保存されたレートとピッチを取得し、デフォルト値を設定
+        let rate = UserDefaultsManager.shared.speechRate
+        let pitch = UserDefaultsManager.shared.speechPitch
+        let volume: Float = 0.75 // 音量は固定
+
+        speechUtterance.rate = rate
+        speechUtterance.pitchMultiplier = pitch
+        speechUtterance.volume = volume
+
+        viewStore.send(.startSpeaking)
+
+        Task {
+            do {
+                try await speechSynthesizer.speakWithHighlight(
+                    speechUtterance,
+                    { range, speechString in
+                        // ハイライト更新
+                        DispatchQueue.main.async {
+                            viewStore.send(.highlightRange(range))
+                        }
+                    },
+                    {
+                        // 読み上げ完了
+                        DispatchQueue.main.async {
+                            viewStore.send(.speechFinished)
+                        }
+                    }
+                )
+            } catch {
+                print("Speech synthesis failed: \(error)")
+                DispatchQueue.main.async {
+                    viewStore.send(.speechFinished)
+                }
+            }
+        }
+    }
+
+    func stopSpeaking(viewStore: ViewStoreOf<Speeches>) {
+        viewStore.send(.stopSpeaking)
         Task {
             _ = await speechSynthesizer.stopSpeaking()
         }

@@ -26,6 +26,8 @@ struct PDFReaderFeature: Reducer {
         var selectedPage: Int = 0
         var pdfDocument: PDFDocument?
         var currentPDFURL: URL?
+        var highlightedRange: NSRange? = nil
+        var highlightedText: String? = nil  // ハイライトするテキスト
     }
 
     enum Action: Equatable {
@@ -34,6 +36,8 @@ struct PDFReaderFeature: Reducer {
         case stopReading
         case pdfLoaded(PDFDocument)
         case extractTextCompleted(String)
+        case highlightRange(NSRange?)
+        case speechFinished
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
@@ -105,15 +109,51 @@ struct PDFReaderFeature: Reducer {
                         logger.error("Failed to set audio session category: \(error)")
                     }
                     
-                    try await speechSynthesizer.speak(utterance)
-                    await send(.stopReading)
+                    try await speechSynthesizer.speakWithHighlight(
+                        utterance,
+                        { range, speechString in
+                            // ハイライト更新
+                            Task { @MainActor in
+                                await send(.highlightRange(range))
+                            }
+                        },
+                        {
+                            // 読み上げ完了
+                            Task { @MainActor in
+                                await send(.speechFinished)
+                            }
+                        }
+                    )
                 }
 
             case .stopReading:
                 state.isReading = false
+                state.highlightedRange = nil
+                state.highlightedText = nil
                 return .run { _ in
                     await speechSynthesizer.stopSpeaking()
                 }
+                
+            case .highlightRange(let range):
+                state.highlightedRange = range
+                
+                // ハイライトするテキストを抽出
+                if let range = range,
+                   range.location + range.length <= state.pdfText.count {
+                    
+                    let nsString = state.pdfText as NSString
+                    let substring = nsString.substring(with: range)
+                    state.highlightedText = substring
+                } else {
+                    state.highlightedText = nil
+                }
+                return .none
+                
+            case .speechFinished:
+                state.isReading = false
+                state.highlightedRange = nil
+                state.highlightedText = nil
+                return .none
             }
         }
     }
@@ -132,8 +172,11 @@ struct PDFReaderView: View {
     var body: some View {
         VStack {
             if let pdfDocument = viewStore.pdfDocument {
-                PDFKitView(document: pdfDocument)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                PDFKitView(
+                    document: pdfDocument,
+                    highlightedText: viewStore.highlightedText
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
 
             HStack {
@@ -141,7 +184,7 @@ struct PDFReaderView: View {
                     Image(systemName: "play.fill")
                     Text("読み上げ開始")
                 }
-                .disabled(viewStore.isReading)
+                .disabled(viewStore.isReading || viewStore.pdfText.isEmpty)
 
                 Button(action: { viewStore.send(.stopReading) }) {
                     Image(systemName: "stop.fill")
@@ -168,15 +211,36 @@ struct PDFReaderView: View {
 // PDFKitView.swift
 struct PDFKitView: UIViewRepresentable {
     let document: PDFDocument
+    let highlightedText: String?
 
     func makeUIView(context: Context) -> PDFView {
         let pdfView = PDFView()
         pdfView.document = document
         pdfView.autoScales = true
+        pdfView.displayMode = .singlePageContinuous
+        pdfView.displayDirection = .vertical
         return pdfView
     }
 
     func updateUIView(_ pdfView: PDFView, context: Context) {
         pdfView.document = document
+        
+        // 既存のハイライトをクリア
+        pdfView.clearSelection()
+        
+        // 新しいハイライトを設定
+        if let text = highlightedText, !text.isEmpty {
+            // PDFで該当テキストを検索
+            let selections = document.findString(text, withOptions: [])
+            if let selection = selections.first {
+                selection.color = UIColor.systemYellow
+                pdfView.setCurrentSelection(selection, animate: true)
+                
+                // ハイライト部分にスクロール
+                if let page = selection.pages.first {
+                    pdfView.go(to: selection.bounds(for: page), on: page)
+                }
+            }
+        }
     }
 }
