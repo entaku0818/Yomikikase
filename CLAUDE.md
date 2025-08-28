@@ -10,6 +10,9 @@ Voice Narrator (VoiceYourText) is an iOS app that provides text-to-speech functi
 
 ### Basic Development
 ```bash
+# Navigate to iOS directory
+cd iOS
+
 # Open project in Xcode
 open VoiceYourText.xcodeproj
 
@@ -21,7 +24,7 @@ swift test
 ```
 
 ### Testing
-- Unit tests are located in `VoiceYourTextTests/`
+- Unit tests are located in `iOS/VoiceYourTextTests/`
 - Run specific test files:
   - `PDFReaderFeatureTests.swift` - PDF reading functionality tests
   - `SettingsReducerTests.swift` - Settings and language configuration tests
@@ -29,6 +32,9 @@ swift test
 
 ### Deployment (Fastlane)
 ```bash
+# Navigate to iOS directory
+cd iOS
+
 # Install fastlane dependencies
 bundle install
 
@@ -57,10 +63,10 @@ The app follows TCA patterns with:
 
 #### Feature Organization
 Features are organized in domain-specific folders:
-- `Features/UserDictionary/` - User dictionary management
-- `PDFReader/` - PDF viewing and text extraction
-- `setting/` - App settings and subscription management
-- `data/` - Core Data repository and UserDefaults management
+- `iOS/VoiceYourText/Features/UserDictionary/` - User dictionary management
+- `iOS/VoiceYourText/PDFReader/` - PDF viewing and text extraction
+- `iOS/VoiceYourText/setting/` - App settings and subscription management
+- `iOS/VoiceYourText/data/` - Core Data repository and UserDefaults management
 
 #### State Management Pattern
 All reducers follow the modern TCA pattern:
@@ -101,15 +107,15 @@ Custom dependencies are implemented for:
 ## Key Development Patterns
 
 ### Template Usage
-Use `Templates/ModernReducerTemplate.swift` as a starting point for new features. It demonstrates proper TCA structure with ViewAction pattern and dependency injection.
+Use `iOS/VoiceYourText/Templates/ModernReducerTemplate.swift` as a starting point for new features. It demonstrates proper TCA structure with ViewAction pattern and dependency injection.
 
 ### Configuration Management
-- Environment-specific configs in `VoiceYourText/config/` (.xcconfig files)
+- Environment-specific configs in `iOS/VoiceYourText/config/` (.xcconfig files)
 - API keys loaded from Info.plist or environment variables
 - Debug vs Release builds handled via compiler directives
 
 ### Localization
-- Primary localizations in `locate/Localizable.xcstrings`
+- Primary localizations in `iOS/VoiceYourText/locate/Localizable.xcstrings`
 - Per-language InfoPlist.strings in language-specific .lproj folders
 - Fastlane metadata supports 10 languages for App Store submissions
 
