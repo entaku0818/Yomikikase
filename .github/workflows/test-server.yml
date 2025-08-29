@@ -1,0 +1,43 @@
+name: Test Server Functions
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'server/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'server/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    defaults:
+      run:
+        working-directory: ./server
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: server/package-lock.json
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build TypeScript
+      run: npm run build
+    
+    - name: Run tests
+      run: npm test
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        PROJECT_ID: test-project
+        GCP_PROJECT_ID: test-project
+        STORAGE_BUCKET_NAME: test-bucket

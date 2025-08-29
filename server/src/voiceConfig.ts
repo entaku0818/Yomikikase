@@ -8,63 +8,55 @@ export interface VoiceOption {
 }
 
 export const availableVoices: VoiceOption[] = [
-  // Gemini TTS voices - popular options
+  // Google Cloud TTS voices
   {
-    id: "zephyr",
-    name: "Zephyr", 
+    id: "en-us-female-a",
+    name: "Emma", 
     language: "en-US",
     gender: "female",
-    description: "Cheerful and energetic voice",
-    wavenetVoice: "Zephyr"
+    description: "Clear American female voice",
+    wavenetVoice: "en-US-Wavenet-A"
   },
   {
-    id: "puck",
-    name: "Puck",
+    id: "en-us-male-b",
+    name: "John",
     language: "en-US", 
     gender: "male",
-    description: "Playful and dynamic voice",
-    wavenetVoice: "Puck"
+    description: "Professional American male voice",
+    wavenetVoice: "en-US-Wavenet-B"
   },
   {
-    id: "kore",
-    name: "Kore",
+    id: "en-us-female-c",
+    name: "Sarah",
     language: "en-US",
     gender: "female", 
-    description: "Warm and professional voice",
-    wavenetVoice: "Kore"
+    description: "Warm American female voice",
+    wavenetVoice: "en-US-Wavenet-C"
   },
   {
-    id: "charon",
-    name: "Charon",
+    id: "en-us-male-d",
+    name: "Mike",
     language: "en-US",
     gender: "male",
-    description: "Deep and authoritative voice", 
-    wavenetVoice: "Charon"
+    description: "Deep American male voice", 
+    wavenetVoice: "en-US-Wavenet-D"
   },
+  // Japanese voices
   {
-    id: "fenrir",
-    name: "Fenrir",
-    language: "en-US",
-    gender: "male",
-    description: "Strong and confident voice",
-    wavenetVoice: "Fenrir"
-  },
-  // Japanese voices (if supported by Gemini TTS)
-  {
-    id: "jp-female-1",
+    id: "ja-jp-female-a",
     name: "あかり",
     language: "ja-JP",
     gender: "female",
     description: "明るく優しい女性の声",
-    wavenetVoice: "Zephyr" // Default to English voice for now
+    wavenetVoice: "ja-JP-Wavenet-A"
   },
   {
-    id: "jp-male-1",
+    id: "ja-jp-male-b",
     name: "ひろし",
     language: "ja-JP",
     gender: "male", 
     description: "穏やかな男性の声",
-    wavenetVoice: "Puck" // Default to English voice for now
+    wavenetVoice: "ja-JP-Wavenet-C"
   }
 ];
 

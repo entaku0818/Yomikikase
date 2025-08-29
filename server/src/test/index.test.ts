@@ -1,6 +1,7 @@
 import { describe, it, before, after } from "mocha";
 import { expect } from "chai";
 import * as functions from "firebase-functions-test";
+import fetch from "node-fetch";
 
 // Initialize Firebase Functions test environment
 const test = functions();
@@ -126,6 +127,26 @@ describe("Audio Generation Functions", () => {
       await wrappedTTS(req, res);
     });
 
+    it("should return error when text exceeds 5000 characters", async () => {
+      const longText = "あ".repeat(5001);
+      const req = {
+        method: "POST",
+        body: {
+          text: longText
+        }
+      };
+      const res = {
+        status: (code: number) => ({
+          json: (data: any) => {
+            expect(code).to.equal(400);
+            expect(data.error).to.equal("Text too long. Maximum 5000 characters allowed.");
+          }
+        })
+      };
+
+      await wrappedTTS(req, res);
+    });
+
     it("should use default values for optional parameters", async () => {
       const req = {
         method: "POST",
@@ -156,14 +177,14 @@ describe("Audio Generation Functions", () => {
         body: {
           text: "Hello, world!",
           language: "en-US",
-          voiceId: "puck"
+          voiceId: "en-us-male-b"
         }
       };
       
       const res = {
         json: (data: any) => {
           expect(data.language).to.equal("en-US");
-          expect(data.voice.id).to.equal("puck");
+          expect(data.voice.id).to.equal("en-us-male-b");
           expect(data.originalText).to.equal("Hello, world!");
         },
         status: () => res
@@ -175,6 +196,64 @@ describe("Audio Generation Functions", () => {
         // Expected to fail without valid API key
         expect(error).to.exist;
       }
+    });
+
+    it("should generate Japanese audio with correct configuration", async () => {
+      const req = {
+        method: "POST",
+        body: {
+          text: "こんにちは、今日は良い天気ですね。",
+          voiceId: "ja-jp-female-a"
+        }
+      };
+      
+      const res = {
+        json: (data: any) => {
+          expect(data.success).to.be.true;
+          expect(data.language).to.equal("ja-JP");
+          expect(data.voice.id).to.equal("ja-jp-female-a");
+          expect(data.voice.wavenetVoice).to.equal("ja-JP-Wavenet-A");
+          expect(data.originalText).to.equal("こんにちは、今日は良い天気ですね。");
+          expect(data.audioUrl).to.include("storage.googleapis.com");
+          expect(data.mimeType).to.equal("audio/wav");
+        },
+        status: () => res
+      };
+
+      try {
+        await wrappedTTS(req, res);
+      } catch (error) {
+        // Expected to fail without valid API key in test environment
+        expect(error).to.exist;
+      }
+    });
+  });
+
+  describe("Integration Tests", () => {
+    it("should generate audio and verify URL is accessible", async function() {
+      this.timeout(30000); // Increase timeout for TTS generation
+      
+      const testText = "こんにちは";
+      const response = await fetch("http://localhost:5001/voiceyourtext/us-central1/generateAudioWithTTS", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: testText,
+          voiceId: "ja-jp-female-a"
+        })
+      });
+
+      const result = await response.json();
+      
+      expect(result.success).to.be.true;
+      expect(result.language).to.equal("ja-JP");
+      expect(result.originalText).to.equal(testText);
+      expect(result.audioUrl).to.include("storage.googleapis.com");
+
+      // Verify the audio file is accessible
+      const audioResponse = await fetch(result.audioUrl);
+      expect(audioResponse.status).to.equal(200);
+      expect(audioResponse.headers.get('content-type')).to.include('audio');
     });
   });
 });

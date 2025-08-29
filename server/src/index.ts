@@ -1,24 +1,24 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { logger } from "firebase-functions";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { TextToSpeechClient } from "@google-cloud/text-to-speech";
 import { getVoiceById, availableVoices } from "./voiceConfig";
 import type { Request, Response } from "express";
 import * as admin from "firebase-admin";
 import { v4 as uuidv4 } from "uuid";
 
-// Validate required environment variables
-const requiredEnvVars = ['GEMINI_API_KEY', 'STORAGE_BUCKET_NAME'];
-for (const envVar of requiredEnvVars) {
-  if (!process.env[envVar]) {
-    throw new Error(`Required environment variable ${envVar} is not set`);
+// Helper function to validate environment variables
+function validateEnvVar(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(`Required environment variable ${name} is not set`);
   }
+  return value;
 }
 
 // Initialize Firebase Admin
 admin.initializeApp();
 const storage = admin.storage();
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // Get available voices endpoint
 export const getVoices = onRequest(
@@ -78,6 +78,7 @@ export const generateAudio = onRequest(
       logger.info("Generating audio for text:", { text, language });
 
       // Initialize Gemini model
+      const genAI = new GoogleGenerativeAI(validateEnvVar('GEMINI_API_KEY'));
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
       // Generate audio using Gemini API
@@ -119,13 +120,18 @@ export const generateAudioWithTTS = onRequest(
 
       const { 
         text, 
-        language = "en-US", 
-        voiceId = "zephyr",
+        language, 
+        voiceId = "en-us-female-a",
         style = "cheerfully"
       } = request.body;
 
       if (!text) {
         response.status(400).json({ error: "Text is required" });
+        return;
+      }
+
+      if (text.length > 5000) {
+        response.status(400).json({ error: "Text too long. Maximum 5000 characters allowed." });
         return;
       }
 
@@ -139,24 +145,35 @@ export const generateAudioWithTTS = onRequest(
         return;
       }
 
-      logger.info("Generating audio with TTS:", { text, language, voiceId, voiceConfig, style });
+      // Use voice language if not specified
+      const actualLanguage = language || voiceConfig.language;
 
-      // Use Gemini TTS model
-      const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.0-flash-exp"
-      });
+      logger.info("Generating audio with TTS:", { text, language: actualLanguage, voiceId, voiceConfig, style });
 
-      // Create the TTS prompt with style
-      const ttsPrompt = `Say ${style}: ${text}`;
+      // Use the original text directly for TTS
+      const enhancedText = text;
       
-      // Note: The actual TTS implementation would require proper Gemini API configuration
-      // This is a simplified version for demonstration
-      const result = await model.generateContent(ttsPrompt);
-
-      // For demonstration: Generate mock audio data
-      // In production, this would use actual Gemini TTS API
-      const responseText = result.response.text();
-      const audioData = Buffer.from(responseText).toString('base64');
+      // Use Google Cloud Text-to-Speech
+      const ttsClient = new TextToSpeechClient();
+      
+      const ttsRequest = {
+        input: { text: enhancedText },
+        voice: { 
+          languageCode: actualLanguage,
+          name: voiceConfig.wavenetVoice,
+          ssmlGender: (voiceConfig.gender === 'female' ? 'FEMALE' : 'MALE') as 'FEMALE' | 'MALE'
+        },
+        audioConfig: { audioEncoding: 'LINEAR16' as const }
+      };
+      
+      const [ttsResponse] = await ttsClient.synthesizeSpeech(ttsRequest);
+      
+      if (!ttsResponse.audioContent) {
+        throw new Error("No audio content generated from TTS");
+      }
+      
+      // Convert to base64 for consistency
+      const audioData = Buffer.from(ttsResponse.audioContent as Uint8Array).toString('base64');
       
       if (!audioData) {
         throw new Error("No audio data generated");
@@ -170,7 +187,7 @@ export const generateAudioWithTTS = onRequest(
       const filename = `audio/${voiceConfig.id}_${timestamp}_${uuidv4()}.wav`;
       
       // Get a reference to the storage bucket
-      const bucket = storage.bucket(process.env.STORAGE_BUCKET_NAME!);
+      const bucket = storage.bucket(validateEnvVar('STORAGE_BUCKET_NAME'));
       const file = bucket.file(filename);
       
       // Save the audio file to Firebase Storage
@@ -197,7 +214,7 @@ export const generateAudioWithTTS = onRequest(
       response.json({
         success: true,
         originalText: text,
-        language,
+        language: actualLanguage,
         voice: voiceConfig,
         style,
         audioUrl: publicUrl,
