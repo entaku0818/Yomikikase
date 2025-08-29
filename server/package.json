@@ -12,7 +12,7 @@
     "test": "mocha --require ts-node/register 'src/**/*.test.ts'"
   },
   "engines": {
-    "node": "18"
+    "node": "20"
   },
   "main": "lib/index.js",
   "dependencies": {
@@ -22,9 +22,12 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.11",
+    "@types/express": "^4.17.21",
     "@types/mocha": "^10.0.6",
     "@types/node": "^20.11.5",
     "@types/uuid": "^9.0.7",
+    "chai": "^4.3.10",
     "firebase-functions-test": "^3.1.0",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.2",

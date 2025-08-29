@@ -1,6 +1,5 @@
 import { describe, it, before, after } from "mocha";
 import { expect } from "chai";
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions-test";
 
 // Initialize Firebase Functions test environment
@@ -17,9 +16,10 @@ describe("Audio Generation Functions", () => {
     // Set up test environment variables
     process.env.GEMINI_API_KEY = "test-api-key";
     
-    // Wrap the functions for testing
-    wrapped = test.wrap(generateAudio);
-    wrappedTTS = test.wrap(generateAudioWithTTS);
+    // Note: Wrapping v2 functions requires different approach
+    // For now, we'll test the logic directly
+    wrapped = generateAudio;
+    wrappedTTS = generateAudioWithTTS;
   });
 
   after(() => {
@@ -71,10 +71,8 @@ describe("Audio Generation Functions", () => {
         }
       };
       
-      let responseData: any;
       const res = {
         json: (data: any) => {
-          responseData = data;
           expect(data.success).to.be.true;
           expect(data.originalText).to.equal("こんにちは、世界！");
           expect(data.language).to.equal("ja-JP");
@@ -136,12 +134,10 @@ describe("Audio Generation Functions", () => {
         }
       };
       
-      let responseData: any;
       const res = {
         json: (data: any) => {
-          responseData = data;
-          expect(data.language).to.equal("ja-JP");
-          expect(data.voice).to.equal("ja-JP-Wavenet-A");
+          expect(data.language).to.equal("en-US");
+          expect(data.voice.id).to.equal("zephyr");
         },
         status: () => res
       };
@@ -160,14 +156,14 @@ describe("Audio Generation Functions", () => {
         body: {
           text: "Hello, world!",
           language: "en-US",
-          voice: "en-US-Wavenet-D"
+          voiceId: "puck"
         }
       };
       
       const res = {
         json: (data: any) => {
           expect(data.language).to.equal("en-US");
-          expect(data.voice).to.equal("en-US-Wavenet-D");
+          expect(data.voice.id).to.equal("puck");
           expect(data.originalText).to.equal("Hello, world!");
         },
         status: () => res
