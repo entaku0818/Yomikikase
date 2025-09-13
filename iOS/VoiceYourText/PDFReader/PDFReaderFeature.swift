@@ -85,6 +85,7 @@ struct PDFReaderFeature: Reducer {
 
             case .startReading:
                 guard !state.isReading else { return .none }
+                guard !state.pdfText.isEmpty else { return .none }
                 state.isReading = true
 
                 // ユーザー設定から音声設定を取得

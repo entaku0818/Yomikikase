@@ -204,6 +204,12 @@ struct SpeechView: View {
                         }
                         .disabled(viewStore.isSpeaking)
 
+                        Button(action: { speakWithAPI(text: viewStore.currentText, viewStore: viewStore) }) {
+                            Image(systemName: "cloud.fill")
+                            Text("API音声")
+                        }
+                        .disabled(viewStore.isSpeaking)
+
                         Button(action: { stopSpeaking(viewStore: viewStore) }) {
                             Image(systemName: "stop.fill")
                             Text("停止")
@@ -336,6 +342,35 @@ struct SpeechView: View {
         viewStore.send(.stopSpeaking)
         Task {
             _ = await speechSynthesizer.stopSpeaking()
+        }
+    }
+
+    func speakWithAPI(text: String, viewStore: ViewStoreOf<Speeches>) {
+        guard !text.isEmpty else { return }
+        
+        viewStore.send(.startSpeaking)
+        
+        Task {
+            do {
+                // 現在の言語設定から適切なvoiceIdを決定
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
+                let voiceId = languageCode.hasPrefix("ja") ? "ja-jp-female-a" : "en-us-female-a"
+                
+                let success = try await speechSynthesizer.speakWithAPI(text, voiceId)
+                
+                DispatchQueue.main.async {
+                    if success {
+                        viewStore.send(.speechFinished)
+                    } else {
+                        viewStore.send(.stopSpeaking)
+                    }
+                }
+            } catch {
+                print("API speech failed: \(error)")
+                DispatchQueue.main.async {
+                    viewStore.send(.stopSpeaking)
+                }
+            }
         }
     }
 

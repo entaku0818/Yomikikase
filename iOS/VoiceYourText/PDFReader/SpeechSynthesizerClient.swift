@@ -16,6 +16,7 @@ import ComposableArchitecture
 struct SpeechSynthesizerClient {
     var speak: @Sendable (AVSpeechUtterance) async throws -> Bool
     var speakWithHighlight: @Sendable (AVSpeechUtterance, @escaping @Sendable (NSRange, String) -> Void, @escaping @Sendable () -> Void) async throws -> Bool
+    var speakWithAPI: @Sendable (String, String?) async throws -> Bool
     var stopSpeaking: @Sendable () async -> Bool = { false }
 }
 
@@ -23,6 +24,7 @@ extension SpeechSynthesizerClient: DependencyKey {
     static var liveValue: Self {
         let speechSynthesizer = SpeechSynthesizer()
         @Dependency(\.userDictionary) var userDictionary
+        @Dependency(\.audioAPI) var audioAPI
         
         return Self(
             speak: { utterance in
@@ -58,6 +60,16 @@ extension SpeechSynthesizerClient: DependencyKey {
                     onFinish: onFinish
                 )
             },
+            speakWithAPI: { text, voiceId in
+                do {
+                    let response = try await audioAPI.generateAudio(text, voiceId)
+                    // 音声ファイルを再生
+                    return try await speechSynthesizer.playAudioFromURL(response.audioUrl)
+                } catch {
+                    print("API audio generation failed: \(error)")
+                    return false
+                }
+            },
             stopSpeaking: { await speechSynthesizer.stop() }
         )
     }
@@ -66,7 +78,14 @@ extension SpeechSynthesizerClient: DependencyKey {
 extension SpeechSynthesizerClient: TestDependencyKey {
     static let testValue = Self(
         speak: { _ in true },
-        speakWithHighlight: { _, _, _ in true },
+        speakWithHighlight: { _, onHighlight, onFinish in
+            // テスト用にハイライトコールバックを呼び出し
+            onHighlight(NSRange(location: 0, length: 5), "テストテキスト")
+            // 完了コールバックを呼び出し
+            onFinish()
+            return true
+        },
+        speakWithAPI: { _, _ in true },
         stopSpeaking: { true }
     )
 }
@@ -84,7 +103,31 @@ private actor SpeechSynthesizer {
 
     func stop() -> Bool {
         self.synthesizer?.stopSpeaking(at: .immediate)
+        self.audioPlayer?.stop()
         return true
+    }
+    
+    var audioPlayer: AVAudioPlayer?
+    
+    func playAudioFromURL(_ urlString: String) async throws -> Bool {
+        guard let url = URL(string: urlString) else {
+            throw AudioAPIError.invalidURL
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        
+        return await withCheckedContinuation { continuation in
+            do {
+                let audioPlayer = try AVAudioPlayer(data: data)
+                self.audioPlayer = audioPlayer
+                audioPlayer.delegate = AudioPlayerDelegate { success in
+                    continuation.resume(returning: success)
+                }
+                audioPlayer.play()
+            } catch {
+                continuation.resume(returning: false)
+            }
+        }
     }
 
     func speak(utterance: AVSpeechUtterance) async throws -> Bool {
@@ -218,5 +261,22 @@ private final class Delegate: NSObject, AVSpeechSynthesizerDelegate {
         didPause utterance: AVSpeechUtterance
     ) {
         self.didFinish(false)
+    }
+}
+
+private class AudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
+    let completion: @Sendable (Bool) -> Void
+    
+    init(completion: @escaping @Sendable (Bool) -> Void) {
+        self.completion = completion
+        super.init()
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        completion(flag)
+    }
+    
+    func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
+        completion(false)
     }
 }

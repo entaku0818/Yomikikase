@@ -19,7 +19,7 @@ final class SettingsReducerTests: XCTestCase {
         }
 
         // resetToDefaultアクションを送信
-        await store.send(.resetToDefault) { state in
+        await store.send(.view(.resetToDefault)) { state in
             state.speechRate = 0.5
         }
     }

@@ -6,6 +6,8 @@
 	<string>$(ADMOB_BANNER_ID)</string>
 	<key>REVENUECAT_API_KEY</key>
 	<string>$(REVENUECAT_API_KEY)</string>
+	<key>AUDIO_API_BASE_URL</key>
+	<string>$(AUDIO_API_BASE_URL)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3484697221349891~7968499014</string>
 	<key>SKAdNetworkItems</key>
