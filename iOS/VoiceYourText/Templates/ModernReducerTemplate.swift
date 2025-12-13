@@ -91,7 +91,7 @@ struct FeatureReducer {
 
 @ViewAction(for: FeatureReducer.self)
 struct FeatureView: View {
-    @Perception.Bindable var store: StoreOf<FeatureReducer>
+    @Bindable var store: StoreOf<FeatureReducer>
 
   var body: some View {
     NavigationStack {

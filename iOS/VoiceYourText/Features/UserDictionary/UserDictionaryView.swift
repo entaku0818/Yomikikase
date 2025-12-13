@@ -3,7 +3,7 @@ import ComposableArchitecture
 
 @ViewAction(for: UserDictionaryReducer.self)
 struct UserDictionaryView: View {
-    @Perception.Bindable var store: StoreOf<UserDictionaryReducer>
+    @Bindable var store: StoreOf<UserDictionaryReducer>
 
     var body: some View {
         NavigationView {

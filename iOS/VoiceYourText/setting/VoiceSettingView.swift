@@ -4,7 +4,7 @@ import AVFoundation
 
 @ViewAction(for: SettingsReducer.self)
 struct VoiceSettingView: View {
-    @Perception.Bindable var store: StoreOf<SettingsReducer>
+    @Bindable var store: StoreOf<SettingsReducer>
     @State private var showError = false
     @State private var errorMessage = ""
 

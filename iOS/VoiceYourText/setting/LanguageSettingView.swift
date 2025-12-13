@@ -12,7 +12,7 @@ import AVFAudio
 
 @ViewAction(for: SettingsReducer.self)
 struct LanguageSettingView: View {
-    @Perception.Bindable var store: StoreOf<SettingsReducer>
+    @Bindable var store: StoreOf<SettingsReducer>
 
     var body: some View {
         VStack {
@@ -159,7 +159,7 @@ struct LanguageSettingView: View {
 
 @ViewAction(for: SettingsReducer.self)
 struct LanguageSelectionView: View {
-    @Perception.Bindable var store: StoreOf<SettingsReducer>
+    @Bindable var store: StoreOf<SettingsReducer>
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {

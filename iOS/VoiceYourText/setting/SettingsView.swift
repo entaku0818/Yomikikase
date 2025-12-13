@@ -10,7 +10,7 @@ import ComposableArchitecture
 
 @ViewAction(for: SettingsReducer.self)
 struct SettingsView: View {
-    @Perception.Bindable var store: StoreOf<SettingsReducer>
+    @Bindable var store: StoreOf<SettingsReducer>
     @FocusState private var isTextFieldFocused: Bool
 
     var body: some View {
