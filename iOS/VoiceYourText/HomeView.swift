@@ -7,11 +7,21 @@
 
 import SwiftUI
 import ComposableArchitecture
+import UniformTypeIdentifiers
+import Dependencies
 
 struct HomeView: View {
     let store: Store<Speeches.State, Speeches.Action>
     let onDevelopmentFeature: (String) -> Void
-    
+
+    @State private var showingTextFilePicker = false
+    @State private var importedText: String = ""
+    @State private var showingImportedTextView = false
+    @State private var showingImportError = false
+    @State private var importErrorMessage = ""
+
+    @Dependency(\.textFileImport) var textFileImport
+
     var body: some View {
         NavigationStack {
             WithViewStore(store, observe: { $0 }) { viewStore in
@@ -41,7 +51,18 @@ struct HomeView: View {
                                 )
                             }
                             .buttonStyle(PlainButtonStyle())
-                            
+
+                            // TXTファイル（有効）
+                            Button(action: { showingTextFilePicker = true }) {
+                                createButtonContent(
+                                    icon: "doc.plaintext.fill",
+                                    iconColor: .purple,
+                                    title: "TXTファイル",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+
                             // Googleドライブ（無効）
                             createButtonCard(
                                 icon: "externaldrive.fill",
@@ -155,6 +176,37 @@ struct HomeView: View {
             }
             .navigationTitle("Voice Narrator")
             .navigationBarTitleDisplayMode(.large)
+            .fileImporter(
+                isPresented: $showingTextFilePicker,
+                allowedContentTypes: [UTType.plainText, UTType.utf8PlainText],
+                allowsMultipleSelection: false
+            ) { result in
+                switch result {
+                case .success(let urls):
+                    if let url = urls.first {
+                        Task {
+                            do {
+                                importedText = try await textFileImport.readTextFile(url)
+                                showingImportedTextView = true
+                            } catch {
+                                importErrorMessage = error.localizedDescription
+                                showingImportError = true
+                            }
+                        }
+                    }
+                case .failure(let error):
+                    importErrorMessage = error.localizedDescription
+                    showingImportError = true
+                }
+            }
+            .navigationDestination(isPresented: $showingImportedTextView) {
+                TextInputView(store: store, initialText: importedText, fileId: nil)
+            }
+            .alert("エラー", isPresented: $showingImportError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(importErrorMessage)
+            }
         }
     }
     
