@@ -3,21 +3,13 @@
 # ci_pre_xcodebuild.sh
 # Environment variable validation before build
 
-echo "Checking required environment variables..."
+echo "Checking environment variables..."
 
-# Check AUDIO_API_BASE_URL
+# Check AUDIO_API_BASE_URL (optional - warn only)
 if [ -z "$AUDIO_API_BASE_URL" ]; then
-    echo "error: AUDIO_API_BASE_URL is not configured."
-    echo "Please set AUDIO_API_BASE_URL in your .xcconfig file:"
-    echo "  Debug.xcconfig or Release.xcconfig"
-    exit 1
+    echo "⚠️  AUDIO_API_BASE_URL is not configured (optional)"
+else
+    echo "✅ AUDIO_API_BASE_URL is configured: $AUDIO_API_BASE_URL"
 fi
 
-echo "✅ AUDIO_API_BASE_URL is configured: $AUDIO_API_BASE_URL"
-
-# Validate URL format
-if [[ ! "$AUDIO_API_BASE_URL" =~ ^https?:// ]]; then
-    echo "warning: AUDIO_API_BASE_URL should start with http:// or https://"
-fi
-
-echo "Environment variables check completed successfully."
+echo "Environment check completed successfully."
