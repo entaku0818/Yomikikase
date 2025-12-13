@@ -46,46 +46,12 @@ extension AudioAPIClient: DependencyKey {
     static var liveValue: Self {
         Self(
             generateAudio: { text, voiceId in
-                guard let baseUrl = Bundle.main.object(forInfoDictionaryKey: "AUDIO_API_BASE_URL") as? String,
-                      !baseUrl.isEmpty else {
-                    fatalError("AUDIO_API_BASE_URL is not configured. Please set AUDIO_API_BASE_URL in your .xcconfig file.")
-                }
-                let url = URL(string: "\(baseUrl)/generateAudioWithTTS")!
-                
-                var request = URLRequest(url: url)
-                request.httpMethod = "POST"
-                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-                
-                let body: [String: Any] = [
-                    "text": text,
-                    "voiceId": voiceId ?? "ja-jp-female-a"
-                ]
-                
-                request.httpBody = try JSONSerialization.data(withJSONObject: body)
-                
-                let (data, response) = try await URLSession.shared.data(for: request)
-                
-                guard let httpResponse = response as? HTTPURLResponse,
-                      httpResponse.statusCode == 200 else {
-                    throw AudioAPIError.networkError
-                }
-                
-                return try JSONDecoder().decode(AudioResponse.self, from: data)
+                // TODO: Re-enable when Audio API is ready
+                throw AudioAPIError.notConfigured
             },
             getVoices: { language in
-                guard let baseUrl = Bundle.main.object(forInfoDictionaryKey: "AUDIO_API_BASE_URL") as? String,
-                      !baseUrl.isEmpty else {
-                    fatalError("AUDIO_API_BASE_URL is not configured. Please set AUDIO_API_BASE_URL in your .xcconfig file.")
-                }
-                var urlComponents = URLComponents(string: "\(baseUrl)/getVoices")!
-                if let language = language {
-                    urlComponents.queryItems = [URLQueryItem(name: "language", value: language)]
-                }
-                
-                let url = urlComponents.url!
-                let (data, _) = try await URLSession.shared.data(from: url)
-                
-                return try JSONDecoder().decode(VoicesResponse.self, from: data)
+                // TODO: Re-enable when Audio API is ready
+                throw AudioAPIError.notConfigured
             }
         )
     }
@@ -128,4 +94,5 @@ enum AudioAPIError: Error {
     case networkError
     case decodingError
     case invalidURL
+    case notConfigured
 }

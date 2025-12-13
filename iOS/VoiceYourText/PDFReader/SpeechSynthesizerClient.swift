@@ -24,8 +24,9 @@ extension SpeechSynthesizerClient: DependencyKey {
     static var liveValue: Self {
         let speechSynthesizer = SpeechSynthesizer()
         @Dependency(\.userDictionary) var userDictionary
-        @Dependency(\.audioAPI) var audioAPI
-        
+        // TODO: Re-enable when Audio API is ready
+        // @Dependency(\.audioAPI) var audioAPI
+
         return Self(
             speak: { utterance in
                 // ユーザー辞書の読み方を適用
@@ -61,14 +62,9 @@ extension SpeechSynthesizerClient: DependencyKey {
                 )
             },
             speakWithAPI: { text, voiceId in
-                do {
-                    let response = try await audioAPI.generateAudio(text, voiceId)
-                    // 音声ファイルを再生
-                    return try await speechSynthesizer.playAudioFromURL(response.audioUrl)
-                } catch {
-                    print("API audio generation failed: \(error)")
-                    return false
-                }
+                // TODO: Re-enable when Audio API is ready
+                print("Audio API is currently disabled")
+                return false
             },
             stopSpeaking: { await speechSynthesizer.stop() }
         )
