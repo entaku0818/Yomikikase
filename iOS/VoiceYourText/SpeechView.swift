@@ -204,11 +204,12 @@ struct SpeechView: View {
                         }
                         .disabled(viewStore.isSpeaking)
 
-                        Button(action: { speakWithAPI(text: viewStore.currentText, viewStore: viewStore) }) {
-                            Image(systemName: "cloud.fill")
-                            Text("API音声")
-                        }
-                        .disabled(viewStore.isSpeaking)
+                        // TODO: Re-enable when Audio API is ready
+                        // Button(action: { speakWithAPI(text: viewStore.currentText, viewStore: viewStore) }) {
+                        //     Image(systemName: "cloud.fill")
+                        //     Text("API音声")
+                        // }
+                        // .disabled(viewStore.isSpeaking)
 
                         Button(action: { stopSpeaking(viewStore: viewStore) }) {
                             Image(systemName: "stop.fill")
