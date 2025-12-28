@@ -16,35 +16,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         Purchases.logLevel = .debug
-        
+
         // 環境変数から取得したAPIキーを使用
         let apiKey = getRevenueCatAPIKey()
         Purchases.configure(withAPIKey: apiKey)
-        
+
         // アプリ起動時にプレミアムステータスを確認
         Task {
             await PurchaseManager.shared.checkPremiumStatus()
         }
-        
+
         return true
     }
-    
+
     // RevenueCatのAPIキーを取得するメソッド
+    // 優先順位: 1. 環境変数 → 2. Info.plist
     private func getRevenueCatAPIKey() -> String {
-        // Info.plistからAPIキーを取得
-        if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String,
-           !apiKey.isEmpty {
-            print("Using RevenueCat API key from Info.plist")
-            return apiKey
-        }
-        
-        // 環境変数から取得
+
+        // 1. 環境変数から取得（優先）
         if let envAPIKey = ProcessInfo.processInfo.environment["REVENUECAT_API_KEY"],
            !envAPIKey.isEmpty {
             print("Using RevenueCat API key from environment variable")
             return envAPIKey
         }
-        
+
+        // 2. Info.plistからAPIキーを取得（フォールバック）
+        if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String,
+           !apiKey.isEmpty {
+            print("Using RevenueCat API key from Info.plist")
+            return apiKey
+        }
+
         // APIキーが見つからない場合はエラーメッセージを表示して終了
         fatalError("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
     }
@@ -54,33 +56,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 class AdConfig: ObservableObject {
     static let shared = AdConfig()
     let bannerAdUnitID: String
-    
+
     private init() {
         self.bannerAdUnitID = AdConfig.getAdUnitID()
     }
-    
+
     // 広告ユニットIDを取得するメソッド
+    // 優先順位: 1. 環境変数 → 2. Info.plist
     private static func getAdUnitID() -> String {
-        #if DEBUG
-        return "ca-app-pub-3940256099942544/2435281174" // テスト用広告ユニットID
-        #else
-        // 環境変数から取得
+
+        // 1. 環境変数から取得（優先）
         if let envAdUnitID = ProcessInfo.processInfo.environment["ADMOB_BANNER_ID"],
            !envAdUnitID.isEmpty {
             print("Using AdMob banner ID from environment variable")
             return envAdUnitID
         }
-        
-        // 環境変数から取得できない場合はInfo.plistから取得
+
+        // 2. Info.plistから取得（フォールバック）
         if let adUnitID = Bundle.main.infoDictionary?["ADMOB_BANNER_ID"] as? String,
            !adUnitID.isEmpty {
             print("Using AdMob banner ID from Info.plist")
             return adUnitID
         }
-        
+
         // 広告ユニットIDが見つからない場合はエラーメッセージを表示して終了
         fatalError("AdMob banner ID not found. Please set it in Info.plist or environment variable.")
-        #endif
     }
 }
 
