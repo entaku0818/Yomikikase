@@ -15,6 +15,7 @@ struct MyFilesView: View {
     @State private var searchText = ""
     @State private var showingDeleteAlert = false
     @State private var fileToDelete: FileItem?
+    @State private var deletedItemsCount: Int = 0
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -27,15 +28,12 @@ struct MyFilesView: View {
                         ForEach(combinedFiles) { file in
                             if file.type == .text {
                                 NavigationLink(destination: TextInputView(store: store, initialText: getTextForFile(file.id), fileId: file.id)) {
-                                    FileItemView(file: file)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                    Button("削除", role: .destructive) {
+                                    FileItemView(file: file, onDelete: {
                                         fileToDelete = file
                                         showingDeleteAlert = true
-                                    }
+                                    })
                                 }
+                                .buttonStyle(PlainButtonStyle())
                             } else if file.type == .pdf {
                                 NavigationLink(destination: PDFReaderView(
                                     store: Store(
@@ -44,17 +42,14 @@ struct MyFilesView: View {
                                         PDFReaderFeature()
                                     }
                                 )) {
-                                    FileItemView(file: file)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                    Button("削除", role: .destructive) {
+                                    FileItemView(file: file, onDelete: {
                                         fileToDelete = file
                                         showingDeleteAlert = true
-                                    }
+                                    })
                                 }
+                                .buttonStyle(PlainButtonStyle())
                             } else {
-                                FileItemView(file: file)
+                                FileItemView(file: file, onDelete: nil)
                             }
                         }
                     }
@@ -71,9 +66,37 @@ struct MyFilesView: View {
             }
             .navigationTitle("マイファイル")
             .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: DeletedItemsView(
+                        store: Store(initialState: DeletedItemsFeature.State()) {
+                            DeletedItemsFeature()
+                        }
+                    )) {
+                        ZStack(alignment: .topTrailing) {
+                            Image(systemName: "trash")
+                                .font(.system(size: 17))
+                                .padding(.trailing, deletedItemsCount > 0 ? 6 : 0)
+                            if deletedItemsCount > 0 {
+                                Text("\(deletedItemsCount)")
+                                    .font(.system(size: 10, weight: .bold))
+                                    .foregroundColor(.white)
+                                    .frame(minWidth: 16, minHeight: 16)
+                                    .background(Color.red)
+                                    .clipShape(Circle())
+                                    .offset(x: 6, y: -6)
+                            }
+                        }
+                        .frame(minWidth: 30, minHeight: 30)
+                    }
+                }
+            }
         }
         .onAppear {
             loadFiles()
+            loadDeletedItemsCount()
+            // 7日以上前の削除済みアイテムをクリーンアップ
+            SpeechTextRepository.shared.cleanupOldDeletedItems()
         }
         .alert("削除の確認", isPresented: $showingDeleteAlert) {
             Button("キャンセル", role: .cancel) {
@@ -186,11 +209,20 @@ struct MyFilesView: View {
         return pdfFiles.first { $0.id == fileId }?.url
     }
     
+    private func loadDeletedItemsCount() {
+        let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+        let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+        let deletedSpeeches = SpeechTextRepository.shared.fetchDeletedSpeechText(language: languageSetting)
+        deletedItemsCount = deletedSpeeches.count
+    }
+
     private func deleteTextFile(_ fileId: UUID) {
-        // Core Dataから削除
+        // ソフトデリート（7日後に完全削除）
         SpeechTextRepository.shared.delete(id: fileId)
         // ローカルリストから削除
         textFiles.removeAll { $0.id == fileId }
+        // 削除済みアイテム数を更新
+        loadDeletedItemsCount()
     }
     
     private func deletePDFFile(_ fileId: UUID) {
@@ -236,7 +268,8 @@ struct SavedPDFFile: Identifiable {
 
 struct FileItemView: View {
     let file: FileItem
-    
+    var onDelete: (() -> Void)?
+
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
         if Calendar.current.isDateInToday(file.date) {
@@ -246,14 +279,14 @@ struct FileItemView: View {
         }
         return formatter
     }
-    
+
     private var fileTypeText: String {
         switch file.type {
         case .text: return "txt"
         case .pdf: return "pdf"
         }
     }
-    
+
     var body: some View {
         HStack(spacing: 12) {
             // ファイルアイコン
@@ -263,29 +296,41 @@ struct FileItemView: View {
                 .frame(width: 48, height: 48)
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
-            
+
             VStack(alignment: .leading, spacing: 4) {
                 Text(file.title)
                     .font(.system(size: 16, weight: .medium))
                     .lineLimit(2)
-                
+
                 HStack {
                     Text(dateFormatter.string(from: file.date))
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
-                    
+
                     Text("•")
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
-                    
+
                     Text(fileTypeText)
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
                 }
             }
-            
+
             Spacer()
-            
+
+            if let onDelete = onDelete {
+                Menu {
+                    Button(role: .destructive, action: onDelete) {
+                        Label("削除", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 16))
+                        .foregroundColor(.secondary)
+                        .frame(width: 32, height: 32)
+                }
+            }
         }
         .padding()
         .background(Color(.systemBackground))

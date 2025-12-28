@@ -20,6 +20,7 @@ struct Speeches: Reducer {
         var isDefault: Bool  // デフォルトの言葉かどうかを示すフラグ
         var createdAt: Date
         var updatedAt: Date
+        var deletedAt: Date? = nil  // ソフトデリート用
     }
 
     struct State: Equatable {

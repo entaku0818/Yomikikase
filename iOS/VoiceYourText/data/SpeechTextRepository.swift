@@ -77,7 +77,8 @@ class SpeechTextRepository: NSObject {
 
     func fetchAllSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@", language.rawValue)
+        // 削除されていないアイテムのみ取得
+        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@ AND deletedAt == nil", language.rawValue)
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
@@ -99,6 +100,32 @@ class SpeechTextRepository: NSObject {
             speeches.append(contentsOf: greetings)
 
             return speeches
+        } catch let error as NSError {
+            print("FetchRequest error: \(error), \(error.userInfo)")
+            return []
+        }
+    }
+
+    func fetchDeletedSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@ AND deletedAt != nil", language.rawValue)
+        let sortDescriptor = NSSortDescriptor(key: "deletedAt", ascending: false)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+
+        do {
+            let coreDataSpeechTexts = try managedContext.fetch(fetchRequest)
+
+            return coreDataSpeechTexts.map { speechText in
+                Speeches.Speech(
+                    id: speechText.uuid ?? UUID(),
+                    title: speechText.title ?? "",
+                    text: speechText.text ?? "",
+                    isDefault: false,
+                    createdAt: speechText.createdAt ?? Date(),
+                    updatedAt: speechText.updatedAt ?? Date(),
+                    deletedAt: speechText.deletedAt
+                )
+            }
         } catch let error as NSError {
             print("FetchRequest error: \(error), \(error.userInfo)")
             return []
@@ -273,9 +300,40 @@ class SpeechTextRepository: NSObject {
     }
 
     func delete(id: UUID) {
+        // ソフトデリート: deletedAtを設定
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
-        
+
+        do {
+            let fetchedItems = try managedContext.fetch(fetchRequest)
+            if let itemToDelete = fetchedItems.first {
+                itemToDelete.deletedAt = Date()
+                try managedContext.save()
+            }
+        } catch {
+            print("Delete error: \(error.localizedDescription)")
+        }
+    }
+
+    func restore(id: UUID) {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+
+        do {
+            let fetchedItems = try managedContext.fetch(fetchRequest)
+            if let itemToRestore = fetchedItems.first {
+                itemToRestore.deletedAt = nil
+                try managedContext.save()
+            }
+        } catch {
+            print("Restore error: \(error.localizedDescription)")
+        }
+    }
+
+    func permanentlyDelete(id: UUID) {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+
         do {
             let fetchedItems = try managedContext.fetch(fetchRequest)
             if let itemToDelete = fetchedItems.first {
@@ -283,7 +341,27 @@ class SpeechTextRepository: NSObject {
                 try managedContext.save()
             }
         } catch {
-            print("Delete error: \(error.localizedDescription)")
+            print("Permanent delete error: \(error.localizedDescription)")
+        }
+    }
+
+    func cleanupOldDeletedItems() {
+        // 7日以上前に削除されたアイテムを完全削除
+        let sevenDaysAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "deletedAt != nil AND deletedAt < %@", sevenDaysAgo as NSDate)
+
+        do {
+            let itemsToDelete = try managedContext.fetch(fetchRequest)
+            for item in itemsToDelete {
+                managedContext.delete(item)
+            }
+            if !itemsToDelete.isEmpty {
+                try managedContext.save()
+                print("Cleaned up \(itemsToDelete.count) old deleted items")
+            }
+        } catch {
+            print("Cleanup error: \(error.localizedDescription)")
         }
     }
 
