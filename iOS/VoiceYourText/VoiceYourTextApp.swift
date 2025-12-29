@@ -16,15 +16,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         infoLog("App launching...")
 
-        // iOS 26 betaでFirebaseがクラッシュする問題の一時的な回避策
-        // Firebase 12.7.0はiOS 26.3 betaで互換性問題あり
-        if !isIOS26Beta() {
-            infoLog("Configuring Firebase...")
-            FirebaseApp.configure()
-            infoLog("Firebase configured successfully")
-        } else {
-            warningLog("Skipping Firebase configuration on iOS 26 beta due to compatibility issues (Apple bug FB18043319)")
-        }
+        // Firebase初期化
+        infoLog("Configuring Firebase...")
+        FirebaseApp.configure()
+        infoLog("Firebase configured successfully")
 
         infoLog("Configuring RevenueCat...")
         Purchases.logLevel = .debug
@@ -66,13 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // APIキーが見つからない場合はエラーメッセージを表示して終了
         fatalError("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
-    }
-
-    // iOS 26 betaかどうかを判定
-    private func isIOS26Beta() -> Bool {
-        let version = ProcessInfo.processInfo.operatingSystemVersion
-        // iOS 26 (major version 26) をチェック
-        return version.majorVersion >= 26
     }
 }
 
