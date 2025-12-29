@@ -139,6 +139,18 @@ struct LanguageSettingView: View {
                     Text("読み上げ設定をデフォルト値に戻す")
                         .foregroundColor(.red)
                 }
+
+                // デバッグセクション（一時的にリリースビルドでも表示）
+                // TODO: 問題解決後は #if DEBUG で囲む
+                Section(header: Text("デバッグ")) {
+                    NavigationLink(destination: DebugLogView()) {
+                        HStack {
+                            Image(systemName: "ladybug.fill")
+                                .foregroundColor(.red)
+                            Text("デバッグログ")
+                        }
+                    }
+                }
             }
             Spacer()
             if !UserDefaultsManager.shared.isPremiumUser {

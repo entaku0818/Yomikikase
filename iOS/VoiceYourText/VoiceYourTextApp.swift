@@ -14,25 +14,35 @@ import RevenueCat
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        infoLog("App launching...")
+
         // iOS 26 betaでFirebaseがクラッシュする問題の一時的な回避策
         // Firebase 12.7.0はiOS 26.3 betaで互換性問題あり
         if !isIOS26Beta() {
+            infoLog("Configuring Firebase...")
             FirebaseApp.configure()
+            infoLog("Firebase configured successfully")
         } else {
-            print("Skipping Firebase configuration on iOS 26 beta due to compatibility issues")
+            warningLog("Skipping Firebase configuration on iOS 26 beta due to compatibility issues (Apple bug FB18043319)")
         }
 
+        infoLog("Configuring RevenueCat...")
         Purchases.logLevel = .debug
 
         // 環境変数から取得したAPIキーを使用
         let apiKey = getRevenueCatAPIKey()
+        infoLog("RevenueCat API key source: \(apiKey.isEmpty ? "NOT FOUND" : "Found")")
         Purchases.configure(withAPIKey: apiKey)
+        infoLog("RevenueCat configured successfully")
 
         // アプリ起動時にプレミアムステータスを確認
         Task {
+            infoLog("Checking premium status...")
             await PurchaseManager.shared.checkPremiumStatus()
+            infoLog("Premium status check completed")
         }
 
+        infoLog("App launch completed")
         return true
     }
 
