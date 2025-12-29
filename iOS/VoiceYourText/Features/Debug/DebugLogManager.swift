@@ -121,11 +121,6 @@ class DebugLogManager: ObservableObject {
            let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
             info("App Version: \(appVersion) (\(buildNumber))")
         }
-
-        // iOS 26チェック
-        if version.majorVersion >= 26 {
-            warning("Running on iOS 26 beta - Firebase disabled due to compatibility issues")
-        }
     }
 }
 

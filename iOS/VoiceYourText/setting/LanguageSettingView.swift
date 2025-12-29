@@ -140,8 +140,8 @@ struct LanguageSettingView: View {
                         .foregroundColor(.red)
                 }
 
-                // デバッグセクション（一時的にリリースビルドでも表示）
-                // TODO: 問題解決後は #if DEBUG で囲む
+                // デバッグセクション（DEBUGビルドのみ表示）
+                #if DEBUG
                 Section(header: Text("デバッグ")) {
                     NavigationLink(destination: DebugLogView()) {
                         HStack {
@@ -151,6 +151,7 @@ struct LanguageSettingView: View {
                         }
                     }
                 }
+                #endif
             }
             Spacer()
             if !UserDefaultsManager.shared.isPremiumUser {
