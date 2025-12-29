@@ -16,10 +16,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         infoLog("App launching...")
 
-        // Firebase初期化
+        // Firebase初期化（Objective-C例外をキャッチ）
         infoLog("Configuring Firebase...")
-        FirebaseApp.configure()
-        infoLog("Firebase configured successfully")
+        var firebaseError: NSError?
+        let success = ObjCExceptionCatcher.catchException(withBlock: {
+            FirebaseApp.configure()
+        }, error: &firebaseError)
+
+        if success {
+            infoLog("Firebase configured successfully")
+        } else {
+            let errorMessage = firebaseError?.localizedDescription ?? "Unknown error"
+            let exceptionName = firebaseError?.userInfo["ExceptionName"] as? String ?? "Unknown"
+            let exceptionReason = firebaseError?.userInfo["ExceptionReason"] as? String ?? "Unknown"
+            errorLog("Firebase configuration failed!")
+            errorLog("Exception: \(exceptionName)")
+            errorLog("Reason: \(exceptionReason)")
+            errorLog("Error: \(errorMessage)")
+        }
 
         infoLog("Configuring RevenueCat...")
         Purchases.logLevel = .debug
