@@ -14,7 +14,14 @@ import RevenueCat
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        FirebaseApp.configure()
+        // iOS 26 betaでFirebaseがクラッシュする問題の一時的な回避策
+        // Firebase 12.7.0はiOS 26.3 betaで互換性問題あり
+        if !isIOS26Beta() {
+            FirebaseApp.configure()
+        } else {
+            print("Skipping Firebase configuration on iOS 26 beta due to compatibility issues")
+        }
+
         Purchases.logLevel = .debug
 
         // 環境変数から取得したAPIキーを使用
@@ -49,6 +56,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // APIキーが見つからない場合はエラーメッセージを表示して終了
         fatalError("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
+    }
+
+    // iOS 26 betaかどうかを判定
+    private func isIOS26Beta() -> Bool {
+        let version = ProcessInfo.processInfo.operatingSystemVersion
+        // iOS 26 (major version 26) をチェック
+        return version.majorVersion >= 26
     }
 }
 
