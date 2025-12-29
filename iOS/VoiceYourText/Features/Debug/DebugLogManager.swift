@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class DebugLogManager: ObservableObject {
     static let shared = DebugLogManager()

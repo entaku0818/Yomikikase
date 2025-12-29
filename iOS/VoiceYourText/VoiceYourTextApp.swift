@@ -19,9 +19,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Firebase初期化（Objective-C例外をキャッチ）
         infoLog("Configuring Firebase...")
         var firebaseError: NSError?
-        let success = ObjCExceptionCatcher.catchException(withBlock: {
+        let success = ObjCExceptionCatcher.catchException {
             FirebaseApp.configure()
-        }, error: &firebaseError)
+        } error: &firebaseError
 
         if success {
             infoLog("Firebase configured successfully")
