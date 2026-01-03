@@ -13,15 +13,15 @@ enum SpeechSettings {
     /// 利用可能な再生速度オプション
     static let speedOptions: [Float] = [0.35, 0.5, 0.6, 0.75, 1.0]
 
-    /// 再生速度を表示用文字列に変換
+    /// 再生速度を表示用文字列に変換（速度選択ダイアログ用）
     static func formatSpeedOption(_ rate: Float) -> String {
         let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
         if displayRate == 1.0 {
-            return "1x（標準）"
-        } else if displayRate < 1.0 {
-            return String(format: "%.1fx（遅い）", displayRate)
+            return "1x"
+        } else if displayRate == floor(displayRate) {
+            return String(format: "%.0fx", displayRate)
         } else {
-            return String(format: "%.1fx（速い）", displayRate)
+            return String(format: "%.1fx", displayRate)
         }
     }
 

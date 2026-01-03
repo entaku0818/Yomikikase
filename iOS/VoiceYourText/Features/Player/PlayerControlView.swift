@@ -17,10 +17,8 @@ struct PlayerControlView: View {
     let onSpeedTap: () -> Void
 
     var body: some View {
-        HStack(spacing: 24) {
-            Spacer()
-
-            // 再生/停止ボタン（大きな青い丸）
+        ZStack {
+            // 再生/停止ボタン（中央）
             Button(action: {
                 if isSpeaking {
                     onStop()
@@ -37,17 +35,19 @@ struct PlayerControlView: View {
             }
             .disabled(isTextEmpty && !isSpeaking)
 
-            // スピード表示
-            Button(action: onSpeedTap) {
-                Text(SpeechSettings.formatSpeed(speechRate))
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.primary)
-                    .frame(width: 50, height: 40)
-                    .background(Color(.systemGray5))
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            // スピード表示（右端）
+            HStack {
+                Spacer()
+                Button(action: onSpeedTap) {
+                    Text(SpeechSettings.formatSpeed(speechRate))
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.primary)
+                        .frame(width: 50, height: 40)
+                        .background(Color(.systemGray5))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                .padding(.trailing, 16)
             }
-
-            Spacer()
         }
         .padding(.vertical, 16)
         .background(Color(.systemBackground))
