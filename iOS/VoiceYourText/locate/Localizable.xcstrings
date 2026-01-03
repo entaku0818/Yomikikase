@@ -6701,6 +6701,198 @@
           }
         }
       }
+    },
+    "無制限ファイル登録" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbegrenzte Dateiregistrierung"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unlimited File Registration"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registro de archivos ilimitado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement de fichiers illimité"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrazione file illimitata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無制限ファイル登録"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무제한 파일 등록"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลงทะเบียนไฟล์ไม่จำกัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sınırsız Dosya Kaydı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký tệp không giới hạn"
+          }
+        }
+      }
+    },
+    "PDF・テキストファイルを無制限に登録できます（無料版は%lld個まで）" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbegrenzte PDF- und Textdateien registrieren (kostenlose Version: bis zu %lld)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Register unlimited PDF and text files (free version: up to %lld)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra archivos PDF y de texto ilimitados (versión gratuita: hasta %lld)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrez des fichiers PDF et texte illimités (version gratuite : jusqu'à %lld)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registra file PDF e di testo illimitati (versione gratuita: fino a %lld)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF・テキストファイルを無制限に登録できます（無料版は%lld個まで）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PDF 및 텍스트 파일을 무제한으로 등록 (무료 버전: 최대 %lld개)"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลงทะเบียนไฟล์ PDF และข้อความไม่จำกัด (เวอร์ชันฟรี: สูงสุด %lld)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sınırsız PDF ve metin dosyası kaydedin (ücretsiz sürüm: en fazla %lld)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký không giới hạn tệp PDF và văn bản (phiên bản miễn phí: tối đa %lld)"
+          }
+        }
+      }
+    },
+    "無料版では最大%lld個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die kostenlose Version erlaubt maximal %lld Dateien (PDF und Text zusammen). Upgraden Sie auf Premium für unbegrenzte Dateiregistrierung."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The free version allows up to %lld files (PDF and text combined). Upgrade to Premium for unlimited file registration."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La versión gratuita permite hasta %lld archivos (PDF y texto combinados). Actualiza a Premium para registro ilimitado de archivos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La version gratuite permet jusqu'à %lld fichiers (PDF et texte combinés). Passez à Premium pour un enregistrement illimité."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La versione gratuita consente fino a %lld file (PDF e testo combinati). Passa a Premium per registrazione illimitata."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料版では最大%lld個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 버전은 최대 %lld개 파일(PDF 및 텍스트 합계)까지 등록할 수 있습니다. 프리미엄으로 업그레이드하면 무제한으로 파일을 등록할 수 있습니다."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เวอร์ชันฟรีอนุญาตให้ลงทะเบียนได้สูงสุด %lld ไฟล์ (PDF และข้อความรวมกัน) อัปเกรดเป็นพรีเมียมเพื่อลงทะเบียนไฟล์ไม่จำกัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ücretsiz sürüm en fazla %lld dosyaya izin verir (PDF ve metin toplam). Sınırsız dosya kaydı için Premium'a yükseltin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phiên bản miễn phí cho phép tối đa %lld tệp (PDF và văn bản kết hợp). Nâng cấp lên Premium để đăng ký tệp không giới hạn."
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
