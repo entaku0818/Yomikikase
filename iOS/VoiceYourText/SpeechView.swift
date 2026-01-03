@@ -186,15 +186,22 @@ struct SpeechView: View {
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     let store: Store<Speeches.State, Speeches.Action>
 
+    @State private var elapsedTime: TimeInterval = 0
+    @State private var estimatedTotalTime: TimeInterval = 0
+    @State private var speechTimer: Timer?
+    @State private var showingSpeedPicker = false
+
     let settingStore = Store(
         initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting)) {
             SettingsReducer()
     }
 
+    private let speedOptions: [Float] = [0.35, 0.5, 0.6, 0.75, 1.0]
+
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
             NavigationStack {
-                VStack {
+                VStack(spacing: 0) {
                     HighlightableTextView(
                         text: viewStore.binding(
                             get: \.currentText,
@@ -216,28 +223,6 @@ struct SpeechView: View {
                     )
                     .padding()
 
-                    HStack (spacing: 8){
-                        Button(action: { speakWithHighlight(text: viewStore.currentText, viewStore: viewStore) }) {
-                            Image(systemName: "play.fill")
-                            Text("読み上げ開始")
-                        }
-                        .disabled(viewStore.isSpeaking)
-
-                        // TODO: Re-enable when Audio API is ready
-                        // Button(action: { speakWithAPI(text: viewStore.currentText, viewStore: viewStore) }) {
-                        //     Image(systemName: "cloud.fill")
-                        //     Text("API音声")
-                        // }
-                        // .disabled(viewStore.isSpeaking)
-
-                        Button(action: { stopSpeaking(viewStore: viewStore) }) {
-                            Image(systemName: "stop.fill")
-                            Text("停止")
-                        }
-                        .disabled(!viewStore.isSpeaking)
-                        .padding()
-                    }
-
                     List {
                         ForEach(viewStore.speechList) { speech in
                             SpeechRowView(text: speech.title)
@@ -246,6 +231,30 @@ struct SpeechView: View {
                                 }
                         }
                     }
+
+                    // プレイヤーコントロール
+                    PlayerControlView(
+                        isSpeaking: viewStore.isSpeaking,
+                        currentTime: elapsedTime,
+                        totalTime: estimatedTotalTime,
+                        speechRate: UserDefaultsManager.shared.speechRate,
+                        onPlay: {
+                            speakWithHighlight(text: viewStore.currentText, viewStore: viewStore)
+                        },
+                        onStop: {
+                            stopSpeaking(viewStore: viewStore)
+                        },
+                        onSkipBackward: {
+                            // 10秒戻る（現状AVSpeechSynthesizerはシーク非対応）
+                        },
+                        onSkipForward: {
+                            // 10秒進む（現状AVSpeechSynthesizerはシーク非対応）
+                        },
+                        onSpeedTap: {
+                            showingSpeedPicker = true
+                        }
+                    )
+
                     if !UserDefaultsManager.shared.isPremiumUser {
                         AdmobBannerView().frame(width: .infinity, height: 50)
                     }
@@ -263,13 +272,61 @@ struct SpeechView: View {
                     )
                   )
                 }
+                .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
+                    ForEach(speedOptions, id: \.self) { speed in
+                        Button(formatSpeedOption(speed)) {
+                            UserDefaultsManager.shared.speechRate = speed
+                        }
+                    }
+                    Button("キャンセル", role: .cancel) {}
+                }
                 .navigationTitle("Voice Narrator")
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
+                .onChange(of: viewStore.isSpeaking) { _, newValue in
+                    if newValue {
+                        startTimer()
+                    } else {
+                        stopTimer()
+                    }
+                }
                 .alert(store: self.store.scope(state: \.$alert, action: Speeches.Action.alert))
             }
         }
+    }
+
+    private func formatSpeedOption(_ rate: Float) -> String {
+        let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
+        if displayRate == 1.0 {
+            return "1x（標準）"
+        } else if displayRate < 1.0 {
+            return String(format: "%.1fx（遅い）", displayRate)
+        } else {
+            return String(format: "%.1fx（速い）", displayRate)
+        }
+    }
+
+    private func startTimer() {
+        elapsedTime = 0
+        speechTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            elapsedTime += 0.1
+        }
+    }
+
+    private func stopTimer() {
+        speechTimer?.invalidate()
+        speechTimer = nil
+        elapsedTime = 0
+    }
+
+    private func estimateSpeechDuration(text: String, rate: Float) -> TimeInterval {
+        // 日本語: 約5文字/秒、英語: 約3単語/秒 を基準に推定
+        // rateのデフォルトは0.5、範囲は0.0-1.0
+        let baseCharPerSecond: Double = 5.0
+        let adjustedRate = Double(rate) / Double(AVSpeechUtteranceDefaultSpeechRate)
+        let charPerSecond = baseCharPerSecond * adjustedRate
+        return Double(text.count) / charPerSecond
     }
 
     func speak(text: String) {
@@ -334,6 +391,9 @@ struct SpeechView: View {
         // ミニプレイヤー用にnowPlayingも更新
         let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
         viewStore.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
+
+        // 推定再生時間を計算
+        estimatedTotalTime = estimateSpeechDuration(text: text, rate: rate)
 
         Task {
             do {
