@@ -72,7 +72,8 @@ struct MainView: View {
                             action: Speeches.Action.nowPlaying
                         )
                     )
-                    .padding(.bottom, 49) // TabBarの高さ分オフセット
+                    // TabBarの高さ + 広告の高さ（非プレミアムユーザーの場合）
+                    .padding(.bottom, UserDefaultsManager.shared.isPremiumUser ? 49 : 99)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
