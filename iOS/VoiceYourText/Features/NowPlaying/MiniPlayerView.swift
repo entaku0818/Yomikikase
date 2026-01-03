@@ -89,7 +89,7 @@ struct MiniPlayerView: View {
                     currentTitle: "サンプルテキストの読み上げ",
                     currentText: "これはサンプルテキストです。",
                     progress: 0.35,
-                    source: .textInput
+                    source: .textInput(fileId: nil, text: "これはサンプルテキストです。")
                 )
             ) {
                 NowPlayingFeature()

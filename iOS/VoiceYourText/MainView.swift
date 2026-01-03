@@ -83,6 +83,39 @@ struct MainView: View {
         } message: {
             Text("\(developmentFeatureName)機能は現在開発中です。今後のアップデートをお楽しみに！")
         }
+        // ミニプレイヤーからのナビゲーション
+        .fullScreenCover(
+            item: Binding(
+                get: { store.withState { $0.navigationSource } },
+                set: { _ in store.send(.dismissNavigation) }
+            )
+        ) { source in
+            navigationDestination(for: source)
+        }
+    }
+
+    @ViewBuilder
+    private func navigationDestination(for source: PlaybackSource) -> some View {
+        switch source {
+        case .textInput(let fileId, let text):
+            TextInputView(
+                store: store,
+                initialText: text,
+                fileId: fileId
+            )
+        case .pdf(_, let url):
+            PDFReaderView(
+                store: Store(
+                    initialState: PDFReaderFeature.State(currentPDFURL: url)
+                ) {
+                    PDFReaderFeature()
+                },
+                parentStore: store
+            )
+        case .speech:
+            // SpeechViewへの戻りは現状サポートしない
+            EmptyView()
+        }
     }
     
     private func trackTabClick(_ tabName: String) {

@@ -31,6 +31,7 @@ struct Speeches: Reducer {
         var highlightedRange: NSRange? = nil
         var isSpeaking: Bool = false
         var nowPlaying: NowPlayingFeature.State = .init()
+        var navigationSource: PlaybackSource? = nil  // ミニプレイヤーからのナビゲーション用
     }
 
     @CasePathable
@@ -46,6 +47,7 @@ struct Speeches: Reducer {
         case highlightRange(NSRange?)
         case speechFinished
         case nowPlaying(NowPlayingFeature.Action)
+        case dismissNavigation  // ナビゲーション画面を閉じる
     }
 
     enum AlertAction: Equatable {
@@ -172,8 +174,17 @@ struct Speeches: Reducer {
                 state.highlightedRange = nil
                 return .none
 
+            case .nowPlaying(.navigateToSource):
+                // ミニプレイヤーをタップしたら元の画面を開く
+                state.navigationSource = state.nowPlaying.source
+                return .none
+
             case .nowPlaying:
                 // その他のnowPlayingアクションはNowPlayingFeatureで処理
+                return .none
+
+            case .dismissNavigation:
+                state.navigationSource = nil
                 return .none
             }
         }.ifLet(\.$alert, action: /Action.alert)
@@ -343,7 +354,7 @@ struct SpeechView: View {
         viewStore.send(.startSpeaking)
         // ミニプレイヤー用にnowPlayingも更新
         let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
-        viewStore.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
+        viewStore.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput(fileId: nil, text: text))))
 
         Task {
             do {

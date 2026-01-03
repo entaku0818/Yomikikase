@@ -223,12 +223,12 @@ struct PDFReaderView: View {
                 onPlay: {
                     viewStore.send(.startReading)
                     // nowPlayingを更新（ミニプレイヤー用）
-                    if let parentStore = parentStore {
-                        let title = viewStore.currentPDFURL?.lastPathComponent ?? "PDF"
+                    if let parentStore = parentStore, let url = viewStore.currentPDFURL {
+                        let title = url.lastPathComponent
                         parentStore.send(.nowPlaying(.startPlaying(
                             title: title,
                             text: viewStore.pdfText,
-                            source: .pdf(id: UUID())
+                            source: .pdf(id: UUID(), url: url)
                         )))
                     }
                 },

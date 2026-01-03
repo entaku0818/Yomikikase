@@ -8,10 +8,21 @@
 import ComposableArchitecture
 import Foundation
 
-enum PlaybackSource: Equatable {
+enum PlaybackSource: Equatable, Identifiable {
     case speech(id: UUID)
-    case pdf(id: UUID)
-    case textInput
+    case pdf(id: UUID, url: URL)
+    case textInput(fileId: UUID?, text: String)
+
+    var id: String {
+        switch self {
+        case .speech(let id):
+            return "speech-\(id.uuidString)"
+        case .pdf(let id, _):
+            return "pdf-\(id.uuidString)"
+        case .textInput(let fileId, _):
+            return "textInput-\(fileId?.uuidString ?? "new")"
+        }
+    }
 }
 
 @Reducer

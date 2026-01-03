@@ -158,7 +158,7 @@ struct TextInputView: View {
 
         // nowPlayingを更新（ミニプレイヤー用）
         let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
-        store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
+        store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput(fileId: fileId, text: text))))
 
         let audioSession = AVAudioSession.sharedInstance()
         do {
