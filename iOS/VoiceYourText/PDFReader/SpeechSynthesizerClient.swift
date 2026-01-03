@@ -66,7 +66,7 @@ extension SpeechSynthesizerClient: DependencyKey {
             },
             speakWithAPI: { text, voiceId in
                 // TODO: Re-enable when Audio API is ready
-                print("Audio API is currently disabled")
+                debugLog("Audio API is currently disabled")
                 return false
             },
             stopSpeaking: { await speechSynthesizer.stop() },
@@ -249,11 +249,11 @@ private final class Delegate: NSObject, AVSpeechSynthesizerDelegate {
         utterance: AVSpeechUtterance
     ) {
         // デバッグ用ログ
-        print("🎯 willSpeakRange - location: \(characterRange.location), length: \(characterRange.length)")
-        print("📝 Speech string: \(utterance.speechString)")
+        debugLog("willSpeakRange - location: \(characterRange.location), length: \(characterRange.length)")
+        debugLog("Speech string: \(utterance.speechString)")
         if characterRange.location + characterRange.length <= utterance.speechString.count {
             let substring = (utterance.speechString as NSString).substring(with: characterRange)
-            print("🔤 Speaking: '\(substring)'")
+            debugLog("Speaking: '\(substring)'")
         }
         
         willSpeakRange?(characterRange, utterance.speechString)

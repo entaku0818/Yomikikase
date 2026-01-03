@@ -161,7 +161,7 @@ struct TextInputView: View {
 
     private func speakWithHighlight() {
         guard !text.isEmpty else {
-            print("❌ TextInputView: Cannot speak - text is empty")
+            warningLog("TextInputView: Cannot speak - text is empty")
             return
         }
 
@@ -176,7 +176,7 @@ struct TextInputView: View {
             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
             try audioSession.setActive(true)
         } catch {
-            print("❌ Failed to set audio session category: \(error)")
+            errorLog("Failed to set audio session category: \(error)")
             return
         }
 
@@ -210,7 +210,7 @@ struct TextInputView: View {
                     }
                 )
             } catch {
-                print("❌ Speech synthesis failed: \(error)")
+                errorLog("Speech synthesis failed: \(error)")
                 DispatchQueue.main.async {
                     isSpeaking = false
                     highlightedRange = nil

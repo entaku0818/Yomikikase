@@ -48,14 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 1. 環境変数から取得（優先）
         if let envAPIKey = ProcessInfo.processInfo.environment["REVENUECAT_API_KEY"],
            !envAPIKey.isEmpty {
-            print("Using RevenueCat API key from environment variable")
+            debugLog("Using RevenueCat API key from environment variable")
             return envAPIKey
         }
 
         // 2. Info.plistからAPIキーを取得（フォールバック）
         if let apiKey = Bundle.main.infoDictionary?["REVENUECAT_API_KEY"] as? String,
            !apiKey.isEmpty {
-            print("Using RevenueCat API key from Info.plist")
+            debugLog("Using RevenueCat API key from Info.plist")
             return apiKey
         }
 
@@ -80,14 +80,14 @@ class AdConfig: ObservableObject {
         // 1. 環境変数から取得（優先）
         if let envAdUnitID = ProcessInfo.processInfo.environment["ADMOB_BANNER_ID"],
            !envAdUnitID.isEmpty {
-            print("Using AdMob banner ID from environment variable")
+            debugLog("Using AdMob banner ID from environment variable")
             return envAdUnitID
         }
 
         // 2. Info.plistから取得（フォールバック）
         if let adUnitID = Bundle.main.infoDictionary?["ADMOB_BANNER_ID"] as? String,
            !adUnitID.isEmpty {
-            print("Using AdMob banner ID from Info.plist")
+            debugLog("Using AdMob banner ID from Info.plist")
             return adUnitID
         }
 

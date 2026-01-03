@@ -294,7 +294,7 @@ struct SpeechView: View {
              try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
              try audioSession.setActive(true)
          } catch {
-             print("Failed to set audio session category: \(error)")
+             errorLog("Failed to set audio session category: \(error)")
          }
         let speechUtterance = AVSpeechUtterance(string: text)
 
@@ -324,7 +324,7 @@ struct SpeechView: View {
 
     func speakWithHighlight(text: String, viewStore: ViewStoreOf<Speeches>) {
         guard !text.isEmpty else {
-            print("Cannot speak: text is empty")
+            warningLog("Cannot speak: text is empty")
             return
         }
 
@@ -333,7 +333,7 @@ struct SpeechView: View {
              try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
              try audioSession.setActive(true)
          } catch {
-             print("Failed to set audio session category: \(error)")
+             errorLog("Failed to set audio session category: \(error)")
          }
 
         let speechUtterance = AVSpeechUtterance(string: text)
@@ -374,7 +374,7 @@ struct SpeechView: View {
                     }
                 )
             } catch {
-                print("Speech synthesis failed: \(error)")
+                errorLog("Speech synthesis failed: \(error)")
                 DispatchQueue.main.async {
                     viewStore.send(.speechFinished)
                 }
@@ -411,7 +411,7 @@ struct SpeechView: View {
                     }
                 }
             } catch {
-                print("API speech failed: \(error)")
+                errorLog("API speech failed: \(error)")
                 DispatchQueue.main.async {
                     viewStore.send(.stopSpeaking)
                 }

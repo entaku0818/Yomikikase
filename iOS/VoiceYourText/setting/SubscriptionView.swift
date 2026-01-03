@@ -300,7 +300,7 @@ class SubscriptionViewModel: ObservableObject {
                 self.monthlyPlan = monthlyPlan
             }
         } catch {
-            print("Failed to fetch subscription plan: \(error)")
+            errorLog("Failed to fetch subscription plan: \(error)")
             analytics.logEvent("subscription_plan_fetch_failed", [
                 "error": error.localizedDescription
             ])

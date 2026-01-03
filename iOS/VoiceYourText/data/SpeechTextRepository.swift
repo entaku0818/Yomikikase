@@ -70,7 +70,7 @@ class SpeechTextRepository: NSObject {
             do {
                 try managedContext.save()
             } catch {
-                print(error.localizedDescription)
+                errorLog(error.localizedDescription)
             }
         }
     }
@@ -101,7 +101,7 @@ class SpeechTextRepository: NSObject {
 
             return speeches
         } catch let error as NSError {
-            print("FetchRequest error: \(error), \(error.userInfo)")
+            errorLog("FetchRequest error: \(error), \(error.userInfo)")
             return []
         }
     }
@@ -127,7 +127,7 @@ class SpeechTextRepository: NSObject {
                 )
             }
         } catch let error as NSError {
-            print("FetchRequest error: \(error), \(error.userInfo)")
+            errorLog("FetchRequest error: \(error), \(error.userInfo)")
             return []
         }
     }
@@ -295,7 +295,7 @@ class SpeechTextRepository: NSObject {
                 try managedContext.save()
             }
         } catch {
-            print("Update error: \(error.localizedDescription)")
+            errorLog("Update error: \(error.localizedDescription)")
         }
     }
 
@@ -311,7 +311,7 @@ class SpeechTextRepository: NSObject {
                 try managedContext.save()
             }
         } catch {
-            print("Delete error: \(error.localizedDescription)")
+            errorLog("Delete error: \(error.localizedDescription)")
         }
     }
 
@@ -326,7 +326,7 @@ class SpeechTextRepository: NSObject {
                 try managedContext.save()
             }
         } catch {
-            print("Restore error: \(error.localizedDescription)")
+            errorLog("Restore error: \(error.localizedDescription)")
         }
     }
 
@@ -341,7 +341,7 @@ class SpeechTextRepository: NSObject {
                 try managedContext.save()
             }
         } catch {
-            print("Permanent delete error: \(error.localizedDescription)")
+            errorLog("Permanent delete error: \(error.localizedDescription)")
         }
     }
 
@@ -358,10 +358,10 @@ class SpeechTextRepository: NSObject {
             }
             if !itemsToDelete.isEmpty {
                 try managedContext.save()
-                print("Cleaned up \(itemsToDelete.count) old deleted items")
+                infoLog("Cleaned up \(itemsToDelete.count) old deleted items")
             }
         } catch {
-            print("Cleanup error: \(error.localizedDescription)")
+            errorLog("Cleanup error: \(error.localizedDescription)")
         }
     }
 
