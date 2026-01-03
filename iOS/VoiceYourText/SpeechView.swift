@@ -232,6 +232,7 @@ struct SpeechView: View {
                     // プレイヤーコントロール
                     PlayerControlView(
                         isSpeaking: viewStore.isSpeaking,
+                        isTextEmpty: viewStore.currentText.isEmpty,
                         speechRate: UserDefaultsManager.shared.speechRate,
                         onPlay: {
                             speakWithHighlight(text: viewStore.currentText, viewStore: viewStore)
@@ -324,6 +325,11 @@ struct SpeechView: View {
     }
 
     func speakWithHighlight(text: String, viewStore: ViewStoreOf<Speeches>) {
+        guard !text.isEmpty else {
+            print("Cannot speak: text is empty")
+            return
+        }
+
         let audioSession = AVAudioSession.sharedInstance()
          do {
              try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
@@ -331,7 +337,7 @@ struct SpeechView: View {
          } catch {
              print("Failed to set audio session category: \(error)")
          }
-        
+
         let speechUtterance = AVSpeechUtterance(string: text)
 
         // 保存された言語設定を取得

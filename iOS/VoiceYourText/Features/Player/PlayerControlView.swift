@@ -10,6 +10,7 @@ import SwiftUI
 
 struct PlayerControlView: View {
     let isSpeaking: Bool
+    let isTextEmpty: Bool
     let speechRate: Float
     let onPlay: () -> Void
     let onStop: () -> Void
@@ -31,9 +32,10 @@ struct PlayerControlView: View {
                     .font(.system(size: 30))
                     .foregroundColor(.white)
                     .frame(width: 70, height: 70)
-                    .background(Color.blue)
+                    .background(isTextEmpty && !isSpeaking ? Color.gray : Color.blue)
                     .clipShape(Circle())
             }
+            .disabled(isTextEmpty && !isSpeaking)
 
             // スピード表示
             Button(action: onSpeedTap) {
@@ -71,6 +73,7 @@ struct PlayerControlView: View {
         Spacer()
         PlayerControlView(
             isSpeaking: false,
+            isTextEmpty: false,
             speechRate: 0.5,
             onPlay: {},
             onStop: {},
@@ -84,7 +87,22 @@ struct PlayerControlView: View {
         Spacer()
         PlayerControlView(
             isSpeaking: true,
+            isTextEmpty: false,
             speechRate: 0.75,
+            onPlay: {},
+            onStop: {},
+            onSpeedTap: {}
+        )
+    }
+}
+
+#Preview("Disabled") {
+    VStack {
+        Spacer()
+        PlayerControlView(
+            isSpeaking: false,
+            isTextEmpty: true,
+            speechRate: 0.5,
             onPlay: {},
             onStop: {},
             onSpeedTap: {}
