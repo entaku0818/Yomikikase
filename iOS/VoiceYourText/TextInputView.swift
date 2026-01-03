@@ -114,16 +114,15 @@ struct TextInputView: View {
     private var playerModeContent: some View {
         VStack(spacing: 0) {
             // テキスト表示（読み取り専用）
-            ScrollView {
-                HighlightableTextView(
-                    text: .constant(text),
-                    highlightedRange: $highlightedRange,
-                    isEditable: false,
-                    fontSize: 20
-                )
-                .padding(.horizontal)
-                .padding(.top, 16)
-            }
+            // UITextViewは自身でスクロールするため、外側のScrollViewは不要
+            HighlightableTextView(
+                text: .constant(text),
+                highlightedRange: $highlightedRange,
+                isEditable: false,
+                fontSize: 20
+            )
+            .padding(.horizontal)
+            .padding(.top, 16)
 
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
