@@ -15,7 +15,6 @@ struct MyFilesView: View {
     @State private var searchText = ""
     @State private var showingDeleteAlert = false
     @State private var fileToDelete: FileItem?
-    @State private var deletedItemsCount: Int = 0
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -73,28 +72,14 @@ struct MyFilesView: View {
                             DeletedItemsFeature()
                         }
                     )) {
-                        ZStack(alignment: .topTrailing) {
-                            Image(systemName: "trash")
-                                .font(.system(size: 17))
-                                .padding(.trailing, deletedItemsCount > 0 ? 6 : 0)
-                            if deletedItemsCount > 0 {
-                                Text("\(deletedItemsCount)")
-                                    .font(.system(size: 10, weight: .bold))
-                                    .foregroundColor(.white)
-                                    .frame(minWidth: 16, minHeight: 16)
-                                    .background(Color.red)
-                                    .clipShape(Circle())
-                                    .offset(x: 6, y: -6)
-                            }
-                        }
-                        .frame(minWidth: 30, minHeight: 30)
+                        Image(systemName: "trash")
+                            .font(.system(size: 17))
                     }
                 }
             }
         }
         .onAppear {
             loadFiles()
-            loadDeletedItemsCount()
             // 7日以上前の削除済みアイテムをクリーンアップ
             SpeechTextRepository.shared.cleanupOldDeletedItems()
         }
@@ -209,20 +194,11 @@ struct MyFilesView: View {
         return pdfFiles.first { $0.id == fileId }?.url
     }
     
-    private func loadDeletedItemsCount() {
-        let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
-        let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-        let deletedSpeeches = SpeechTextRepository.shared.fetchDeletedSpeechText(language: languageSetting)
-        deletedItemsCount = deletedSpeeches.count
-    }
-
     private func deleteTextFile(_ fileId: UUID) {
         // ソフトデリート（7日後に完全削除）
         SpeechTextRepository.shared.delete(id: fileId)
         // ローカルリストから削除
         textFiles.removeAll { $0.id == fileId }
-        // 削除済みアイテム数を更新
-        loadDeletedItemsCount()
     }
     
     private func deletePDFFile(_ fileId: UUID) {
