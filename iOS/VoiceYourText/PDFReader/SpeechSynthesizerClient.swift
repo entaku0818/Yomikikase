@@ -18,6 +18,9 @@ struct SpeechSynthesizerClient {
     var speakWithHighlight: @Sendable (AVSpeechUtterance, @escaping @Sendable (NSRange, String) -> Void, @escaping @Sendable () -> Void) async throws -> Bool
     var speakWithAPI: @Sendable (String, String?) async throws -> Bool
     var stopSpeaking: @Sendable () async -> Bool = { false }
+    var pauseSpeaking: @Sendable () async -> Bool = { false }
+    var continueSpeaking: @Sendable () async -> Bool = { false }
+    var isPaused: @Sendable () async -> Bool = { false }
 }
 
 extension SpeechSynthesizerClient: DependencyKey {
@@ -66,7 +69,10 @@ extension SpeechSynthesizerClient: DependencyKey {
                 print("Audio API is currently disabled")
                 return false
             },
-            stopSpeaking: { await speechSynthesizer.stop() }
+            stopSpeaking: { await speechSynthesizer.stop() },
+            pauseSpeaking: { await speechSynthesizer.pause() },
+            continueSpeaking: { await speechSynthesizer.continueSpeaking() },
+            isPaused: { await speechSynthesizer.isPaused() }
         )
     }
 }
@@ -82,7 +88,10 @@ extension SpeechSynthesizerClient: TestDependencyKey {
             return true
         },
         speakWithAPI: { _, _ in true },
-        stopSpeaking: { true }
+        stopSpeaking: { true },
+        pauseSpeaking: { true },
+        continueSpeaking: { true },
+        isPaused: { false }
     )
 }
 
@@ -101,6 +110,20 @@ private actor SpeechSynthesizer {
         self.synthesizer?.stopSpeaking(at: .immediate)
         self.audioPlayer?.stop()
         return true
+    }
+
+    func pause() -> Bool {
+        guard let synthesizer = self.synthesizer else { return false }
+        return synthesizer.pauseSpeaking(at: .word)
+    }
+
+    func continueSpeaking() -> Bool {
+        guard let synthesizer = self.synthesizer else { return false }
+        return synthesizer.continueSpeaking()
+    }
+
+    func isPaused() -> Bool {
+        return self.synthesizer?.isPaused ?? false
     }
     
     var audioPlayer: AVAudioPlayer?

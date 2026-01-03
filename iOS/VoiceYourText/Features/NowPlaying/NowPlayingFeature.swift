@@ -61,59 +61,64 @@ struct NowPlayingFeature {
                 return .none
 
             case .resumePlaying:
-                // ミニプレイヤーから再生を開始
+                // ミニプレイヤーから再生を再開
                 guard !state.currentText.isEmpty else { return .none }
                 state.isPlaying = true
-                state.progress = 0.0
 
                 let text = state.currentText
 
                 return .run { send in
-                    // 音声セッションの設定
-                    let audioSession = AVAudioSession.sharedInstance()
-                    do {
-                        try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-                        try audioSession.setActive(true)
-                    } catch {
-                        print("Failed to set audio session category: \(error)")
-                    }
+                    // 一時停止中なら再開、そうでなければ新規再生
+                    let isPaused = await speechSynthesizer.isPaused()
+                    if isPaused {
+                        _ = await speechSynthesizer.continueSpeaking()
+                    } else {
+                        // 音声セッションの設定
+                        let audioSession = AVAudioSession.sharedInstance()
+                        do {
+                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                            try audioSession.setActive(true)
+                        } catch {
+                            errorLog("Failed to set audio session category: \(error)")
+                        }
 
-                    // ユーザー設定から音声設定を取得
-                    let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                    let rate = UserDefaultsManager.shared.speechRate
-                    let pitch = UserDefaultsManager.shared.speechPitch
-                    let volume: Float = 0.75
+                        // ユーザー設定から音声設定を取得
+                        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                        let rate = UserDefaultsManager.shared.speechRate
+                        let pitch = UserDefaultsManager.shared.speechPitch
+                        let volume: Float = 0.75
 
-                    let utterance = AVSpeechUtterance(string: text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: language)
-                    utterance.rate = rate
-                    utterance.pitchMultiplier = pitch
-                    utterance.volume = volume
+                        let utterance = AVSpeechUtterance(string: text)
+                        utterance.voice = AVSpeechSynthesisVoice(language: language)
+                        utterance.rate = rate
+                        utterance.pitchMultiplier = pitch
+                        utterance.volume = volume
 
-                    do {
-                        try await speechSynthesizer.speakWithHighlight(
-                            utterance,
-                            { _, _ in
-                                // ハイライト更新（ミニプレイヤーでは不要）
-                            },
-                            {
-                                // 読み上げ完了
-                                Task { @MainActor in
-                                    await send(.speechFinished)
+                        do {
+                            try await speechSynthesizer.speakWithHighlight(
+                                utterance,
+                                { _, _ in
+                                    // ハイライト更新（ミニプレイヤーでは不要）
+                                },
+                                {
+                                    // 読み上げ完了
+                                    Task { @MainActor in
+                                        await send(.speechFinished)
+                                    }
                                 }
-                            }
-                        )
-                    } catch {
-                        print("Speech synthesis failed: \(error)")
-                        await send(.speechFinished)
+                            )
+                        } catch {
+                            errorLog("Speech synthesis failed: \(error)")
+                            await send(.speechFinished)
+                        }
                     }
                 }
 
             case .stopPlaying:
-                // 停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
+                // 一時停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
                 state.isPlaying = false
                 return .run { _ in
-                    _ = await speechSynthesizer.stopSpeaking()
+                    _ = await speechSynthesizer.pauseSpeaking()
                 }
 
             case .dismiss:
