@@ -15,6 +15,8 @@ struct MyFilesView: View {
     @State private var searchText = ""
     @State private var showingDeleteAlert = false
     @State private var fileToDelete: FileItem?
+    @State private var selectedTextFile: SavedTextFile?
+    @State private var selectedPDFFile: SavedPDFFile?
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -26,7 +28,11 @@ struct MyFilesView: View {
                     LazyVStack(spacing: 12) {
                         ForEach(combinedFiles) { file in
                             if file.type == .text {
-                                NavigationLink(destination: TextInputView(store: store, initialText: getTextForFile(file.id), fileId: file.id)) {
+                                Button {
+                                    if let textFile = textFiles.first(where: { $0.id == file.id }) {
+                                        selectedTextFile = textFile
+                                    }
+                                } label: {
                                     FileItemView(file: file, onDelete: {
                                         fileToDelete = file
                                         showingDeleteAlert = true
@@ -34,13 +40,11 @@ struct MyFilesView: View {
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             } else if file.type == .pdf {
-                                NavigationLink(destination: PDFReaderView(
-                                    store: Store(
-                                        initialState: PDFReaderFeature.State(currentPDFURL: getPDFURLForFile(file.id))
-                                    ) {
-                                        PDFReaderFeature()
+                                Button {
+                                    if let pdfFile = pdfFiles.first(where: { $0.id == file.id }) {
+                                        selectedPDFFile = pdfFile
                                     }
-                                )) {
+                                } label: {
                                     FileItemView(file: file, onDelete: {
                                         fileToDelete = file
                                         showingDeleteAlert = true
@@ -53,7 +57,7 @@ struct MyFilesView: View {
                         }
                     }
                     .padding(.horizontal)
-                    
+
                     Spacer(minLength: 100)
                 }
                 
@@ -102,8 +106,24 @@ struct MyFilesView: View {
                 Text("「\(file.title)」を削除しますか？")
             }
         }
+        .fullScreenCover(item: $selectedTextFile) { textFile in
+            TextInputView(
+                store: store,
+                initialText: textFile.text,
+                fileId: textFile.id
+            )
+        }
+        .fullScreenCover(item: $selectedPDFFile) { pdfFile in
+            PDFReaderView(
+                store: Store(
+                    initialState: PDFReaderFeature.State(currentPDFURL: pdfFile.url)
+                ) {
+                    PDFReaderFeature()
+                }
+            )
+        }
     }
-    
+
     private var combinedFiles: [FileItem] {
         var files: [FileItem] = []
         

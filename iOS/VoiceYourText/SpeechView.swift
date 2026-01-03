@@ -193,8 +193,6 @@ struct SpeechView: View {
             SettingsReducer()
     }
 
-    private let speedOptions: [Float] = [0.35, 0.5, 0.6, 0.75, 1.0]
-
     var body: some View {
         WithViewStore(self.store, observe: { $0 }) {  viewStore in
             NavigationStack {
@@ -263,8 +261,8 @@ struct SpeechView: View {
                   )
                 }
                 .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
-                    ForEach(speedOptions, id: \.self) { speed in
-                        Button(formatSpeedOption(speed)) {
+                    ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
+                        Button(SpeechSettings.formatSpeedOption(speed)) {
                             UserDefaultsManager.shared.speechRate = speed
                         }
                     }
@@ -276,17 +274,6 @@ struct SpeechView: View {
                 }
                 .alert(store: self.store.scope(state: \.$alert, action: Speeches.Action.alert))
             }
-        }
-    }
-
-    private func formatSpeedOption(_ rate: Float) -> String {
-        let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
-        if displayRate == 1.0 {
-            return "1x（標準）"
-        } else if displayRate < 1.0 {
-            return String(format: "%.1fx（遅い）", displayRate)
-        } else {
-            return String(format: "%.1fx（速い）", displayRate)
         }
     }
 

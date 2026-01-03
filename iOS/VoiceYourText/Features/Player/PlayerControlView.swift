@@ -39,7 +39,7 @@ struct PlayerControlView: View {
 
             // スピード表示
             Button(action: onSpeedTap) {
-                Text(formatSpeed(speechRate))
+                Text(SpeechSettings.formatSpeed(speechRate))
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.primary)
                     .frame(width: 50, height: 40)
@@ -51,20 +51,6 @@ struct PlayerControlView: View {
         }
         .padding(.vertical, 16)
         .background(Color(.systemBackground))
-    }
-
-    private func formatSpeed(_ rate: Float) -> String {
-        // AVSpeechUtteranceのrateは0.0-1.0の範囲
-        // デフォルトは0.5、最大は1.0
-        // 表示用に倍率に変換 (0.5 = 1.0x, 1.0 = 2.0x)
-        let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
-        if displayRate == 1.0 {
-            return "1x"
-        } else if displayRate == floor(displayRate) {
-            return String(format: "%.0fx", displayRate)
-        } else {
-            return String(format: "%.1fx", displayRate)
-        }
     }
 }
 

@@ -24,8 +24,6 @@ struct TextInputView: View {
     let initialText: String
     let fileId: UUID?
 
-    private let speedOptions: [Float] = [0.35, 0.5, 0.6, 0.75, 1.0]
-
     var body: some View {
         VStack(spacing: 0) {
             // ヘッダー
@@ -82,8 +80,8 @@ struct TextInputView: View {
             }
         }
         .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
-            ForEach(speedOptions, id: \.self) { speed in
-                Button(formatSpeedOption(speed)) {
+            ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
+                Button(SpeechSettings.formatSpeedOption(speed)) {
                     UserDefaultsManager.shared.speechRate = speed
                 }
             }
@@ -152,17 +150,6 @@ struct TextInputView: View {
     }
 
     // MARK: - Helper Functions
-
-    private func formatSpeedOption(_ rate: Float) -> String {
-        let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
-        if displayRate == 1.0 {
-            return "1x（標準）"
-        } else if displayRate < 1.0 {
-            return String(format: "%.1fx（遅い）", displayRate)
-        } else {
-            return String(format: "%.1fx（速い）", displayRate)
-        }
-    }
 
     private func speakWithHighlight() {
         guard !text.isEmpty else {

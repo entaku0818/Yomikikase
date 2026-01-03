@@ -162,8 +162,10 @@ struct PDFReaderFeature: Reducer {
 
 // PDFReaderView.swift
 struct PDFReaderView: View {
+    @Environment(\.dismiss) private var dismiss
     let store: StoreOf<PDFReaderFeature>
     @ObservedObject var viewStore: ViewStoreOf<PDFReaderFeature>
+    @State private var showingSpeedPicker = false
 
     init(store: StoreOf<PDFReaderFeature>) {
         self.store = store
@@ -171,40 +173,82 @@ struct PDFReaderView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
+            // ヘッダー
+            HStack {
+                Button(action: {
+                    if viewStore.isReading {
+                        viewStore.send(.stopReading)
+                    }
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.primary)
+                        .frame(width: 44, height: 44)
+                }
+                .padding(.leading, 8)
+
+                Spacer()
+            }
+            .frame(height: 56)
+            .background(Color(UIColor.systemBackground))
+
+            Divider()
+
+            // PDF表示
             if let pdfDocument = viewStore.pdfDocument {
                 PDFKitView(
                     document: pdfDocument,
                     highlightedText: viewStore.highlightedText
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                Spacer()
+                ProgressView("PDFを読み込み中...")
+                Spacer()
             }
 
-            HStack {
-                Button(action: { viewStore.send(.startReading) }) {
-                    Image(systemName: "play.fill")
-                    Text("読み上げ開始")
-                }
-                .disabled(viewStore.isReading || viewStore.pdfText.isEmpty)
-
-                Button(action: { viewStore.send(.stopReading) }) {
-                    Image(systemName: "stop.fill")
-                    Text("停止")
-                }
-                .disabled(!viewStore.isReading)
+            // 広告バナー
+            if !UserDefaultsManager.shared.isPremiumUser {
+                AdmobBannerView()
+                    .frame(height: 50)
             }
-            .padding()
+
+            // プレイヤーコントロール
+            PlayerControlView(
+                isSpeaking: viewStore.isReading,
+                isTextEmpty: viewStore.pdfText.isEmpty,
+                speechRate: UserDefaultsManager.shared.speechRate,
+                onPlay: {
+                    viewStore.send(.startReading)
+                },
+                onStop: {
+                    viewStore.send(.stopReading)
+                },
+                onSpeedTap: {
+                    showingSpeedPicker = true
+                }
+            )
         }
+        .background(Color(UIColor.systemBackground))
         .onAppear {
             if let url = viewStore.currentPDFURL {
                 viewStore.send(.loadPDF(url))
             }
         }
         .onDisappear {
-            // 画面を離れる時に音声を停止
             if viewStore.isReading {
                 viewStore.send(.stopReading)
             }
+        }
+        .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
+            ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
+                Button(SpeechSettings.formatSpeedOption(speed)) {
+                    UserDefaultsManager.shared.speechRate = speed
+                }
+            }
+            Button("キャンセル", role: .cancel) {}
         }
     }
 }
