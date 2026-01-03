@@ -73,10 +73,11 @@ struct MainView: View {
                         )
                     )
                     // TabBarの高さ + 広告の高さ（非プレミアムユーザーの場合）
-                    .padding(.bottom, UserDefaultsManager.shared.isPremiumUser ? 49 : 99)
+                    .padding(.bottom, UserDefaultsManager.shared.isPremiumUser ? 49 : 107)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
+            .zIndex(1) // 広告より前面に表示
             .animation(.easeInOut(duration: 0.3), value: store.withState { !$0.nowPlaying.currentTitle.isEmpty })
         }
         .alert("機能開発中", isPresented: $showingDevelopmentAlert) {
