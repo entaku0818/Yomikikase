@@ -14,178 +14,156 @@ struct TextInputView: View {
     @Environment(\.dismiss) private var dismiss
     let store: Store<Speeches.State, Speeches.Action>
     @State private var text: String = ""
-    @State private var showingSaveAlert = false
+    @State private var isEditMode: Bool = true
     @State private var isSpeaking = false
     @State private var highlightedRange: NSRange? = nil
+    @State private var showingSpeedPicker = false
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
-    
+
     let initialText: String
     let fileId: UUID?
-    
+
+    private let speedOptions: [Float] = [0.35, 0.5, 0.6, 0.75, 1.0]
+
     var body: some View {
-        NavigationStack {
-            ZStack {
-                // フルスクリーンのテキストエディタ
-                ZStack(alignment: .topLeading) {
-                    HighlightableTextView(
-                        text: $text,
-                        highlightedRange: $highlightedRange,
-                        isEditable: true,
-                        fontSize: 20
-                    )
-                    .padding(.horizontal)
-                    .padding(.top, 60)
-                    .background(Color(UIColor.systemBackground))
-                    
-                    // プレースホルダー
-                    if text.isEmpty {
-                        Text("読み上げたいテキストを入力してください...")
-                            .foregroundColor(.secondary)
-                            .font(.system(size: 20))
-                            .padding(.horizontal)
-                            .padding(.top, 70)
-                            .allowsHitTesting(false)
+        VStack(spacing: 0) {
+            // ヘッダー
+            HStack {
+                Button(action: {
+                    if isSpeaking {
+                        stopSpeaking()
                     }
+                    dismiss()
+                }) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundColor(.primary)
+                        .frame(width: 44, height: 44)
                 }
-                
-                // フローティング再生ボタン
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        
-                        Button(action: {
-                            if isSpeaking {
-                                stopSpeaking()
-                            } else {
-                                speakWithHighlight()
-                            }
-                        }) {
-                            Image(systemName: isSpeaking ? "stop.fill" : "play.fill")
-                                .font(.system(size: 24))
-                                .foregroundColor(.white)
-                                .frame(width: 60, height: 60)
-                                .background(isSpeaking ? Color.red : Color.blue)
-                                .clipShape(Circle())
-                                .shadow(radius: 4)
-                        }
-                        .disabled(text.isEmpty)
-                        .padding(.trailing, 24)
-                        .padding(.bottom, UserDefaultsManager.shared.isPremiumUser ? 24 : 80)
-                    }
-                }
-                
-                // 広告バナー（最下部）
-                if !UserDefaultsManager.shared.isPremiumUser {
-                    VStack {
-                        Spacer()
-                        AdmobBannerView()
-                            .frame(height: 50)
-                    }
-                }
-            }
-            .navigationBarHidden(true)
-            .overlay(alignment: .top) {
-                HStack {
-                    Button("キャンセル") {
-                        dismiss()
-                    }
-                    .padding(.leading, 16)
-                    
-                    Spacer()
-                    
+                .padding(.leading, 8)
+
+                Spacer()
+
+                if isEditMode {
                     Button("保存") {
-                        showingSaveAlert = true
+                        saveText()
+                        isEditMode = false
                     }
                     .disabled(text.isEmpty)
                     .padding(.trailing, 16)
                 }
+            }
+            .frame(height: 56)
+            .background(Color(UIColor.systemBackground))
+
+            Divider()
+
+            // メインコンテンツ
+            if isEditMode {
+                // 編集モード
+                editModeContent
+            } else {
+                // プレイヤーモード
+                playerModeContent
+            }
+        }
+        .background(Color(UIColor.systemBackground))
+        .onAppear {
+            text = initialText
+            // 既存ファイルを開いた場合はプレイヤーモードで開始
+            if fileId != nil && !initialText.isEmpty {
+                isEditMode = false
+            } else if initialText.isEmpty {
+                // 新規作成時はキーボードを自動表示
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    isTextEditorFocused = true
+                }
+            }
+        }
+        .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
+            ForEach(speedOptions, id: \.self) { speed in
+                Button(formatSpeedOption(speed)) {
+                    UserDefaultsManager.shared.speechRate = speed
+                }
+            }
+            Button("キャンセル", role: .cancel) {}
+        }
+    }
+
+    // MARK: - 編集モード
+    private var editModeContent: some View {
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .font(.system(size: 20))
+                .padding(.horizontal)
                 .padding(.top, 8)
-            }
-            .onAppear {
-                // 初期テキストを設定
-                text = initialText
-                // 画面表示時にキーボードを自動表示（新規作成時のみ）
-                if initialText.isEmpty {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        isTextEditorFocused = true
-                    }
-                }
-            }
-            .alert("保存", isPresented: $showingSaveAlert) {
-                Button("保存") {
-                    saveText()
-                    dismiss()
-                }
-                Button("キャンセル", role: .cancel) { }
-            } message: {
-                Text("このテキストを保存しますか？")
+                .focused($isTextEditorFocused)
+
+            // プレースホルダー
+            if text.isEmpty {
+                Text("読み上げたいテキストを入力してください...")
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 20))
+                    .padding(.horizontal, 20)
+                    .padding(.top, 16)
+                    .allowsHitTesting(false)
             }
         }
     }
-    
-    private func speak() {
-        guard !text.isEmpty else { 
-            print("❌ TextInputView: Cannot speak - text is empty")
-            return 
+
+    // MARK: - プレイヤーモード
+    private var playerModeContent: some View {
+        VStack(spacing: 0) {
+            // テキスト表示（読み取り専用）
+            ScrollView {
+                HighlightableTextView(
+                    text: .constant(text),
+                    highlightedRange: $highlightedRange,
+                    isEditable: false,
+                    fontSize: 20
+                )
+                .padding(.horizontal)
+                .padding(.top, 16)
+            }
+
+            // 広告バナー
+            if !UserDefaultsManager.shared.isPremiumUser {
+                AdmobBannerView()
+                    .frame(height: 50)
+            }
+
+            // プレイヤーコントロール
+            PlayerControlView(
+                isSpeaking: isSpeaking,
+                isTextEmpty: text.isEmpty,
+                speechRate: UserDefaultsManager.shared.speechRate,
+                onPlay: {
+                    speakWithHighlight()
+                },
+                onStop: {
+                    stopSpeaking()
+                },
+                onSpeedTap: {
+                    showingSpeedPicker = true
+                }
+            )
         }
-        
-        isSpeaking = true
-        print("🎤 TextInputView: Starting speech synthesis")
-        print("📝 Text to speak: \(text)")
-        
-        // 音声セッションの設定
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-            try audioSession.setActive(true)
-            print("✅ Audio session configured successfully")
-        } catch {
-            print("❌ Failed to set audio session category: \(error)")
-            return
-        }
-        
-        // 音声設定の取得
-        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-        let rate = UserDefaultsManager.shared.speechRate
-        let pitch = UserDefaultsManager.shared.speechPitch
-        let volume: Float = 0.75
-        
-        print("🌐 Language: \(language)")
-        print("⚡ Rate: \(rate), Pitch: \(pitch), Volume: \(volume)")
-        
-        // 音声合成の設定
-        let speechUtterance = AVSpeechUtterance(string: text)
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-        speechUtterance.rate = rate
-        speechUtterance.pitchMultiplier = pitch
-        speechUtterance.volume = volume
-        
-        // 利用可能な音声確認
-        let availableVoices = AVSpeechSynthesisVoice.speechVoices()
-        print("🎵 Available voices for \(language): \(availableVoices.filter { $0.language == language }.count)")
-        
-        if let selectedVoice = speechUtterance.voice {
-            print("✅ Selected voice: \(selectedVoice.name) (\(selectedVoice.language))")
+    }
+
+    // MARK: - Helper Functions
+
+    private func formatSpeedOption(_ rate: Float) -> String {
+        let displayRate = rate / AVSpeechUtteranceDefaultSpeechRate
+        if displayRate == 1.0 {
+            return "1x（標準）"
+        } else if displayRate < 1.0 {
+            return String(format: "%.1fx（遅い）", displayRate)
         } else {
-            print("⚠️ No voice selected, using default")
-        }
-        
-        // 音声合成開始
-        Task {
-            do {
-                print("🚀 Starting speech synthesis...")
-                try await speechSynthesizer.speak(speechUtterance)
-                print("✅ Speech synthesis completed")
-                isSpeaking = false
-            } catch {
-                print("❌ Speech synthesis failed: \(error)")
-                isSpeaking = false
-            }
+            return String(format: "%.1fx（速い）", displayRate)
         }
     }
-    
+
     private func speakWithHighlight() {
         guard !text.isEmpty else {
             print("❌ TextInputView: Cannot speak - text is empty")
@@ -194,52 +172,37 @@ struct TextInputView: View {
 
         isSpeaking = true
 
-        print("🎤 TextInputView: Starting speech synthesis with highlighting")
-        print("📝 Text to speak: \(text)")
-        
-        // 音声セッションの設定
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
             try audioSession.setActive(true)
-            print("✅ Audio session configured successfully")
         } catch {
             print("❌ Failed to set audio session category: \(error)")
             return
         }
-        
-        // 音声設定の取得
+
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         let rate = UserDefaultsManager.shared.speechRate
         let pitch = UserDefaultsManager.shared.speechPitch
         let volume: Float = 0.75
-        
-        print("🌐 Language: \(language)")
-        print("⚡ Rate: \(rate), Pitch: \(pitch), Volume: \(volume)")
-        
-        // 音声合成の設定
+
         let speechUtterance = AVSpeechUtterance(string: text)
         speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
         speechUtterance.rate = rate
         speechUtterance.pitchMultiplier = pitch
         speechUtterance.volume = volume
-        
-        // 音声合成開始
+
         Task {
             do {
-                print("🚀 Starting speech synthesis with highlighting...")
                 try await speechSynthesizer.speakWithHighlight(
                     speechUtterance,
-                    { range, speechString in
-                        // ハイライト更新
+                    { range, _ in
                         DispatchQueue.main.async {
                             highlightedRange = range
                         }
                     },
                     {
-                        // 読み上げ完了
                         DispatchQueue.main.async {
-                            print("✅ Speech synthesis completed")
                             isSpeaking = false
                             highlightedRange = nil
                         }
@@ -256,29 +219,25 @@ struct TextInputView: View {
     }
 
     private func stopSpeaking() {
-        print("🛑 TextInputView: Stopping speech synthesis")
         isSpeaking = false
         highlightedRange = nil
         Task {
             _ = await speechSynthesizer.stopSpeaking()
-            print("✅ Speech synthesis stopped")
         }
     }
-    
+
     private func saveText() {
         let finalTitle = String(text.prefix(20))
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
         let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-        
+
         if let fileId = fileId {
-            // 既存ファイルの更新
             SpeechTextRepository.shared.updateSpeechText(
                 id: fileId,
                 title: finalTitle,
                 text: text
             )
         } else {
-            // 新規ファイルの作成
             SpeechTextRepository.shared.insert(
                 title: finalTitle,
                 text: text,
@@ -288,12 +247,22 @@ struct TextInputView: View {
     }
 }
 
-#Preview {
+#Preview("Edit Mode") {
     TextInputView(
         store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
             Speeches()
         },
         initialText: "",
         fileId: nil
+    )
+}
+
+#Preview("Player Mode") {
+    TextInputView(
+        store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
+            Speeches()
+        },
+        initialText: "これはサンプルテキストです。読み上げのテストを行います。",
+        fileId: UUID()
     )
 }
