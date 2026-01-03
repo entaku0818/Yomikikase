@@ -46,7 +46,7 @@ struct MiniPlayerView: View {
                 Button {
                     viewStore.send(.dismiss)
                 } label: {
-                    Image(systemName: "chevron.down")
+                    Image(systemName: "xmark")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.secondary)
                         .frame(width: 44, height: 44)
