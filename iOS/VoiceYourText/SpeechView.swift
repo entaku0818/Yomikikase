@@ -30,9 +30,10 @@ struct Speeches: Reducer {
         var isMailComposePresented: Bool = false
         var highlightedRange: NSRange? = nil
         var isSpeaking: Bool = false
-
+        var nowPlaying: NowPlayingFeature.State = .init()
     }
 
+    @CasePathable
     enum Action: Equatable, Sendable {
         case onAppear
         case onTap
@@ -44,6 +45,7 @@ struct Speeches: Reducer {
         case stopSpeaking
         case highlightRange(NSRange?)
         case speechFinished
+        case nowPlaying(NowPlayingFeature.Action)
     }
 
     enum AlertAction: Equatable {
@@ -54,6 +56,10 @@ struct Speeches: Reducer {
     }
 
     var body: some Reducer<State, Action> {
+        Scope(state: \.nowPlaying, action: \.nowPlaying) {
+            NowPlayingFeature()
+        }
+
         Reduce { state, action in
             switch action {
             case .onAppear:
@@ -155,8 +161,20 @@ struct Speeches: Reducer {
             case .speechFinished:
                 state.isSpeaking = false
                 state.highlightedRange = nil
+                // nowPlayingも停止
+                state.nowPlaying.isPlaying = false
+                state.nowPlaying.progress = 1.0
                 return .none
 
+            case .nowPlaying(.stopPlaying):
+                // ミニプレイヤーから停止された場合、ローカルのisSpeakingも更新
+                state.isSpeaking = false
+                state.highlightedRange = nil
+                return .none
+
+            case .nowPlaying:
+                // その他のnowPlayingアクションはNowPlayingFeatureで処理
+                return .none
             }
         }.ifLet(\.$alert, action: /Action.alert)
 
@@ -313,6 +331,9 @@ struct SpeechView: View {
         speechUtterance.volume = volume
 
         viewStore.send(.startSpeaking)
+        // ミニプレイヤー用にnowPlayingも更新
+        let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
+        viewStore.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
 
         Task {
             do {
@@ -342,6 +363,7 @@ struct SpeechView: View {
 
     func stopSpeaking(viewStore: ViewStoreOf<Speeches>) {
         viewStore.send(.stopSpeaking)
+        viewStore.send(.nowPlaying(.stopPlaying))
         Task {
             _ = await speechSynthesizer.stopSpeaking()
         }

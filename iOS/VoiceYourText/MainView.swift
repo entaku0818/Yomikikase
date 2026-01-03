@@ -21,45 +21,62 @@ struct MainView: View {
     }
 
     var body: some View {
-        TabView {
-            HomeView(
-                store: store,
-                onDevelopmentFeature: { featureName in
-                    showDevelopmentAlert(for: featureName)
-                    trackTabClick("development_feature")
+        ZStack(alignment: .bottom) {
+            TabView {
+                HomeView(
+                    store: store,
+                    onDevelopmentFeature: { featureName in
+                        showDevelopmentAlert(for: featureName)
+                        trackTabClick("development_feature")
+                    }
+                )
+                    .tabItem {
+                        Image(systemName: "house")
+                        Text("ホーム")
+                    }
+                    .tag(0)
+                    .onAppear {
+                        trackTabClick("home")
+                    }
+
+                MyFilesView(store: store)
+                    .tabItem {
+                        Image(systemName: "doc")
+                        Text("マイファイル")
+                    }
+                    .tag(1)
+                    .onAppear {
+                        trackTabClick("my_files")
+                    }
+
+                // 設定
+                NavigationStack {
+                    LanguageSettingView(store: settingStore)
                 }
-            )
                 .tabItem {
-                    Image(systemName: "house")
-                    Text("ホーム")
+                    Image(systemName: "gear")
+                    Text("設定")
                 }
-                .tag(0)
+                .tag(2)
                 .onAppear {
-                    trackTabClick("home")
+                    trackTabClick("settings")
                 }
-            
-            MyFilesView(store: store)
-                .tabItem {
-                    Image(systemName: "doc")
-                    Text("マイファイル")
+            }
+
+            // ミニプレイヤー（再生中のみ表示）
+            WithViewStore(store, observe: \.nowPlaying.isPlaying) { viewStore in
+                if viewStore.state {
+                    MiniPlayerView(
+                        store: store.scope(
+                            state: \.nowPlaying,
+                            action: Speeches.Action.nowPlaying
+                        )
+                    )
+                    .padding(.bottom, 49) // TabBarの高さ分オフセット
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
-                .tag(1)
-                .onAppear {
-                    trackTabClick("my_files")
-                }
-            
-            // 設定
-            NavigationStack {
-                LanguageSettingView(store: settingStore)
             }
-            .tabItem {
-                Image(systemName: "gear")
-                Text("設定")
-            }
-            .tag(2)
-            .onAppear {
-                trackTabClick("settings")
-            }
+            .animation(.easeInOut(duration: 0.3), value: store.withState { $0.nowPlaying.isPlaying })
         }
         .alert("機能開発中", isPresented: $showingDevelopmentAlert) {
             Button("OK") { }

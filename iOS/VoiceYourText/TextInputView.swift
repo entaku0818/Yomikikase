@@ -187,12 +187,17 @@ struct TextInputView: View {
     }
     
     private func speakWithHighlight() {
-        guard !text.isEmpty else { 
+        guard !text.isEmpty else {
             print("❌ TextInputView: Cannot speak - text is empty")
-            return 
+            return
         }
-        
+
         isSpeaking = true
+
+        // ミニプレイヤー用にnowPlayingを更新
+        let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
+        store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
+
         print("🎤 TextInputView: Starting speech synthesis with highlighting")
         print("📝 Text to speak: \(text)")
         
@@ -237,18 +242,20 @@ struct TextInputView: View {
                     },
                     {
                         // 読み上げ完了
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.async { [self] in
                             print("✅ Speech synthesis completed")
                             isSpeaking = false
                             highlightedRange = nil
+                            store.send(.nowPlaying(.stopPlaying))
                         }
                     }
                 )
             } catch {
                 print("❌ Speech synthesis failed: \(error)")
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { [self] in
                     isSpeaking = false
                     highlightedRange = nil
+                    store.send(.nowPlaying(.stopPlaying))
                 }
             }
         }
@@ -258,6 +265,7 @@ struct TextInputView: View {
         print("🛑 TextInputView: Stopping speech synthesis")
         isSpeaking = false
         highlightedRange = nil
+        store.send(.nowPlaying(.stopPlaying))
         Task {
             _ = await speechSynthesizer.stopSpeaking()
             print("✅ Speech synthesis stopped")
