@@ -16,3 +16,4 @@ GoogleService-Info.plist
 # SwiftPM
 .build/ 
 fastlane/.env
+fastlane/report.xml
