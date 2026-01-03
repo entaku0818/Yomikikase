@@ -191,7 +191,7 @@ struct PDFReaderView: View {
                     // 再生中でも止めずにdismiss（ミニプレイヤーで継続）
                     dismiss()
                 }) {
-                    Image(systemName: "xmark")
+                    Image(systemName: "chevron.down")
                         .font(.system(size: 18, weight: .medium))
                         .foregroundColor(.primary)
                         .frame(width: 44, height: 44)
