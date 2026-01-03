@@ -79,7 +79,7 @@ struct SubscriptionView: View {
                 .padding(.bottom, 4)
             
             FeatureRow(icon: "xmark.circle.fill", title: "広告の削除", description: "アプリ内の広告をすべて削除します")
-            FeatureRow(icon: "doc.fill", title: "PDFファイルの登録", description: "PDFファイルを3つ以上登録できるようになります")
+            FeatureRow(icon: "doc.fill", title: "無制限ファイル登録", description: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）")
         }
         .padding()
         .background(Color(.secondarySystemBackground))

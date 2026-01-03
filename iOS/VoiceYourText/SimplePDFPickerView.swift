@@ -22,9 +22,6 @@ struct SimplePDFPickerView: View {
     @State private var showingSubscription = false
     @State private var isProcessing = false
     
-    // 最大登録可能なPDFファイル数 (無料版)
-    private let maxFreePDFCount = 3
-    
     var body: some View {
         NavigationStack {
             VStack(spacing: 40) {
@@ -52,7 +49,7 @@ struct SimplePDFPickerView: View {
                 
                 // PDFファイル選択ボタン
                 Button(action: {
-                    if hasReachedFreeLimit() {
+                    if FileLimitsManager.hasReachedFreeLimit() {
                         showingPremiumAlert = true
                     } else {
                         showingFilePicker = true
@@ -81,10 +78,10 @@ struct SimplePDFPickerView: View {
                 // 無料ユーザーの場合に登録制限の表示
                 if !UserDefaultsManager.shared.isPremiumUser {
                     VStack(spacing: 8) {
-                        Text("無料版: \(getCurrentPDFCount())/\(maxFreePDFCount)ファイル")
+                        Text("無料版: \(FileLimitsManager.getCurrentTotalFileCount())/\(FileLimitsManager.maxFreeFileCount)ファイル")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        
+
                         Button("プレミアムにアップグレード") {
                             showingSubscription = true
                         }
@@ -123,32 +120,11 @@ struct SimplePDFPickerView: View {
                     showingSubscription = true
                 }
             } message: {
-                Text("無料版では最大\(maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
+                Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
             }
             .sheet(isPresented: $showingSubscription) {
                 SubscriptionView()
             }
-        }
-    }
-    
-    private func hasReachedFreeLimit() -> Bool {
-        return !UserDefaultsManager.shared.isPremiumUser && getCurrentPDFCount() >= maxFreePDFCount
-    }
-    
-    private func getCurrentPDFCount() -> Int {
-        guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
-            return 0
-        }
-        
-        do {
-            let fileURLs = try FileManager.default.contentsOfDirectory(
-                at: documentDirectory,
-                includingPropertiesForKeys: nil,
-                options: [.skipsHiddenFiles]
-            )
-            return fileURLs.filter { $0.pathExtension.lowercased() == "pdf" }.count
-        } catch {
-            return 0
         }
     }
     

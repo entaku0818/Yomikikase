@@ -19,6 +19,9 @@ struct HomeView: View {
     @State private var showingImportedTextView = false
     @State private var showingImportError = false
     @State private var importErrorMessage = ""
+    @State private var showingPremiumAlert = false
+    @State private var showingSubscription = false
+    @State private var showingNewTextView = false
 
     @Dependency(\.textFileImport) var textFileImport
 
@@ -31,7 +34,13 @@ struct HomeView: View {
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
                             // テキスト（有効）
-                            NavigationLink(destination: TextInputView(store: store, initialText: "", fileId: nil)) {
+                            Button {
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingNewTextView = true
+                                }
+                            } label: {
                                 createButtonContent(
                                     icon: "doc.text.fill",
                                     iconColor: .blue,
@@ -53,7 +62,13 @@ struct HomeView: View {
                             .buttonStyle(PlainButtonStyle())
 
                             // TXTファイル（有効）
-                            Button(action: { showingTextFilePicker = true }) {
+                            Button {
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingTextFilePicker = true
+                                }
+                            } label: {
                                 createButtonContent(
                                     icon: "doc.plaintext.fill",
                                     iconColor: .purple,
@@ -206,6 +221,20 @@ struct HomeView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(importErrorMessage)
+            }
+            .alert("プレミアム機能が必要です", isPresented: $showingPremiumAlert) {
+                Button("キャンセル", role: .cancel) { }
+                Button("詳細を見る") {
+                    showingSubscription = true
+                }
+            } message: {
+                Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
+            }
+            .sheet(isPresented: $showingSubscription) {
+                SubscriptionView()
+            }
+            .fullScreenCover(isPresented: $showingNewTextView) {
+                TextInputView(store: store, initialText: "", fileId: nil)
             }
         }
     }
