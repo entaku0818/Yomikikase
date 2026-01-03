@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Foundation
+import AVFoundation
 
 enum PlaybackSource: Equatable, Identifiable {
     case speech(id: UUID)
@@ -38,11 +39,12 @@ struct NowPlayingFeature {
 
     enum Action: Equatable {
         case startPlaying(title: String, text: String, source: PlaybackSource)
+        case resumePlaying  // ミニプレイヤーから再生を再開
         case stopPlaying
         case dismiss  // ミニプレイヤーを完全に閉じる
         case updateProgress(Double)
         case navigateToSource
-        case pauseToggle
+        case speechFinished
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
@@ -57,6 +59,55 @@ struct NowPlayingFeature {
                 state.source = source
                 state.progress = 0.0
                 return .none
+
+            case .resumePlaying:
+                // ミニプレイヤーから再生を開始
+                guard !state.currentText.isEmpty else { return .none }
+                state.isPlaying = true
+                state.progress = 0.0
+
+                let text = state.currentText
+
+                return .run { send in
+                    // 音声セッションの設定
+                    let audioSession = AVAudioSession.sharedInstance()
+                    do {
+                        try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                        try audioSession.setActive(true)
+                    } catch {
+                        print("Failed to set audio session category: \(error)")
+                    }
+
+                    // ユーザー設定から音声設定を取得
+                    let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                    let rate = UserDefaultsManager.shared.speechRate
+                    let pitch = UserDefaultsManager.shared.speechPitch
+                    let volume: Float = 0.75
+
+                    let utterance = AVSpeechUtterance(string: text)
+                    utterance.voice = AVSpeechSynthesisVoice(language: language)
+                    utterance.rate = rate
+                    utterance.pitchMultiplier = pitch
+                    utterance.volume = volume
+
+                    do {
+                        try await speechSynthesizer.speakWithHighlight(
+                            utterance,
+                            { _, _ in
+                                // ハイライト更新（ミニプレイヤーでは不要）
+                            },
+                            {
+                                // 読み上げ完了
+                                Task { @MainActor in
+                                    await send(.speechFinished)
+                                }
+                            }
+                        )
+                    } catch {
+                        print("Speech synthesis failed: \(error)")
+                        await send(.speechFinished)
+                    }
+                }
 
             case .stopPlaying:
                 // 停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
@@ -84,8 +135,9 @@ struct NowPlayingFeature {
                 // 親Reducerでハンドル
                 return .none
 
-            case .pauseToggle:
-                // TODO: 一時停止/再開処理（AVSpeechSynthesizerは一時停止に対応していない場合あり）
+            case .speechFinished:
+                state.isPlaying = false
+                state.progress = 1.0
                 return .none
             }
         }

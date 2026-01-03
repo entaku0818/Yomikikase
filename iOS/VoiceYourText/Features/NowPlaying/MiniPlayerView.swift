@@ -30,16 +30,18 @@ struct MiniPlayerView: View {
 
                     Spacer()
 
-                    // 停止ボタン（再生中のみ表示）
-                    if viewStore.isPlaying {
-                        Button {
+                    // 再生/停止ボタン
+                    Button {
+                        if viewStore.isPlaying {
                             viewStore.send(.stopPlaying)
-                        } label: {
-                            Image(systemName: "stop.fill")
-                                .font(.system(size: 20))
-                                .foregroundColor(.primary)
-                                .frame(width: 44, height: 44)
+                        } else {
+                            viewStore.send(.resumePlaying)
                         }
+                    } label: {
+                        Image(systemName: viewStore.isPlaying ? "stop.fill" : "play.fill")
+                            .font(.system(size: 20))
+                            .foregroundColor(.primary)
+                            .frame(width: 44, height: 44)
                     }
 
                     // 閉じるボタン
