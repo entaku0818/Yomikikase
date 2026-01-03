@@ -119,7 +119,8 @@ struct MyFilesView: View {
                     initialState: PDFReaderFeature.State(currentPDFURL: pdfFile.url)
                 ) {
                     PDFReaderFeature()
-                }
+                },
+                parentStore: store
             )
         }
     }

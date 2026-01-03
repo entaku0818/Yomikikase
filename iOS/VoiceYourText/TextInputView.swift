@@ -29,9 +29,7 @@ struct TextInputView: View {
             // ヘッダー
             HStack {
                 Button(action: {
-                    if isSpeaking {
-                        stopSpeaking()
-                    }
+                    // 再生中でも止めずにdismiss（ミニプレイヤーで継続）
                     dismiss()
                 }) {
                     Image(systemName: "xmark")
@@ -158,6 +156,10 @@ struct TextInputView: View {
 
         isSpeaking = true
 
+        // nowPlayingを更新（ミニプレイヤー用）
+        let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
+        store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput)))
+
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
@@ -191,6 +193,8 @@ struct TextInputView: View {
                         DispatchQueue.main.async {
                             isSpeaking = false
                             highlightedRange = nil
+                            // 読み上げ完了時はnowPlayingを停止（コンテンツは保持）
+                            store.send(.nowPlaying(.stopPlaying))
                         }
                     }
                 )
@@ -199,6 +203,7 @@ struct TextInputView: View {
                 DispatchQueue.main.async {
                     isSpeaking = false
                     highlightedRange = nil
+                    store.send(.nowPlaying(.stopPlaying))
                 }
             }
         }
@@ -207,9 +212,7 @@ struct TextInputView: View {
     private func stopSpeaking() {
         isSpeaking = false
         highlightedRange = nil
-        Task {
-            _ = await speechSynthesizer.stopSpeaking()
-        }
+        store.send(.nowPlaying(.stopPlaying))
     }
 
     private func saveText() {

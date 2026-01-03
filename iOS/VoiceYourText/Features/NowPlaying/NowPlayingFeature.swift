@@ -28,6 +28,7 @@ struct NowPlayingFeature {
     enum Action: Equatable {
         case startPlaying(title: String, text: String, source: PlaybackSource)
         case stopPlaying
+        case dismiss  // ミニプレイヤーを完全に閉じる
         case updateProgress(Double)
         case navigateToSource
         case pauseToggle
@@ -47,6 +48,14 @@ struct NowPlayingFeature {
                 return .none
 
             case .stopPlaying:
+                // 停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
+                state.isPlaying = false
+                return .run { _ in
+                    _ = await speechSynthesizer.stopSpeaking()
+                }
+
+            case .dismiss:
+                // ミニプレイヤーを完全に閉じる
                 state.isPlaying = false
                 state.currentTitle = ""
                 state.currentText = ""

@@ -164,11 +164,13 @@ struct PDFReaderFeature: Reducer {
 struct PDFReaderView: View {
     @Environment(\.dismiss) private var dismiss
     let store: StoreOf<PDFReaderFeature>
+    let parentStore: Store<Speeches.State, Speeches.Action>?
     @ObservedObject var viewStore: ViewStoreOf<PDFReaderFeature>
     @State private var showingSpeedPicker = false
 
-    init(store: StoreOf<PDFReaderFeature>) {
+    init(store: StoreOf<PDFReaderFeature>, parentStore: Store<Speeches.State, Speeches.Action>? = nil) {
         self.store = store
+        self.parentStore = parentStore
         self.viewStore = ViewStore(self.store, observe: { $0 })
     }
 
@@ -177,9 +179,7 @@ struct PDFReaderView: View {
             // ヘッダー
             HStack {
                 Button(action: {
-                    if viewStore.isReading {
-                        viewStore.send(.stopReading)
-                    }
+                    // 再生中でも止めずにdismiss（ミニプレイヤーで継続）
                     dismiss()
                 }) {
                     Image(systemName: "xmark")
@@ -222,9 +222,19 @@ struct PDFReaderView: View {
                 speechRate: UserDefaultsManager.shared.speechRate,
                 onPlay: {
                     viewStore.send(.startReading)
+                    // nowPlayingを更新（ミニプレイヤー用）
+                    if let parentStore = parentStore {
+                        let title = viewStore.currentPDFURL?.lastPathComponent ?? "PDF"
+                        parentStore.send(.nowPlaying(.startPlaying(
+                            title: title,
+                            text: viewStore.pdfText,
+                            source: .pdf(id: UUID())
+                        )))
+                    }
                 },
                 onStop: {
                     viewStore.send(.stopReading)
+                    parentStore?.send(.nowPlaying(.stopPlaying))
                 },
                 onSpeedTap: {
                     showingSpeedPicker = true
@@ -238,8 +248,12 @@ struct PDFReaderView: View {
             }
         }
         .onDisappear {
-            if viewStore.isReading {
-                viewStore.send(.stopReading)
+            // 再生中でも止めない（ミニプレイヤーで継続）
+        }
+        .onChange(of: viewStore.isReading) { _, isReading in
+            // 読み上げ完了時（isReadingがfalseに変化した時）にnowPlayingを更新
+            if !isReading {
+                parentStore?.send(.nowPlaying(.stopPlaying))
             }
         }
         .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {

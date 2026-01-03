@@ -16,11 +16,11 @@ struct MiniPlayerView: View {
             VStack(spacing: 8) {
                 // 上部: タイトルとコントロール
                 HStack(spacing: 12) {
-                    // スピーカーアイコン（アニメーション付き）
-                    Image(systemName: "speaker.wave.2.fill")
+                    // スピーカーアイコン（再生中のみアニメーション）
+                    Image(systemName: viewStore.isPlaying ? "speaker.wave.2.fill" : "speaker.fill")
                         .font(.system(size: 18))
                         .foregroundColor(.blue)
-                        .symbolEffect(.variableColor.iterative, options: .repeating)
+                        .symbolEffect(.variableColor.iterative, options: .repeating, isActive: viewStore.isPlaying)
 
                     // タイトル
                     Text(viewStore.currentTitle)
@@ -30,24 +30,41 @@ struct MiniPlayerView: View {
 
                     Spacer()
 
-                    // 停止ボタン
+                    // 停止ボタン（再生中のみ表示）
+                    if viewStore.isPlaying {
+                        Button {
+                            viewStore.send(.stopPlaying)
+                        } label: {
+                            Image(systemName: "stop.fill")
+                                .font(.system(size: 20))
+                                .foregroundColor(.primary)
+                                .frame(width: 44, height: 44)
+                        }
+                    }
+
+                    // 閉じるボタン
                     Button {
-                        viewStore.send(.stopPlaying)
+                        viewStore.send(.dismiss)
                     } label: {
-                        Image(systemName: "stop.fill")
-                            .font(.system(size: 20))
-                            .foregroundColor(.primary)
+                        Image(systemName: "xmark")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.secondary)
                             .frame(width: 44, height: 44)
                     }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
 
-                // 下部: プログレスバー
-                ProgressView(value: viewStore.progress)
-                    .progressViewStyle(LinearProgressViewStyle(tint: .blue))
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
+                // 下部: プログレスバー（再生中のみ表示）
+                if viewStore.isPlaying {
+                    ProgressView(value: viewStore.progress)
+                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 12)
+                } else {
+                    Spacer()
+                        .frame(height: 12)
+                }
             }
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))

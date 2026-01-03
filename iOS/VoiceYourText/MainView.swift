@@ -63,8 +63,8 @@ struct MainView: View {
                 }
             }
 
-            // ミニプレイヤー（再生中のみ表示）
-            WithViewStore(store, observe: \.nowPlaying.isPlaying) { viewStore in
+            // ミニプレイヤー（コンテンツがある場合に表示）
+            WithViewStore(store, observe: { !$0.nowPlaying.currentTitle.isEmpty }) { viewStore in
                 if viewStore.state {
                     MiniPlayerView(
                         store: store.scope(
@@ -76,7 +76,7 @@ struct MainView: View {
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
-            .animation(.easeInOut(duration: 0.3), value: store.withState { $0.nowPlaying.isPlaying })
+            .animation(.easeInOut(duration: 0.3), value: store.withState { !$0.nowPlaying.currentTitle.isEmpty })
         }
         .alert("機能開発中", isPresented: $showingDevelopmentAlert) {
             Button("OK") { }
