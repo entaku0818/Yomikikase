@@ -47,10 +47,13 @@ struct PDFReaderFeature: Reducer {
         Reduce { state, action in
             switch action {
             case let .loadPDF(url):
+                logger.info("Loading PDF from: \(url.absoluteString)")
                 guard let document = PDFDocument(url: url) else {
+                    logger.error("Failed to load PDF from: \(url.absoluteString)")
                     return .none
                 }
                 state.currentPDFURL = url
+                logger.info("PDF loaded successfully: \(document.pageCount) pages")
                 return .send(.pdfLoaded(document))
 
             case let .pdfLoaded(document):
