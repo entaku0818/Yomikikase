@@ -34,6 +34,7 @@ struct PDFReaderFeature: Reducer {
         case loadPDF(URL)
         case startReading
         case stopReading
+        case syncPlayingState(Bool)  // ミニプレイヤーから戻ってきた時の同期用
         case pdfLoaded(PDFDocument)
         case extractTextCompleted(String)
         case highlightRange(NSRange?)
@@ -154,6 +155,11 @@ struct PDFReaderFeature: Reducer {
                 state.isReading = false
                 state.highlightedRange = nil
                 state.highlightedText = nil
+                return .none
+
+            case .syncPlayingState(let isPlaying):
+                // ミニプレイヤーから戻ってきた時の同期用
+                state.isReading = isPlaying
                 return .none
             }
         }

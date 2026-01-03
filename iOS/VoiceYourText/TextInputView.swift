@@ -76,6 +76,17 @@ struct TextInputView: View {
                     isTextEditorFocused = true
                 }
             }
+
+            // nowPlayingと同期（ミニプレイヤーから戻ってきた場合）
+            let nowPlaying = store.withState { $0.nowPlaying }
+            if nowPlaying.isPlaying {
+                if case .textInput(let sourceFileId, _) = nowPlaying.source {
+                    if sourceFileId == fileId {
+                        isSpeaking = true
+                        isEditMode = false
+                    }
+                }
+            }
         }
         .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
             ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
