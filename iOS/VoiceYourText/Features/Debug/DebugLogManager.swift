@@ -7,6 +7,12 @@
 
 import Foundation
 import UIKit
+import os.log
+
+private let logger = Logger(
+    subsystem: Bundle.main.bundleIdentifier ?? "com.voiceyourtext",
+    category: "DebugLog"
+)
 
 class DebugLogManager: ObservableObject {
     static let shared = DebugLogManager()
@@ -75,8 +81,17 @@ class DebugLogManager: ObservableObject {
             }
         }
 
-        // コンソールにも出力
-        print("[\(entry.level.rawValue)] \(entry.file):\(entry.line) - \(message)")
+        // os.logでコンソールに出力
+        switch level {
+        case .debug:
+            logger.debug("[\(entry.file):\(entry.line)] \(message)")
+        case .info:
+            logger.info("[\(entry.file):\(entry.line)] \(message)")
+        case .warning:
+            logger.warning("[\(entry.file):\(entry.line)] \(message)")
+        case .error:
+            logger.error("[\(entry.file):\(entry.line)] \(message)")
+        }
         #endif
     }
 

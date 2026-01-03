@@ -101,7 +101,7 @@ struct PDFPickerView: View {
                     viewStore.send(.selectPDFFile(url))
                 }
             case .failure(let error):
-                print("Error selecting file: \(error.localizedDescription)")
+                errorLog("Error selecting file: \(error.localizedDescription)")
             }
         }
         .alert("プレミアム機能が必要です", isPresented: viewStore.binding(

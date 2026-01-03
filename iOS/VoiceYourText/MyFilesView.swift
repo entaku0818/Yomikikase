@@ -203,7 +203,7 @@ struct MyFilesView: View {
                 }
                 .sorted { $0.createdAt > $1.createdAt }
         } catch {
-            print("Error loading PDF files: \(error.localizedDescription)")
+            errorLog("Error loading PDF files: \(error.localizedDescription)")
         }
     }
     
@@ -231,7 +231,7 @@ struct MyFilesView: View {
             // ローカルリストから削除
             pdfFiles.removeAll { $0.id == fileId }
         } catch {
-            print("Error deleting PDF file: \(error.localizedDescription)")
+            errorLog("Error deleting PDF file: \(error.localizedDescription)")
         }
     }
 }
