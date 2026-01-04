@@ -1,14 +1,5 @@
-Version 0.13.0
+Added Mini Player feature.
 
-New Features & Improvements:
-• Added pause/resume functionality to mini player
-• Resume playback from where you stopped
-• Unified file management across all languages
-• Improved navigation from mini player to source view
-
-UI Improvements:
-• Changed close button to chevron down for PDF/Text views
-• Improved mini player button icons
-
-Internal Improvements:
-• Unified logging with os.log for better performance
+• Shows mini player during playback
+• Pause/resume functionality
+• Navigate back to the original screen from mini player
