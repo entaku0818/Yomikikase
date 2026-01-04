@@ -1,20 +1,14 @@
-New Feature: Text Highlighting
+Version 0.13.0
 
-Added real-time text highlighting during speech synthesis for better user experience.
+New Features & Improvements:
+• Added pause/resume functionality to mini player
+• Resume playback from where you stopped
+• Unified file management across all languages
+• Improved navigation from mini player to source view
 
-Key Features:
-• Highlights currently spoken words in yellow
-• Automatic scrolling to follow audio playback
-• PDF highlighting during document reading
-• Available across all text input screens
+UI Improvements:
+• Changed close button to chevron down for PDF/Text views
+• Improved mini player button icons
 
-Improvements:
-• Visual speech tracking for easier following
-• Enhanced accessibility features
-• Smooth animations and responsive performance
-
-Reading aloud is now more intuitive and accessible!
-- Registration of words and their pronunciation
-- Automatic application of registered pronunciations to speech synthesis
-- Enhanced subscription tracking with Firebase Analytics
-- Improved subscription management and error handling
+Internal Improvements:
+• Unified logging with os.log for better performance
