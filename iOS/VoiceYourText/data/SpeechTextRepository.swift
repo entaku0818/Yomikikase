@@ -77,8 +77,8 @@ class SpeechTextRepository: NSObject {
 
     func fetchAllSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
-        // 削除されていないアイテムのみ取得
-        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@ AND deletedAt == nil", language.rawValue)
+        // 削除されていないアイテムのみ取得（言語フィルタなし - 全言語統一）
+        fetchRequest.predicate = NSPredicate(format: "deletedAt == nil")
         let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
@@ -95,7 +95,7 @@ class SpeechTextRepository: NSObject {
                 )
             }
 
-            // デフォルトの挨拶を追加
+            // デフォルトの挨拶を追加（現在の言語設定に基づく）
             let greetings = createGreetingSpeeches(language: language)
             speeches.append(contentsOf: greetings)
 
@@ -108,7 +108,8 @@ class SpeechTextRepository: NSObject {
 
     func fetchDeletedSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "languageSetting == %@ AND deletedAt != nil", language.rawValue)
+        // 削除済みアイテムを取得（言語フィルタなし - 全言語統一）
+        fetchRequest.predicate = NSPredicate(format: "deletedAt != nil")
         let sortDescriptor = NSSortDescriptor(key: "deletedAt", ascending: false)
         fetchRequest.sortDescriptors = [sortDescriptor]
 
