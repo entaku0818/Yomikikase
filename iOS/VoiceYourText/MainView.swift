@@ -86,18 +86,47 @@ struct MainView: View {
             Text("\(developmentFeatureName)機能は現在開発中です。今後のアップデートをお楽しみに！")
         }
         // ミニプレイヤーからのナビゲーション
-        .fullScreenCover(
-            item: Binding(
-                get: { store.withState { $0.navigationSource } },
-                set: { _ in store.send(.dismissNavigation) }
-            )
-        ) { source in
-            navigationDestination(for: source)
-        }
+        .modifier(NavigationSourceModifier(store: store))
     }
 
-    @ViewBuilder
-    private func navigationDestination(for source: PlaybackSource) -> some View {
+    private func trackTabClick(_ tabName: String) {
+        @Dependency(\.analytics) var analytics
+        analytics.logEvent("tab_clicked", [
+            "tab_name": tabName,
+            "screen": "main_tab_view"
+        ])
+    }
+    
+    private func showDevelopmentAlert(for featureName: String) {
+        developmentFeatureName = featureName
+        showingDevelopmentAlert = true
+    }
+}
+
+// ミニプレイヤーからのナビゲーション用ViewModifier
+struct NavigationSourceModifier: ViewModifier {
+    let store: Store<Speeches.State, Speeches.Action>
+
+    func body(content: Content) -> some View {
+        WithViewStore(store, observe: { $0.navigationSource }) { viewStore in
+            content
+                .fullScreenCover(
+                    item: Binding(
+                        get: { viewStore.state },
+                        set: { _ in store.send(.dismissNavigation) }
+                    )
+                ) { source in
+                    NavigationDestinationView(source: source, store: store)
+                }
+        }
+    }
+}
+
+struct NavigationDestinationView: View {
+    let source: PlaybackSource
+    let store: Store<Speeches.State, Speeches.Action>
+
+    var body: some View {
         switch source {
         case .textInput(let fileId, let text):
             TextInputView(
@@ -115,22 +144,8 @@ struct MainView: View {
                 parentStore: store
             )
         case .speech:
-            // SpeechViewへの戻りは現状サポートしない
             EmptyView()
         }
-    }
-    
-    private func trackTabClick(_ tabName: String) {
-        @Dependency(\.analytics) var analytics
-        analytics.logEvent("tab_clicked", [
-            "tab_name": tabName,
-            "screen": "main_tab_view"
-        ])
-    }
-    
-    private func showDevelopmentAlert(for featureName: String) {
-        developmentFeatureName = featureName
-        showingDevelopmentAlert = true
     }
 }
 
