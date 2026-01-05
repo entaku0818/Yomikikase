@@ -1,1 +1,1 @@
-text to reader, voice reader app,audiobook maker,speech reader,reading assistant, document reader
+text to speech,TTS,PDF reader,accessibility,voice,audiobook,learning,read aloud,narrator,multilingual,education,speech synthesis
