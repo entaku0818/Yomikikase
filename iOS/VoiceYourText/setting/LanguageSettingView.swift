@@ -150,6 +150,13 @@ struct LanguageSettingView: View {
                             Text("デバッグログ")
                         }
                     }
+                    NavigationLink(destination: ScreenshotView()) {
+                        HStack {
+                            Image(systemName: "camera.fill")
+                                .foregroundColor(.purple)
+                            Text("スクリーンショット")
+                        }
+                    }
                 }
                 #endif
             }
