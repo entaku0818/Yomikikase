@@ -1,49 +1,9 @@
 import SwiftUI
 
 #if DEBUG
-enum ScreenshotScene: Int, CaseIterable {
-    case home = 0
-    case settings = 1
-    case highlight = 2
-    case myFiles = 3
-
-    var title: String {
-        switch self {
-        case .home: return "ホーム"
-        case .settings: return "設定"
-        case .highlight: return "読み上げ"
-        case .myFiles: return "ファイル"
-        }
-    }
-}
-
 struct ScreenshotView: View {
-    @State private var selectedScene: ScreenshotScene = .home
-
     var body: some View {
-        VStack(spacing: 0) {
-            // Scene Picker
-            Picker("シーン", selection: $selectedScene) {
-                ForEach(ScreenshotScene.allCases, id: \.self) { scene in
-                    Text(scene.title).tag(scene)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding()
-            .background(Color(.systemBackground))
-
-            // Screenshot Content
-            switch selectedScene {
-            case .home:
-                MockHomeView()
-            case .settings:
-                MockSettingsView()
-            case .highlight:
-                MockHighlightView()
-            case .myFiles:
-                MockMyFilesView()
-            }
-        }
+        MockHomeView()
     }
 }
 
@@ -62,8 +22,16 @@ struct MockHomeView: View {
 
             // グリッド
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                HomeGridItem(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
-                HomeGridItem(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
+                NavigationLink(destination: MockHighlightView()) {
+                    HomeGridItem(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
+                }
+                .buttonStyle(PlainButtonStyle())
+
+                NavigationLink(destination: MockMyFilesView()) {
+                    HomeGridItem(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
+                }
+                .buttonStyle(PlainButtonStyle())
+
                 HomeGridItem(icon: "externaldrive.fill", title: "Gドライブ", color: .gray, isEnabled: false)
                 HomeGridItem(icon: "book.fill", title: "Kindle", color: .gray, isEnabled: false)
                 HomeGridItem(icon: "books.vertical.fill", title: "本", color: .gray, isEnabled: false)
@@ -73,11 +41,15 @@ struct MockHomeView: View {
             .padding(.horizontal, 20)
 
             Spacer()
-
-            // タブバー
-            MockTabBar(selectedTab: 0)
         }
         .background(Color(.systemGroupedBackground))
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                NavigationLink(destination: MockSettingsView()) {
+                    Image(systemName: "gearshape.fill")
+                }
+            }
+        }
     }
 }
 
@@ -107,13 +79,6 @@ struct HomeGridItem: View {
 struct MockSettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー
-            Text("設定")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color(.systemBackground))
-
             // プログレスバー風
             GeometryReader { geo in
                 Rectangle()
@@ -233,29 +198,19 @@ struct MockSettingsView: View {
                     .padding(.horizontal)
                 }
             }
-
-            // タブバー
-            MockTabBar(selectedTab: 2)
         }
         .background(Color(.systemGroupedBackground))
+        .navigationTitle("設定")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 // MARK: - 3. ハイライト読み上げ画面
 struct MockHighlightView: View {
+    @Environment(\.dismiss) var dismiss
+
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー
-            HStack {
-                Button("キャンセル") {}
-                    .foregroundColor(.blue)
-                Spacer()
-                Button("保存") {}
-                    .foregroundColor(.blue)
-            }
-            .padding()
-            .background(Color(.systemBackground))
-
             // テキストエリア
             VStack(alignment: .leading) {
                 HStack(spacing: 0) {
@@ -288,11 +243,20 @@ struct MockHighlightView: View {
                 .padding(.trailing, 30)
                 .padding(.bottom, 20)
             }
-
-            // タブバー
-            MockTabBar(selectedTab: 0)
         }
         .background(Color(.systemBackground))
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button("キャンセル") {
+                    dismiss()
+                }
+            }
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button("保存") {}
+            }
+        }
     }
 }
 
@@ -306,15 +270,6 @@ struct MockMyFilesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー
-            Text("マイファイル")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                .padding(.bottom, 10)
-
             // ファイルリスト
             ScrollView {
                 VStack(spacing: 12) {
@@ -348,55 +303,19 @@ struct MockMyFilesView: View {
                     }
                 }
                 .padding(.horizontal, 20)
+                .padding(.top, 10)
             }
 
             Spacer()
-
-            // タブバー
-            MockTabBar(selectedTab: 1)
         }
         .background(Color(.systemGroupedBackground))
-    }
-}
-
-// MARK: - 共通タブバー
-struct MockTabBar: View {
-    let selectedTab: Int
-
-    var body: some View {
-        HStack {
-            TabBarItem(icon: "house.fill", title: "ホーム", isSelected: selectedTab == 0)
-            Spacer()
-            TabBarItem(icon: "doc.fill", title: "マイファイル", isSelected: selectedTab == 1)
-            Spacer()
-            TabBarItem(icon: "gearshape.fill", title: "設定", isSelected: selectedTab == 2)
-        }
-        .padding(.horizontal, 40)
-        .padding(.vertical, 8)
-        .background(Color(.systemBackground))
-        .overlay(
-            Divider(), alignment: .top
-        )
-    }
-}
-
-struct TabBarItem: View {
-    let icon: String
-    let title: String
-    let isSelected: Bool
-
-    var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.title3)
-            Text(title)
-                .font(.caption2)
-        }
-        .foregroundColor(isSelected ? .blue : .gray)
+        .navigationTitle("マイファイル")
     }
 }
 
 #Preview {
-    ScreenshotView()
+    NavigationStack {
+        ScreenshotView()
+    }
 }
 #endif
