@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Narrator - テキスト読み上げアプリ</title>
+<meta name="description" content="Voice Narratorは、テキストを自然な音声で読み上げるiOSアプリです。PDF読み上げ、10言語対応、ミニプレイヤー機能搭載。">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: #fff;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .hero .subtitle {
+        font-size: 1.2em;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+    .app-store-badge {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    .app-store-badge img {
+        height: 50px;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 60px 20px;
+        background: #f8f9fa;
+    }
+    .features h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 40px;
+        color: #333;
+    }
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+    }
+    .feature-card p {
+        color: #666;
+    }
+    .feature-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+
+    /* New Features Section */
+    .new-features {
+        padding: 60px 20px;
+        background: white;
+    }
+    .new-features h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    .version-badge {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .version-badge span {
+        background: #667eea;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+    }
+    .new-feature-list {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .new-feature-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .new-feature-item .check {
+        color: #28a745;
+        font-size: 1.5em;
+        margin-right: 15px;
+    }
+
+    /* Use Cases */
+    .use-cases {
+        padding: 60px 20px;
+        background: #f8f9fa;
+    }
+    .use-cases h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 40px;
+    }
+    .use-case-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    .use-case {
+        text-align: center;
+        padding: 25px;
+        background: white;
+        border-radius: 12px;
+    }
+    .use-case-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    .use-case h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .use-case p {
+        color: #666;
+        font-size: 0.95em;
+    }
+
+    /* Languages */
+    .languages {
+        padding: 60px 20px;
+        background: white;
+        text-align: center;
+    }
+    .languages h2 {
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+    .language-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .language-tag {
+        background: #f0f0f0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.95em;
+    }
+
+    /* Footer */
+    footer {
+        background: #333;
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    .footer-links {
+        margin-bottom: 20px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        margin: 0 15px;
+    }
+    .footer-links a:hover {
+        color: white;
+    }
+    .copyright {
+        color: #888;
+        font-size: 0.9em;
+    }
+
+    /* CTA Section */
+    .cta {
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+    }
+    .cta h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    .cta p {
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="container">
+        <h1>Voice Narrator</h1>
+        <p class="subtitle">テキストを自然な音声で読み上げ</p>
+        <p>PDF、テキストを音声に変換。10言語対応、ミニプレイヤー搭載</p>
+        <a href="https://apps.apple.com/app/id6478449537" class="app-store-badge">
+            <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ja-jp?size=250x83" alt="App Storeからダウンロード">
+        </a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2>主な機能</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>PDF読み上げ</h3>
+                <p>PDFファイルをインポートして、そのまま音声で聴くことができます。通勤中や家事の合間に最適。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎵</div>
+                <h3>ミニプレイヤー</h3>
+                <p>再生中も他の画面を操作可能。一時停止・再開も簡単で、途中から再生を続けられます。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>10言語対応</h3>
+                <p>日本語、英語、フランス語、ドイツ語、スペイン語、韓国語など10言語に対応しています。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>ハイライト表示</h3>
+                <p>読み上げ中のテキストをリアルタイムでハイライト。どこを読んでいるか一目で分かります。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>カスタマイズ</h3>
+                <p>読み上げ速度や声の高さを自由に調整。自分好みの設定で快適に聴けます。</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>ユーザー辞書</h3>
+                <p>固有名詞や専門用語の読み方を登録。正確な発音で読み上げます。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="new-features">
+    <div class="container">
+        <h2>最新バージョン</h2>
+        <div class="version-badge">
+            <span>Version 0.13.0</span>
+        </div>
+        <div class="new-feature-list">
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>ミニプレイヤーに一時停止/再開機能</strong>
+                    <p>途中から再生を再開できるようになりました</p>
+                </div>
+            </div>
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>ファイル管理の統一</strong>
+                    <p>全言語で同じファイルにアクセス可能に</p>
+                </div>
+            </div>
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>ナビゲーション改善</strong>
+                    <p>ミニプレイヤーから元の画面にスムーズに移動</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="use-cases">
+    <div class="container">
+        <h2>こんな方におすすめ</h2>
+        <div class="use-case-grid">
+            <div class="use-case">
+                <div class="use-case-icon">👀</div>
+                <h3>目を休めたい</h3>
+                <p>長時間の画面疲れを軽減しながら情報をインプット</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">🚗</div>
+                <h3>移動中に</h3>
+                <p>通勤・通学中にニュースや資料を耳で確認</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">📖</div>
+                <h3>語学学習</h3>
+                <p>ネイティブの発音でリスニング力を向上</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">♿</div>
+                <h3>アクセシビリティ</h3>
+                <p>視覚に困難がある方の読書サポートに</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="languages">
+    <div class="container">
+        <h2>対応言語</h2>
+        <div class="language-list">
+            <span class="language-tag">🇯🇵 日本語</span>
+            <span class="language-tag">🇺🇸 英語</span>
+            <span class="language-tag">🇫🇷 フランス語</span>
+            <span class="language-tag">🇩🇪 ドイツ語</span>
+            <span class="language-tag">🇪🇸 スペイン語</span>
+            <span class="language-tag">🇮🇹 イタリア語</span>
+            <span class="language-tag">🇰🇷 韓国語</span>
+            <span class="language-tag">🇹🇭 タイ語</span>
+            <span class="language-tag">🇹🇷 トルコ語</span>
+            <span class="language-tag">🇻🇳 ベトナム語</span>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <h2>今すぐ無料でダウンロード</h2>
+        <p>テキストを音声に変えて、新しい読書体験を</p>
+        <a href="https://apps.apple.com/app/id6478449537" class="app-store-badge">
+            <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/ja-jp?size=250x83" alt="App Storeからダウンロード">
+        </a>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="/privacy_policy.html">プライバシーポリシー</a>
+            <a href="/terms_of_service.html">利用規約</a>
+            <a href="mailto:entaku19890818@gmail.com">お問い合わせ</a>
+        </div>
+        <p class="copyright">© 2025 遠藤拓弥. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

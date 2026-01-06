@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Narrator - Text to Speech App</title>
+<meta name="description" content="Voice Narrator is an iOS app that reads text aloud naturally. PDF reading, 10 languages supported, mini player included.">
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: #fff;
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 80px 20px;
+        text-align: center;
+    }
+    .hero h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+    .hero .subtitle {
+        font-size: 1.2em;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+    .app-store-badge {
+        display: inline-block;
+        margin-top: 20px;
+    }
+    .app-store-badge img {
+        height: 50px;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 60px 20px;
+        background: #f8f9fa;
+    }
+    .features h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 40px;
+        color: #333;
+    }
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    .feature-card {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+    .feature-card h3 {
+        color: #667eea;
+        margin-bottom: 15px;
+        font-size: 1.3em;
+    }
+    .feature-card p {
+        color: #666;
+    }
+    .feature-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+
+    /* New Features Section */
+    .new-features {
+        padding: 60px 20px;
+        background: white;
+    }
+    .new-features h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    .version-badge {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+    .version-badge span {
+        background: #667eea;
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+    }
+    .new-feature-list {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .new-feature-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+    .new-feature-item .check {
+        color: #28a745;
+        font-size: 1.5em;
+        margin-right: 15px;
+    }
+
+    /* Use Cases */
+    .use-cases {
+        padding: 60px 20px;
+        background: #f8f9fa;
+    }
+    .use-cases h2 {
+        text-align: center;
+        font-size: 2em;
+        margin-bottom: 40px;
+    }
+    .use-case-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+    }
+    .use-case {
+        text-align: center;
+        padding: 25px;
+        background: white;
+        border-radius: 12px;
+    }
+    .use-case-icon {
+        font-size: 2.5em;
+        margin-bottom: 15px;
+    }
+    .use-case h3 {
+        color: #333;
+        margin-bottom: 10px;
+    }
+    .use-case p {
+        color: #666;
+        font-size: 0.95em;
+    }
+
+    /* Languages */
+    .languages {
+        padding: 60px 20px;
+        background: white;
+        text-align: center;
+    }
+    .languages h2 {
+        font-size: 2em;
+        margin-bottom: 30px;
+    }
+    .language-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .language-tag {
+        background: #f0f0f0;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.95em;
+    }
+
+    /* Footer */
+    footer {
+        background: #333;
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+    }
+    .footer-links {
+        margin-bottom: 20px;
+    }
+    .footer-links a {
+        color: #aaa;
+        text-decoration: none;
+        margin: 0 15px;
+    }
+    .footer-links a:hover {
+        color: white;
+    }
+    .copyright {
+        color: #888;
+        font-size: 0.9em;
+    }
+
+    /* CTA Section */
+    .cta {
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        text-align: center;
+    }
+    .cta h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    .cta p {
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+</style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="container">
+        <h1>Voice Narrator</h1>
+        <p class="subtitle">Natural Text-to-Speech Reading</p>
+        <p>Convert PDF and text to speech. 10 languages supported, mini player included</p>
+        <a href="https://apps.apple.com/app/id6478449537" class="app-store-badge">
+            <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store">
+        </a>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>PDF Reading</h3>
+                <p>Import PDF files and listen to them. Perfect for commuting or doing housework.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎵</div>
+                <h3>Mini Player</h3>
+                <p>Navigate other screens while playing. Easy pause/resume to continue from where you left off.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>10 Languages</h3>
+                <p>Supports Japanese, English, French, German, Spanish, Korean and more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✨</div>
+                <h3>Text Highlight</h3>
+                <p>Real-time highlighting shows exactly which text is being read.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Customization</h3>
+                <p>Adjust speech rate and pitch to your preference for comfortable listening.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>User Dictionary</h3>
+                <p>Register pronunciation for proper nouns and technical terms.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="new-features">
+    <div class="container">
+        <h2>Latest Version</h2>
+        <div class="version-badge">
+            <span>Version 0.13.0</span>
+        </div>
+        <div class="new-feature-list">
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>Pause/Resume in Mini Player</strong>
+                    <p>Resume playback from where you stopped</p>
+                </div>
+            </div>
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>Unified File Management</strong>
+                    <p>Access the same files across all languages</p>
+                </div>
+            </div>
+            <div class="new-feature-item">
+                <span class="check">✓</span>
+                <div>
+                    <strong>Improved Navigation</strong>
+                    <p>Smoothly navigate back from mini player</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="use-cases">
+    <div class="container">
+        <h2>Perfect For</h2>
+        <div class="use-case-grid">
+            <div class="use-case">
+                <div class="use-case-icon">👀</div>
+                <h3>Rest Your Eyes</h3>
+                <p>Reduce screen fatigue while staying informed</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">🚗</div>
+                <h3>On the Go</h3>
+                <p>Listen to news and documents during commute</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">📖</div>
+                <h3>Language Learning</h3>
+                <p>Improve listening skills with native pronunciation</p>
+            </div>
+            <div class="use-case">
+                <div class="use-case-icon">♿</div>
+                <h3>Accessibility</h3>
+                <p>Reading support for those with visual difficulties</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="languages">
+    <div class="container">
+        <h2>Supported Languages</h2>
+        <div class="language-list">
+            <span class="language-tag">🇯🇵 Japanese</span>
+            <span class="language-tag">🇺🇸 English</span>
+            <span class="language-tag">🇫🇷 French</span>
+            <span class="language-tag">🇩🇪 German</span>
+            <span class="language-tag">🇪🇸 Spanish</span>
+            <span class="language-tag">🇮🇹 Italian</span>
+            <span class="language-tag">🇰🇷 Korean</span>
+            <span class="language-tag">🇹🇭 Thai</span>
+            <span class="language-tag">🇹🇷 Turkish</span>
+            <span class="language-tag">🇻🇳 Vietnamese</span>
+        </div>
+    </div>
+</section>
+
+<section class="cta">
+    <div class="container">
+        <h2>Download Free Now</h2>
+        <p>Transform text into speech for a new reading experience</p>
+        <a href="https://apps.apple.com/app/id6478449537" class="app-store-badge">
+            <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store">
+        </a>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <div class="footer-links">
+            <a href="privacy_policy.html">Privacy Policy</a>
+            <a href="terms_of_service.html">Terms of Service</a>
+            <a href="mailto:entaku19890818@gmail.com">Contact</a>
+        </div>
+        <p class="copyright">© 2025 Takuya Endo. All rights reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>
