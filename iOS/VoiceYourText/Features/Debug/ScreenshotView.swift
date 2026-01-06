@@ -2,36 +2,45 @@ import SwiftUI
 
 #if DEBUG
 struct ScreenshotView: View {
+    @State private var currentScreen = 0
+
     var body: some View {
-        MockHomeView()
+        ZStack {
+            switch currentScreen {
+            case 0:
+                MockHomeView()
+            case 1:
+                MockSettingsView()
+            case 2:
+                MockHighlightView()
+            case 3:
+                MockMyFilesView()
+            default:
+                MockHomeView()
+            }
+        }
+        .onTapGesture {
+            currentScreen = (currentScreen + 1) % 4
+        }
+        .navigationBarHidden(true)
     }
 }
 
-// MARK: - 1. ホーム画面（読み上げグリッド）
+// MARK: - 1. ホーム画面
 struct MockHomeView: View {
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー風
             Text("読み上げ")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
-                .padding(.top, 20)
+                .padding(.top, 60)
                 .padding(.bottom, 10)
 
-            // グリッド
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                NavigationLink(destination: MockHighlightView()) {
-                    HomeGridItem(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
-                }
-                .buttonStyle(PlainButtonStyle())
-
-                NavigationLink(destination: MockMyFilesView()) {
-                    HomeGridItem(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
-                }
-                .buttonStyle(PlainButtonStyle())
-
+                HomeGridItem(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
+                HomeGridItem(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
                 HomeGridItem(icon: "externaldrive.fill", title: "Gドライブ", color: .gray, isEnabled: false)
                 HomeGridItem(icon: "book.fill", title: "Kindle", color: .gray, isEnabled: false)
                 HomeGridItem(icon: "books.vertical.fill", title: "本", color: .gray, isEnabled: false)
@@ -43,13 +52,6 @@ struct MockHomeView: View {
             Spacer()
         }
         .background(Color(.systemGroupedBackground))
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: MockSettingsView()) {
-                    Image(systemName: "gearshape.fill")
-                }
-            }
-        }
     }
 }
 
@@ -79,7 +81,13 @@ struct HomeGridItem: View {
 struct MockSettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
-            // プログレスバー風
+            Text("設定")
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .padding(.top, 44)
+                .background(Color(.systemBackground))
+
             GeometryReader { geo in
                 Rectangle()
                     .fill(Color.blue)
@@ -89,7 +97,6 @@ struct MockSettingsView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    // 音声設定セクション
                     Text("音声設定")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -97,7 +104,6 @@ struct MockSettingsView: View {
                         .padding(.top, 16)
 
                     VStack(spacing: 0) {
-                        // 音声の選択
                         HStack {
                             Text("音声の選択")
                             Spacer()
@@ -112,7 +118,6 @@ struct MockSettingsView: View {
 
                         Divider().padding(.leading)
 
-                        // 声の速さ
                         VStack(alignment: .leading, spacing: 8) {
                             Text("声の速さ")
                             HStack {
@@ -129,7 +134,6 @@ struct MockSettingsView: View {
 
                         Divider().padding(.leading)
 
-                        // 声の高さ
                         VStack(alignment: .leading, spacing: 8) {
                             Text("声の高さ")
                             HStack {
@@ -147,7 +151,6 @@ struct MockSettingsView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
 
-                    // 辞書セクション
                     Text("辞書")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -166,7 +169,6 @@ struct MockSettingsView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
 
-                    // 言語設定セクション
                     Text("言語設定")
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -186,32 +188,35 @@ struct MockSettingsView: View {
                     .cornerRadius(12)
                     .padding(.horizontal)
 
-                    // リセットボタン
-                    Button(action: {}) {
-                        Text("読み上げ設定をデフォルト値に戻す")
-                            .foregroundColor(.red)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(12)
-                    }
-                    .padding(.horizontal)
+                    Text("読み上げ設定をデフォルト値に戻す")
+                        .foregroundColor(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.systemBackground))
+                        .cornerRadius(12)
+                        .padding(.horizontal)
                 }
             }
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("設定")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 // MARK: - 3. ハイライト読み上げ画面
 struct MockHighlightView: View {
-    @Environment(\.dismiss) var dismiss
-
     var body: some View {
         VStack(spacing: 0) {
-            // テキストエリア
+            HStack {
+                Text("キャンセル")
+                    .foregroundColor(.blue)
+                Spacer()
+                Text("保存")
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            .padding(.top, 44)
+            .background(Color(.systemBackground))
+
             VStack(alignment: .leading) {
                 HStack(spacing: 0) {
                     Text("国境の長い")
@@ -229,34 +234,19 @@ struct MockHighlightView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .background(Color(.systemBackground))
 
-            // 停止ボタン
             HStack {
                 Spacer()
-                Button(action: {}) {
-                    Image(systemName: "stop.fill")
-                        .font(.title2)
-                        .foregroundColor(.white)
-                        .frame(width: 60, height: 60)
-                        .background(Color.red)
-                        .clipShape(Circle())
-                }
-                .padding(.trailing, 30)
-                .padding(.bottom, 20)
+                Image(systemName: "stop.fill")
+                    .font(.title2)
+                    .foregroundColor(.white)
+                    .frame(width: 60, height: 60)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .padding(.trailing, 30)
+                    .padding(.bottom, 40)
             }
         }
         .background(Color(.systemBackground))
-        .navigationTitle("")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button("キャンセル") {
-                    dismiss()
-                }
-            }
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button("保存") {}
-            }
-        }
     }
 }
 
@@ -270,7 +260,14 @@ struct MockMyFilesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // ファイルリスト
+            Text("マイファイル")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
+                .padding(.top, 60)
+                .padding(.bottom, 10)
+
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(files, id: \.0) { file in
@@ -309,13 +306,10 @@ struct MockMyFilesView: View {
             Spacer()
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("マイファイル")
     }
 }
 
 #Preview {
-    NavigationStack {
-        ScreenshotView()
-    }
+    ScreenshotView()
 }
 #endif

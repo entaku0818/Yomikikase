@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "" : {
+
+    },
     "・" : {
 
     },
@@ -2851,9 +2854,6 @@
           }
         }
       }
-    },
-    "シーン" : {
-
     },
     "スクリーンショット" : {
       "comment" : "A button label that takes the user to take a screenshot of the app.",
