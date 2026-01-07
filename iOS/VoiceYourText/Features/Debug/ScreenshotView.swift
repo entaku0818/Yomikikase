@@ -2,82 +2,87 @@ import SwiftUI
 
 #if DEBUG
 struct ScreenshotView: View {
-    @State private var selectedTab = 0
+    @State private var currentScreen = 0
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(spacing: 0) {
-            // コンテンツ
-            switch selectedTab {
+        ZStack {
+            switch currentScreen {
             case 0:
-                MockHomeView()
+                MockScreenWithTopTab(title: "読み上げ") {
+                    HomeContent()
+                }
             case 1:
-                MockMyFilesView()
+                HighlightReadingContent()
             case 2:
-                MockSettingsView()
+                MockScreenWithTopTab(title: "マイファイル") {
+                    MyFilesContent()
+                }
+            case 3:
+                MockScreenWithTopTab(title: "設定") {
+                    SettingsContent()
+                }
             default:
-                MockHomeView()
+                MockScreenWithTopTab(title: "読み上げ") {
+                    HomeContent()
+                }
             }
-
-            // タブバー
-            HStack {
-                TabItem(icon: "house.fill", title: "ホーム", isSelected: selectedTab == 0)
-                    .onTapGesture { selectedTab = 0 }
-                Spacer()
-                TabItem(icon: "doc.fill", title: "マイファイル", isSelected: selectedTab == 1)
-                    .onTapGesture { selectedTab = 1 }
-                Spacer()
-                TabItem(icon: "gearshape.fill", title: "設定", isSelected: selectedTab == 2)
-                    .onTapGesture { selectedTab = 2 }
-            }
-            .padding(.horizontal, 40)
-            .padding(.vertical, 8)
-            .padding(.bottom, 20)
-            .background(Color(.systemBackground))
-            .overlay(Divider(), alignment: .top)
         }
-        .ignoresSafeArea(edges: .bottom)
+        .onTapGesture {
+            if currentScreen < 3 {
+                currentScreen += 1
+            } else {
+                dismiss()
+            }
+        }
         .navigationBarHidden(true)
     }
 }
 
-struct TabItem: View {
-    let icon: String
+// MARK: - 共通レイアウト（上タブ付き）
+struct MockScreenWithTopTab<Content: View>: View {
     let title: String
-    let isSelected: Bool
+    let content: Content
+
+    init(title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
 
     var body: some View {
-        VStack(spacing: 4) {
-            Image(systemName: icon)
-                .font(.title3)
-            Text(title)
-                .font(.caption2)
+        VStack(spacing: 0) {
+            // 上部ナビゲーションバー（モック）
+            HStack {
+                Spacer()
+                Text(title)
+                    .font(.headline)
+                Spacer()
+            }
+            .padding()
+            .padding(.top, 44)
+            .background(Color(.systemBackground))
+
+            content
         }
-        .foregroundColor(isSelected ? .blue : .gray)
+        .ignoresSafeArea(edges: .top)
     }
 }
 
-// MARK: - ホーム画面
-struct MockHomeView: View {
+// MARK: - ホーム画面コンテンツ
+struct HomeContent: View {
     var body: some View {
         VStack(spacing: 0) {
-            Text("読み上げ")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.top, 60)
-                .padding(.bottom, 10)
-
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
-                GridItem2(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
-                GridItem2(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
-                GridItem2(icon: "externaldrive.fill", title: "Gドライブ", color: .gray, isEnabled: false)
-                GridItem2(icon: "book.fill", title: "Kindle", color: .gray, isEnabled: false)
-                GridItem2(icon: "books.vertical.fill", title: "本", color: .gray, isEnabled: false)
-                GridItem2(icon: "camera.fill", title: "スキャン", color: .gray, isEnabled: false)
-                GridItem2(icon: "link", title: "リンク", color: .gray, isEnabled: false)
+                GridItemView(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
+                GridItemView(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
+                GridItemView(icon: "externaldrive.fill", title: "Gドライブ", color: .gray, isEnabled: false)
+                GridItemView(icon: "book.fill", title: "Kindle", color: .gray, isEnabled: false)
+                GridItemView(icon: "books.vertical.fill", title: "本", color: .gray, isEnabled: false)
+                GridItemView(icon: "camera.fill", title: "スキャン", color: .gray, isEnabled: false)
+                GridItemView(icon: "link", title: "リンク", color: .gray, isEnabled: false)
             }
             .padding(.horizontal, 20)
+            .padding(.top, 16)
 
             Spacer()
         }
@@ -85,7 +90,7 @@ struct MockHomeView: View {
     }
 }
 
-struct GridItem2: View {
+struct GridItemView: View {
     let icon: String
     let title: String
     let color: Color
@@ -107,8 +112,96 @@ struct GridItem2: View {
     }
 }
 
-// MARK: - マイファイル画面
-struct MockMyFilesView: View {
+// MARK: - ハイライト読み上げ画面コンテンツ
+struct HighlightReadingContent: View {
+    let sampleText = "国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。"
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // ナビゲーションバー（モック）
+            HStack {
+                Image(systemName: "chevron.left")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+                Spacer()
+                Text("読み上げ")
+                    .font(.headline)
+                Spacer()
+                Image(systemName: "square.and.arrow.up")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            .padding(.top, 44)
+            .background(Color(.systemBackground))
+
+            // テキストエリア
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    // ハイライト付きテキスト
+                    HStack(spacing: 0) {
+                        Text("国境の長い")
+                        Text("トンネル")
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 2)
+                            .background(Color.orange)
+                        Text("を抜けると雪国であった。")
+                    }
+                    .font(.title3)
+                    Text("夜の底が白くなった。信号所に汽車が止まった。")
+                        .font(.title3)
+                        .padding(.top, 8)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color(.systemBackground))
+
+            Spacer()
+
+            // 再生コントロール
+            VStack(spacing: 16) {
+                // プログレスバー
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 4)
+                        Rectangle()
+                            .fill(Color.blue)
+                            .frame(width: geo.size.width * 0.3, height: 4)
+                    }
+                    .cornerRadius(2)
+                }
+                .frame(height: 4)
+                .padding(.horizontal)
+
+                // コントロールボタン（モック）
+                HStack(spacing: 40) {
+                    Image(systemName: "gobackward.15")
+                        .font(.title)
+                        .foregroundColor(.primary)
+
+                    Image(systemName: "pause.circle.fill")
+                        .font(.system(size: 64))
+                        .foregroundColor(.blue)
+
+                    Image(systemName: "goforward.15")
+                        .font(.title)
+                        .foregroundColor(.primary)
+                }
+            }
+            .padding(.vertical, 20)
+            .background(Color(.systemBackground))
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+// MARK: - マイファイル画面コンテンツ
+struct MyFilesContent: View {
     let files = [
         ("親譲の無鉄砲で小供の時から損ばかりしてい", "今日", "txt"),
         ("恥の多い生涯を送って来ました。自分", "今日", "txt"),
@@ -117,14 +210,6 @@ struct MockMyFilesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Text("マイファイル")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
-                .padding(.top, 60)
-                .padding(.bottom, 10)
-
             ScrollView {
                 VStack(spacing: 12) {
                     ForEach(files, id: \.0) { file in
@@ -166,24 +251,10 @@ struct MockMyFilesView: View {
     }
 }
 
-// MARK: - 設定画面
-struct MockSettingsView: View {
+// MARK: - 設定画面コンテンツ
+struct SettingsContent: View {
     var body: some View {
         VStack(spacing: 0) {
-            Text("設定")
-                .font(.headline)
-                .frame(maxWidth: .infinity)
-                .padding()
-                .padding(.top, 44)
-                .background(Color(.systemBackground))
-
-            GeometryReader { geo in
-                Rectangle()
-                    .fill(Color.blue)
-                    .frame(width: geo.size.width * 0.6, height: 3)
-            }
-            .frame(height: 3)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     Text("音声設定")

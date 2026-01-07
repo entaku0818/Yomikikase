@@ -13,6 +13,9 @@ import AVFAudio
 @ViewAction(for: SettingsReducer.self)
 struct LanguageSettingView: View {
     @Bindable var store: StoreOf<SettingsReducer>
+    #if DEBUG
+    @State private var showScreenshotView = false
+    #endif
 
     var body: some View {
         VStack {
@@ -150,13 +153,17 @@ struct LanguageSettingView: View {
                             Text("デバッグログ")
                         }
                     }
-                    NavigationLink(destination: ScreenshotView()) {
+                    Button {
+                        showScreenshotView = true
+                    } label: {
                         HStack {
                             Image(systemName: "camera.fill")
                                 .foregroundColor(.purple)
                             Text("スクリーンショット")
+                            Spacer()
                         }
                     }
+                    .foregroundColor(.primary)
                 }
                 #endif
             }
@@ -174,6 +181,11 @@ struct LanguageSettingView: View {
         ) {
             SubscriptionView()
         }
+        #if DEBUG
+        .fullScreenCover(isPresented: $showScreenshotView) {
+            ScreenshotView()
+        }
+        #endif
     }
 }
 

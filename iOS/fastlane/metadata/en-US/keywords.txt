@@ -1,1 +1,1 @@
-text to speech,TTS,PDF reader,accessibility,voice,audiobook,learning,read aloud,narrator,multilingual,education,speech synthesis
+text to speech,TTS,PDF reader,accessibility,voice,audiobook,read aloud,narrator,multilingual
