@@ -8,6 +8,7 @@ import (
 	"github.com/rs/cors"
 
 	"github.com/entaku0818/voiceyourtext-cloudrun/internal/handlers"
+	"github.com/entaku0818/voiceyourtext-cloudrun/internal/middleware"
 )
 
 func main() {
@@ -21,9 +22,12 @@ func main() {
 	mux := http.NewServeMux()
 
 	// Register handlers
+	// Public endpoints (no auth required)
 	mux.HandleFunc("/getVoices", handlers.GetVoicesHandler)
-	mux.HandleFunc("/generateAudio", handlers.GenerateAudioHandler)
-	mux.HandleFunc("/generateAudioWithTTS", handlers.GenerateAudioTTSHandler)
+
+	// Protected endpoints (API key required)
+	mux.HandleFunc("/generateAudio", middleware.APIKeyAuth(handlers.GenerateAudioHandler))
+	mux.HandleFunc("/generateAudioWithTTS", middleware.APIKeyAuth(handlers.GenerateAudioTTSHandler))
 
 	// Health check endpoint
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +49,7 @@ func main() {
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "OPTIONS"},
-		AllowedHeaders:   []string{"Content-Type", "Authorization"},
+		AllowedHeaders:   []string{"Content-Type", "Authorization", "X-API-Key"},
 		AllowCredentials: false,
 	})
 

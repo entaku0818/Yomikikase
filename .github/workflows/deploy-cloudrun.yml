@@ -48,7 +48,7 @@ jobs:
           --region ${{ env.REGION }} \
           --platform managed \
           --allow-unauthenticated \
-          --set-env-vars "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},STORAGE_BUCKET_NAME=${{ secrets.STORAGE_BUCKET_NAME }}"
+          --set-env-vars "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},STORAGE_BUCKET_NAME=${{ secrets.STORAGE_BUCKET_NAME }},API_KEY=${{ secrets.CLOUDRUN_API_KEY }}"
 
     - name: Show Service URL
       run: |
