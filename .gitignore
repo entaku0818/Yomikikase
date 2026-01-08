@@ -17,3 +17,4 @@ GoogleService-Info.plist
 .build/ 
 fastlane/.env
 fastlane/report.xml
+iOS/fastlane/report.xml
