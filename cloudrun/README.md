@@ -68,6 +68,28 @@ make docker-build
 - `GCP_SA_KEY`: サービスアカウントのJSONキー
 - `GEMINI_API_KEY`: Gemini APIキー
 - `STORAGE_BUCKET_NAME`: Cloud Storageバケット名 (`voiceyourtext-audio-files`)
+- `CLOUDRUN_API_KEY`: API認証キー
+
+## API認証
+
+`/generateAudio` と `/generateAudioWithTTS` エンドポイントはAPI認証が必要です。
+
+**認証方法:**
+```bash
+# X-API-Key ヘッダー
+curl -H "X-API-Key: YOUR_API_KEY" ...
+
+# または Bearer トークン
+curl -H "Authorization: Bearer YOUR_API_KEY" ...
+```
+
+**iOS (Swift) での使用例:**
+```swift
+var request = URLRequest(url: URL(string: "https://voiceyourtext-tts-671942133800.asia-northeast1.run.app/generateAudioWithTTS")!)
+request.httpMethod = "POST"
+request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+request.setValue("YOUR_API_KEY", forHTTPHeaderField: "X-API-Key")
+```
 
 ### 現在のgcloud設定
 
