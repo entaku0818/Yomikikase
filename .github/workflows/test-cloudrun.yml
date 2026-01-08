@@ -1,0 +1,55 @@
+name: Test Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'cloudrun/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'cloudrun/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./cloudrun
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+        cache-dependency-path: cloudrun/go.sum
+
+    - name: Download dependencies
+      run: go mod download
+
+    - name: Verify dependencies
+      run: go mod verify
+
+    - name: Build
+      run: make build
+
+    - name: Run linter
+      run: make lint
+
+    - name: Run tests
+      run: make test
+
+    - name: Run tests with coverage
+      run: |
+        go test -v -race -coverprofile=coverage.out -covermode=atomic ./...
+        go tool cover -func=coverage.out
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./cloudrun/coverage.out
+        flags: cloudrun
+        fail_ci_if_error: false
