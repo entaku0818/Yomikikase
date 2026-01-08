@@ -66,6 +66,8 @@ make docker-build
 
 **必要なSecrets:**
 - `GCP_SA_KEY`: サービスアカウントのJSONキー
+- `GEMINI_API_KEY`: Gemini APIキー
+- `STORAGE_BUCKET_NAME`: Cloud Storageバケット名 (`voiceyourtext-audio-files`)
 
 ### 現在のgcloud設定
 
