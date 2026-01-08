@@ -60,6 +60,13 @@ make docker-build
 
 ## Cloud Runへのデプロイ
 
+### 自動デプロイ（GitHub Actions）
+
+`cloudrun/` 配下のファイルを `main` ブランチにマージすると、GitHub Actionsで自動的にCloud Runにデプロイされます。
+
+**必要なSecrets:**
+- `GCP_SA_KEY`: サービスアカウントのJSONキー
+
 ### 現在のgcloud設定
 
 ```
