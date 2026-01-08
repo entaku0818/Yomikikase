@@ -36,43 +36,76 @@ go mod tidy
 go run cmd/server/main.go
 ```
 
-### ビルド
+### ビルド・テスト（Makefile）
 
 ```bash
-go build -o server ./cmd/server
+# ビルド
+make build
+
+# テスト実行
+make test
+
+# カバレッジ付きテスト
+make test-coverage
+
+# リンター
+make lint
+
+# ローカル実行
+make run
+
+# Docker ビルド
+make docker-build
 ```
 
 ## Cloud Runへのデプロイ
 
-### 方法1: gcloud CLI
+### 現在のgcloud設定
+
+```
+Project:  aso-tool-prod
+Region:   asia-northeast1
+Account:  entaku19890818@gmail.com
+Service:  voiceyourtext-tts
+URL:      https://voiceyourtext-tts-671942133800.asia-northeast1.run.app
+```
+
+### 方法1: デプロイスクリプト（推奨）
 
 ```bash
-# プロジェクトIDを設定
-export PROJECT_ID=your-project-id
+./scripts/deploy.sh
+```
 
-# Cloud Buildでビルドしてデプロイ
+### 方法2: 手動デプロイ
+
+```bash
+# gcloud設定の確認
+gcloud config list
+
+# 必要に応じて設定
+gcloud config set project aso-tool-prod
+gcloud config set compute/region asia-northeast1
+
+# ビルド & プッシュ
+gcloud builds submit --tag gcr.io/aso-tool-prod/voiceyourtext-tts
+
+# Cloud Runにデプロイ
 gcloud run deploy voiceyourtext-tts \
-  --source . \
-  --project $PROJECT_ID \
+  --image gcr.io/aso-tool-prod/voiceyourtext-tts \
+  --region asia-northeast1 \
+  --platform managed \
+  --allow-unauthenticated
+```
+
+### 方法3: 環境変数付きデプロイ
+
+```bash
+gcloud run deploy voiceyourtext-tts \
+  --image gcr.io/aso-tool-prod/voiceyourtext-tts \
   --region asia-northeast1 \
   --platform managed \
   --allow-unauthenticated \
   --set-env-vars "STORAGE_BUCKET_NAME=your-bucket-name,GEMINI_API_KEY=your-api-key"
-```
-
-### 方法2: Cloud Build + Artifact Registry
-
-```bash
-# イメージをビルド
-gcloud builds submit --tag gcr.io/$PROJECT_ID/voiceyourtext-tts
-
-# Cloud Runにデプロイ
-gcloud run deploy voiceyourtext-tts \
-  --image gcr.io/$PROJECT_ID/voiceyourtext-tts \
-  --region asia-northeast1 \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-env-vars "STORAGE_BUCKET_NAME=your-bucket-name"
 ```
 
 ## API仕様
