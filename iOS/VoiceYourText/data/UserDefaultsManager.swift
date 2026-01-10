@@ -45,13 +45,23 @@ class UserDefaultsManager {
         }
     }
 
-    // 音声設定
+    // 音声設定（デバイスTTS用）
     var selectedVoiceIdentifier: String? {
         get {
             defaults.string(forKey: "SelectedVoiceIdentifier")
         }
         set {
             defaults.set(newValue, forKey: "SelectedVoiceIdentifier")
+        }
+    }
+
+    // Cloud TTS音声設定
+    var cloudTTSVoiceId: String? {
+        get {
+            defaults.string(forKey: "CloudTTSVoiceId")
+        }
+        set {
+            defaults.set(newValue, forKey: "CloudTTSVoiceId")
         }
     }
 

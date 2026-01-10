@@ -22,6 +22,10 @@ struct TextInputView: View {
     @State private var audioGenerationError: String? = nil
     @State private var audioPlayer: AVAudioPlayer?
     @State private var currentFileId: UUID?
+    @State private var availableVoices: [VoiceConfig] = []
+    @State private var selectedVoice: VoiceConfig?
+    @State private var showingVoicePicker = false
+    @State private var isLoadingVoices = false
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
@@ -53,9 +57,9 @@ struct TextInputView: View {
                             .padding(.trailing, 16)
                     } else {
                         Button("保存") {
-                            saveText()
+                            showingVoicePicker = true
                         }
-                        .disabled(text.isEmpty)
+                        .disabled(text.isEmpty || isLoadingVoices)
                         .padding(.trailing, 16)
                     }
                 }
@@ -98,6 +102,23 @@ struct TextInputView: View {
                     }
                 }
             }
+
+            // 利用可能な音声を読み込む
+            loadAvailableVoices()
+        }
+        .sheet(isPresented: $showingVoicePicker) {
+            VoicePickerSheet(
+                voices: availableVoices,
+                selectedVoice: $selectedVoice,
+                isLoading: isLoadingVoices,
+                onConfirm: {
+                    showingVoicePicker = false
+                    saveText()
+                },
+                onCancel: {
+                    showingVoicePicker = false
+                }
+            )
         }
         .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
             ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
@@ -320,8 +341,8 @@ struct TextInputView: View {
         isGeneratingAudio = true
         audioGenerationError = nil
 
-        // Map language code to voiceId
-        let voiceId = mapLanguageToVoiceId(languageCode)
+        // Use selected voice or fallback to language mapping
+        let voiceId = selectedVoice?.id ?? mapLanguageToVoiceId(languageCode)
         infoLog("[TTS] Generating audio with voiceId: \(voiceId), fileId: \(fileId)")
 
         Task {
@@ -373,6 +394,143 @@ struct TextInputView: View {
             // Default to Japanese if unknown
             return "ja-jp-female-a"
         }
+    }
+
+    private func loadAvailableVoices() {
+        isLoadingVoices = true
+        Task {
+            do {
+                let response = try await audioAPI.getVoices(nil)
+                await MainActor.run {
+                    availableVoices = response.voices
+                    // Set default selection based on language setting
+                    let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
+                    if let savedVoiceId = UserDefaultsManager.shared.cloudTTSVoiceId,
+                       let savedVoice = response.voices.first(where: { $0.id == savedVoiceId }) {
+                        selectedVoice = savedVoice
+                    } else if let defaultVoice = response.voices.first(where: { $0.language.lowercased().hasPrefix(languageCode.lowercased()) }) {
+                        selectedVoice = defaultVoice
+                    } else {
+                        selectedVoice = response.voices.first
+                    }
+                    isLoadingVoices = false
+                }
+            } catch {
+                errorLog("Failed to load voices: \(error)")
+                await MainActor.run {
+                    isLoadingVoices = false
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Voice Picker Sheet
+struct VoicePickerSheet: View {
+    let voices: [VoiceConfig]
+    @Binding var selectedVoice: VoiceConfig?
+    let isLoading: Bool
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+
+    var body: some View {
+        NavigationView {
+            Group {
+                if isLoading {
+                    ProgressView("音声を読み込み中...")
+                } else if voices.isEmpty {
+                    VStack(spacing: 16) {
+                        Image(systemName: "speaker.slash")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text("音声が見つかりません")
+                            .foregroundColor(.secondary)
+                    }
+                } else {
+                    List {
+                        ForEach(groupedVoices.keys.sorted(), id: \.self) { language in
+                            Section(header: Text(languageDisplayName(language))) {
+                                ForEach(groupedVoices[language] ?? [], id: \.id) { voice in
+                                    VoiceRow(
+                                        voice: voice,
+                                        isSelected: selectedVoice?.id == voice.id,
+                                        onSelect: {
+                                            selectedVoice = voice
+                                            UserDefaultsManager.shared.cloudTTSVoiceId = voice.id
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .navigationTitle("音声を選択")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("キャンセル") {
+                        onCancel()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("保存") {
+                        onConfirm()
+                    }
+                    .disabled(selectedVoice == nil)
+                }
+            }
+        }
+    }
+
+    private var groupedVoices: [String: [VoiceConfig]] {
+        Dictionary(grouping: voices, by: { $0.language })
+    }
+
+    private func languageDisplayName(_ code: String) -> String {
+        switch code {
+        case "ja-JP":
+            return "日本語"
+        case "en-US":
+            return "英語 (US)"
+        case "en-GB":
+            return "英語 (UK)"
+        default:
+            return code
+        }
+    }
+}
+
+struct VoiceRow: View {
+    let voice: VoiceConfig
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    var body: some View {
+        Button(action: onSelect) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(voice.name)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(voice.description)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    HStack(spacing: 8) {
+                        Label(voice.gender == "female" ? "女性" : "男性", systemImage: voice.gender == "female" ? "person.fill" : "person")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer()
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.blue)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
