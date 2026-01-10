@@ -57,10 +57,12 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    func insert(title: String, text: String, languageSetting: LanguageSetting) {
+    @discardableResult
+    func insert(title: String, text: String, languageSetting: LanguageSetting) -> UUID {
+        let newUUID = UUID()
         if let speechText = NSManagedObject(entity: self.entity!, insertInto: managedContext) as? SpeechText {
 
-            speechText.uuid = UUID()
+            speechText.uuid = newUUID
             speechText.title = title
             speechText.text = text
             speechText.languageSetting = languageSetting.rawValue
@@ -73,6 +75,7 @@ class SpeechTextRepository: NSObject {
                 errorLog(error.localizedDescription)
             }
         }
+        return newUUID
     }
 
     func fetchAllSpeechText(language: LanguageSetting) -> [Speeches.Speech] {
