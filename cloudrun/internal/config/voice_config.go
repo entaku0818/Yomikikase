@@ -28,7 +28,7 @@ var AvailableVoices = []VoiceOption{
 		Language:     "en-US",
 		Gender:       "female",
 		Description:  "Clear American female voice",
-		WavenetVoice: "en-US-Wavenet-A",
+		WavenetVoice: "en-US-Wavenet-F",
 	},
 	{
 		ID:           "en-us-male-b",
