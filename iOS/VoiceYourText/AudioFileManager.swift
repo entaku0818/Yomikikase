@@ -38,8 +38,16 @@ extension AudioFileManager: DependencyKey {
                     throw AudioFileError.downloadFailed
                 }
 
-                // Determine file extension from URL or response
-                let fileExtension = remoteURL.pathExtension.isEmpty ? "wav" : remoteURL.pathExtension
+                // Determine file extension from URL path (ignoring query parameters)
+                // For signed URLs like "https://storage.googleapis.com/.../file.wav?X-Goog-..."
+                var urlComponents = URLComponents(url: remoteURL, resolvingAgainstBaseURL: false)
+                urlComponents?.query = nil  // Remove query parameters
+                let cleanPath = urlComponents?.path ?? remoteURL.path
+                let pathExtension = (cleanPath as NSString).pathExtension
+                let fileExtension = pathExtension.isEmpty ? "wav" : pathExtension
+
+                infoLog("AudioFileManager: Downloading audio for \(identifier), extension: \(fileExtension)")
+
                 let localFileName = "\(identifier).\(fileExtension)"
                 let localURL = audioDirectory.appendingPathComponent(localFileName)
 
@@ -51,17 +59,21 @@ extension AudioFileManager: DependencyKey {
                 // Move downloaded file to permanent location
                 try fileManager.moveItem(at: tempURL, to: localURL)
 
+                infoLog("AudioFileManager: Saved audio to \(localURL.path)")
                 return localURL
             },
             getLocalAudioPath: { identifier in
                 // Look for audio file with any common extension
                 let extensions = ["wav", "mp3", "m4a", "aac"]
+                infoLog("AudioFileManager: Looking for audio file with identifier: \(identifier)")
                 for ext in extensions {
                     let localURL = audioDirectory.appendingPathComponent("\(identifier).\(ext)")
                     if fileManager.fileExists(atPath: localURL.path) {
+                        infoLog("AudioFileManager: Found audio file at \(localURL.path)")
                         return localURL
                     }
                 }
+                infoLog("AudioFileManager: No audio file found for \(identifier) in \(audioDirectory.path)")
                 return nil
             },
             deleteAudio: { identifier in
