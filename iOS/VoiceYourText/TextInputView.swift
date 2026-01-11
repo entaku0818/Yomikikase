@@ -26,6 +26,9 @@ struct TextInputView: View {
     @State private var selectedVoice: VoiceConfig?
     @State private var showingVoicePicker = false
     @State private var isLoadingVoices = false
+    @State private var currentTimepoints: [TTSTimepoint] = []
+    @State private var highlightTimer: Timer?
+    @State private var playbackStartTime: Date?
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
@@ -257,6 +260,19 @@ struct TextInputView: View {
             let playbackRate = max(0.5, min(2.0, speechRate * 2.0))
             audioPlayer?.rate = playbackRate
 
+            // Load timepoints from JSON file if available
+            let timepointsURL = url.deletingPathExtension().appendingPathExtension("json")
+            if FileManager.default.fileExists(atPath: timepointsURL.path) {
+                do {
+                    let timepointsData = try Data(contentsOf: timepointsURL)
+                    currentTimepoints = try JSONDecoder().decode([TTSTimepoint].self, from: timepointsData)
+                    infoLog("[Highlight] Loaded \(currentTimepoints.count) timepoints from file")
+                } catch {
+                    errorLog("[Highlight] Failed to load timepoints: \(error)")
+                    currentTimepoints = []
+                }
+            }
+
             // Set up completion handler using NotificationCenter
             NotificationCenter.default.addObserver(
                 forName: NSNotification.Name("AudioPlayerFinished"),
@@ -264,17 +280,67 @@ struct TextInputView: View {
                 queue: .main
             ) { [weak audioPlayer] _ in
                 guard audioPlayer != nil else { return }
+                self.stopHighlightTimer()
                 self.isSpeaking = false
                 self.highlightedRange = nil
                 self.store.send(.nowPlaying(.stopPlaying))
             }
             audioPlayer?.delegate = CloudTTSAudioDelegate.shared
+
+            // Start highlight timer if we have timepoints
+            if !currentTimepoints.isEmpty {
+                startHighlightTimer(playbackRate: playbackRate)
+            }
+
             audioPlayer?.play()
         } catch {
             errorLog("Failed to play downloaded audio: \(error)")
             // Fallback to device TTS
             playWithDeviceTTS()
         }
+    }
+
+    private func startHighlightTimer(playbackRate: Float) {
+        playbackStartTime = Date()
+        highlightTimer?.invalidate()
+
+        // Update highlights at 60fps for smooth animation
+        highlightTimer = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { [self] _ in
+            guard let startTime = playbackStartTime else { return }
+
+            // Calculate current playback time (adjusted for rate)
+            let elapsedTime = Date().timeIntervalSince(startTime) * Double(playbackRate)
+
+            // Find the current timepoint
+            var currentRange: NSRange? = nil
+            for (index, timepoint) in currentTimepoints.enumerated() {
+                if timepoint.timeSeconds <= elapsedTime {
+                    // Check if next timepoint hasn't started yet
+                    let nextIndex = index + 1
+                    if nextIndex < currentTimepoints.count {
+                        if currentTimepoints[nextIndex].timeSeconds > elapsedTime {
+                            currentRange = timepoint.textRange
+                            break
+                        }
+                    } else {
+                        // Last timepoint
+                        currentRange = timepoint.textRange
+                    }
+                }
+            }
+
+            DispatchQueue.main.async {
+                if self.highlightedRange != currentRange {
+                    self.highlightedRange = currentRange
+                }
+            }
+        }
+    }
+
+    private func stopHighlightTimer() {
+        highlightTimer?.invalidate()
+        highlightTimer = nil
+        playbackStartTime = nil
     }
 
     private func playWithDeviceTTS() {
@@ -326,6 +392,7 @@ struct TextInputView: View {
     }
 
     private func stopSpeaking() {
+        stopHighlightTimer()
         audioPlayer?.stop()
         audioPlayer = nil
         isSpeaking = false
@@ -378,6 +445,7 @@ struct TextInputView: View {
                 infoLog("[TTS] Calling Cloud Run API...")
                 let response = try await audioAPI.generateAudio(text, voiceId)
                 infoLog("[TTS] API response received, audioUrl: \(response.audioUrl)")
+                infoLog("[TTS] Received \(response.timepoints?.count ?? 0) timepoints")
 
                 guard let audioURL = URL(string: response.audioUrl) else {
                     infoLog("[TTS] ERROR: Invalid audio URL")
@@ -388,9 +456,17 @@ struct TextInputView: View {
                 infoLog("[TTS] Downloading audio from: \(audioURL)")
                 let localURL = try await audioFileManager.downloadAudio(audioURL, fileId.uuidString)
                 infoLog("[TTS] Audio downloaded and saved to: \(localURL.path)")
-                infoLog("Audio saved to: \(localURL.path)")
+
+                // Save timepoints to JSON file
+                if let timepoints = response.timepoints, !timepoints.isEmpty {
+                    let timepointsURL = localURL.deletingPathExtension().appendingPathExtension("json")
+                    let timepointsData = try JSONEncoder().encode(timepoints)
+                    try timepointsData.write(to: timepointsURL)
+                    infoLog("[TTS] Timepoints saved to: \(timepointsURL.path)")
+                }
 
                 await MainActor.run {
+                    currentTimepoints = response.timepoints ?? []
                     isGeneratingAudio = false
                     isEditMode = false
                     infoLog("[TTS] Switched to player mode")

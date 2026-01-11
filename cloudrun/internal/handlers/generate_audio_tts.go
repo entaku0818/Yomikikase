@@ -12,6 +12,8 @@ import (
 	"strings"
 	"time"
 
+	ttsv1 "cloud.google.com/go/texttospeech/apiv1"
+	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
 	"cloud.google.com/go/storage"
 	"github.com/google/uuid"
 	texttospeech "google.golang.org/api/texttospeech/v1beta1"
@@ -206,7 +208,24 @@ func escapeXML(s string) string {
 }
 
 // generateTTSAudioWithTimepoints generates audio with word timing information using v1beta1 API
+// Falls back to v1 API without timepoints if v1beta1 fails
 func generateTTSAudioWithTimepoints(text string, voice *config.VoiceOption, language string) ([]byte, []Timepoint, error) {
+	// Try v1beta1 API first (with timepoints support)
+	audioContent, timepoints, err := generateTTSAudioWithTimepointsBeta(text, voice, language)
+	if err != nil {
+		log.Printf("v1beta1 API failed, falling back to v1: %v", err)
+		// Fallback to v1 API without timepoints
+		audioContent, err = generateTTSAudioV1(text, voice, language)
+		if err != nil {
+			return nil, nil, err
+		}
+		return audioContent, nil, nil // No timepoints from v1
+	}
+	return audioContent, timepoints, nil
+}
+
+// generateTTSAudioWithTimepointsBeta uses v1beta1 API which supports timepoints
+func generateTTSAudioWithTimepointsBeta(text string, voice *config.VoiceOption, language string) ([]byte, []Timepoint, error) {
 	ctx := context.Background()
 
 	// Create TTS service using v1beta1 API (supports timepoints)
@@ -270,6 +289,48 @@ func generateTTSAudioWithTimepoints(text string, voice *config.VoiceOption, lang
 
 	log.Printf("Generated %d timepoints", len(timepoints))
 	return audioContent, timepoints, nil
+}
+
+// generateTTSAudioV1 uses the stable v1 API without timepoints
+func generateTTSAudioV1(text string, voice *config.VoiceOption, language string) ([]byte, error) {
+	ctx := context.Background()
+
+	client, err := ttsv1.NewClient(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create TTS client: %w", err)
+	}
+	defer client.Close()
+
+	// Determine SSML gender
+	var ssmlGender texttospeechpb.SsmlVoiceGender
+	if voice.Gender == "male" {
+		ssmlGender = texttospeechpb.SsmlVoiceGender_MALE
+	} else {
+		ssmlGender = texttospeechpb.SsmlVoiceGender_FEMALE
+	}
+
+	// Build the request
+	req := &texttospeechpb.SynthesizeSpeechRequest{
+		Input: &texttospeechpb.SynthesisInput{
+			InputSource: &texttospeechpb.SynthesisInput_Text{Text: text},
+		},
+		Voice: &texttospeechpb.VoiceSelectionParams{
+			LanguageCode: language,
+			Name:         voice.WavenetVoice,
+			SsmlGender:   ssmlGender,
+		},
+		AudioConfig: &texttospeechpb.AudioConfig{
+			AudioEncoding: texttospeechpb.AudioEncoding_LINEAR16,
+		},
+	}
+
+	resp, err := client.SynthesizeSpeech(ctx, req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to synthesize speech: %w", err)
+	}
+
+	log.Printf("Generated audio using v1 API (no timepoints)")
+	return resp.AudioContent, nil
 }
 
 // uploadToStorage uploads audio to Google Cloud Storage

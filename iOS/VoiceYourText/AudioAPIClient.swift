@@ -17,6 +17,22 @@ struct AudioAPIClient {
     var getVoices: @Sendable (String?) async throws -> VoicesResponse
 }
 
+struct TTSTimepoint: Codable, Equatable {
+    let markName: String    // Format: "index:startIndex:endIndex"
+    let timeSeconds: Double
+
+    // Parse markName to get text range
+    var textRange: NSRange? {
+        let parts = markName.split(separator: ":")
+        guard parts.count == 3,
+              let startIndex = Int(parts[1]),
+              let endIndex = Int(parts[2]) else {
+            return nil
+        }
+        return NSRange(location: startIndex, length: endIndex - startIndex)
+    }
+}
+
 struct AudioResponse: Codable, Equatable {
     let success: Bool
     let originalText: String
@@ -27,6 +43,7 @@ struct AudioResponse: Codable, Equatable {
     let filename: String
     let mimeType: String
     let message: String
+    let timepoints: [TTSTimepoint]?
 }
 
 struct VoicesResponse: Codable, Equatable {
@@ -143,7 +160,8 @@ extension AudioAPIClient: TestDependencyKey {
                 audioUrl: "https://example.com/test.wav",
                 filename: "test.wav",
                 mimeType: "audio/wav",
-                message: "Test response"
+                message: "Test response",
+                timepoints: [TTSTimepoint(markName: "0:0:3", timeSeconds: 0.0)]
             )
         },
         getVoices: { _ in
