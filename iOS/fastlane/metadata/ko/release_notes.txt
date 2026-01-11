@@ -1,5 +1,5 @@
-메타데이터를 업데이트했습니다
-- Registration of words and their pronunciation
-- Automatic application of registered pronunciations to speech synthesis
-- Enhanced subscription tracking feature through Firebase Analytics
-- Improved subscription management and error handling
+Cloud TTS 음성 기능을 강화했습니다.
+
+• 음성 선택 기능 추가
+• Cloud TTS 재생 시 하이라이트 표시 지원
+• 재생 속도 조절 지원

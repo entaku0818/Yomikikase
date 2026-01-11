@@ -1,5 +1,5 @@
-Added Mini Player feature.
+Enhanced Cloud TTS voice features.
 
-• Shows mini player during playback
-• Pause/resume functionality
-• Navigate back to the original screen from mini player
+• Added voice selection
+• Highlighting support during Cloud TTS playback
+• Playback speed adjustment support

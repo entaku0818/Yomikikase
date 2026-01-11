@@ -1,1 +1,5 @@
-Metadati aggiornati
+Migliorate le funzionalità Cloud TTS.
+
+• Aggiunta selezione voce
+• Supporto evidenziazione durante la riproduzione Cloud TTS
+• Supporto regolazione velocità di riproduzione

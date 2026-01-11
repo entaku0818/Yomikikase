@@ -1,5 +1,5 @@
-Metadaten aktualisiert
-- Registrierung von Wörtern und deren Aussprache
-- Automatische Anwendung registrierter Aussprachen
-- Verbesserte Abonnement-Verfolgung mit Firebase Analytics
-- Verbesserte Abonnementverwaltung und Fehlerbehandlung
+Cloud TTS-Sprachfunktionen verbessert.
+
+• Sprachauswahl hinzugefügt
+• Hervorhebungsunterstützung bei Cloud TTS-Wiedergabe
+• Unterstützung für Wiedergabegeschwindigkeitsanpassung

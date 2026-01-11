@@ -1,1 +1,5 @@
-Metadata güncellendi
+Cloud TTS ses özellikleri geliştirildi.
+
+• Ses seçimi eklendi
+• Cloud TTS oynatma sırasında vurgulama desteği
+• Oynatma hızı ayarlama desteği
