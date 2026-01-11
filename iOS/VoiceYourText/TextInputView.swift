@@ -57,17 +57,15 @@ struct TextInputView: View {
                             .padding(.trailing, 16)
                     } else {
                         HStack(spacing: 12) {
-                            // 音声変更ボタン（プレミアムユーザーのみ）
-                            if UserDefaultsManager.shared.isPremiumUser {
-                                Button(action: {
-                                    showingVoicePicker = true
-                                }) {
-                                    Image(systemName: "flag.fill")
-                                        .font(.system(size: 16))
-                                        .foregroundColor(.blue)
-                                }
-                                .disabled(isLoadingVoices)
+                            // 音声変更ボタン
+                            Button(action: {
+                                showingVoicePicker = true
+                            }) {
+                                Image(systemName: "flag.fill")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.blue)
                             }
+                            .disabled(isLoadingVoices)
 
                             // 保存ボタン
                             Button("保存") {
@@ -223,8 +221,8 @@ struct TextInputView: View {
             return
         }
 
-        // Check if downloaded Cloud TTS audio exists (premium only)
-        if UserDefaultsManager.shared.isPremiumUser, let currentFileId = currentFileId {
+        // Check if downloaded Cloud TTS audio exists
+        if let currentFileId = currentFileId {
             // Direct file system check for audio file
             let fileManager = FileManager.default
             let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -353,14 +351,9 @@ struct TextInputView: View {
             infoLog("[TTS] Set currentFileId to: \(savedFileId)")
         }
 
-        // Generate TTS audio in background (premium only)
-        if UserDefaultsManager.shared.isPremiumUser {
-            infoLog("[TTS] Starting TTS generation for fileId: \(savedFileId)")
-            generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
-        } else {
-            // 非プレミアムユーザーはそのままプレイヤーモードへ
-            isEditMode = false
-        }
+        // Generate TTS audio in background
+        infoLog("[TTS] Starting TTS generation for fileId: \(savedFileId)")
+        generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
     }
 
     private func generateTTSAudio(for fileId: UUID, text: String, languageCode: String) {
