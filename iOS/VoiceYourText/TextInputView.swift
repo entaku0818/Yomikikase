@@ -222,6 +222,7 @@ struct TextInputView: View {
         }
 
         // Check if downloaded Cloud TTS audio exists
+        infoLog("[Highlight] Checking for Cloud TTS audio, currentFileId: \(String(describing: currentFileId))")
         if let currentFileId = currentFileId {
             // Direct file system check for audio file
             let fileManager = FileManager.default
@@ -230,16 +231,16 @@ struct TextInputView: View {
             let audioPath = audioDirectory.appendingPathComponent("\(currentFileId.uuidString).wav")
 
             if fileManager.fileExists(atPath: audioPath.path) {
-                infoLog("Playing Cloud TTS audio: \(audioPath.path)")
+                infoLog("[Highlight] Playing Cloud TTS audio (NO highlight): \(audioPath.path)")
                 playDownloadedAudio(url: audioPath)
                 return
             } else {
-                infoLog("Audio file not found for fileId: \(currentFileId.uuidString)")
+                infoLog("[Highlight] Audio file not found for fileId: \(currentFileId.uuidString)")
             }
         }
 
         // Fallback to device TTS (with highlight support)
-        infoLog("Using device TTS")
+        infoLog("[Highlight] Using device TTS (WITH highlight support)")
         playWithDeviceTTS()
     }
 
@@ -277,10 +278,12 @@ struct TextInputView: View {
     }
 
     private func playWithDeviceTTS() {
+        infoLog("[Highlight] playWithDeviceTTS called")
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         let rate = UserDefaultsManager.shared.speechRate
         let pitch = UserDefaultsManager.shared.speechPitch
         let volume: Float = 0.75
+        infoLog("[Highlight] language: \(language), rate: \(rate), pitch: \(pitch)")
 
         let speechUtterance = AVSpeechUtterance(string: text)
         speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
@@ -290,28 +293,33 @@ struct TextInputView: View {
 
         Task {
             do {
+                infoLog("[Highlight] Starting speakWithHighlight")
                 try await speechSynthesizer.speakWithHighlight(
                     speechUtterance,
                     { range, _ in
+                        infoLog("[Highlight] Highlight callback: location=\(range.location), length=\(range.length)")
                         DispatchQueue.main.async {
-                            highlightedRange = range
+                            self.highlightedRange = range
+                            infoLog("[Highlight] highlightedRange set to: \(range)")
                         }
                     },
                     {
+                        infoLog("[Highlight] Speech finished callback")
                         DispatchQueue.main.async {
-                            isSpeaking = false
-                            highlightedRange = nil
+                            self.isSpeaking = false
+                            self.highlightedRange = nil
                             // 読み上げ完了時はnowPlayingを停止（コンテンツは保持）
-                            store.send(.nowPlaying(.stopPlaying))
+                            self.store.send(.nowPlaying(.stopPlaying))
                         }
                     }
                 )
+                infoLog("[Highlight] speakWithHighlight completed")
             } catch {
-                errorLog("Speech synthesis failed: \(error)")
+                errorLog("[Highlight] Speech synthesis failed: \(error)")
                 DispatchQueue.main.async {
-                    isSpeaking = false
-                    highlightedRange = nil
-                    store.send(.nowPlaying(.stopPlaying))
+                    self.isSpeaking = false
+                    self.highlightedRange = nil
+                    self.store.send(.nowPlaying(.stopPlaying))
                 }
             }
         }
