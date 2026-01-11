@@ -57,15 +57,17 @@ struct TextInputView: View {
                             .padding(.trailing, 16)
                     } else {
                         HStack(spacing: 12) {
-                            // 音声変更ボタン
-                            Button(action: {
-                                showingVoicePicker = true
-                            }) {
-                                Image(systemName: "flag.fill")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.blue)
+                            // 音声変更ボタン（プレミアムユーザーのみ）
+                            if UserDefaultsManager.shared.isPremiumUser {
+                                Button(action: {
+                                    showingVoicePicker = true
+                                }) {
+                                    Image(systemName: "flag.fill")
+                                        .font(.system(size: 16))
+                                        .foregroundColor(.blue)
+                                }
+                                .disabled(isLoadingVoices)
                             }
-                            .disabled(isLoadingVoices)
 
                             // 保存ボタン
                             Button("保存") {
@@ -221,8 +223,8 @@ struct TextInputView: View {
             return
         }
 
-        // Check if downloaded Cloud TTS audio exists
-        if let currentFileId = currentFileId {
+        // Check if downloaded Cloud TTS audio exists (premium only)
+        if UserDefaultsManager.shared.isPremiumUser, let currentFileId = currentFileId {
             // Direct file system check for audio file
             let fileManager = FileManager.default
             let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
@@ -238,14 +240,24 @@ struct TextInputView: View {
             }
         }
 
-        // Fallback to device TTS
-        infoLog("Using device TTS (no Cloud TTS audio available)")
+        // Fallback to device TTS (with highlight support)
+        infoLog("Using device TTS")
         playWithDeviceTTS()
     }
 
     private func playDownloadedAudio(url: URL) {
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
+
+            // 速度設定を適用
+            audioPlayer?.enableRate = true
+            // AVAudioPlayerのrateは0.5〜2.0（AVSpeechUtteranceは0.0〜1.0でデフォルト0.5）
+            // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
+            // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
+            let speechRate = UserDefaultsManager.shared.speechRate
+            let playbackRate = max(0.5, min(2.0, speechRate * 2.0))
+            audioPlayer?.rate = playbackRate
+
             // Set up completion handler using NotificationCenter
             NotificationCenter.default.addObserver(
                 forName: NSNotification.Name("AudioPlayerFinished"),
@@ -341,9 +353,14 @@ struct TextInputView: View {
             infoLog("[TTS] Set currentFileId to: \(savedFileId)")
         }
 
-        // Generate TTS audio in background
-        infoLog("[TTS] Starting TTS generation for fileId: \(savedFileId)")
-        generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
+        // Generate TTS audio in background (premium only)
+        if UserDefaultsManager.shared.isPremiumUser {
+            infoLog("[TTS] Starting TTS generation for fileId: \(savedFileId)")
+            generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
+        } else {
+            // 非プレミアムユーザーはそのままプレイヤーモードへ
+            isEditMode = false
+        }
     }
 
     private func generateTTSAudio(for fileId: UUID, text: String, languageCode: String) {
