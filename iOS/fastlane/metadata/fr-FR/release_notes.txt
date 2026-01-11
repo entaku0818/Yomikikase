@@ -1,4 +1,5 @@
-Métadonnées mises à jour
-- Application automatique des prononciations enregistrées
-- Suivi amélioré des abonnements avec Firebase Analytics
-- Amélioration de la gestion des abonnements et du traitement des erreurs
+Amélioration des fonctionnalités Cloud TTS.
+
+• Ajout de la sélection de voix
+• Prise en charge du surlignage lors de la lecture Cloud TTS
+• Prise en charge du réglage de la vitesse de lecture

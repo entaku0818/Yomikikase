@@ -1,1 +1,5 @@
-Đã cập nhật metadata
+Nâng cao tính năng giọng nói Cloud TTS.
+
+• Thêm tính năng chọn giọng nói
+• Hỗ trợ đánh dấu khi phát Cloud TTS
+• Hỗ trợ điều chỉnh tốc độ phát
