@@ -61,7 +61,7 @@ struct TextInputView: View {
                             Button(action: {
                                 showingVoicePicker = true
                             }) {
-                                Image(systemName: "waveform")
+                                Image(systemName: "flag.fill")
                                     .font(.system(size: 16))
                                     .foregroundColor(.blue)
                             }
