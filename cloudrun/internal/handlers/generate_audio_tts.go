@@ -2,17 +2,19 @@ package handlers
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 
-	texttospeech "cloud.google.com/go/texttospeech/apiv1"
-	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
 	"cloud.google.com/go/storage"
 	"github.com/google/uuid"
+	texttospeech "google.golang.org/api/texttospeech/v1beta1"
 
 	"github.com/entaku0818/voiceyourtext-cloudrun/internal/config"
 )
@@ -27,6 +29,12 @@ type GenerateAudioTTSRequest struct {
 	Style    string `json:"style"`
 }
 
+// Timepoint represents a word timing for highlighting
+type Timepoint struct {
+	MarkName    string  `json:"markName"`
+	TimeSeconds float64 `json:"timeSeconds"`
+}
+
 // GenerateAudioTTSResponse represents the response for generateAudioWithTTS endpoint
 type GenerateAudioTTSResponse struct {
 	Success      bool                      `json:"success"`
@@ -38,6 +46,7 @@ type GenerateAudioTTSResponse struct {
 	Filename     string                    `json:"filename"`
 	MimeType     string                    `json:"mimeType"`
 	Message      string                    `json:"message"`
+	Timepoints   []Timepoint               `json:"timepoints,omitempty"`
 }
 
 // ErrorResponseWithVoices represents an error response that includes available voices
@@ -103,8 +112,8 @@ func GenerateAudioTTSHandler(w http.ResponseWriter, r *http.Request) {
 	log.Printf("generateAudioWithTTS request: text=%q, voiceId=%s, language=%s, style=%s",
 		req.Text, req.VoiceID, language, req.Style)
 
-	// Generate audio using Google Cloud TTS
-	audioContent, err := generateTTSAudio(req.Text, voice, language)
+	// Generate audio using Google Cloud TTS with timepoints
+	audioContent, timepoints, err := generateTTSAudioWithTimepoints(req.Text, voice, language)
 	if err != nil {
 		log.Printf("TTS generation error: %v", err)
 		http.Error(w, fmt.Sprintf(`{"error": "Failed to generate audio", "message": "%s"}`, err.Error()), http.StatusInternalServerError)
@@ -132,51 +141,135 @@ func GenerateAudioTTSHandler(w http.ResponseWriter, r *http.Request) {
 		Filename:     filename,
 		MimeType:     "audio/wav",
 		Message:      "Audio generated and saved successfully",
+		Timepoints:   timepoints,
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }
 
-// generateTTSAudio generates audio using Google Cloud Text-to-Speech API
-func generateTTSAudio(text string, voice *config.VoiceOption, language string) ([]byte, error) {
+// WordInfo stores information about a word's position in the original text
+type WordInfo struct {
+	Word       string
+	StartIndex int
+	EndIndex   int
+}
+
+// textToSSMLWithMarks converts plain text to SSML with marks before each word
+// Returns the SSML string and a slice of WordInfo for mapping marks to text positions
+func textToSSMLWithMarks(text string) (string, []WordInfo) {
+	// Split text into words while preserving positions
+	// Match words (including Japanese characters) and whitespace/punctuation
+	wordRegex := regexp.MustCompile(`[\p{L}\p{N}]+`)
+	matches := wordRegex.FindAllStringIndex(text, -1)
+
+	var words []WordInfo
+	for _, match := range matches {
+		words = append(words, WordInfo{
+			Word:       text[match[0]:match[1]],
+			StartIndex: match[0],
+			EndIndex:   match[1],
+		})
+	}
+
+	// Build SSML with marks
+	var ssmlBuilder strings.Builder
+	ssmlBuilder.WriteString("<speak>")
+
+	lastIndex := 0
+	for i, word := range words {
+		// Add any text before this word (spaces, punctuation)
+		if word.StartIndex > lastIndex {
+			ssmlBuilder.WriteString(escapeXML(text[lastIndex:word.StartIndex]))
+		}
+		// Add mark and word
+		ssmlBuilder.WriteString(fmt.Sprintf("<mark name=\"%d\"/>%s", i, escapeXML(word.Word)))
+		lastIndex = word.EndIndex
+	}
+	// Add any remaining text after the last word
+	if lastIndex < len(text) {
+		ssmlBuilder.WriteString(escapeXML(text[lastIndex:]))
+	}
+
+	ssmlBuilder.WriteString("</speak>")
+	return ssmlBuilder.String(), words
+}
+
+// escapeXML escapes special characters for XML/SSML
+func escapeXML(s string) string {
+	s = strings.ReplaceAll(s, "&", "&amp;")
+	s = strings.ReplaceAll(s, "<", "&lt;")
+	s = strings.ReplaceAll(s, ">", "&gt;")
+	s = strings.ReplaceAll(s, "'", "&apos;")
+	s = strings.ReplaceAll(s, "\"", "&quot;")
+	return s
+}
+
+// generateTTSAudioWithTimepoints generates audio with word timing information using v1beta1 API
+func generateTTSAudioWithTimepoints(text string, voice *config.VoiceOption, language string) ([]byte, []Timepoint, error) {
 	ctx := context.Background()
 
-	client, err := texttospeech.NewClient(ctx)
+	// Create TTS service using v1beta1 API (supports timepoints)
+	service, err := texttospeech.NewService(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create TTS client: %w", err)
+		return nil, nil, fmt.Errorf("failed to create TTS service: %w", err)
 	}
-	defer client.Close()
+
+	// Convert text to SSML with marks
+	ssml, words := textToSSMLWithMarks(text)
+	log.Printf("Generated SSML: %s", ssml)
+	log.Printf("Word count: %d", len(words))
 
 	// Determine SSML gender
-	var ssmlGender texttospeechpb.SsmlVoiceGender
+	ssmlGender := "FEMALE"
 	if voice.Gender == "male" {
-		ssmlGender = texttospeechpb.SsmlVoiceGender_MALE
-	} else {
-		ssmlGender = texttospeechpb.SsmlVoiceGender_FEMALE
+		ssmlGender = "MALE"
 	}
 
-	// Build the request
-	req := &texttospeechpb.SynthesizeSpeechRequest{
-		Input: &texttospeechpb.SynthesisInput{
-			InputSource: &texttospeechpb.SynthesisInput_Text{Text: text},
+	// Build the request with SSML and timepoints enabled
+	req := &texttospeech.SynthesizeSpeechRequest{
+		Input: &texttospeech.SynthesisInput{
+			Ssml: ssml,
 		},
-		Voice: &texttospeechpb.VoiceSelectionParams{
+		Voice: &texttospeech.VoiceSelectionParams{
 			LanguageCode: language,
 			Name:         voice.WavenetVoice,
 			SsmlGender:   ssmlGender,
 		},
-		AudioConfig: &texttospeechpb.AudioConfig{
-			AudioEncoding: texttospeechpb.AudioEncoding_LINEAR16,
+		AudioConfig: &texttospeech.AudioConfig{
+			AudioEncoding: "LINEAR16",
 		},
+		EnableTimePointing: []string{"SSML_MARK"},
 	}
 
-	resp, err := client.SynthesizeSpeech(ctx, req)
+	resp, err := service.Text.Synthesize(req).Context(ctx).Do()
 	if err != nil {
-		return nil, fmt.Errorf("failed to synthesize speech: %w", err)
+		return nil, nil, fmt.Errorf("failed to synthesize speech: %w", err)
 	}
 
-	return resp.AudioContent, nil
+	// Decode base64 audio content
+	audioContent, err := base64.StdEncoding.DecodeString(resp.AudioContent)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to decode audio content: %w", err)
+	}
+
+	// Convert Google's timepoints to our format with text position info
+	var timepoints []Timepoint
+	for _, tp := range resp.Timepoints {
+		markIndex := 0
+		fmt.Sscanf(tp.MarkName, "%d", &markIndex)
+
+		// Store the mark name with the original text position
+		if markIndex < len(words) {
+			timepoints = append(timepoints, Timepoint{
+				MarkName:    fmt.Sprintf("%d:%d:%d", markIndex, words[markIndex].StartIndex, words[markIndex].EndIndex),
+				TimeSeconds: tp.TimeSeconds,
+			})
+		}
+	}
+
+	log.Printf("Generated %d timepoints", len(timepoints))
+	return audioContent, timepoints, nil
 }
 
 // uploadToStorage uploads audio to Google Cloud Storage
