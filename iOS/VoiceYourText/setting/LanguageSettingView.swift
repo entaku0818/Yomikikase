@@ -122,20 +122,7 @@ struct LanguageSettingView: View {
                         }
                     }
                 }
-                
 
-
-                Section(header: Text("言語設定")) {
-                    NavigationLink(destination: LanguageSelectionView(store: store)) {
-                        HStack {
-                            Text("言語を選択")
-                            Spacer()
-                            Text(store.languageSetting ?? "")
-                                .foregroundColor(.gray)
-                        }
-                    }
-                }
-                
                 Button(action: {
                     send(.resetToDefault)
                 }) {
@@ -186,24 +173,6 @@ struct LanguageSettingView: View {
             ScreenshotView()
         }
         #endif
-    }
-}
-
-@ViewAction(for: SettingsReducer.self)
-struct LanguageSelectionView: View {
-    @Bindable var store: StoreOf<SettingsReducer>
-    @Environment(\.presentationMode) var presentationMode
-
-    var body: some View {
-        List {
-            ForEach(SettingsReducer.State.availableLanguages, id: \.1) { language in
-                Button(language.0) {
-                    send(.setLanguage(language.1))
-                    self.presentationMode.wrappedValue.dismiss()
-                }
-            }
-        }
-        .navigationBarTitle("Select Language", displayMode: .inline)
     }
 }
 

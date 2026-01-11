@@ -56,10 +56,23 @@ struct TextInputView: View {
                         ProgressView()
                             .padding(.trailing, 16)
                     } else {
-                        Button("保存") {
-                            showingVoicePicker = true
+                        HStack(spacing: 12) {
+                            // 音声変更ボタン
+                            Button(action: {
+                                showingVoicePicker = true
+                            }) {
+                                Image(systemName: "waveform")
+                                    .font(.system(size: 16))
+                                    .foregroundColor(.blue)
+                            }
+                            .disabled(isLoadingVoices)
+
+                            // 保存ボタン
+                            Button("保存") {
+                                saveText()
+                            }
+                            .disabled(text.isEmpty)
                         }
-                        .disabled(text.isEmpty || isLoadingVoices)
                         .padding(.trailing, 16)
                     }
                 }
@@ -111,11 +124,7 @@ struct TextInputView: View {
                 voices: availableVoices,
                 selectedVoice: $selectedVoice,
                 isLoading: isLoadingVoices,
-                onConfirm: {
-                    showingVoicePicker = false
-                    saveText()
-                },
-                onCancel: {
+                onSelect: {
                     showingVoicePicker = false
                 }
             )
@@ -430,8 +439,7 @@ struct VoicePickerSheet: View {
     let voices: [VoiceConfig]
     @Binding var selectedVoice: VoiceConfig?
     let isLoading: Bool
-    let onConfirm: () -> Void
-    let onCancel: () -> Void
+    let onSelect: () -> Void
 
     var body: some View {
         NavigationView {
@@ -457,6 +465,7 @@ struct VoicePickerSheet: View {
                                         onSelect: {
                                             selectedVoice = voice
                                             UserDefaultsManager.shared.cloudTTSVoiceId = voice.id
+                                            onSelect()
                                         }
                                     )
                                 }
@@ -469,15 +478,9 @@ struct VoicePickerSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("キャンセル") {
-                        onCancel()
+                    Button("閉じる") {
+                        onSelect()
                     }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("保存") {
-                        onConfirm()
-                    }
-                    .disabled(selectedVoice == nil)
                 }
             }
         }
