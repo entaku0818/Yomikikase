@@ -38,8 +38,49 @@ cd iOS
 # Install fastlane dependencies
 bundle install
 
-# Upload metadata and submit for review
+# Upload metadata only (without binary)
+bundle exec fastlane ios upload_metadata_only
+
+# Upload metadata and submit for review (requires binary)
 bundle exec fastlane ios upload_metadata
+```
+
+### App Store Upload (Command Line)
+```bash
+cd iOS
+
+# 1. Archive the app
+xcodebuild -scheme VoiceYourText \
+  -project VoiceYourText.xcodeproj \
+  -archivePath build/VoiceYourText.xcarchive \
+  -configuration Release \
+  archive
+
+# 2. Create ExportOptions.plist
+cat > build/ExportOptions.plist << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>method</key>
+    <string>app-store-connect</string>
+    <key>teamID</key>
+    <string>4YZQY4C47E</string>
+    <key>destination</key>
+    <string>upload</string>
+</dict>
+</plist>
+EOF
+
+# 3. Export and upload to App Store Connect
+xcodebuild -exportArchive \
+  -archivePath build/VoiceYourText.xcarchive \
+  -exportOptionsPlist build/ExportOptions.plist \
+  -exportPath build/export \
+  -allowProvisioningUpdates
+
+# 4. Clean up build folder
+rm -rf build
 ```
 
 ## Architecture Overview

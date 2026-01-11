@@ -14,7 +14,11 @@ xcuserdata/
 GoogleService-Info.plist
 
 # SwiftPM
-.build/ 
+.build/
+
+# Build artifacts
+iOS/build/
+
 fastlane/.env
 fastlane/report.xml
 iOS/fastlane/report.xml
