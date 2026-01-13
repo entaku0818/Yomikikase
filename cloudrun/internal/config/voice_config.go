@@ -54,7 +54,7 @@ var AvailableVoices = []VoiceOption{
 		Description:  "Deep American male voice",
 		WavenetVoice: "en-US-Wavenet-D",
 	},
-	// Japanese voices
+	// Japanese voices - Wavenet
 	{
 		ID:           "ja-jp-female-a",
 		Name:         "あかり",
@@ -64,12 +64,53 @@ var AvailableVoices = []VoiceOption{
 		WavenetVoice: "ja-JP-Wavenet-A",
 	},
 	{
-		ID:           "ja-jp-male-b",
+		ID:           "ja-jp-female-b",
+		Name:         "さくら",
+		Language:     "ja-JP",
+		Gender:       "female",
+		Description:  "落ち着いた女性の声",
+		WavenetVoice: "ja-JP-Wavenet-B",
+	},
+	{
+		ID:           "ja-jp-male-c",
 		Name:         "ひろし",
 		Language:     "ja-JP",
 		Gender:       "male",
 		Description:  "穏やかな男性の声",
 		WavenetVoice: "ja-JP-Wavenet-C",
+	},
+	{
+		ID:           "ja-jp-male-d",
+		Name:         "けんじ",
+		Language:     "ja-JP",
+		Gender:       "male",
+		Description:  "力強い男性の声",
+		WavenetVoice: "ja-JP-Wavenet-D",
+	},
+	// Japanese voices - Neural2 (higher quality)
+	{
+		ID:           "ja-jp-neural-female-b",
+		Name:         "みさき",
+		Language:     "ja-JP",
+		Gender:       "female",
+		Description:  "自然で滑らかな女性の声 (Neural2)",
+		WavenetVoice: "ja-JP-Neural2-B",
+	},
+	{
+		ID:           "ja-jp-neural-female-c",
+		Name:         "ゆい",
+		Language:     "ja-JP",
+		Gender:       "female",
+		Description:  "親しみやすい女性の声 (Neural2)",
+		WavenetVoice: "ja-JP-Neural2-C",
+	},
+	{
+		ID:           "ja-jp-neural-male-d",
+		Name:         "たくや",
+		Language:     "ja-JP",
+		Gender:       "male",
+		Description:  "クリアな男性の声 (Neural2)",
+		WavenetVoice: "ja-JP-Neural2-D",
 	},
 	// German voices
 	{
