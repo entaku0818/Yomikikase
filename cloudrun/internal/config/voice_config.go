@@ -71,6 +71,134 @@ var AvailableVoices = []VoiceOption{
 		Description:  "穏やかな男性の声",
 		WavenetVoice: "ja-JP-Wavenet-C",
 	},
+	// German voices
+	{
+		ID:           "de-de-female-a",
+		Name:         "Anna",
+		Language:     "de-DE",
+		Gender:       "female",
+		Description:  "Klare deutsche Frauenstimme",
+		WavenetVoice: "de-DE-Wavenet-A",
+	},
+	{
+		ID:           "de-de-male-b",
+		Name:         "Hans",
+		Language:     "de-DE",
+		Gender:       "male",
+		Description:  "Professionelle deutsche Männerstimme",
+		WavenetVoice: "de-DE-Wavenet-B",
+	},
+	// Spanish voices
+	{
+		ID:           "es-es-female-a",
+		Name:         "María",
+		Language:     "es-ES",
+		Gender:       "female",
+		Description:  "Voz femenina española clara",
+		WavenetVoice: "es-ES-Wavenet-C",
+	},
+	{
+		ID:           "es-es-male-b",
+		Name:         "Carlos",
+		Language:     "es-ES",
+		Gender:       "male",
+		Description:  "Voz masculina española profesional",
+		WavenetVoice: "es-ES-Wavenet-B",
+	},
+	// French voices
+	{
+		ID:           "fr-fr-female-a",
+		Name:         "Sophie",
+		Language:     "fr-FR",
+		Gender:       "female",
+		Description:  "Voix féminine française claire",
+		WavenetVoice: "fr-FR-Wavenet-A",
+	},
+	{
+		ID:           "fr-fr-male-b",
+		Name:         "Pierre",
+		Language:     "fr-FR",
+		Gender:       "male",
+		Description:  "Voix masculine française professionnelle",
+		WavenetVoice: "fr-FR-Wavenet-B",
+	},
+	// Italian voices
+	{
+		ID:           "it-it-female-a",
+		Name:         "Giulia",
+		Language:     "it-IT",
+		Gender:       "female",
+		Description:  "Voce femminile italiana chiara",
+		WavenetVoice: "it-IT-Wavenet-A",
+	},
+	{
+		ID:           "it-it-male-b",
+		Name:         "Marco",
+		Language:     "it-IT",
+		Gender:       "male",
+		Description:  "Voce maschile italiana professionale",
+		WavenetVoice: "it-IT-Wavenet-C",
+	},
+	// Korean voices
+	{
+		ID:           "ko-kr-female-a",
+		Name:         "지현",
+		Language:     "ko-KR",
+		Gender:       "female",
+		Description:  "밝고 친근한 여성 목소리",
+		WavenetVoice: "ko-KR-Wavenet-A",
+	},
+	{
+		ID:           "ko-kr-male-b",
+		Name:         "민수",
+		Language:     "ko-KR",
+		Gender:       "male",
+		Description:  "차분한 남성 목소리",
+		WavenetVoice: "ko-KR-Wavenet-C",
+	},
+	// Turkish voices
+	{
+		ID:           "tr-tr-female-a",
+		Name:         "Ayşe",
+		Language:     "tr-TR",
+		Gender:       "female",
+		Description:  "Net Türkçe kadın sesi",
+		WavenetVoice: "tr-TR-Wavenet-A",
+	},
+	{
+		ID:           "tr-tr-male-b",
+		Name:         "Mehmet",
+		Language:     "tr-TR",
+		Gender:       "male",
+		Description:  "Profesyonel Türkçe erkek sesi",
+		WavenetVoice: "tr-TR-Wavenet-B",
+	},
+	// Vietnamese voices
+	{
+		ID:           "vi-vn-female-a",
+		Name:         "Linh",
+		Language:     "vi-VN",
+		Gender:       "female",
+		Description:  "Giọng nữ Việt Nam rõ ràng",
+		WavenetVoice: "vi-VN-Wavenet-A",
+	},
+	{
+		ID:           "vi-vn-male-b",
+		Name:         "Minh",
+		Language:     "vi-VN",
+		Gender:       "male",
+		Description:  "Giọng nam Việt Nam chuyên nghiệp",
+		WavenetVoice: "vi-VN-Wavenet-B",
+	},
+	// Thai voices (Standard only, no Wavenet)
+	{
+		ID:           "th-th-female-a",
+		Name:         "นภา",
+		Language:     "th-TH",
+		Gender:       "female",
+		Description:  "เสียงผู้หญิงไทยที่ชัดเจน",
+		WavenetVoice: "th-TH-Standard-A",
+	},
 }
 
 // GetVoiceByID returns a voice by its ID
