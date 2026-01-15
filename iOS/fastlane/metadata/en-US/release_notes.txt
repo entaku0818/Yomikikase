@@ -1,5 +1,6 @@
-Enhanced Cloud TTS voice features.
+Major Cloud TTS improvements.
 
-• Added voice selection
-• Highlighting support during Cloud TTS playback
-• Playback speed adjustment support
+• Cloud TTS support in PDF reader
+• Cloud TTS playback in mini player
+• Voice filtering by language
+• Audio cache management
