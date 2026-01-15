@@ -13,6 +13,9 @@ struct AudioFileManager {
     var getLocalAudioPath: @Sendable (String) -> URL?
     var deleteAudio: @Sendable (String) throws -> Void
     var audioExists: @Sendable (String) -> Bool
+    var getCacheSize: @Sendable () -> Int64
+    var clearCache: @Sendable () throws -> Int
+    var cleanupOldFiles: @Sendable (Int64) throws -> Int  // maxSize in bytes
 }
 
 extension AudioFileManager: DependencyKey {
@@ -94,6 +97,80 @@ extension AudioFileManager: DependencyKey {
                     }
                 }
                 return false
+            },
+            getCacheSize: {
+                var totalSize: Int64 = 0
+                if let files = try? fileManager.contentsOfDirectory(atPath: audioDirectory.path) {
+                    for file in files {
+                        let filePath = audioDirectory.appendingPathComponent(file).path
+                        if let attributes = try? fileManager.attributesOfItem(atPath: filePath),
+                           let fileSize = attributes[.size] as? Int64 {
+                            totalSize += fileSize
+                        }
+                    }
+                }
+                return totalSize
+            },
+            clearCache: {
+                var deletedCount = 0
+                if let files = try? fileManager.contentsOfDirectory(atPath: audioDirectory.path) {
+                    for file in files {
+                        let filePath = audioDirectory.appendingPathComponent(file)
+                        try? fileManager.removeItem(at: filePath)
+                        deletedCount += 1
+                    }
+                }
+                infoLog("AudioFileManager: Cleared \(deletedCount) cached files")
+                return deletedCount
+            },
+            cleanupOldFiles: { maxSize in
+                // Get all files with their modification dates
+                guard let files = try? fileManager.contentsOfDirectory(atPath: audioDirectory.path) else {
+                    return 0
+                }
+
+                struct FileInfo {
+                    let url: URL
+                    let size: Int64
+                    let modificationDate: Date
+                }
+
+                var fileInfos: [FileInfo] = []
+                var totalSize: Int64 = 0
+
+                for file in files {
+                    let fileURL = audioDirectory.appendingPathComponent(file)
+                    if let attributes = try? fileManager.attributesOfItem(atPath: fileURL.path),
+                       let fileSize = attributes[.size] as? Int64,
+                       let modDate = attributes[.modificationDate] as? Date {
+                        fileInfos.append(FileInfo(url: fileURL, size: fileSize, modificationDate: modDate))
+                        totalSize += fileSize
+                    }
+                }
+
+                // If under limit, no cleanup needed
+                if totalSize <= maxSize {
+                    return 0
+                }
+
+                // Sort by modification date (oldest first)
+                fileInfos.sort { $0.modificationDate < $1.modificationDate }
+
+                var deletedCount = 0
+                var currentSize = totalSize
+
+                // Delete oldest files until under limit
+                for fileInfo in fileInfos {
+                    if currentSize <= maxSize {
+                        break
+                    }
+                    try? fileManager.removeItem(at: fileInfo.url)
+                    currentSize -= fileInfo.size
+                    deletedCount += 1
+                }
+
+                infoLog("AudioFileManager: Cleaned up \(deletedCount) old files, freed \(totalSize - currentSize) bytes")
+                return deletedCount
             }
         )
     }
@@ -104,7 +181,10 @@ extension AudioFileManager: DependencyKey {
         },
         getLocalAudioPath: { _ in nil },
         deleteAudio: { _ in },
-        audioExists: { _ in false }
+        audioExists: { _ in false },
+        getCacheSize: { 0 },
+        clearCache: { 0 },
+        cleanupOldFiles: { _ in 0 }
     )
 }
 

@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import ComposableArchitecture
 import AVFAudio
+import Dependencies
 
 @ViewAction(for: SettingsReducer.self)
 struct LanguageSettingView: View {
@@ -123,6 +124,10 @@ struct LanguageSettingView: View {
                     }
                 }
 
+                Section(header: Text("キャッシュ")) {
+                    CacheManagementView()
+                }
+
                 Button(action: {
                     send(.resetToDefault)
                 }) {
@@ -179,7 +184,7 @@ struct LanguageSettingView: View {
 struct PremiumFeatureRow: View {
     let iconName: String
     let text: String
-    
+
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: iconName)
@@ -188,5 +193,76 @@ struct PremiumFeatureRow: View {
                 .font(.subheadline)
             Spacer()
         }
+    }
+}
+
+struct CacheManagementView: View {
+    @Dependency(\.audioFileManager) var audioFileManager
+    @State private var cacheSize: Int64 = 0
+    @State private var showClearConfirmation = false
+    @State private var isClearing = false
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Image(systemName: "internaldrive")
+                    .foregroundColor(.blue)
+                VStack(alignment: .leading) {
+                    Text("音声キャッシュ")
+                    Text(formatBytes(cacheSize))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                if isClearing {
+                    ProgressView()
+                } else {
+                    Button("クリア") {
+                        showClearConfirmation = true
+                    }
+                    .foregroundColor(.red)
+                    .disabled(cacheSize == 0)
+                }
+            }
+        }
+        .onAppear {
+            updateCacheSize()
+        }
+        .alert("キャッシュをクリア", isPresented: $showClearConfirmation) {
+            Button("キャンセル", role: .cancel) {}
+            Button("クリア", role: .destructive) {
+                clearCache()
+            }
+        } message: {
+            Text("ダウンロードした音声ファイルをすべて削除します。")
+        }
+    }
+
+    private func updateCacheSize() {
+        cacheSize = audioFileManager.getCacheSize()
+    }
+
+    private func clearCache() {
+        isClearing = true
+        Task {
+            do {
+                _ = try audioFileManager.clearCache()
+                await MainActor.run {
+                    updateCacheSize()
+                    isClearing = false
+                }
+            } catch {
+                await MainActor.run {
+                    isClearing = false
+                }
+            }
+        }
+    }
+
+    private func formatBytes(_ bytes: Int64) -> String {
+        let formatter = ByteCountFormatter()
+        formatter.allowedUnits = [.useKB, .useMB, .useGB]
+        formatter.countStyle = .file
+        return formatter.string(fromByteCount: bytes)
     }
 }

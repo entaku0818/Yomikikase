@@ -35,16 +35,21 @@ struct NowPlayingFeature {
         var currentText: String = ""
         var progress: Double = 0.0
         var source: PlaybackSource? = nil
+        var useCloudTTS: Bool = false
+        var cloudTTSAudioURL: URL? = nil
+        var isGeneratingAudio: Bool = false
     }
 
     enum Action: Equatable {
         case startPlaying(title: String, text: String, source: PlaybackSource)
+        case startPlayingWithCloudTTS(title: String, text: String, source: PlaybackSource, audioURL: URL)
         case resumePlaying  // ミニプレイヤーから再生を再開
         case stopPlaying
         case dismiss  // ミニプレイヤーを完全に閉じる
         case updateProgress(Double)
         case navigateToSource
         case speechFinished
+        case setCloudTTSMode(Bool)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
@@ -58,6 +63,18 @@ struct NowPlayingFeature {
                 state.currentText = text
                 state.source = source
                 state.progress = 0.0
+                state.useCloudTTS = false
+                state.cloudTTSAudioURL = nil
+                return .none
+
+            case let .startPlayingWithCloudTTS(title, text, source, audioURL):
+                state.isPlaying = true
+                state.currentTitle = title
+                state.currentText = text
+                state.source = source
+                state.progress = 0.0
+                state.useCloudTTS = true
+                state.cloudTTSAudioURL = audioURL
                 return .none
 
             case .resumePlaying:
@@ -66,50 +83,75 @@ struct NowPlayingFeature {
                 state.isPlaying = true
 
                 let text = state.currentText
+                let useCloudTTS = state.useCloudTTS
+                let cloudTTSAudioURL = state.cloudTTSAudioURL
 
                 return .run { send in
-                    // 一時停止中なら再開、そうでなければ新規再生
-                    let isPaused = await speechSynthesizer.isPaused()
-                    if isPaused {
-                        _ = await speechSynthesizer.continueSpeaking()
-                    } else {
-                        // 音声セッションの設定
-                        let audioSession = AVAudioSession.sharedInstance()
+                    if useCloudTTS, let audioURL = cloudTTSAudioURL {
+                        // Cloud TTS mode - play from local audio file
                         do {
+                            let audioSession = AVAudioSession.sharedInstance()
                             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
                             try audioSession.setActive(true)
-                        } catch {
-                            errorLog("Failed to set audio session category: \(error)")
-                        }
 
-                        // ユーザー設定から音声設定を取得
-                        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                        let rate = UserDefaultsManager.shared.speechRate
-                        let pitch = UserDefaultsManager.shared.speechPitch
-                        let volume: Float = 0.75
+                            let audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+                            audioPlayer.play()
 
-                        let utterance = AVSpeechUtterance(string: text)
-                        utterance.voice = AVSpeechSynthesisVoice(language: language)
-                        utterance.rate = rate
-                        utterance.pitchMultiplier = pitch
-                        utterance.volume = volume
+                            // Wait for playback to finish
+                            while audioPlayer.isPlaying {
+                                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 second
+                            }
 
-                        do {
-                            try await speechSynthesizer.speakWithHighlight(
-                                utterance,
-                                { _, _ in
-                                    // ハイライト更新（ミニプレイヤーでは不要）
-                                },
-                                {
-                                    // 読み上げ完了
-                                    Task { @MainActor in
-                                        await send(.speechFinished)
-                                    }
-                                }
-                            )
-                        } catch {
-                            errorLog("Speech synthesis failed: \(error)")
                             await send(.speechFinished)
+                        } catch {
+                            errorLog("Cloud TTS playback failed: \(error)")
+                            await send(.speechFinished)
+                        }
+                    } else {
+                        // Local TTS mode
+                        // 一時停止中なら再開、そうでなければ新規再生
+                        let isPaused = await speechSynthesizer.isPaused()
+                        if isPaused {
+                            _ = await speechSynthesizer.continueSpeaking()
+                        } else {
+                            // 音声セッションの設定
+                            let audioSession = AVAudioSession.sharedInstance()
+                            do {
+                                try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                                try audioSession.setActive(true)
+                            } catch {
+                                errorLog("Failed to set audio session category: \(error)")
+                            }
+
+                            // ユーザー設定から音声設定を取得
+                            let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                            let rate = UserDefaultsManager.shared.speechRate
+                            let pitch = UserDefaultsManager.shared.speechPitch
+                            let volume: Float = 0.75
+
+                            let utterance = AVSpeechUtterance(string: text)
+                            utterance.voice = AVSpeechSynthesisVoice(language: language)
+                            utterance.rate = rate
+                            utterance.pitchMultiplier = pitch
+                            utterance.volume = volume
+
+                            do {
+                                try await speechSynthesizer.speakWithHighlight(
+                                    utterance,
+                                    { _, _ in
+                                        // ハイライト更新（ミニプレイヤーでは不要）
+                                    },
+                                    {
+                                        // 読み上げ完了
+                                        Task { @MainActor in
+                                            await send(.speechFinished)
+                                        }
+                                    }
+                                )
+                            } catch {
+                                errorLog("Speech synthesis failed: \(error)")
+                                await send(.speechFinished)
+                            }
                         }
                     }
                 }
@@ -128,6 +170,8 @@ struct NowPlayingFeature {
                 state.currentText = ""
                 state.progress = 0.0
                 state.source = nil
+                state.useCloudTTS = false
+                state.cloudTTSAudioURL = nil
                 return .run { _ in
                     _ = await speechSynthesizer.stopSpeaking()
                 }
@@ -143,6 +187,10 @@ struct NowPlayingFeature {
             case .speechFinished:
                 state.isPlaying = false
                 state.progress = 1.0
+                return .none
+
+            case .setCloudTTSMode(let useCloud):
+                state.useCloudTTS = useCloud
                 return .none
             }
         }
