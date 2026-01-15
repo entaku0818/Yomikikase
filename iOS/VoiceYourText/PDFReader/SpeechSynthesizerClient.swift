@@ -27,8 +27,8 @@ extension SpeechSynthesizerClient: DependencyKey {
     static var liveValue: Self {
         let speechSynthesizer = SpeechSynthesizer()
         @Dependency(\.userDictionary) var userDictionary
-        // TODO: Re-enable when Audio API is ready
-        // @Dependency(\.audioAPI) var audioAPI
+        @Dependency(\.audioAPI) var audioAPI
+        @Dependency(\.audioFileManager) var audioFileManager
 
         return Self(
             speak: { utterance in
@@ -65,9 +65,26 @@ extension SpeechSynthesizerClient: DependencyKey {
                 )
             },
             speakWithAPI: { text, voiceId in
-                // TODO: Re-enable when Audio API is ready
-                debugLog("Audio API is currently disabled")
-                return false
+                do {
+                    // Generate audio via Cloud TTS API
+                    let response = try await audioAPI.generateAudio(text, voiceId)
+
+                    // Download and play the audio
+                    guard let audioURL = URL(string: response.audioUrl) else {
+                        errorLog("Invalid audio URL: \(response.audioUrl)")
+                        return false
+                    }
+
+                    // Download audio file to local storage
+                    let fileId = UUID().uuidString
+                    let localURL = try await audioFileManager.downloadAudio(audioURL, fileId)
+
+                    // Play the audio
+                    return try await speechSynthesizer.playAudioFromURL(localURL.absoluteString)
+                } catch {
+                    errorLog("speakWithAPI failed: \(error)")
+                    return false
+                }
             },
             stopSpeaking: { await speechSynthesizer.stop() },
             pauseSpeaking: { await speechSynthesizer.pause() },

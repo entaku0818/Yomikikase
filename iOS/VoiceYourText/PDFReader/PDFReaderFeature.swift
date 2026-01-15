@@ -28,6 +28,9 @@ struct PDFReaderFeature: Reducer {
         var currentPDFURL: URL?
         var highlightedRange: NSRange? = nil
         var highlightedText: String? = nil  // ハイライトするテキスト
+        var useCloudTTS: Bool = false
+        var isGeneratingAudio: Bool = false
+        var cloudTTSVoiceId: String?
     }
 
     enum Action: Equatable {
@@ -39,9 +42,16 @@ struct PDFReaderFeature: Reducer {
         case extractTextCompleted(String)
         case highlightRange(NSRange?)
         case speechFinished
+        case toggleCloudTTS
+        case setCloudTTSVoice(String?)
+        case cloudTTSGenerationStarted
+        case cloudTTSGenerationCompleted
+        case cloudTTSGenerationFailed(String)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
+    @Dependency(\.audioAPI) var audioAPI
+    @Dependency(\.audioFileManager) var audioFileManager
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -90,45 +100,93 @@ struct PDFReaderFeature: Reducer {
             case .startReading:
                 guard !state.isReading else { return .none }
                 guard !state.pdfText.isEmpty else { return .none }
-                state.isReading = true
 
-                // ユーザー設定から音声設定を取得
-                let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                let rate = UserDefaultsManager.shared.speechRate
-                let pitch = UserDefaultsManager.shared.speechPitch
-                let volume: Float = 0.75
+                let useCloud = state.useCloudTTS
+                let voiceId = state.cloudTTSVoiceId ?? UserDefaultsManager.shared.cloudTTSVoiceId
+                let pdfText = state.pdfText
 
-                let utterance = AVSpeechUtterance(string: state.pdfText)
-                utterance.voice = AVSpeechSynthesisVoice(language: language)
-                utterance.rate = rate
-                utterance.pitchMultiplier = pitch
-                utterance.volume = volume
+                if useCloud {
+                    // Cloud TTS mode
+                    state.isGeneratingAudio = true
+                    return .run { send in
+                        await send(.cloudTTSGenerationStarted)
+                        do {
+                            // Generate audio via Cloud TTS API
+                            let response = try await audioAPI.generateAudio(pdfText, voiceId)
 
-                return .run { send in
-                    // 音声セッションの設定
-                    let audioSession = AVAudioSession.sharedInstance()
-                    do {
-                        try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-                        try audioSession.setActive(true)
-                    } catch {
-                        logger.error("Failed to set audio session category: \(error)")
-                    }
-                    
-                    try await speechSynthesizer.speakWithHighlight(
-                        utterance,
-                        { range, speechString in
-                            // ハイライト更新
-                            Task { @MainActor in
-                                await send(.highlightRange(range))
+                            guard let audioURL = URL(string: response.audioUrl) else {
+                                await send(.cloudTTSGenerationFailed("Invalid audio URL"))
+                                return
                             }
-                        },
-                        {
-                            // 読み上げ完了
-                            Task { @MainActor in
-                                await send(.speechFinished)
+
+                            // Download audio file
+                            let fileId = UUID().uuidString
+                            let localURL = try await audioFileManager.downloadAudio(audioURL, fileId)
+
+                            await send(.cloudTTSGenerationCompleted)
+
+                            // Play the audio
+                            let audioSession = AVAudioSession.sharedInstance()
+                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                            try audioSession.setActive(true)
+
+                            // Play using AVAudioPlayer
+                            let audioPlayer = try AVAudioPlayer(contentsOf: localURL)
+                            audioPlayer.play()
+
+                            // Wait for playback to finish
+                            while audioPlayer.isPlaying {
+                                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 second
                             }
+
+                            await send(.speechFinished)
+                        } catch {
+                            logger.error("Cloud TTS failed: \(error)")
+                            await send(.cloudTTSGenerationFailed(error.localizedDescription))
                         }
-                    )
+                    }
+                } else {
+                    // Local TTS mode
+                    state.isReading = true
+
+                    // ユーザー設定から音声設定を取得
+                    let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                    let rate = UserDefaultsManager.shared.speechRate
+                    let pitch = UserDefaultsManager.shared.speechPitch
+                    let volume: Float = 0.75
+
+                    let utterance = AVSpeechUtterance(string: pdfText)
+                    utterance.voice = AVSpeechSynthesisVoice(language: language)
+                    utterance.rate = rate
+                    utterance.pitchMultiplier = pitch
+                    utterance.volume = volume
+
+                    return .run { send in
+                        // 音声セッションの設定
+                        let audioSession = AVAudioSession.sharedInstance()
+                        do {
+                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                            try audioSession.setActive(true)
+                        } catch {
+                            logger.error("Failed to set audio session category: \(error)")
+                        }
+
+                        try await speechSynthesizer.speakWithHighlight(
+                            utterance,
+                            { range, speechString in
+                                // ハイライト更新
+                                Task { @MainActor in
+                                    await send(.highlightRange(range))
+                                }
+                            },
+                            {
+                                // 読み上げ完了
+                                Task { @MainActor in
+                                    await send(.speechFinished)
+                                }
+                            }
+                        )
+                    }
                 }
 
             case .stopReading:
@@ -163,6 +221,32 @@ struct PDFReaderFeature: Reducer {
             case .syncPlayingState(let isPlaying):
                 // ミニプレイヤーから戻ってきた時の同期用
                 state.isReading = isPlaying
+                return .none
+
+            case .toggleCloudTTS:
+                state.useCloudTTS.toggle()
+                return .none
+
+            case .setCloudTTSVoice(let voiceId):
+                state.cloudTTSVoiceId = voiceId
+                if let voiceId = voiceId {
+                    UserDefaultsManager.shared.cloudTTSVoiceId = voiceId
+                }
+                return .none
+
+            case .cloudTTSGenerationStarted:
+                state.isGeneratingAudio = true
+                state.isReading = true
+                return .none
+
+            case .cloudTTSGenerationCompleted:
+                state.isGeneratingAudio = false
+                return .none
+
+            case .cloudTTSGenerationFailed(let error):
+                state.isGeneratingAudio = false
+                state.isReading = false
+                logger.error("Cloud TTS generation failed: \(error)")
                 return .none
             }
         }
@@ -199,6 +283,24 @@ struct PDFReaderView: View {
                 .padding(.leading, 8)
 
                 Spacer()
+
+                // Cloud TTS toggle
+                Button(action: {
+                    viewStore.send(.toggleCloudTTS)
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: viewStore.useCloudTTS ? "cloud.fill" : "cloud")
+                            .font(.system(size: 16))
+                        Text(viewStore.useCloudTTS ? "Cloud" : "Local")
+                            .font(.caption)
+                    }
+                    .foregroundColor(viewStore.useCloudTTS ? .blue : .secondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(viewStore.useCloudTTS ? Color.blue.opacity(0.1) : Color.clear)
+                    .cornerRadius(8)
+                }
+                .padding(.trailing, 8)
             }
             .frame(height: 56)
             .background(Color(UIColor.systemBackground))
@@ -225,30 +327,40 @@ struct PDFReaderView: View {
             }
 
             // プレイヤーコントロール
-            PlayerControlView(
-                isSpeaking: viewStore.isReading,
-                isTextEmpty: viewStore.pdfText.isEmpty,
-                speechRate: UserDefaultsManager.shared.speechRate,
-                onPlay: {
-                    viewStore.send(.startReading)
-                    // nowPlayingを更新（ミニプレイヤー用）
-                    if let parentStore = parentStore, let url = viewStore.currentPDFURL {
-                        let title = url.lastPathComponent
-                        parentStore.send(.nowPlaying(.startPlaying(
-                            title: title,
-                            text: viewStore.pdfText,
-                            source: .pdf(id: UUID(), url: url)
-                        )))
-                    }
-                },
-                onStop: {
-                    viewStore.send(.stopReading)
-                    parentStore?.send(.nowPlaying(.stopPlaying))
-                },
-                onSpeedTap: {
-                    showingSpeedPicker = true
+            if viewStore.isGeneratingAudio {
+                HStack {
+                    ProgressView()
+                        .padding(.trailing, 8)
+                    Text("音声を生成中...")
+                        .foregroundColor(.secondary)
                 }
-            )
+                .frame(height: 80)
+            } else {
+                PlayerControlView(
+                    isSpeaking: viewStore.isReading,
+                    isTextEmpty: viewStore.pdfText.isEmpty,
+                    speechRate: UserDefaultsManager.shared.speechRate,
+                    onPlay: {
+                        viewStore.send(.startReading)
+                        // nowPlayingを更新（ミニプレイヤー用）
+                        if let parentStore = parentStore, let url = viewStore.currentPDFURL {
+                            let title = url.lastPathComponent
+                            parentStore.send(.nowPlaying(.startPlaying(
+                                title: title,
+                                text: viewStore.pdfText,
+                                source: .pdf(id: UUID(), url: url)
+                            )))
+                        }
+                    },
+                    onStop: {
+                        viewStore.send(.stopReading)
+                        parentStore?.send(.nowPlaying(.stopPlaying))
+                    },
+                    onSpeedTap: {
+                        showingSpeedPicker = true
+                    }
+                )
+            }
         }
         .background(Color(UIColor.systemBackground))
         .onAppear {

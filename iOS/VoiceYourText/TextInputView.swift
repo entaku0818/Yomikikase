@@ -489,13 +489,54 @@ struct TextInputView: View {
         switch languageCode.lowercased() {
         case "ja", "ja-jp":
             return "ja-jp-female-a"
-        case "en", "en-us":
+        case "en", "en-us", "en-gb":
             return "en-us-female-a"
-        case "en-gb":
-            return "en-us-female-a" // Fallback to US voice
+        case "de", "de-de":
+            return "de-de-female-a"
+        case "es", "es-es":
+            return "es-es-female-a"
+        case "fr", "fr-fr":
+            return "fr-fr-female-a"
+        case "it", "it-it":
+            return "it-it-female-a"
+        case "ko", "ko-kr":
+            return "ko-kr-female-a"
+        case "tr", "tr-tr":
+            return "tr-tr-female-a"
+        case "vi", "vi-vn":
+            return "vi-vn-female-a"
+        case "th", "th-th":
+            return "th-th-female-a"
         default:
-            // Default to Japanese if unknown
             return "ja-jp-female-a"
+        }
+    }
+
+    private func mapLanguageToLocale(_ languageCode: String) -> String {
+        // Map short language code to full locale for Cloud TTS API
+        switch languageCode.lowercased() {
+        case "ja", "ja-jp":
+            return "ja-JP"
+        case "en", "en-us":
+            return "en-US"
+        case "de", "de-de":
+            return "de-DE"
+        case "es", "es-es":
+            return "es-ES"
+        case "fr", "fr-fr":
+            return "fr-FR"
+        case "it", "it-it":
+            return "it-IT"
+        case "ko", "ko-kr":
+            return "ko-KR"
+        case "tr", "tr-tr":
+            return "tr-TR"
+        case "vi", "vi-vn":
+            return "vi-VN"
+        case "th", "th-th":
+            return "th-TH"
+        default:
+            return "ja-JP"
         }
     }
 
@@ -503,16 +544,16 @@ struct TextInputView: View {
         isLoadingVoices = true
         Task {
             do {
-                let response = try await audioAPI.getVoices(nil)
+                // Filter voices by current language setting
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
+                let locale = mapLanguageToLocale(languageCode)
+                let response = try await audioAPI.getVoices(locale)
                 await MainActor.run {
                     availableVoices = response.voices
-                    // Set default selection based on language setting
-                    let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
+                    // Set default selection based on saved voice or language
                     if let savedVoiceId = UserDefaultsManager.shared.cloudTTSVoiceId,
                        let savedVoice = response.voices.first(where: { $0.id == savedVoiceId }) {
                         selectedVoice = savedVoice
-                    } else if let defaultVoice = response.voices.first(where: { $0.language.lowercased().hasPrefix(languageCode.lowercased()) }) {
-                        selectedVoice = defaultVoice
                     } else {
                         selectedVoice = response.voices.first
                     }
@@ -592,6 +633,22 @@ struct VoicePickerSheet: View {
             return "英語 (US)"
         case "en-GB":
             return "英語 (UK)"
+        case "de-DE":
+            return "ドイツ語"
+        case "es-ES":
+            return "スペイン語"
+        case "fr-FR":
+            return "フランス語"
+        case "it-IT":
+            return "イタリア語"
+        case "ko-KR":
+            return "韓国語"
+        case "tr-TR":
+            return "トルコ語"
+        case "vi-VN":
+            return "ベトナム語"
+        case "th-TH":
+            return "タイ語"
         default:
             return code
         }

@@ -82,8 +82,35 @@ extension AudioAPIClient: DependencyKey {
                     request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
                 }
 
-                // Determine language from voiceId or default to ja-JP
-                let language = voiceId?.hasPrefix("en-") == true ? "en-US" : "ja-JP"
+                // Determine language from voiceId
+                let language: String
+                if let voiceId = voiceId {
+                    if voiceId.hasPrefix("ja-") {
+                        language = "ja-JP"
+                    } else if voiceId.hasPrefix("en-") {
+                        language = "en-US"
+                    } else if voiceId.hasPrefix("de-") {
+                        language = "de-DE"
+                    } else if voiceId.hasPrefix("es-") {
+                        language = "es-ES"
+                    } else if voiceId.hasPrefix("fr-") {
+                        language = "fr-FR"
+                    } else if voiceId.hasPrefix("it-") {
+                        language = "it-IT"
+                    } else if voiceId.hasPrefix("ko-") {
+                        language = "ko-KR"
+                    } else if voiceId.hasPrefix("tr-") {
+                        language = "tr-TR"
+                    } else if voiceId.hasPrefix("vi-") {
+                        language = "vi-VN"
+                    } else if voiceId.hasPrefix("th-") {
+                        language = "th-TH"
+                    } else {
+                        language = "ja-JP"
+                    }
+                } else {
+                    language = "ja-JP"
+                }
 
                 let body: [String: Any] = [
                     "text": text,
