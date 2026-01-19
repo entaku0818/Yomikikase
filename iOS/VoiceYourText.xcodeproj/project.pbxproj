@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
+		61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61A1B2002DB8000000000001 /* FirebaseCrashlytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
@@ -64,6 +65,7 @@
 				619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */,
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
+				61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +136,7 @@
 			name = VoiceYourText;
 			packageProductDependencies = (
 				614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */,
+				61A1B2002DB8000000000001 /* FirebaseCrashlytics */,
 				614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */,
 				619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */,
 				612C8A312D85769B00614ED0 /* RevenueCat */,
@@ -662,6 +665,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
+		};
+		61A1B2002DB8000000000001 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;

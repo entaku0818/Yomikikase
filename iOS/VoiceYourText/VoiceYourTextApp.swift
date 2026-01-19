@@ -9,6 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 import UIKit
 import FirebaseCore
+import FirebaseCrashlytics
 import RevenueCat
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -20,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         infoLog("Configuring Firebase...")
         FirebaseApp.configure()
         infoLog("Firebase configured successfully")
+
+        // Crashlytics初期化
+        infoLog("Configuring Crashlytics...")
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(true)
+        infoLog("Crashlytics configured successfully")
 
         infoLog("Configuring RevenueCat...")
         Purchases.logLevel = .debug
