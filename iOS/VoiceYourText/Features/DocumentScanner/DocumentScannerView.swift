@@ -118,7 +118,11 @@ struct DocumentScannerView: UIViewControllerRepresentable {
         }
 
         private func saveImage(_ image: UIImage, scanId: String, pageIndex: Int) -> String? {
-            guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+            // 画像をリサイズ（最大幅1200px）
+            let resizedImage = resizeImage(image, maxWidth: 1200)
+
+            // 圧縮して保存（0.8 = 80%品質）
+            guard let imageData = resizedImage.jpegData(compressionQuality: 0.8) else {
                 return nil
             }
 
@@ -142,6 +146,26 @@ struct DocumentScannerView: UIViewControllerRepresentable {
                 print("Failed to save image: \(error.localizedDescription)")
                 return nil
             }
+        }
+
+        private func resizeImage(_ image: UIImage, maxWidth: CGFloat) -> UIImage {
+            let originalSize = image.size
+
+            // 既に最大幅より小さい場合はそのまま返す
+            if originalSize.width <= maxWidth {
+                return image
+            }
+
+            // アスペクト比を維持してリサイズ
+            let aspectRatio = originalSize.height / originalSize.width
+            let newSize = CGSize(width: maxWidth, height: maxWidth * aspectRatio)
+
+            UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+            image.draw(in: CGRect(origin: .zero, size: newSize))
+            let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+
+            return resizedImage ?? image
         }
     }
 }
