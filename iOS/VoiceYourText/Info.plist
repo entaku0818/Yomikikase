@@ -4,6 +4,8 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>ドキュメントをスキャンしてテキストを読み取るためにカメラを使用します</string>
 	<key>ADMOB_BANNER_ID</key>
 	<string>$(ADMOB_BANNER_ID)</string>
 	<key>REVENUECAT_API_KEY</key>

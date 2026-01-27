@@ -22,8 +22,17 @@ struct HomeView: View {
     @State private var showingPremiumAlert = false
     @State private var showingSubscription = false
     @State private var showingNewTextView = false
+    @State private var showingDocumentScanner = false
+    @State private var scannedText: String = ""
+    @State private var scannedImagePaths: [String] = []
+    @State private var showingScannedTextView = false
+    @State private var showingScanError = false
+    @State private var scanErrorMessage = ""
+    @State private var selectedSpeech: Speeches.Speech? = nil
+    @State private var showingFileViewer = false
 
     @Dependency(\.textFileImport) var textFileImport
+    @Dependency(\.analytics) var analytics
 
     var body: some View {
         NavigationStack {
@@ -105,14 +114,26 @@ struct HomeView: View {
                                 action: { onDevelopmentFeature("本") }
                             )
                             
-                            // スキャン（無効）
-                            createButtonCard(
-                                icon: "camera.fill",
-                                iconColor: .gray,
-                                title: "スキャン",
-                                isEnabled: false,
-                                action: { onDevelopmentFeature("スキャン") }
-                            )
+                            // スキャン（有効）
+                            Button {
+                                analytics.logEvent("scan_button_tapped", ["screen": "home"])
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else if !DocumentScannerView.isAvailable {
+                                    scanErrorMessage = "この機能はお使いのデバイスではサポートされていません"
+                                    showingScanError = true
+                                } else {
+                                    showingDocumentScanner = true
+                                }
+                            } label: {
+                                createButtonContent(
+                                    icon: "camera.fill",
+                                    iconColor: .gray,
+                                    title: "スキャン",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             
                             // リンク（無効）
                             createButtonCard(
@@ -140,11 +161,15 @@ struct HomeView: View {
                                 LazyVStack(spacing: 8) {
                                     ForEach(Array(viewStore.speechList.prefix(3))) { speech in
                                         HStack {
-                                            Image(systemName: "doc.text.fill")
+                                            // スキャンファイルはカメラアイコン、それ以外はテキストアイコン
+                                            let iconName = speech.fileType == "scan" ? "camera.fill" : "doc.text.fill"
+                                            let iconColor: Color = speech.fileType == "scan" ? .gray : .blue
+
+                                            Image(systemName: iconName)
                                                 .font(.system(size: 20))
-                                                .foregroundColor(.blue)
+                                                .foregroundColor(iconColor)
                                                 .frame(width: 32, height: 32)
-                                                .background(Color.blue.opacity(0.1))
+                                                .background(iconColor.opacity(0.1))
                                                 .cornerRadius(6)
                                             
                                             VStack(alignment: .leading, spacing: 4) {
@@ -158,15 +183,16 @@ struct HomeView: View {
                                             }
                                             
                                             Spacer()
-                                            
-                                            NavigationLink(destination: TextInputView(store: store, initialText: speech.text, fileId: speech.id)) {
+
+                                            Button {
+                                                selectedSpeech = speech
+                                                showingFileViewer = true
+                                                viewStore.send(.speechSelected(speech.text))
+                                            } label: {
                                                 Image(systemName: "play.circle")
                                                     .font(.system(size: 24))
                                                     .foregroundColor(.blue)
                                             }
-                                            .simultaneousGesture(TapGesture().onEnded {
-                                                viewStore.send(.speechSelected(speech.text))
-                                            })
                                         }
                                         .padding(.horizontal)
                                         .padding(.vertical, 8)
@@ -235,6 +261,64 @@ struct HomeView: View {
             }
             .fullScreenCover(isPresented: $showingNewTextView) {
                 TextInputView(store: store, initialText: "", fileId: nil)
+            }
+            .sheet(isPresented: $showingDocumentScanner) {
+                DocumentScannerView(
+                    onTextExtracted: { text, imagePaths in
+                        scannedText = text
+                        scannedImagePaths = imagePaths
+                        showingScannedTextView = true
+                        analytics.logEvent("scan_completed", [
+                            "text_length": text.count,
+                            "page_count": imagePaths.count,
+                            "screen": "home"
+                        ])
+                    },
+                    onError: { error in
+                        scanErrorMessage = error
+                        showingScanError = true
+                        analytics.logEvent("scan_error", [
+                            "error": error,
+                            "screen": "home"
+                        ])
+                    }
+                )
+                .ignoresSafeArea()
+            }
+            .fullScreenCover(isPresented: $showingScannedTextView) {
+                ScannedDocumentView(
+                    store: store,
+                    text: scannedText,
+                    imagePaths: scannedImagePaths,
+                    fileId: nil
+                )
+            }
+            .alert("スキャンエラー", isPresented: $showingScanError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(scanErrorMessage)
+            }
+            .fullScreenCover(isPresented: $showingFileViewer) {
+                if let speech = selectedSpeech {
+                    if speech.fileType == "scan", let imagePathString = speech.imagePath {
+                        // スキャンファイルの場合
+                        if let imagePathsData = imagePathString.data(using: .utf8),
+                           let imagePaths = try? JSONDecoder().decode([String].self, from: imagePathsData) {
+                            ScannedDocumentView(
+                                store: store,
+                                text: speech.text,
+                                imagePaths: imagePaths,
+                                fileId: speech.id
+                            )
+                        } else {
+                            // JSON解析に失敗した場合は通常のTextInputView
+                            TextInputView(store: store, initialText: speech.text, fileId: speech.id)
+                        }
+                    } else {
+                        // 通常のテキストファイル
+                        TextInputView(store: store, initialText: speech.text, fileId: speech.id)
+                    }
+                }
             }
         }
     }

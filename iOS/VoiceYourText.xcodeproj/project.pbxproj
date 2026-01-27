@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
-		61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61A1B2002DB8000000000001 /* FirebaseCrashlytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
+		61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61A1B2002DB8000000000001 /* FirebaseCrashlytics */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
 /* End PBXBuildFile section */
@@ -187,32 +187,6 @@
 		};
 /* End PBXNativeTarget section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
-				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
-				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
-				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
-			);
-			name = "Upload Crashlytics dSYMs";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXProject section */
 		614F56C92B11B81F00E21FE9 /* Project object */ = {
 			isa = PBXProject;
@@ -292,6 +266,32 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+			);
+			name = "Upload Crashlytics dSYMs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		614F56CD2B11B81F00E21FE9 /* Sources */ = {
@@ -693,11 +693,6 @@
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAnalytics;
 		};
-		61A1B2002DB8000000000001 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
 		614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 614F57092B11EE7C00E21FE9 /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
@@ -707,6 +702,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 619AE5EE2BAD5AEB00CE4C4C /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		61A1B2002DB8000000000001 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
