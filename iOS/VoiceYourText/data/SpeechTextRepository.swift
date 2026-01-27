@@ -58,7 +58,7 @@ class SpeechTextRepository: NSObject {
     }
 
     @discardableResult
-    func insert(title: String, text: String, languageSetting: LanguageSetting) -> UUID {
+    func insert(title: String, text: String, languageSetting: LanguageSetting, fileType: String? = nil, imagePath: String? = nil) -> UUID {
         let newUUID = UUID()
         if let speechText = NSManagedObject(entity: self.entity!, insertInto: managedContext) as? SpeechText {
 
@@ -66,6 +66,8 @@ class SpeechTextRepository: NSObject {
             speechText.title = title
             speechText.text = text
             speechText.languageSetting = languageSetting.rawValue
+            speechText.fileType = fileType
+            speechText.imagePath = imagePath
             speechText.createdAt = Date()
             speechText.updatedAt = Date()
 
@@ -94,7 +96,9 @@ class SpeechTextRepository: NSObject {
                     id: speechText.uuid ?? UUID(), title: speechText.title ?? "",
                     text: speechText.text ?? "", isDefault: false,
                     createdAt: speechText.createdAt ?? Date(),
-                    updatedAt: speechText.updatedAt ?? Date()
+                    updatedAt: speechText.updatedAt ?? Date(),
+                    fileType: speechText.fileType,
+                    imagePath: speechText.imagePath
                 )
             }
 
@@ -127,7 +131,9 @@ class SpeechTextRepository: NSObject {
                     isDefault: false,
                     createdAt: speechText.createdAt ?? Date(),
                     updatedAt: speechText.updatedAt ?? Date(),
-                    deletedAt: speechText.deletedAt
+                    deletedAt: speechText.deletedAt,
+                    fileType: speechText.fileType,
+                    imagePath: speechText.imagePath
                 )
             }
         } catch let error as NSError {

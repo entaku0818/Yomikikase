@@ -21,6 +21,8 @@ struct Speeches: Reducer {
         var createdAt: Date
         var updatedAt: Date
         var deletedAt: Date? = nil  // ソフトデリート用
+        var fileType: String? = nil  // "text", "pdf", "scan"
+        var imagePath: String? = nil  // スキャン画像のパス（scanの場合のみ）
     }
 
     struct State: Equatable {
