@@ -58,6 +58,7 @@ struct NowPlayingFeature {
         Reduce { state, action in
             switch action {
             case let .startPlaying(title, text, source):
+                // 既存の再生を完全に停止してから新しい再生を開始
                 state.isPlaying = true
                 state.currentTitle = title
                 state.currentText = text
@@ -65,9 +66,15 @@ struct NowPlayingFeature {
                 state.progress = 0.0
                 state.useCloudTTS = false
                 state.cloudTTSAudioURL = nil
-                return .none
+                return .run { _ in
+                    // 既存の再生を完全に停止
+                    _ = await speechSynthesizer.stopSpeaking()
+                    // すべてのAVAudioPlayerに停止を通知
+                    NotificationCenter.default.post(name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+                }
 
             case let .startPlayingWithCloudTTS(title, text, source, audioURL):
+                // 既存の再生を完全に停止してから新しい再生を開始
                 state.isPlaying = true
                 state.currentTitle = title
                 state.currentText = text
@@ -75,7 +82,12 @@ struct NowPlayingFeature {
                 state.progress = 0.0
                 state.useCloudTTS = true
                 state.cloudTTSAudioURL = audioURL
-                return .none
+                return .run { _ in
+                    // 既存の再生を完全に停止
+                    _ = await speechSynthesizer.stopSpeaking()
+                    // すべてのAVAudioPlayerに停止を通知
+                    NotificationCenter.default.post(name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+                }
 
             case .resumePlaying:
                 // ミニプレイヤーから再生を再開
