@@ -36,6 +36,16 @@ struct TextInputView: View {
 
     let initialText: String
     let fileId: UUID?
+    let fileType: String?
+    let imagePaths: [String]?
+
+    init(store: Store<Speeches.State, Speeches.Action>, initialText: String, fileId: UUID?, fileType: String? = nil, imagePaths: [String]? = nil) {
+        self.store = store
+        self.initialText = initialText
+        self.fileId = fileId
+        self.fileType = fileType
+        self.imagePaths = imagePaths
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -121,6 +131,22 @@ struct TextInputView: View {
 
             // 利用可能な音声を読み込む
             loadAvailableVoices()
+
+            // 他の再生が開始されたら、このTextInputViewの再生を停止
+            NotificationCenter.default.addObserver(
+                forName: NSNotification.Name("StopAllAudioPlayers"),
+                object: nil,
+                queue: .main
+            ) { [weak audioPlayer] _ in
+                audioPlayer?.stop()
+                self.stopHighlightTimer()
+                self.isSpeaking = false
+                self.highlightedRange = nil
+            }
+        }
+        .onDisappear {
+            // 通知の監視を解除
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
         }
         .sheet(isPresented: $showingVoicePicker) {
             VoicePickerSheet(
@@ -405,6 +431,15 @@ struct TextInputView: View {
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
         let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
 
+        // imagePathsをJSON文字列に変換
+        var imagePathString: String? = nil
+        if let imagePaths = imagePaths, !imagePaths.isEmpty {
+            if let jsonData = try? JSONEncoder().encode(imagePaths),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                imagePathString = jsonString
+            }
+        }
+
         var savedFileId: UUID
         if let fileId = fileId {
             infoLog("[TTS] Updating existing text with fileId: \(fileId)")
@@ -418,7 +453,9 @@ struct TextInputView: View {
             savedFileId = SpeechTextRepository.shared.insert(
                 title: finalTitle,
                 text: text,
-                languageSetting: languageSetting
+                languageSetting: languageSetting,
+                fileType: fileType ?? "text",
+                imagePath: imagePathString
             )
             infoLog("[TTS] Created new text with savedFileId: \(savedFileId)")
             // Update currentFileId for new texts
