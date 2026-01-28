@@ -262,9 +262,11 @@ struct HomeView: View {
             .fullScreenCover(isPresented: $showingNewTextView) {
                 TextInputView(store: store, initialText: "", fileId: nil)
             }
-            .sheet(isPresented: $showingDocumentScanner) {
+            .fullScreenCover(isPresented: $showingDocumentScanner) {
                 DocumentScannerView(
                     onTextExtracted: { text, imagePaths in
+                        infoLog("HomeView received onTextExtracted - text length: \(text.count), imagePaths count: \(imagePaths.count)")
+                        infoLog("HomeView imagePaths: \(imagePaths)")
                         scannedText = text
                         scannedImagePaths = imagePaths
                         showingScannedTextView = true

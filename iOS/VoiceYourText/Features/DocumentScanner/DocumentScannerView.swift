@@ -56,62 +56,73 @@ struct DocumentScannerView: UIViewControllerRepresentable {
             var savedImagePaths: [String] = []
             let dispatchGroup = DispatchGroup()
 
-            // スキャンIDを生成（すべてのページで同じIDを使用）
+            // スキャンIDを生成
             let scanId = UUID().uuidString
 
-            for pageIndex in 0..<scan.pageCount {
-                dispatchGroup.enter()
-                let image = scan.imageOfPage(at: pageIndex)
+            // 1ページ目のみ処理
+            let pageIndex = 0
+            guard scan.pageCount > 0 else {
+                parent.onError("スキャンされたページがありません")
+                return
+            }
 
-                // 画像を保存
-                if let imagePath = saveImage(image, scanId: scanId, pageIndex: pageIndex) {
-                    savedImagePaths.append(imagePath)
+            dispatchGroup.enter()
+            let image = scan.imageOfPage(at: pageIndex)
+
+            // 画像を保存
+            if let imagePath = saveImage(image, scanId: scanId, pageIndex: pageIndex) {
+                savedImagePaths.append(imagePath)
+            }
+
+            guard let cgImage = image.cgImage else {
+                dispatchGroup.leave()
+                parent.onError("画像の読み込みに失敗しました")
+                return
+            }
+
+            let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            let request = VNRecognizeTextRequest { request, error in
+                defer { dispatchGroup.leave() }
+
+                if let error = error {
+                    errorLog("Text recognition error: \(error.localizedDescription)")
+                    return
                 }
 
-                guard let cgImage = image.cgImage else {
-                    dispatchGroup.leave()
-                    continue
+                guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                    return
                 }
 
-                let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-                let request = VNRecognizeTextRequest { request, error in
-                    defer { dispatchGroup.leave() }
+                let pageText = observations.compactMap { observation in
+                    observation.topCandidates(1).first?.string
+                }.joined(separator: "\n")
 
-                    if let error = error {
-                        print("Text recognition error: \(error.localizedDescription)")
-                        return
-                    }
-
-                    guard let observations = request.results as? [VNRecognizedTextObservation] else {
-                        return
-                    }
-
-                    let pageText = observations.compactMap { observation in
-                        observation.topCandidates(1).first?.string
-                    }.joined(separator: "\n")
-
-                    if !pageText.isEmpty {
-                        extractedTexts.append(pageText)
-                    }
+                if !pageText.isEmpty {
+                    extractedTexts.append(pageText)
                 }
+            }
 
-                // 日本語と英語の両方を認識
-                request.recognitionLanguages = ["ja-JP", "en-US"]
-                request.recognitionLevel = .accurate
-                request.usesLanguageCorrection = true
+            // 日本語と英語の両方を認識
+            request.recognitionLanguages = ["ja-JP", "en-US"]
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = true
 
-                do {
-                    try requestHandler.perform([request])
-                } catch {
-                    print("Failed to perform text recognition: \(error.localizedDescription)")
-                }
+            do {
+                try requestHandler.perform([request])
+            } catch {
+                errorLog("Failed to perform text recognition: \(error.localizedDescription)")
             }
 
             dispatchGroup.notify(queue: .main) {
                 let fullText = extractedTexts.joined(separator: "\n\n")
+                infoLog("OCR completed. Extracted text length: \(fullText.count)")
+                infoLog("Saved image paths count: \(savedImagePaths.count)")
+                infoLog("Saved image paths: \(savedImagePaths)")
+
                 if fullText.isEmpty {
                     self.parent.onError("テキストを認識できませんでした")
                 } else {
+                    infoLog("Calling onTextExtracted with \(savedImagePaths.count) image paths")
                     self.parent.onTextExtracted(fullText, savedImagePaths)
                 }
             }
