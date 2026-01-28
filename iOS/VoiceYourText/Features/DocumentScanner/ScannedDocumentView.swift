@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import AVFoundation
 
 struct ScannedDocumentView: View {
     @Environment(\.dismiss) private var dismiss
@@ -14,11 +15,13 @@ struct ScannedDocumentView: View {
     let text: String
     let imagePaths: [String]
     let fileId: UUID?
+    let onSaved: ((UUID) -> Void)? = nil
 
     @State private var selectedTab: ViewTab = .image
     @State private var currentImageIndex: Int = 0
     @State private var editableText: String = ""
     @State private var isEditingText: Bool = false
+    @State private var isSpeaking: Bool = false
     @FocusState private var isTextEditorFocused: Bool
 
     enum ViewTab {
@@ -31,6 +34,7 @@ struct ScannedDocumentView: View {
             // ヘッダー
             HStack {
                 Button(action: {
+                    stopSpeaking()
                     dismiss()
                 }) {
                     Image(systemName: "chevron.down")
@@ -52,26 +56,37 @@ struct ScannedDocumentView: View {
 
                 Spacer()
 
-                // 編集/保存ボタン（テキストタブでのみ表示）
-                if selectedTab == .text {
-                    if isEditingText {
-                        Button("保存") {
-                            saveText()
+                HStack(spacing: 8) {
+                    // 再生/停止ボタン（常に表示）
+                    Button(action: {
+                        if isSpeaking {
+                            stopSpeaking()
+                        } else {
+                            startSpeaking()
                         }
-                        .disabled(editableText.isEmpty)
-                        .padding(.trailing, 16)
-                    } else {
-                        Button("編集") {
-                            isEditingText = true
-                            isTextEditorFocused = true
-                        }
-                        .padding(.trailing, 16)
+                    }) {
+                        Image(systemName: isSpeaking ? "stop.circle.fill" : "play.circle.fill")
+                            .font(.system(size: 24))
+                            .foregroundColor(.blue)
                     }
-                } else {
-                    // プレースホルダー（対称性のため）
-                    Color.clear
-                        .frame(width: 52, height: 44)
+                    .disabled(editableText.isEmpty)
+
+                    // 編集/保存ボタン（テキストタブでのみ表示）
+                    if selectedTab == .text {
+                        if isEditingText {
+                            Button("保存") {
+                                saveText()
+                            }
+                            .disabled(editableText.isEmpty)
+                        } else {
+                            Button("編集") {
+                                isEditingText = true
+                                isTextEditorFocused = true
+                            }
+                        }
+                    }
                 }
+                .padding(.trailing, 16)
             }
             .frame(height: 56)
             .background(Color(UIColor.systemBackground))
@@ -95,6 +110,9 @@ struct ScannedDocumentView: View {
             if fileId == nil {
                 isEditingText = true
             }
+        }
+        .onDisappear {
+            stopSpeaking()
         }
     }
 
@@ -166,6 +184,53 @@ struct ScannedDocumentView: View {
 
     // MARK: - Helper Functions
 
+    private func startSpeaking() {
+        guard !editableText.isEmpty else { return }
+
+        isSpeaking = true
+
+        let synthesizer = AVSpeechSynthesizer()
+        let utterance = AVSpeechUtterance(string: editableText)
+
+        // 言語設定を取得
+        let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
+        utterance.voice = AVSpeechSynthesisVoice(language: languageCode)
+        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.75
+        utterance.pitchMultiplier = 1.0
+
+        // 音声設定をアクティブにする
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            errorLog("Failed to set audio session: \(error)")
+        }
+
+        // テキストを選択（ハイライト風）
+        store.send(.speechSelected(editableText))
+
+        synthesizer.speak(utterance)
+
+        // 終了を検知するため、通知を監視
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.AVSpeechSynthesizerDidFinish,
+            object: synthesizer,
+            queue: .main
+        ) { [weak self] _ in
+            self?.isSpeaking = false
+        }
+    }
+
+    private func stopSpeaking() {
+        isSpeaking = false
+
+        // 全てのAVSpeechSynthesizerを停止
+        NotificationCenter.default.post(
+            name: NSNotification.Name("StopAllSpeech"),
+            object: nil
+        )
+    }
+
     private func saveText() {
         let finalTitle = String(editableText.prefix(20))
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
@@ -229,7 +294,7 @@ struct ScannedDocumentView: View {
         store: Store(initialState: Speeches.State(speechList: [], currentText: "")) {
             Speeches()
         },
-        text: "スキャンされたテキストのサンプル",
+        text: "スキャンされたテキストのサンプル\nこれは複数行のテキストです。\n音声で読み上げることができます。",
         imagePaths: [],
         fileId: nil
     )
