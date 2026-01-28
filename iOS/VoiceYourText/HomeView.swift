@@ -23,13 +23,17 @@ struct HomeView: View {
     @State private var showingSubscription = false
     @State private var showingNewTextView = false
     @State private var showingDocumentScanner = false
-    @State private var scannedText: String = ""
-    @State private var scannedImagePaths: [String] = []
-    @State private var showingScannedTextView = false
+    @State private var scannedDocument: ScannedDocument? = nil
     @State private var showingScanError = false
     @State private var scanErrorMessage = ""
     @State private var selectedSpeech: Speeches.Speech? = nil
     @State private var showingFileViewer = false
+
+    struct ScannedDocument: Identifiable {
+        let id = UUID()
+        let text: String
+        let imagePaths: [String]
+    }
 
     @Dependency(\.textFileImport) var textFileImport
     @Dependency(\.analytics) var analytics
@@ -262,20 +266,22 @@ struct HomeView: View {
             .fullScreenCover(isPresented: $showingNewTextView) {
                 TextInputView(store: store, initialText: "", fileId: nil)
             }
-            .fullScreenCover(isPresented: $showingDocumentScanner) {
+            .fullScreenCover(isPresented: $showingDocumentScanner, onDismiss: {
+                // dismissが完了したらログを出力
+                infoLog("DocumentScanner dismissed")
+            }) {
                 DocumentScannerView(
                     onTextExtracted: { text, imagePaths in
                         infoLog("HomeView received onTextExtracted - text length: \(text.count), imagePaths count: \(imagePaths.count)")
                         infoLog("HomeView imagePaths: \(imagePaths)")
-                        scannedText = text
-                        scannedImagePaths = imagePaths
 
-                        // スキャナーを閉じてから次の画面を開く
+                        // スキャナーを閉じる
                         showingDocumentScanner = false
 
-                        // 少し遅延させて、スキャナーが完全に閉じてから次の画面を開く
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                            showingScannedTextView = true
+                        // dismissが完了してからデータをセットしてビューを表示
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            infoLog("Setting scannedDocument with text length: \(text.count), imagePaths: \(imagePaths)")
+                            scannedDocument = ScannedDocument(text: text, imagePaths: imagePaths)
                         }
 
                         analytics.logEvent("scan_completed", [
@@ -295,11 +301,11 @@ struct HomeView: View {
                 )
                 .ignoresSafeArea()
             }
-            .fullScreenCover(isPresented: $showingScannedTextView) {
+            .fullScreenCover(item: $scannedDocument) { document in
                 ScannedDocumentView(
                     store: store,
-                    text: scannedText,
-                    imagePaths: scannedImagePaths,
+                    text: document.text,
+                    imagePaths: document.imagePaths,
                     fileId: nil
                 )
             }
