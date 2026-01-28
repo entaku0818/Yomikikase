@@ -455,20 +455,23 @@ struct FileViewerContainer: View {
 
     @ViewBuilder
     private func scanFileView(speech: Speeches.Speech, imagePathString: String) -> some View {
-        debugLog("Loading scan file with imagePath: \(imagePathString)")
         if let imagePathsData = imagePathString.data(using: .utf8),
            let imagePaths = try? JSONDecoder().decode([String].self, from: imagePathsData) {
-            debugLog("Decoded \(imagePaths.count) image paths: \(imagePaths)")
             ScannedDocumentView(
                 store: store,
                 text: speech.text,
                 imagePaths: imagePaths,
                 fileId: speech.id
             )
+            .onAppear {
+                debugLog("Loading scan file with imagePath: \(imagePathString)")
+                debugLog("Decoded \(imagePaths.count) image paths: \(imagePaths)")
+            }
         } else {
-            // JSON解析に失敗した場合は通常のTextInputView
-            errorLog("Failed to decode imagePaths JSON: \(imagePathString)")
             TextInputView(store: store, initialText: speech.text, fileId: speech.id)
+                .onAppear {
+                    errorLog("Failed to decode imagePaths JSON: \(imagePathString)")
+                }
         }
     }
 }
