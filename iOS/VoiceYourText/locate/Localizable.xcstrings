@@ -3536,16 +3536,6 @@
         }
       }
     },
-    "ページ %lld / %lld" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ページ %1$lld / %2$lld"
-          }
-        }
-      }
-    },
     "ホーム" : {
       "localizations" : {
         "de" : {
