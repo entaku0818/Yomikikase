@@ -22,6 +22,7 @@ struct ScannedDocumentView: View {
     @State private var editableText: String = ""
     @State private var isEditingText: Bool = false
     @State private var isSpeaking: Bool = false
+    @State private var speechSynthesizer: AVSpeechSynthesizer?
     @FocusState private var isTextEditorFocused: Bool
 
     enum ViewTab {
@@ -187,9 +188,21 @@ struct ScannedDocumentView: View {
     private func startSpeaking() {
         guard !editableText.isEmpty else { return }
 
+        // 既存の音声を停止
+        stopSpeaking()
+
         isSpeaking = true
 
         let synthesizer = AVSpeechSynthesizer()
+        speechSynthesizer = synthesizer
+
+        let coordinator = SpeechCoordinator(onFinish: {
+            DispatchQueue.main.async {
+                self.isSpeaking = false
+            }
+        })
+        synthesizer.delegate = coordinator
+
         let utterance = AVSpeechUtterance(string: editableText)
 
         // 言語設定を取得
@@ -210,19 +223,12 @@ struct ScannedDocumentView: View {
         store.send(.speechSelected(editableText))
 
         synthesizer.speak(utterance)
-
-        // 終了を検知するため、通知を監視
-        NotificationCenter.default.addObserver(
-            forName: NSNotification.Name.AVSpeechSynthesizerDidFinish,
-            object: synthesizer,
-            queue: .main
-        ) { [weak self] _ in
-            self?.isSpeaking = false
-        }
     }
 
     private func stopSpeaking() {
         isSpeaking = false
+        speechSynthesizer?.stopSpeaking(at: .immediate)
+        speechSynthesizer = nil
 
         // 全てのAVSpeechSynthesizerを停止
         NotificationCenter.default.post(
@@ -286,6 +292,23 @@ struct ScannedDocumentView: View {
         }
         errorLog("Failed to load image from: \(imageURL.path)")
         return nil
+    }
+}
+
+// MARK: - Speech Coordinator
+private class SpeechCoordinator: NSObject, AVSpeechSynthesizerDelegate {
+    let onFinish: () -> Void
+
+    init(onFinish: @escaping () -> Void) {
+        self.onFinish = onFinish
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        onFinish()
+    }
+
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
+        onFinish()
     }
 }
 
