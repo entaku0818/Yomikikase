@@ -103,11 +103,10 @@ struct ScannedDocumentView: View {
         VStack(spacing: 0) {
             if !imagePaths.isEmpty, let firstImagePath = imagePaths.first {
                 if let image = loadImage(firstImagePath) {
-                    ScrollView([.horizontal, .vertical]) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                    }
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 } else {
                     VStack(spacing: 16) {
                         Image(systemName: "photo")
