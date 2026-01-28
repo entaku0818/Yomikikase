@@ -37,15 +37,17 @@ struct DocumentScannerView: UIViewControllerRepresentable {
         }
 
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            picker.dismiss(animated: true)
-
             guard let image = info[.originalImage] as? UIImage else {
-                parent.onError("画像の読み込みに失敗しました")
+                picker.dismiss(animated: true) {
+                    self.parent.onError("画像の読み込みに失敗しました")
+                }
                 return
             }
 
-            // 即座にOCR処理を開始
-            extractText(from: image)
+            // dismissが完了してからOCR処理を開始
+            picker.dismiss(animated: true) {
+                self.extractText(from: image)
+            }
         }
 
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
