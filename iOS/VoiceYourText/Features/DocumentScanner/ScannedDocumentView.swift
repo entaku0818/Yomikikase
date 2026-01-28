@@ -227,9 +227,14 @@ struct ScannedDocumentView: View {
         let scansDirectory = documentsURL.appendingPathComponent("scans", isDirectory: true)
         let imageURL = scansDirectory.appendingPathComponent(imagePath)
 
+        debugLog("Loading image from: \(imageURL.path)")
+        debugLog("File exists: \(fileManager.fileExists(atPath: imageURL.path))")
+
         if let imageData = try? Data(contentsOf: imageURL) {
+            debugLog("Image loaded successfully, size: \(imageData.count) bytes")
             return UIImage(data: imageData)
         }
+        errorLog("Failed to load image from: \(imageURL.path)")
         return nil
     }
 }
