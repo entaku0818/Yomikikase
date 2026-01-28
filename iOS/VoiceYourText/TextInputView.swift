@@ -52,7 +52,8 @@ struct TextInputView: View {
             // ヘッダー
             HStack {
                 Button(action: {
-                    // 再生中でも止めずにdismiss（ミニプレイヤーで継続）
+                    // 閉じる時は必ず再生を停止
+                    stopSpeaking()
                     dismiss()
                 }) {
                     Image(systemName: "chevron.down")
@@ -131,22 +132,10 @@ struct TextInputView: View {
 
             // 利用可能な音声を読み込む
             loadAvailableVoices()
-
-            // 他の再生が開始されたら、このTextInputViewの再生を停止
-            NotificationCenter.default.addObserver(
-                forName: NSNotification.Name("StopAllAudioPlayers"),
-                object: nil,
-                queue: .main
-            ) { [weak audioPlayer] _ in
-                audioPlayer?.stop()
-                self.stopHighlightTimer()
-                self.isSpeaking = false
-                self.highlightedRange = nil
-            }
         }
         .onDisappear {
-            // 通知の監視を解除
-            NotificationCenter.default.removeObserver(self, name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+            // Viewが閉じられる時も念のため停止
+            stopSpeaking()
         }
         .sheet(isPresented: $showingVoicePicker) {
             VoicePickerSheet(
@@ -235,6 +224,9 @@ struct TextInputView: View {
             return
         }
 
+        // 既存の再生を完全に停止
+        stopSpeaking()
+
         isSpeaking = true
 
         // nowPlayingを更新（ミニプレイヤー用）
@@ -274,6 +266,10 @@ struct TextInputView: View {
     }
 
     private func playDownloadedAudio(url: URL) {
+        // 既存のaudioPlayerを停止
+        audioPlayer?.stop()
+        audioPlayer = nil
+
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: url)
 
