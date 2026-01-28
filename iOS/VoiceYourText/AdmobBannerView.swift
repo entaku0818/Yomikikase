@@ -10,7 +10,7 @@ import SwiftUI
 
 struct AdmobBannerView: UIViewRepresentable {
     @EnvironmentObject private var adConfig: AdConfig
-    
+
     func makeUIView(context: Context) -> GADBannerView {
         // 画面の幅を取得
         let screenWidth = UIScreen.main.bounds.width
@@ -29,11 +29,20 @@ struct AdmobBannerView: UIViewRepresentable {
         }
 
         view.delegate = context.coordinator
-        view.load(GADRequest())
+
+        // 非同期で広告を読み込む（画面表示をブロックしない）
+        DispatchQueue.global(qos: .utility).async {
+            let request = GADRequest()
+            DispatchQueue.main.async {
+                view.load(request)
+            }
+        }
+
         return view
     }
 
     func updateUIView(_ uiView: GADBannerView, context: Context) {
+        // 広告のリフレッシュは自動的に行われるため、手動での再読み込みは不要
     }
 
     // Adding the Coordinator for delegate handling

@@ -91,7 +91,7 @@ class SpeechTextRepository: NSObject {
             let coreDataSpeechTexts = try managedContext.fetch(fetchRequest)
 
             // SpeechTextからSpeeches.Speechに変換
-            var speeches = coreDataSpeechTexts.map { speechText in
+            let speeches = coreDataSpeechTexts.map { speechText in
                 Speeches.Speech(
                     id: speechText.uuid ?? UUID(), title: speechText.title ?? "",
                     text: speechText.text ?? "", isDefault: false,
@@ -101,10 +101,6 @@ class SpeechTextRepository: NSObject {
                     imagePath: speechText.imagePath
                 )
             }
-
-            // デフォルトの挨拶を追加（現在の言語設定に基づく）
-            let greetings = createGreetingSpeeches(language: language)
-            speeches.append(contentsOf: greetings)
 
             return speeches
         } catch let error as NSError {
@@ -142,155 +138,6 @@ class SpeechTextRepository: NSObject {
         }
     }
 
-    private func createGreetingSpeeches(language: LanguageSetting) -> [Speeches.Speech] {
-        let greetings: [String]
-        switch language {
-        case .japanese:
-            greetings = [
-                "こんにちは",
-                "こんばんは",
-                "おやすみなさい",
-                "いってきます",
-                "ただいま",
-                "いただきます",
-                "ごちそうさまでした",
-                "ありがとうございます",
-                "すみません",
-                "よろしくお願いします"
-            ]
-        case .english:
-            greetings = [
-                "Hello",
-                "Good evening",
-                "Good night",
-                "I'm leaving",
-                "I'm home",
-                "Let's eat",
-                "Thank you for the meal",
-                "Thank you",
-                "Excuse me",
-                "Please treat me well"
-            ]
-        case .german:
-            greetings = [
-                "Hallo",
-                "Guten Abend",
-                "Gute Nacht",
-                "Ich gehe",
-                "Ich bin zu Hause",
-                "Lass uns essen",
-                "Danke für das Essen",
-                "Danke",
-                "Entschuldigung",
-                "Bitte behandle mich gut"
-            ]
-        case .spanish:
-            greetings = [
-                "Hola",
-                "Buenas noches",
-                "Buenas noches",
-                "Me estoy yendo",
-                "Ya llegué a casa",
-                "Vamos a comer",
-                "Gracias por la comida",
-                "Gracias",
-                "Disculpe",
-                "Por favor, trátame bien"
-            ]
-        case .turkish:
-            greetings = [
-                "Merhaba",
-                "İyi akşamlar",
-                "İyi geceler",
-                "Gidiyorum",
-                "Eve geldim",
-                "Hadi yemek yiyelim",
-                "Yemeğin için teşekkür ederim",
-                "Teşekkür ederim",
-                "Affedersiniz",
-                "Lütfen beni iyi tedavi et"
-            ]
-        case .french:
-            greetings = [
-                "Bonjour",
-                "Bonsoir",
-                "Bonne nuit",
-                "Je pars",
-                "Je suis à la maison",
-                "Mangeons",
-                "Merci pour le repas",
-                "Merci",
-                "Excusez-moi",
-                "S'il vous plaît, traitez-moi bien"
-            ]
-        case .vietnamese:
-            greetings = [
-                "Xin chào", // Hello
-                "Chào buổi tối", // Good evening
-                "Chúc ngủ ngon", // Good night
-                "Tôi đi đây", // I'm leaving
-                "Tôi về", // I'm home
-                "Ăn thôi", // Let's eat
-                "Cảm ơn bữa ăn", // Thank you for the meal
-                "Cảm ơn", // Thank you
-                "Xin lỗi", // Excuse me
-                "Xin hãy đối xử tốt với tôi" // Please treat me well
-            ]
-        case .thai:
-            greetings = [
-                "สวัสดี", // Hello
-                "สวัสดีตอนเย็น", // Good evening
-                "ราตรีสวัสดิ์", // Good night
-                "ฉันกำลังจะไป", // I'm leaving
-                "ฉันกลับถึงบ้านแล้ว", // I'm home
-                "มากินกันเถอะ", // Let's eat
-                "ขอบคุณสำหรับอาหาร", // Thank you for the meal
-                "ขอบคุณ", // Thank you
-                "ขอโทษ", // Excuse me
-                "โปรดดูแลฉันด้วยนะ" // Please treat me well
-            ]
-        case .korean:
-            greetings = [
-                "안녕하세요", // Hello
-                "안녕하세요", // Good evening (same as Hello)
-                "안녕히 주무세요", // Good night
-                "잘 가요", // I'm leaving
-                "집에 돌아왔어요", // I'm home
-                "식사합시다", // Let's eat
-                "식사를 잘 했습니다", // Thank you for the meal
-                "감사합니다", // Thank you
-                "실례합니다", // Excuse me
-                "잘 부탁드립니다" // Please treat me well
-            ]
-        case .italian:
-            greetings = [
-                "Ciao", // Hello
-                "Buonasera", // Good evening
-                "Buonanotte", // Good night
-                "Sto andando", // I'm leaving
-                "Sono a casa", // I'm home
-                "Mangiamo", // Let's eat
-                "Grazie per il pasto", // Thank you for the meal
-                "Grazie", // Thank you
-                "Scusami", // Excuse me
-                "Per favore, trattami bene" // Please treat me well
-            ]
-        }
-
-        return greetings.map { greeting in
-            createDefaultSpeech(text: greeting)
-        }
-    }
-
-    private func createDefaultSpeech(text: String) -> Speeches.Speech {
-        Speeches.Speech(
-            id: UUID(), title: text,
-            text: text,
-            isDefault: true,
-            createdAt: Date(),
-            updatedAt: Date()
-        )
-    }
 
     func updateSpeechText(id: UUID, title: String, text: String) {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
