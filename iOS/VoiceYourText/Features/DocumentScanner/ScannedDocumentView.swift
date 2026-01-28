@@ -88,6 +88,8 @@ struct ScannedDocumentView: View {
         .background(Color(UIColor.systemBackground))
         .navigationBarHidden(true)
         .onAppear {
+            infoLog("ScannedDocumentView onAppear - text length: \(text.count), imagePaths count: \(imagePaths.count)")
+            infoLog("ScannedDocumentView imagePaths: \(imagePaths)")
             editableText = text
             // 新規スキャン（fileId == nil）の場合は編集モードで開始
             if fileId == nil {
@@ -99,38 +101,22 @@ struct ScannedDocumentView: View {
     // MARK: - 画像ビュー
     private var imageView: some View {
         VStack(spacing: 0) {
-            if !imagePaths.isEmpty {
-                TabView(selection: $currentImageIndex) {
-                    ForEach(Array(imagePaths.enumerated()), id: \.offset) { index, imagePath in
-                        if let image = loadImage(imagePath) {
-                            ScrollView([.horizontal, .vertical]) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                            }
-                            .tag(index)
-                        } else {
-                            VStack(spacing: 16) {
-                                Image(systemName: "photo")
-                                    .font(.system(size: 48))
-                                    .foregroundColor(.secondary)
-                                Text("画像を読み込めません")
-                                    .foregroundColor(.secondary)
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .tag(index)
-                        }
+            if !imagePaths.isEmpty, let firstImagePath = imagePaths.first {
+                if let image = loadImage(firstImagePath) {
+                    ScrollView([.horizontal, .vertical]) {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFit()
                     }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-
-                // ページ情報
-                if imagePaths.count > 1 {
-                    Text("ページ \(currentImageIndex + 1) / \(imagePaths.count)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.vertical, 8)
+                } else {
+                    VStack(spacing: 16) {
+                        Image(systemName: "photo")
+                            .font(.system(size: 48))
+                            .foregroundColor(.secondary)
+                        Text("画像を読み込めません")
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
             } else {
                 VStack(spacing: 16) {
