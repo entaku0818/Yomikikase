@@ -269,7 +269,15 @@ struct HomeView: View {
                         infoLog("HomeView imagePaths: \(imagePaths)")
                         scannedText = text
                         scannedImagePaths = imagePaths
-                        showingScannedTextView = true
+
+                        // スキャナーを閉じてから次の画面を開く
+                        showingDocumentScanner = false
+
+                        // 少し遅延させて、スキャナーが完全に閉じてから次の画面を開く
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            showingScannedTextView = true
+                        }
+
                         analytics.logEvent("scan_completed", [
                             "text_length": text.count,
                             "page_count": imagePaths.count,
