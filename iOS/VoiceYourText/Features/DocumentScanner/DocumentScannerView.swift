@@ -120,6 +120,7 @@ struct DocumentScannerView: UIViewControllerRepresentable {
         private func saveImage(_ image: UIImage, scanId: String, pageIndex: Int) -> String? {
             // 元のサイズのまま圧縮して保存（0.8 = 80%品質）
             guard let imageData = image.jpegData(compressionQuality: 0.8) else {
+                print("Failed to convert image to JPEG data")
                 return nil
             }
 
@@ -129,7 +130,13 @@ struct DocumentScannerView: UIViewControllerRepresentable {
 
             // ディレクトリが存在しない場合は作成
             if !fileManager.fileExists(atPath: scansDirectory.path) {
-                try? fileManager.createDirectory(at: scansDirectory, withIntermediateDirectories: true)
+                do {
+                    try fileManager.createDirectory(at: scansDirectory, withIntermediateDirectories: true)
+                    print("Created scans directory: \(scansDirectory.path)")
+                } catch {
+                    print("Failed to create scans directory: \(error.localizedDescription)")
+                    return nil
+                }
             }
 
             // ファイル名: scanId_pageIndex.jpg
@@ -138,6 +145,7 @@ struct DocumentScannerView: UIViewControllerRepresentable {
 
             do {
                 try imageData.write(to: fileURL)
+                print("Image saved successfully: \(fileURL.path) (\(imageData.count) bytes)")
                 return fileName  // 相対パスのみを返す
             } catch {
                 print("Failed to save image: \(error.localizedDescription)")
