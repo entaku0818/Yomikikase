@@ -7,7 +7,6 @@
 
 import SwiftUI
 import UIKit
-import VisionKit
 import Vision
 
 struct DocumentScannerView: UIViewControllerRepresentable {
@@ -15,13 +14,14 @@ struct DocumentScannerView: UIViewControllerRepresentable {
     let onTextExtracted: (String, [String]) -> Void  // (text, imagePaths)
     let onError: (String) -> Void
 
-    func makeUIViewController(context: Context) -> VNDocumentCameraViewController {
-        let scannerViewController = VNDocumentCameraViewController()
-        scannerViewController.delegate = context.coordinator
-        return scannerViewController
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = context.coordinator
+        return picker
     }
 
-    func updateUIViewController(_ uiViewController: VNDocumentCameraViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
         // No updates needed
     }
 
@@ -29,76 +29,78 @@ struct DocumentScannerView: UIViewControllerRepresentable {
         Coordinator(parent: self)
     }
 
-    class Coordinator: NSObject, VNDocumentCameraViewControllerDelegate {
+    class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
         let parent: DocumentScannerView
 
         init(parent: DocumentScannerView) {
             self.parent = parent
         }
 
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFinishWith scan: VNDocumentCameraScan) {
-            // スキャンされた画像からテキストを抽出
-            extractText(from: scan)
-            controller.dismiss(animated: true)
-        }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            picker.dismiss(animated: true)
 
-        func documentCameraViewControllerDidCancel(_ controller: VNDocumentCameraViewController) {
-            controller.dismiss(animated: true)
-        }
-
-        func documentCameraViewController(_ controller: VNDocumentCameraViewController, didFailWithError error: Error) {
-            parent.onError(error.localizedDescription)
-            controller.dismiss(animated: true)
-        }
-
-        private func extractText(from scan: VNDocumentCameraScan) {
-            var extractedTexts: [String] = []
-            var savedImagePaths: [String] = []
-            let dispatchGroup = DispatchGroup()
-
-            // スキャンIDを生成
-            let scanId = UUID().uuidString
-
-            // 1ページ目のみ処理
-            let pageIndex = 0
-            guard scan.pageCount > 0 else {
-                parent.onError("スキャンされたページがありません")
+            guard let image = info[.originalImage] as? UIImage else {
+                parent.onError("画像の読み込みに失敗しました")
                 return
             }
 
-            dispatchGroup.enter()
-            let image = scan.imageOfPage(at: pageIndex)
+            // 即座にOCR処理を開始
+            extractText(from: image)
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+
+        private func extractText(from image: UIImage) {
+            // スキャンIDを生成
+            let scanId = UUID().uuidString
+            var savedImagePaths: [String] = []
 
             // 画像を保存
-            if let imagePath = saveImage(image, scanId: scanId, pageIndex: pageIndex) {
+            if let imagePath = saveImage(image, scanId: scanId, pageIndex: 0) {
                 savedImagePaths.append(imagePath)
             }
 
             guard let cgImage = image.cgImage else {
-                dispatchGroup.leave()
                 parent.onError("画像の読み込みに失敗しました")
                 return
             }
 
             let requestHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-            let request = VNRecognizeTextRequest { request, error in
-                defer { dispatchGroup.leave() }
+            let request = VNRecognizeTextRequest { [weak self] request, error in
+                guard let self = self else { return }
 
                 if let error = error {
                     errorLog("Text recognition error: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.parent.onError("テキスト認識に失敗しました")
+                    }
                     return
                 }
 
                 guard let observations = request.results as? [VNRecognizedTextObservation] else {
+                    DispatchQueue.main.async {
+                        self.parent.onError("テキストを認識できませんでした")
+                    }
                     return
                 }
 
-                let pageText = observations.compactMap { observation in
+                let extractedText = observations.compactMap { observation in
                     observation.topCandidates(1).first?.string
                 }.joined(separator: "\n")
 
-                if !pageText.isEmpty {
-                    extractedTexts.append(pageText)
+                DispatchQueue.main.async {
+                    infoLog("OCR completed. Extracted text length: \(extractedText.count)")
+                    infoLog("Saved image paths count: \(savedImagePaths.count)")
+                    infoLog("Saved image paths: \(savedImagePaths)")
+
+                    if extractedText.isEmpty {
+                        self.parent.onError("テキストを認識できませんでした")
+                    } else {
+                        infoLog("Calling onTextExtracted with \(savedImagePaths.count) image paths")
+                        self.parent.onTextExtracted(extractedText, savedImagePaths)
+                    }
                 }
             }
 
@@ -107,23 +109,14 @@ struct DocumentScannerView: UIViewControllerRepresentable {
             request.recognitionLevel = .accurate
             request.usesLanguageCorrection = true
 
-            do {
-                try requestHandler.perform([request])
-            } catch {
-                errorLog("Failed to perform text recognition: \(error.localizedDescription)")
-            }
-
-            dispatchGroup.notify(queue: .main) {
-                let fullText = extractedTexts.joined(separator: "\n\n")
-                infoLog("OCR completed. Extracted text length: \(fullText.count)")
-                infoLog("Saved image paths count: \(savedImagePaths.count)")
-                infoLog("Saved image paths: \(savedImagePaths)")
-
-                if fullText.isEmpty {
-                    self.parent.onError("テキストを認識できませんでした")
-                } else {
-                    infoLog("Calling onTextExtracted with \(savedImagePaths.count) image paths")
-                    self.parent.onTextExtracted(fullText, savedImagePaths)
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    try requestHandler.perform([request])
+                } catch {
+                    errorLog("Failed to perform text recognition: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.parent.onError("テキスト認識に失敗しました")
+                    }
                 }
             }
         }
@@ -166,9 +159,9 @@ struct DocumentScannerView: UIViewControllerRepresentable {
     }
 }
 
-// スキャン機能が利用可能かチェック
+// カメラが利用可能かチェック
 extension DocumentScannerView {
     static var isAvailable: Bool {
-        VNDocumentCameraViewController.isSupported
+        UIImagePickerController.isSourceTypeAvailable(.camera)
     }
 }
