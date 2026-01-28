@@ -299,29 +299,7 @@ struct HomeView: View {
                 Text(scanErrorMessage)
             }
             .fullScreenCover(isPresented: $showingFileViewer) {
-                if let speech = selectedSpeech {
-                    if speech.fileType == "scan", let imagePathString = speech.imagePath {
-                        // スキャンファイルの場合
-                        debugLog("Loading scan file with imagePath: \(imagePathString)")
-                        if let imagePathsData = imagePathString.data(using: .utf8),
-                           let imagePaths = try? JSONDecoder().decode([String].self, from: imagePathsData) {
-                            debugLog("Decoded \(imagePaths.count) image paths: \(imagePaths)")
-                            ScannedDocumentView(
-                                store: store,
-                                text: speech.text,
-                                imagePaths: imagePaths,
-                                fileId: speech.id
-                            )
-                        } else {
-                            // JSON解析に失敗した場合は通常のTextInputView
-                            errorLog("Failed to decode imagePaths JSON: \(imagePathString)")
-                            TextInputView(store: store, initialText: speech.text, fileId: speech.id)
-                        }
-                    } else {
-                        // 通常のテキストファイル
-                        TextInputView(store: store, initialText: speech.text, fileId: speech.id)
-                    }
-                }
+                FileViewerContainer(speech: selectedSpeech, store: store)
             }
         }
     }
@@ -453,6 +431,45 @@ struct RecentItemView: View {
         .background(Color(.systemBackground))
         .cornerRadius(12)
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+    }
+}
+
+// MARK: - File Viewer Container
+struct FileViewerContainer: View {
+    let speech: Speeches.Speech?
+    let store: Store<Speeches.State, Speeches.Action>
+
+    var body: some View {
+        Group {
+            if let speech = speech {
+                if speech.fileType == "scan", let imagePathString = speech.imagePath {
+                    // スキャンファイルの場合
+                    scanFileView(speech: speech, imagePathString: imagePathString)
+                } else {
+                    // 通常のテキストファイル
+                    TextInputView(store: store, initialText: speech.text, fileId: speech.id)
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func scanFileView(speech: Speeches.Speech, imagePathString: String) -> some View {
+        debugLog("Loading scan file with imagePath: \(imagePathString)")
+        if let imagePathsData = imagePathString.data(using: .utf8),
+           let imagePaths = try? JSONDecoder().decode([String].self, from: imagePathsData) {
+            debugLog("Decoded \(imagePaths.count) image paths: \(imagePaths)")
+            ScannedDocumentView(
+                store: store,
+                text: speech.text,
+                imagePaths: imagePaths,
+                fileId: speech.id
+            )
+        } else {
+            // JSON解析に失敗した場合は通常のTextInputView
+            errorLog("Failed to decode imagePaths JSON: \(imagePathString)")
+            TextInputView(store: store, initialText: speech.text, fileId: speech.id)
+        }
     }
 }
 
