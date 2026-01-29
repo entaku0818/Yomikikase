@@ -103,10 +103,20 @@ struct NowPlayingFeature {
                         // Cloud TTS mode - play from local audio file
                         do {
                             let audioSession = AVAudioSession.sharedInstance()
-                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                            try audioSession.setCategory(.playback, mode: .spokenAudio)
                             try audioSession.setActive(true)
 
                             let audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
+
+                            // 速度設定を適用（TextInputViewと同じロジック）
+                            audioPlayer.enableRate = true
+                            // AVAudioPlayerのrateは0.5〜2.0（AVSpeechUtteranceは0.0〜1.0でデフォルト0.5）
+                            // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
+                            // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
+                            let speechRate = UserDefaultsManager.shared.speechRate
+                            let playbackRate = max(0.5, min(2.0, speechRate * 2.0))
+                            audioPlayer.rate = playbackRate
+
                             audioPlayer.play()
 
                             // Wait for playback to finish
@@ -129,7 +139,7 @@ struct NowPlayingFeature {
                             // 音声セッションの設定
                             let audioSession = AVAudioSession.sharedInstance()
                             do {
-                                try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                                try audioSession.setCategory(.playback, mode: .spokenAudio)
                                 try audioSession.setActive(true)
                             } catch {
                                 errorLog("Failed to set audio session category: \(error)")
