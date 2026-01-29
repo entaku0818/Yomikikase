@@ -57,37 +57,26 @@ struct ScannedDocumentView: View {
 
                 Spacer()
 
-                HStack(spacing: 8) {
-                    // 再生/停止ボタン（常に表示）
-                    Button(action: {
-                        if isSpeaking {
-                            stopSpeaking()
-                        } else {
-                            startSpeaking()
+                // 編集/保存ボタン（テキストタブでのみ表示）
+                if selectedTab == .text {
+                    if isEditingText {
+                        Button("保存") {
+                            saveText()
                         }
-                    }) {
-                        Image(systemName: isSpeaking ? "stop.circle.fill" : "play.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.blue)
-                    }
-                    .disabled(editableText.isEmpty)
-
-                    // 編集/保存ボタン（テキストタブでのみ表示）
-                    if selectedTab == .text {
-                        if isEditingText {
-                            Button("保存") {
-                                saveText()
-                            }
-                            .disabled(editableText.isEmpty)
-                        } else {
-                            Button("編集") {
-                                isEditingText = true
-                                isTextEditorFocused = true
-                            }
+                        .disabled(editableText.isEmpty)
+                        .padding(.trailing, 16)
+                    } else {
+                        Button("編集") {
+                            isEditingText = true
+                            isTextEditorFocused = true
                         }
+                        .padding(.trailing, 16)
                     }
+                } else {
+                    // プレースホルダー（対称性のため）
+                    Color.clear
+                        .frame(width: 52, height: 44)
                 }
-                .padding(.trailing, 16)
             }
             .frame(height: 56)
             .background(Color(UIColor.systemBackground))
@@ -100,6 +89,31 @@ struct ScannedDocumentView: View {
             } else {
                 textView
             }
+
+            Divider()
+
+            // 下部コントロール
+            HStack(spacing: 20) {
+                Spacer()
+
+                // 再生/停止ボタン
+                Button(action: {
+                    if isSpeaking {
+                        stopSpeaking()
+                    } else {
+                        startSpeaking()
+                    }
+                }) {
+                    Image(systemName: isSpeaking ? "stop.circle.fill" : "play.circle.fill")
+                        .font(.system(size: 60))
+                        .foregroundColor(editableText.isEmpty ? .gray : .blue)
+                }
+                .disabled(editableText.isEmpty)
+
+                Spacer()
+            }
+            .padding(.vertical, 16)
+            .background(Color(UIColor.systemBackground))
         }
         .background(Color(UIColor.systemBackground))
         .navigationBarHidden(true)
