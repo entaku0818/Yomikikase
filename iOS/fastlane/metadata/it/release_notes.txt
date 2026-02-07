@@ -1,5 +1,5 @@
-Migliorate le funzionalità Cloud TTS.
+Migliorata l'usabilità TTS.
 
-• Aggiunta selezione voce
-• Supporto evidenziazione durante la riproduzione Cloud TTS
-• Supporto regolazione velocità di riproduzione
+• Passaggio tra Cloud TTS e TTS di base
+• Visualizzazione dei valori numerici per velocità e altezza del parlato
+• Esperienza di riproduzione migliorata

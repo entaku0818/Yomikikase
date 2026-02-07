@@ -1,6 +1,5 @@
-Major Cloud TTS improvements.
+Improved TTS usability.
 
-• Cloud TTS support in PDF reader
-• Cloud TTS playback in mini player
-• Voice filtering by language
-• Audio cache management
+• Toggle between Cloud TTS and Basic TTS
+• Display numerical values for speech rate and pitch settings
+• Enhanced playback experience

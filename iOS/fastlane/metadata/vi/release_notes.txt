@@ -1,5 +1,5 @@
-Nâng cao tính năng giọng nói Cloud TTS.
+Cải thiện khả năng sử dụng TTS.
 
-• Thêm tính năng chọn giọng nói
-• Hỗ trợ đánh dấu khi phát Cloud TTS
-• Hỗ trợ điều chỉnh tốc độ phát
+• Chuyển đổi giữa Cloud TTS và TTS cơ bản
+• Hiển thị giá trị số cho tốc độ và cao độ giọng nói
+• Trải nghiệm phát lại được cải thiện
