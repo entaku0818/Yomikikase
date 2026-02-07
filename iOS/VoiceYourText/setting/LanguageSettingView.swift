@@ -81,8 +81,14 @@ struct LanguageSettingView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         // 話速の調整
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("声の速さ")
-                                .font(.headline)
+                            HStack {
+                                Text("声の速さ")
+                                    .font(.headline)
+                                Spacer()
+                                Text(String(format: "%.1f", store.speechRate))
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.blue)
+                            }
                             HStack {
                                 Image(systemName: "tortoise.fill")
                                     .foregroundColor(.gray)
@@ -91,11 +97,17 @@ struct LanguageSettingView: View {
                                     .foregroundColor(.gray)
                             }
                         }
-                        
+
                         // 声の高さの調整
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("声の高さ")
-                                .font(.headline)
+                            HStack {
+                                Text("声の高さ")
+                                    .font(.headline)
+                                Spacer()
+                                Text(String(format: "%.1f", store.speechPitch))
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.blue)
+                            }
                             HStack {
                                 Image(systemName: "arrow.down")
                                     .foregroundColor(.gray)
