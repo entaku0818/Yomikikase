@@ -29,6 +29,8 @@ struct TextInputView: View {
     @State private var currentTimepoints: [TTSTimepoint] = []
     @State private var highlightTimer: Timer?
     @State private var playbackStartTime: Date?
+    @State private var useCloudTTS: Bool = true // デフォルトはクラウドTTS
+    @State private var cloudTTSAvailable: Bool = false // クラウドTTS音声が利用可能か
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
@@ -132,6 +134,9 @@ struct TextInputView: View {
 
             // 利用可能な音声を読み込む
             loadAvailableVoices()
+
+            // クラウドTTS音声の利用可否をチェック
+            checkCloudTTSAvailability()
         }
         .onDisappear {
             // Viewが閉じられる時も念のため停止
@@ -192,6 +197,24 @@ struct TextInputView: View {
             .padding(.horizontal)
             .padding(.top, 16)
 
+            // TTS方式切り替え
+            if cloudTTSAvailable {
+                HStack {
+                    Text("音声エンジン:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    Picker("", selection: $useCloudTTS) {
+                        Text("クラウドTTS").tag(true)
+                        Text("基本TTS").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 250)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+            }
+
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
                 AdmobBannerView()
@@ -218,6 +241,21 @@ struct TextInputView: View {
 
     // MARK: - Helper Functions
 
+    private func checkCloudTTSAvailability() {
+        guard let currentFileId = currentFileId else {
+            cloudTTSAvailable = false
+            return
+        }
+
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
+        let audioPath = audioDirectory.appendingPathComponent("\(currentFileId.uuidString).wav")
+
+        cloudTTSAvailable = fileManager.fileExists(atPath: audioPath.path)
+        infoLog("[TTS Mode] Cloud TTS available: \(cloudTTSAvailable)")
+    }
+
     private func speakWithHighlight() {
         guard !text.isEmpty else {
             warningLog("TextInputView: Cannot speak - text is empty")
@@ -242,25 +280,23 @@ struct TextInputView: View {
             return
         }
 
-        // Check if downloaded Cloud TTS audio exists
-        infoLog("[Highlight] Checking for Cloud TTS audio, currentFileId: \(String(describing: currentFileId))")
-        if let currentFileId = currentFileId {
-            // Direct file system check for audio file
+        // Check user preference and Cloud TTS availability
+        infoLog("[Highlight] useCloudTTS: \(useCloudTTS), cloudTTSAvailable: \(cloudTTSAvailable)")
+        if useCloudTTS && cloudTTSAvailable, let currentFileId = currentFileId {
+            // User prefers Cloud TTS and it's available
             let fileManager = FileManager.default
             let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
             let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
             let audioPath = audioDirectory.appendingPathComponent("\(currentFileId.uuidString).wav")
 
             if fileManager.fileExists(atPath: audioPath.path) {
-                infoLog("[Highlight] Playing Cloud TTS audio (NO highlight): \(audioPath.path)")
+                infoLog("[Highlight] Playing Cloud TTS audio: \(audioPath.path)")
                 playDownloadedAudio(url: audioPath)
                 return
-            } else {
-                infoLog("[Highlight] Audio file not found for fileId: \(currentFileId.uuidString)")
             }
         }
 
-        // Fallback to device TTS (with highlight support)
+        // Use device TTS (with highlight support)
         infoLog("[Highlight] Using device TTS (WITH highlight support)")
         playWithDeviceTTS()
     }
@@ -502,7 +538,9 @@ struct TextInputView: View {
                     currentTimepoints = response.timepoints ?? []
                     isGeneratingAudio = false
                     isEditMode = false
-                    infoLog("[TTS] Switched to player mode")
+                    cloudTTSAvailable = true // クラウドTTS音声が生成された
+                    useCloudTTS = true // デフォルトでクラウドTTSを選択
+                    infoLog("[TTS] Switched to player mode with Cloud TTS available")
                 }
             } catch {
                 infoLog("[TTS] ERROR: TTS generation failed: \(error)")
