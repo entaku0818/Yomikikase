@@ -1,5 +1,5 @@
-Mejoras en las funciones de voz Cloud TTS.
+Mejora en la usabilidad de TTS.
 
-• Agregada selección de voz
-• Soporte de resaltado durante la reproducción Cloud TTS
-• Soporte de ajuste de velocidad de reproducción
+• Cambiar entre Cloud TTS y TTS básico
+• Mostrar valores numéricos para la velocidad y el tono del habla
+• Experiencia de reproducción mejorada

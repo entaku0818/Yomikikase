@@ -1,5 +1,5 @@
-Cloud TTS-Sprachfunktionen verbessert.
+Verbesserte TTS-Benutzerfreundlichkeit.
 
-• Sprachauswahl hinzugefügt
-• Hervorhebungsunterstützung bei Cloud TTS-Wiedergabe
-• Unterstützung für Wiedergabegeschwindigkeitsanpassung
+• Wechsel zwischen Cloud TTS und Basic TTS
+• Anzeige numerischer Werte für Sprechgeschwindigkeit und Tonhöhe
+• Verbessertes Wiedergabeerlebnis

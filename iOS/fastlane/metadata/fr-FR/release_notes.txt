@@ -1,5 +1,5 @@
-Amélioration des fonctionnalités Cloud TTS.
+Amélioration de la convivialité TTS.
 
-• Ajout de la sélection de voix
-• Prise en charge du surlignage lors de la lecture Cloud TTS
-• Prise en charge du réglage de la vitesse de lecture
+• Basculer entre Cloud TTS et TTS de base
+• Afficher les valeurs numériques pour la vitesse et la hauteur de la parole
+• Expérience de lecture améliorée

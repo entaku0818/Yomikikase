@@ -1,5 +1,5 @@
-Cloud TTS ses özellikleri geliştirildi.
+TTS kullanılabilirliği iyileştirildi.
 
-• Ses seçimi eklendi
-• Cloud TTS oynatma sırasında vurgulama desteği
-• Oynatma hızı ayarlama desteği
+• Cloud TTS ve Temel TTS arasında geçiş yapma
+• Konuşma hızı ve ses perdesi ayarları için sayısal değerleri görüntüleme
+• Geliştirilmiş oynatma deneyimi
