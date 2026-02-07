@@ -57,39 +57,62 @@ bundle exec fastlane ios upload_metadata_only
 ```bash
 cd iOS
 
-# 1. アーカイブの作成
+# 0. Xcodeバージョンの確認（重要！）
+xcodebuild -version
+xcrun swift --version  # Swiftバージョン確認
+
+# 依存関係とSwiftバージョンが一致しない場合はXcodeを切り替え
+# sudo xcode-select -s /Applications/Xcode-26.1.0.app/Contents/Developer
+
+# 1. DerivedDataのクリーンアップ（推奨）
+rm -rf ~/Library/Developer/Xcode/DerivedData/VoiceYourText-*
+
+# 2. アーカイブの作成
 xcodebuild -scheme VoiceYourText \
   -project VoiceYourText.xcodeproj \
   -archivePath build/VoiceYourText.xcarchive \
   -configuration Release \
+  -destination 'generic/platform=iOS' \
   archive
 
-# 2. ExportOptions.plistの作成
+# 3. ExportOptions.plistの作成
 cat > build/ExportOptions.plist << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>method</key>
-    <string>app-store-connect</string>
+    <string>app-store</string>
     <key>teamID</key>
     <string>4YZQY4C47E</string>
-    <key>destination</key>
-    <string>upload</string>
+    <key>uploadSymbols</key>
+    <true/>
+    <key>uploadBitcode</key>
+    <false/>
 </dict>
 </plist>
 EOF
 
-# 3. エクスポートとアップロード
+# 4. IPAのエクスポート
 xcodebuild -exportArchive \
   -archivePath build/VoiceYourText.xcarchive \
   -exportOptionsPlist build/ExportOptions.plist \
   -exportPath build/export \
   -allowProvisioningUpdates
 
-# 4. ビルドフォルダのクリーンアップ
+# 5. App Store Connectにアップロード
+# API keyファイルが~/.appstoreconnect/private_keys/にあること確認
+xcrun altool --upload-app \
+  --type ios \
+  --file build/export/VoiceYourText.ipa \
+  --apiKey R2Q4FFAG8D \
+  --apiIssuer 3cc1c923-009c-4963-a9db-83d030e4c4e3
+
+# 6. ビルドフォルダのクリーンアップ
 rm -rf build
 ```
+
+**重要**: `-destination 'generic/platform=iOS'` を指定することで、特定デバイスではなくiOS全般向けにビルドされます。
 
 ### 3. Fastlaneでメタデータとバイナリをアップロードする
 
@@ -149,11 +172,62 @@ bundle exec fastlane ios upload_metadata_only
 **目的**: 新バージョンをリリースするためにバージョン番号を更新
 
 **手順**:
-1. Xcodeで`Info.plist`を開く
-2. `CFBundleShortVersionString`を更新 (例: 1.0.0 → 1.1.0)
-3. `CFBundleVersion`をインクリメント (例: 1 → 2)
-4. 変更をコミット
-5. Git tagを作成: `git tag v1.1.0`
+```bash
+cd iOS
+
+# 1. 現在のバージョンを確認
+xcodebuild -project VoiceYourText.xcodeproj -scheme VoiceYourText -showBuildSettings | grep -E "MARKETING_VERSION|CURRENT_PROJECT_VERSION"
+
+# 2. バージョンを更新（agvtoolを使用）
+xcrun agvtool new-marketing-version 0.16.0  # マーケティングバージョン
+xcrun agvtool next-version -all              # ビルド番号をインクリメント
+
+# 3. project.pbxprojも直接更新（agvtoolで更新されない場合）
+sed -i '' 's/MARKETING_VERSION = 0.15.1;/MARKETING_VERSION = 0.16.0;/g' VoiceYourText.xcodeproj/project.pbxproj
+
+# 4. 変更を確認
+git diff VoiceYourText.xcodeproj/project.pbxproj
+
+# 5. リリースノートを全言語で更新
+# fastlane/metadata/{locale}/release_notes.txt を編集
+
+# 6. 変更をコミット
+git add VoiceYourText.xcodeproj/project.pbxproj fastlane/metadata/*/release_notes.txt
+git commit -m "release: Update version to 0.16.0"
+
+# 7. Gitタグを作成
+git tag v0.16.0
+git push && git push --tags
+```
+
+### 7. App Store Connect API keyの設定
+
+**目的**: xcrun altoolでアップロードするためのAPI key設定
+
+**手順**:
+```bash
+# 1. API keyディレクトリを作成
+mkdir -p ~/.appstoreconnect/private_keys
+
+# 2. fastlane/.envからAPI keyを取得してファイルを作成
+# KEY_ID: R2Q4FFAG8D
+# ISSUER_ID: 3cc1c923-009c-4963-a9db-83d030e4c4e3
+
+cat > ~/.appstoreconnect/private_keys/AuthKey_R2Q4FFAG8D.p8 << 'EOF'
+-----BEGIN PRIVATE KEY-----
+[fastlane/.envのAPI_KEY_CONTENTをコピー]
+-----END PRIVATE KEY-----
+EOF
+
+# 3. パーミッション設定
+chmod 600 ~/.appstoreconnect/private_keys/AuthKey_R2Q4FFAG8D.p8
+```
+
+**API key情報の取得**:
+- `iOS/fastlane/.env` ファイルに保存されています
+- `APP_STORE_CONNECT_API_KEY_KEY_ID`
+- `APP_STORE_CONNECT_API_KEY_ISSUER_ID`
+- `APP_STORE_CONNECT_API_KEY_CONTENT`
 
 ## Usage Examples
 
