@@ -20,6 +20,7 @@ struct TextInputView: View {
     @State private var showingSpeedPicker = false
     @State private var showingTTSInfo = false
     @State private var isGeneratingAudio = false
+    @State private var pendingSave = false // 音声選択後に保存するフラグ
     @State private var audioGenerationError: String? = nil
     @State private var audioPlayer: AVAudioPlayer?
     @State private var currentFileId: UUID?
@@ -73,23 +74,11 @@ struct TextInputView: View {
                         ProgressView()
                             .padding(.trailing, 16)
                     } else {
-                        HStack(spacing: 12) {
-                            // 音声変更ボタン
-                            Button(action: {
-                                showingVoicePicker = true
-                            }) {
-                                Image(systemName: "flag.fill")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.blue)
-                            }
-                            .disabled(isLoadingVoices)
-
-                            // 保存ボタン
-                            Button("保存") {
-                                saveText()
-                            }
-                            .disabled(text.isEmpty)
+                        // 保存ボタン
+                        Button("保存") {
+                            handleSaveButtonTap()
                         }
+                        .disabled(text.isEmpty)
                         .padding(.trailing, 16)
                     }
                 } else {
@@ -172,6 +161,11 @@ struct TextInputView: View {
                 isLoading: isLoadingVoices,
                 onSelect: {
                     showingVoicePicker = false
+                    // 保存待ちの場合は保存処理を実行
+                    if pendingSave {
+                        pendingSave = false
+                        saveText()
+                    }
                 }
             )
         }
@@ -231,12 +225,6 @@ struct TextInputView: View {
                     }
                     .pickerStyle(.segmented)
                     .frame(maxWidth: 250)
-                    .onChange(of: useCloudTTS) { oldValue, newValue in
-                        if newValue == true && !oldValue {
-                            // 高音質TTSを選択したら音声選択画面を表示
-                            showingVoicePicker = true
-                        }
-                    }
                 }
 
                 if useCloudTTS {
@@ -512,6 +500,17 @@ struct TextInputView: View {
         isSpeaking = false
         highlightedRange = nil
         store.send(.nowPlaying(.stopPlaying))
+    }
+
+    private func handleSaveButtonTap() {
+        // 高音質TTSを選択している場合は、音声選択画面を表示
+        if useCloudTTS {
+            pendingSave = true
+            showingVoicePicker = true
+        } else {
+            // 基本TTSの場合は直接保存
+            saveText()
+        }
     }
 
     private func saveText() {
