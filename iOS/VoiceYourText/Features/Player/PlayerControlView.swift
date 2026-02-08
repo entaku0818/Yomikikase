@@ -15,9 +15,26 @@ struct PlayerControlView: View {
     let onPlay: () -> Void
     let onStop: () -> Void
     let onSpeedTap: () -> Void
+    let onTTSInfoTap: (() -> Void)?
 
     var body: some View {
         ZStack {
+            // TTS情報ボタン（左端）
+            if let onTTSInfoTap = onTTSInfoTap {
+                HStack {
+                    Button(action: onTTSInfoTap) {
+                        Image(systemName: "info.circle")
+                            .font(.system(size: 20))
+                            .foregroundColor(.blue)
+                            .frame(width: 50, height: 40)
+                            .background(Color(.systemGray5))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                    .padding(.leading, 16)
+                    Spacer()
+                }
+            }
+
             // 再生/停止ボタン（中央）
             Button(action: {
                 if isSpeaking {
@@ -63,7 +80,8 @@ struct PlayerControlView: View {
             speechRate: 0.5,
             onPlay: {},
             onStop: {},
-            onSpeedTap: {}
+            onSpeedTap: {},
+            onTTSInfoTap: {}
         )
     }
 }
@@ -77,7 +95,8 @@ struct PlayerControlView: View {
             speechRate: 0.75,
             onPlay: {},
             onStop: {},
-            onSpeedTap: {}
+            onSpeedTap: {},
+            onTTSInfoTap: {}
         )
     }
 }
@@ -91,7 +110,8 @@ struct PlayerControlView: View {
             speechRate: 0.5,
             onPlay: {},
             onStop: {},
-            onSpeedTap: {}
+            onSpeedTap: {},
+            onTTSInfoTap: nil
         )
     }
 }

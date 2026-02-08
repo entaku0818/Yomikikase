@@ -253,7 +253,8 @@ struct SpeechView: View {
                         },
                         onSpeedTap: {
                             showingSpeedPicker = true
-                        }
+                        },
+                        onTTSInfoTap: nil
                     )
 
                     if !UserDefaultsManager.shared.isPremiumUser {
