@@ -226,11 +226,17 @@ struct TextInputView: View {
                         .foregroundColor(.secondary)
 
                     Picker("", selection: $useCloudTTS) {
-                        Text("クラウドTTS").tag(true)
+                        Text("高音質TTS").tag(true)
                         Text("基本TTS").tag(false)
                     }
                     .pickerStyle(.segmented)
                     .frame(maxWidth: 250)
+                    .onChange(of: useCloudTTS) { oldValue, newValue in
+                        if newValue == true && !oldValue {
+                            // 高音質TTSを選択したら音声選択画面を表示
+                            showingVoicePicker = true
+                        }
+                    }
                 }
 
                 if useCloudTTS {
