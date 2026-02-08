@@ -69,24 +69,6 @@ struct TTSInfoSheet: View {
                     }
                 }
 
-                Section("音声設定") {
-                    HStack {
-                        Text("再生速度")
-                        Spacer()
-                        Text(SpeechSettings.formatSpeed(speechRate))
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(.blue)
-                    }
-
-                    HStack {
-                        Text("音の高さ")
-                        Spacer()
-                        Text(String(format: "%.1f", speechPitch))
-                            .font(.system(.body, design: .monospaced))
-                            .foregroundColor(.blue)
-                    }
-                }
-
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("TTS方式について")

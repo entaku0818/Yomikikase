@@ -262,29 +262,6 @@ struct TextInputView: View {
             .padding(.horizontal)
             .padding(.top, 16)
 
-            // 使用中のTTSモード表示
-            if cloudTTSAvailable && useCloudTTS {
-                HStack {
-                    Image(systemName: "cloud.fill")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                    Text("クラウドTTSで再生")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.vertical, 8)
-            } else if !useCloudTTS {
-                HStack {
-                    Image(systemName: "speaker.wave.2.fill")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-                    Text("基本TTSで再生")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                .padding(.vertical, 8)
-            }
-
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
                 AdmobBannerView()
