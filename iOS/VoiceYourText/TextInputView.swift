@@ -18,6 +18,7 @@ struct TextInputView: View {
     @State private var isSpeaking = false
     @State private var highlightedRange: NSRange? = nil
     @State private var showingSpeedPicker = false
+    @State private var showingTTSInfo = false
     @State private var isGeneratingAudio = false
     @State private var audioGenerationError: String? = nil
     @State private var audioPlayer: AVAudioPlayer?
@@ -182,6 +183,16 @@ struct TextInputView: View {
             }
             Button("キャンセル", role: .cancel) {}
         }
+        .sheet(isPresented: $showingTTSInfo) {
+            TTSInfoSheet(
+                useCloudTTS: useCloudTTS,
+                cloudTTSAvailable: cloudTTSAvailable,
+                speechRate: UserDefaultsManager.shared.speechRate,
+                speechPitch: UserDefaultsManager.shared.speechPitch,
+                selectedVoice: selectedVoice
+            )
+            .presentationDetents([.medium, .large])
+        }
     }
 
     // MARK: - 編集モード
@@ -293,6 +304,9 @@ struct TextInputView: View {
                 },
                 onSpeedTap: {
                     showingSpeedPicker = true
+                },
+                onTTSInfoTap: {
+                    showingTTSInfo = true
                 }
             )
         }

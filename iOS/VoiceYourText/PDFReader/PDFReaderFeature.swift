@@ -358,7 +358,8 @@ struct PDFReaderView: View {
                     },
                     onSpeedTap: {
                         showingSpeedPicker = true
-                    }
+                    },
+                    onTTSInfoTap: nil
                 )
             }
         }
