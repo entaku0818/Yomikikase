@@ -26,7 +26,7 @@ struct TTSInfoSheet: View {
                             .frame(width: 40)
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(useCloudTTS ? "クラウドTTS" : "基本TTS")
+                            Text(useCloudTTS ? "高音質TTS" : "基本TTS")
                                 .font(.headline)
                             Text(useCloudTTS ? "高品質な音声で再生" : "デバイスの標準音声で再生")
                                 .font(.caption)
@@ -75,7 +75,7 @@ struct TTSInfoSheet: View {
                             .font(.subheadline)
                             .fontWeight(.semibold)
 
-                        Text("クラウドTTS: 高品質な音声で再生できますが、保存時に音声生成が必要です。")
+                        Text("高音質TTS: 高品質な音声で再生できますが、保存時に音声生成が必要です。")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
