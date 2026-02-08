@@ -58,7 +58,7 @@ class SpeechTextRepository: NSObject {
     }
 
     @discardableResult
-    func insert(title: String, text: String, languageSetting: LanguageSetting, fileType: String? = nil, imagePath: String? = nil) -> UUID {
+    func insert(title: String, text: String, languageSetting: LanguageSetting, fileType: String? = nil, imagePath: String? = nil, ttsMode: String? = nil) -> UUID {
         let newUUID = UUID()
         if let speechText = NSManagedObject(entity: self.entity!, insertInto: managedContext) as? SpeechText {
 
@@ -68,6 +68,7 @@ class SpeechTextRepository: NSObject {
             speechText.languageSetting = languageSetting.rawValue
             speechText.fileType = fileType
             speechText.imagePath = imagePath
+            speechText.ttsMode = ttsMode
             speechText.createdAt = Date()
             speechText.updatedAt = Date()
 
@@ -139,20 +140,36 @@ class SpeechTextRepository: NSObject {
     }
 
 
-    func updateSpeechText(id: UUID, title: String, text: String) {
+    func updateSpeechText(id: UUID, title: String, text: String, ttsMode: String? = nil) {
         let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
-        
+
         do {
             let fetchedItems = try managedContext.fetch(fetchRequest)
             if let itemToUpdate = fetchedItems.first {
                 itemToUpdate.title = title
                 itemToUpdate.text = text
+                if let ttsMode = ttsMode {
+                    itemToUpdate.ttsMode = ttsMode
+                }
                 itemToUpdate.updatedAt = Date()
                 try managedContext.save()
             }
         } catch {
             errorLog("Update error: \(error.localizedDescription)")
+        }
+    }
+
+    func fetchTTSMode(id: UUID) -> String? {
+        let fetchRequest: NSFetchRequest<SpeechText> = SpeechText.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "uuid == %@", id as CVarArg)
+
+        do {
+            let fetchedItems = try managedContext.fetch(fetchRequest)
+            return fetchedItems.first?.ttsMode
+        } catch {
+            errorLog("Fetch TTS mode error: \(error.localizedDescription)")
+            return nil
         }
     }
 

@@ -91,6 +91,20 @@ struct TextInputView: View {
                         }
                         .padding(.trailing, 16)
                     }
+                } else {
+                    // プレイヤーモードでは編集ボタンを表示
+                    Button(action: {
+                        stopSpeaking()
+                        isEditMode = true
+                        // キーボードを表示
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            isTextEditorFocused = true
+                        }
+                    }) {
+                        Text("編集")
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.trailing, 16)
                 }
             }
             .frame(height: 56)
@@ -111,6 +125,14 @@ struct TextInputView: View {
         .onAppear {
             text = initialText
             currentFileId = fileId
+
+            // 既存ファイルの場合、保存されたTTSモードを読み込む
+            if let fileId = fileId {
+                let savedTTSMode = SpeechTextRepository.shared.fetchTTSMode(id: fileId)
+                useCloudTTS = savedTTSMode == "cloud"
+                infoLog("[TTS] Loaded TTS mode for fileId \(fileId): \(savedTTSMode ?? "nil"), useCloudTTS: \(useCloudTTS)")
+            }
+
             // 既存ファイルを開いた場合はプレイヤーモードで開始
             if fileId != nil && !initialText.isEmpty {
                 isEditMode = false
@@ -164,22 +186,54 @@ struct TextInputView: View {
 
     // MARK: - 編集モード
     private var editModeContent: some View {
-        ZStack(alignment: .topLeading) {
-            TextEditor(text: $text)
-                .font(.system(size: 20))
-                .padding(.horizontal)
-                .padding(.top, 8)
-                .focused($isTextEditorFocused)
-
-            // プレースホルダー
-            if text.isEmpty {
-                Text("読み上げたいテキストを入力してください...")
-                    .foregroundColor(.secondary)
+        VStack(spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $text)
                     .font(.system(size: 20))
-                    .padding(.horizontal, 20)
-                    .padding(.top, 16)
-                    .allowsHitTesting(false)
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .focused($isTextEditorFocused)
+
+                // プレースホルダー
+                if text.isEmpty {
+                    Text("読み上げたいテキストを入力してください...")
+                        .foregroundColor(.secondary)
+                        .font(.system(size: 20))
+                        .padding(.horizontal, 20)
+                        .padding(.top, 16)
+                        .allowsHitTesting(false)
+                }
             }
+
+            Spacer()
+
+            // TTS方式選択
+            VStack(spacing: 12) {
+                HStack {
+                    Text("音声エンジン:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+                    Picker("", selection: $useCloudTTS) {
+                        Text("クラウドTTS").tag(true)
+                        Text("基本TTS").tag(false)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 250)
+                }
+
+                if useCloudTTS {
+                    Text("高品質な音声で保存します（処理に時間がかかります）")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                } else {
+                    Text("デバイスの基本音声で再生します（保存は不要です）")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 16)
         }
     }
 
@@ -197,21 +251,26 @@ struct TextInputView: View {
             .padding(.horizontal)
             .padding(.top, 16)
 
-            // TTS方式切り替え
-            if cloudTTSAvailable {
+            // 使用中のTTSモード表示
+            if cloudTTSAvailable && useCloudTTS {
                 HStack {
-                    Text("音声エンジン:")
-                        .font(.subheadline)
+                    Image(systemName: "cloud.fill")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    Text("クラウドTTSで再生")
+                        .font(.caption)
                         .foregroundColor(.secondary)
-
-                    Picker("", selection: $useCloudTTS) {
-                        Text("クラウドTTS").tag(true)
-                        Text("基本TTS").tag(false)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 250)
                 }
-                .padding(.horizontal)
+                .padding(.vertical, 8)
+            } else if !useCloudTTS {
+                HStack {
+                    Image(systemName: "speaker.wave.2.fill")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+                    Text("基本TTSで再生")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
                 .padding(.vertical, 8)
             }
 
@@ -462,6 +521,7 @@ struct TextInputView: View {
         let finalTitle = String(text.prefix(20))
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
         let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
+        let ttsMode = useCloudTTS ? "cloud" : "basic"
 
         // imagePathsをJSON文字列に変換
         var imagePathString: String? = nil
@@ -474,11 +534,12 @@ struct TextInputView: View {
 
         var savedFileId: UUID
         if let fileId = fileId {
-            infoLog("[TTS] Updating existing text with fileId: \(fileId)")
+            infoLog("[TTS] Updating existing text with fileId: \(fileId), ttsMode: \(ttsMode)")
             SpeechTextRepository.shared.updateSpeechText(
                 id: fileId,
                 title: finalTitle,
-                text: text
+                text: text,
+                ttsMode: ttsMode
             )
             savedFileId = fileId
         } else {
@@ -487,17 +548,25 @@ struct TextInputView: View {
                 text: text,
                 languageSetting: languageSetting,
                 fileType: fileType ?? "text",
-                imagePath: imagePathString
+                imagePath: imagePathString,
+                ttsMode: ttsMode
             )
-            infoLog("[TTS] Created new text with savedFileId: \(savedFileId)")
+            infoLog("[TTS] Created new text with savedFileId: \(savedFileId), ttsMode: \(ttsMode)")
             // Update currentFileId for new texts
             currentFileId = savedFileId
             infoLog("[TTS] Set currentFileId to: \(savedFileId)")
         }
 
-        // Generate TTS audio in background
-        infoLog("[TTS] Starting TTS generation for fileId: \(savedFileId)")
-        generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
+        // Generate TTS audio only if Cloud TTS is selected
+        if useCloudTTS {
+            infoLog("[TTS] Starting Cloud TTS generation for fileId: \(savedFileId)")
+            generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
+        } else {
+            infoLog("[TTS] Using Basic TTS, skipping audio generation")
+            // Switch to player mode immediately for Basic TTS
+            cloudTTSAvailable = false
+            isEditMode = false
+        }
     }
 
     private func generateTTSAudio(for fileId: UUID, text: String, languageCode: String) {
@@ -539,7 +608,6 @@ struct TextInputView: View {
                     isGeneratingAudio = false
                     isEditMode = false
                     cloudTTSAvailable = true // クラウドTTS音声が生成された
-                    useCloudTTS = true // デフォルトでクラウドTTSを選択
                     infoLog("[TTS] Switched to player mode with Cloud TTS available")
                 }
             } catch {
