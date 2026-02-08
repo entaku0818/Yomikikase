@@ -1,5 +1,7 @@
-Amélioration de la convivialité TTS.
+Amélioration des fonctions TTS et de l'expérience utilisateur.
 
-• Basculer entre Cloud TTS et TTS de base
-• Afficher les valeurs numériques pour la vitesse et la hauteur de la parole
-• Expérience de lecture améliorée
+• Flux de sélection vocale amélioré lors de l'enregistrement avec TTS haute qualité
+• Bouton d'information TTS ajouté à l'écran de lecture
+• "Cloud TTS" renommé en "TTS haute qualité"
+• Interface simplifiée pour une meilleure utilisabilité
+• Corrections de bogues mineurs
