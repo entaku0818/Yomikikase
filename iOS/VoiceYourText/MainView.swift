@@ -110,7 +110,7 @@ struct NavigationSourceModifier: ViewModifier {
     func body(content: Content) -> some View {
         WithViewStore(store, observe: { $0.navigationSource }) { viewStore in
             content
-                .fullScreenCover(
+                .sheet(
                     item: Binding(
                         get: { viewStore.state },
                         set: { _ in store.send(.dismissNavigation) }
