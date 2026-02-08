@@ -1,5 +1,7 @@
-Verbesserte TTS-Benutzerfreundlichkeit.
+Verbesserte TTS-Funktionen und Benutzererfahrung.
 
-• Wechsel zwischen Cloud TTS und Basic TTS
-• Anzeige numerischer Werte für Sprechgeschwindigkeit und Tonhöhe
-• Verbessertes Wiedergabeerlebnis
+• Verbesserten Sprachauswahlablauf beim Speichern mit hochwertigem TTS
+• TTS-Informationsschaltfläche im Wiedergabebildschirm hinzugefügt
+• "Cloud TTS" in "Hochwertiges TTS" umbenannt
+• Vereinfachte Benutzeroberfläche für bessere Benutzerfreundlichkeit
+• Kleinere Fehlerbehebungen

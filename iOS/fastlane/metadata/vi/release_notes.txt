@@ -1,5 +1,7 @@
-Cải thiện khả năng sử dụng TTS.
+Cải thiện tính năng TTS và trải nghiệm người dùng.
 
-• Chuyển đổi giữa Cloud TTS và TTS cơ bản
-• Hiển thị giá trị số cho tốc độ và cao độ giọng nói
-• Trải nghiệm phát lại được cải thiện
+• Cải thiện luồng chọn giọng nói khi lưu với TTS chất lượng cao
+• Thêm nút thông tin TTS trong màn hình phát
+• Đổi tên "Cloud TTS" thành "TTS chất lượng cao"
+• Giao diện đơn giản hơn để sử dụng tốt hơn
+• Sửa lỗi nhỏ

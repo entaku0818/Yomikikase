@@ -1,5 +1,7 @@
-Migliorata l'usabilità TTS.
+Miglioramento delle funzioni TTS e dell'esperienza utente.
 
-• Passaggio tra Cloud TTS e TTS di base
-• Visualizzazione dei valori numerici per velocità e altezza del parlato
-• Esperienza di riproduzione migliorata
+• Flusso di selezione vocale migliorato durante il salvataggio con TTS di alta qualità
+• Aggiunto pulsante informazioni TTS nella schermata di riproduzione
+• "Cloud TTS" rinominato in "TTS di alta qualità"
+• Interfaccia semplificata per una migliore usabilità
+• Correzioni di bug minori

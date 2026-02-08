@@ -1,5 +1,7 @@
-Improved TTS usability.
+Improved TTS features and user experience.
 
-• Toggle between Cloud TTS and Basic TTS
-• Display numerical values for speech rate and pitch settings
-• Enhanced playback experience
+• Enhanced voice selection flow when saving with High Quality TTS
+• Added TTS information button in playback screen
+• Renamed "Cloud TTS" to "High Quality TTS"
+• Simplified UI for better usability
+• Minor bug fixes
