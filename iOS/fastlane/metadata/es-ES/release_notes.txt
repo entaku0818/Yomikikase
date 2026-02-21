@@ -1,7 +1,6 @@
-Mejoras en las funciones TTS y la experiencia del usuario.
+Precisión de resaltado mejorada significativamente durante la reproducción TTS de Alta Calidad.
 
-• Flujo mejorado de selección de voz al guardar con TTS de alta calidad
-• Botón de información TTS añadido en la pantalla de reproducción
-• "Cloud TTS" renombrado a "TTS de alta calidad"
-• Interfaz simplificada para mejor usabilidad
+• Corregida la visualización de resaltado para texto japonés en modo TTS de Alta Calidad
+• Los resaltados ahora siguen cada frase con temporización precisa
+• Mejor estabilidad del backend con infraestructura dedicada
 • Correcciones menores de errores

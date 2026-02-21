@@ -1,7 +1,6 @@
-Cải thiện tính năng TTS và trải nghiệm người dùng.
+Độ chính xác tô sáng được cải thiện đáng kể trong quá trình phát TTS Chất lượng cao.
 
-• Cải thiện luồng chọn giọng nói khi lưu với TTS chất lượng cao
-• Thêm nút thông tin TTS trong màn hình phát
-• Đổi tên "Cloud TTS" thành "TTS chất lượng cao"
-• Giao diện đơn giản hơn để sử dụng tốt hơn
+• Đã sửa lỗi hiển thị tô sáng cho văn bản tiếng Nhật ở chế độ TTS Chất lượng cao
+• Tô sáng giờ đây theo từng cụm từ với thời gian chính xác
+• Cải thiện độ ổn định backend với cơ sở hạ tầng chuyên dụng
 • Sửa lỗi nhỏ

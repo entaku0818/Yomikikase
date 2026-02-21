@@ -1,7 +1,6 @@
-Improved TTS features and user experience.
+Significantly improved highlight accuracy during High Quality TTS playback.
 
-• Enhanced voice selection flow when saving with High Quality TTS
-• Added TTS information button in playback screen
-• Renamed "Cloud TTS" to "High Quality TTS"
-• Simplified UI for better usability
+• Fixed highlight display for Japanese text in High Quality TTS mode
+• Highlights now follow each phrase with precise timing
+• Improved backend stability with dedicated infrastructure
 • Minor bug fixes
