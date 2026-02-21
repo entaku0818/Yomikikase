@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	ttsv1 "cloud.google.com/go/texttospeech/apiv1"
 	"cloud.google.com/go/texttospeech/apiv1/texttospeechpb"
@@ -152,9 +153,11 @@ func GenerateAudioTTSHandler(w http.ResponseWriter, r *http.Request) {
 
 // WordInfo stores information about a word's position in the original text
 type WordInfo struct {
-	Word       string
-	StartIndex int
-	EndIndex   int
+	Word           string
+	StartIndex     int // Unicode character (rune) index for iOS NSRange
+	EndIndex       int // Unicode character (rune) index for iOS NSRange
+	StartByteIndex int // UTF-8 byte index for SSML string slicing
+	EndByteIndex   int // UTF-8 byte index for SSML string slicing
 }
 
 // textToSSMLWithMarks converts plain text to SSML with marks before each word
@@ -168,29 +171,31 @@ func textToSSMLWithMarks(text string) (string, []WordInfo) {
 	var words []WordInfo
 	for _, match := range matches {
 		words = append(words, WordInfo{
-			Word:       text[match[0]:match[1]],
-			StartIndex: match[0],
-			EndIndex:   match[1],
+			Word:           text[match[0]:match[1]],
+			StartIndex:     utf8.RuneCountInString(text[:match[0]]),
+			EndIndex:       utf8.RuneCountInString(text[:match[1]]),
+			StartByteIndex: match[0],
+			EndByteIndex:   match[1],
 		})
 	}
 
-	// Build SSML with marks
+	// Build SSML with marks (use byte indices for string slicing)
 	var ssmlBuilder strings.Builder
 	ssmlBuilder.WriteString("<speak>")
 
-	lastIndex := 0
+	lastByteIndex := 0
 	for i, word := range words {
 		// Add any text before this word (spaces, punctuation)
-		if word.StartIndex > lastIndex {
-			ssmlBuilder.WriteString(escapeXML(text[lastIndex:word.StartIndex]))
+		if word.StartByteIndex > lastByteIndex {
+			ssmlBuilder.WriteString(escapeXML(text[lastByteIndex:word.StartByteIndex]))
 		}
 		// Add mark and word
 		ssmlBuilder.WriteString(fmt.Sprintf("<mark name=\"%d\"/>%s", i, escapeXML(word.Word)))
-		lastIndex = word.EndIndex
+		lastByteIndex = word.EndByteIndex
 	}
 	// Add any remaining text after the last word
-	if lastIndex < len(text) {
-		ssmlBuilder.WriteString(escapeXML(text[lastIndex:]))
+	if lastByteIndex < len(text) {
+		ssmlBuilder.WriteString(escapeXML(text[lastByteIndex:]))
 	}
 
 	ssmlBuilder.WriteString("</speak>")
