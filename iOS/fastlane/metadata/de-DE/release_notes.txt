@@ -1,7 +1,6 @@
-Verbesserte TTS-Funktionen und Benutzererfahrung.
+Hervorhebungsgenauigkeit bei der High Quality TTS-Wiedergabe deutlich verbessert.
 
-• Verbesserten Sprachauswahlablauf beim Speichern mit hochwertigem TTS
-• TTS-Informationsschaltfläche im Wiedergabebildschirm hinzugefügt
-• "Cloud TTS" in "Hochwertiges TTS" umbenannt
-• Vereinfachte Benutzeroberfläche für bessere Benutzerfreundlichkeit
+• Hervorhebungsanzeige für japanischen Text im High Quality TTS-Modus korrigiert
+• Hervorhebungen folgen nun jedem Satz mit präzisem Timing
+• Verbesserte Backend-Stabilität durch dedizierte Infrastruktur
 • Kleinere Fehlerbehebungen

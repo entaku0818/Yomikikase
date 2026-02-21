@@ -1,7 +1,6 @@
-TTS özellikleri ve kullanıcı deneyimi iyileştirildi.
+Yüksek Kaliteli TTS oynatımı sırasında vurgulama doğruluğu önemli ölçüde iyileştirildi.
 
-• Yüksek kaliteli TTS ile kaydederken ses seçim akışı geliştirildi
-• Oynatma ekranına TTS bilgi düğmesi eklendi
-• "Cloud TTS" "Yüksek Kaliteli TTS" olarak yeniden adlandırıldı
-• Daha iyi kullanılabilirlik için basitleştirilmiş arayüz
+• Yüksek Kaliteli TTS modunda Japonca metin için vurgulama görüntüsü düzeltildi
+• Vurgulamalar artık her ifadeyi hassas zamanlamayla takip ediyor
+• Özel altyapıyla arka uç kararlılığı iyileştirildi
 • Küçük hata düzeltmeleri

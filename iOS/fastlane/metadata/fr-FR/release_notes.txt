@@ -1,7 +1,6 @@
-Amélioration des fonctions TTS et de l'expérience utilisateur.
+Précision du surlignage considérablement améliorée lors de la lecture TTS Haute Qualité.
 
-• Flux de sélection vocale amélioré lors de l'enregistrement avec TTS haute qualité
-• Bouton d'information TTS ajouté à l'écran de lecture
-• "Cloud TTS" renommé en "TTS haute qualité"
-• Interface simplifiée pour une meilleure utilisabilité
-• Corrections de bogues mineurs
+• Correction de l'affichage du surlignage pour le texte japonais en mode TTS Haute Qualité
+• Les surlignages suivent désormais chaque phrase avec un timing précis
+• Stabilité du backend améliorée avec une infrastructure dédiée
+• Corrections mineures de bugs
