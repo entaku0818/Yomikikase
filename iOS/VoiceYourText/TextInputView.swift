@@ -30,7 +30,6 @@ struct TextInputView: View {
     @State private var isLoadingVoices = false
     @State private var currentTimepoints: [TTSTimepoint] = []
     @State private var highlightTimer: Timer?
-    @State private var playbackStartTime: Date?
     @State private var useCloudTTS: Bool = true // デフォルトはクラウドTTS
     @State private var cloudTTSAvailable: Bool = false // クラウドTTS音声が利用可能か
     @FocusState private var isTextEditorFocused: Bool
@@ -391,7 +390,7 @@ struct TextInputView: View {
 
             // Start highlight timer if we have timepoints
             if !currentTimepoints.isEmpty {
-                startHighlightTimer(playbackRate: playbackRate)
+                startHighlightTimer()
             }
 
             audioPlayer?.play()
@@ -402,39 +401,31 @@ struct TextInputView: View {
         }
     }
 
-    private func startHighlightTimer(playbackRate: Float) {
-        playbackStartTime = Date()
+    private func startHighlightTimer() {
         highlightTimer?.invalidate()
 
         // Update highlights at 60fps for smooth animation
         highlightTimer = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { [self] _ in
-            guard let startTime = playbackStartTime else { return }
+            // Use audioPlayer.currentTime directly for accurate sync
+            // (currentTime advances proportional to the audio file timeline regardless of rate)
+            guard let player = audioPlayer else { return }
+            let elapsedTime = player.currentTime
 
-            // Calculate current playback time (adjusted for rate)
-            let elapsedTime = Date().timeIntervalSince(startTime) * Double(playbackRate)
-
-            // Find the current timepoint
+            // Binary search for the current timepoint
             var currentRange: NSRange? = nil
-            for (index, timepoint) in currentTimepoints.enumerated() {
-                if timepoint.timeSeconds <= elapsedTime {
-                    // Check if next timepoint hasn't started yet
-                    let nextIndex = index + 1
-                    if nextIndex < currentTimepoints.count {
-                        if currentTimepoints[nextIndex].timeSeconds > elapsedTime {
-                            currentRange = timepoint.textRange
-                            break
-                        }
-                    } else {
-                        // Last timepoint
-                        currentRange = timepoint.textRange
-                    }
+            var lo = 0, hi = currentTimepoints.count - 1
+            while lo <= hi {
+                let mid = (lo + hi) / 2
+                if currentTimepoints[mid].timeSeconds <= elapsedTime {
+                    currentRange = currentTimepoints[mid].textRange
+                    lo = mid + 1
+                } else {
+                    hi = mid - 1
                 }
             }
 
-            DispatchQueue.main.async {
-                if self.highlightedRange != currentRange {
-                    self.highlightedRange = currentRange
-                }
+            if self.highlightedRange != currentRange {
+                self.highlightedRange = currentRange
             }
         }
     }
@@ -442,7 +433,6 @@ struct TextInputView: View {
     private func stopHighlightTimer() {
         highlightTimer?.invalidate()
         highlightTimer = nil
-        playbackStartTime = nil
     }
 
     private func playWithDeviceTTS() {

@@ -28,52 +28,53 @@ struct HighlightableTextView: UIViewRepresentable {
         // テキストが変更された場合のみ更新
         if uiView.text != text {
             uiView.text = text
+            context.coordinator.lastHighlightedRange = nil
         }
-        
-        // ハイライトを適用
+
+        // ハイライトが変わった場合のみ更新（60fps timer対策）
+        guard context.coordinator.lastHighlightedRange != highlightedRange else { return }
+        context.coordinator.lastHighlightedRange = highlightedRange
         applyHighlight(to: uiView)
     }
-    
+
     private func applyHighlight(to textView: UITextView) {
+        let nsText = text as NSString
+        let fullLength = nsText.length
         let attributedString = NSMutableAttributedString(string: text)
-        
+
         // デフォルトの属性を設定
-        let fullRange = NSRange(location: 0, length: text.count)
+        let fullRange = NSRange(location: 0, length: fullLength)
         attributedString.addAttribute(.font, value: UIFont.systemFont(ofSize: fontSize), range: fullRange)
         attributedString.addAttribute(.foregroundColor, value: UIColor.label, range: fullRange)
-        
+
         // ハイライトを適用
         if let range = highlightedRange,
            range.location != NSNotFound,
-           range.location + range.length <= text.count {
+           range.location + range.length <= fullLength {
             attributedString.addAttribute(.backgroundColor, value: UIColor.systemYellow, range: range)
-            
-            // ハイライト部分にスクロール
-            DispatchQueue.main.async {
-                if let textRange = textView.textRange(from: textView.beginningOfDocument, offset: range.location, length: range.length) {
-                    textView.scrollRangeToVisible(range)
-                }
-            }
+            textView.scrollRangeToVisible(range)
         }
-        
+
         textView.attributedText = attributedString
     }
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator(self)
     }
-    
+
     class Coordinator: NSObject, UITextViewDelegate {
         var parent: HighlightableTextView
-        
+        var lastHighlightedRange: NSRange? = nil
+
         init(_ parent: HighlightableTextView) {
             self.parent = parent
         }
-        
+
         func textViewDidChange(_ textView: UITextView) {
             parent.text = textView.text
             // テキストが変更されたらハイライトをクリア
             parent.highlightedRange = nil
+            lastHighlightedRange = nil
         }
     }
 }
