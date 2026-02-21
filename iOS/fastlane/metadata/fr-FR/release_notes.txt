@@ -1,6 +1,1 @@
-Précision du surlignage considérablement améliorée lors de la lecture TTS Haute Qualité.
-
-• Correction de l'affichage du surlignage pour le texte japonais en mode TTS Haute Qualité
-• Les surlignages suivent désormais chaque phrase avec un timing précis
-• Stabilité du backend améliorée avec une infrastructure dédiée
-• Corrections mineures de bugs
+Correction de l'affichage du surlignage pour la lecture TTS Haute Qualité.

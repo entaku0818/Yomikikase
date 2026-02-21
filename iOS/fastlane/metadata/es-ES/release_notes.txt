@@ -1,6 +1,1 @@
-Precisión de resaltado mejorada significativamente durante la reproducción TTS de Alta Calidad.
-
-• Corregida la visualización de resaltado para texto japonés en modo TTS de Alta Calidad
-• Los resaltados ahora siguen cada frase con temporización precisa
-• Mejor estabilidad del backend con infraestructura dedicada
-• Correcciones menores de errores
+Corrección de la visualización de resaltado para la reproducción TTS de Alta Calidad.

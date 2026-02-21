@@ -1,6 +1,1 @@
-Yüksek Kaliteli TTS oynatımı sırasında vurgulama doğruluğu önemli ölçüde iyileştirildi.
-
-• Yüksek Kaliteli TTS modunda Japonca metin için vurgulama görüntüsü düzeltildi
-• Vurgulamalar artık her ifadeyi hassas zamanlamayla takip ediyor
-• Özel altyapıyla arka uç kararlılığı iyileştirildi
-• Küçük hata düzeltmeleri
+Yüksek Kaliteli TTS oynatımı için vurgulama görüntüsü düzeltildi.

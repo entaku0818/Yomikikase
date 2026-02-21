@@ -1,6 +1,1 @@
-Hervorhebungsgenauigkeit bei der High Quality TTS-Wiedergabe deutlich verbessert.
-
-• Hervorhebungsanzeige für japanischen Text im High Quality TTS-Modus korrigiert
-• Hervorhebungen folgen nun jedem Satz mit präzisem Timing
-• Verbesserte Backend-Stabilität durch dedizierte Infrastruktur
-• Kleinere Fehlerbehebungen
+Hervorhebungsanzeige für High Quality TTS-Wiedergabe korrigiert.

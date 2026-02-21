@@ -1,6 +1,1 @@
-Precisione dell'evidenziazione notevolmente migliorata durante la riproduzione TTS Alta Qualità.
-
-• Corretta la visualizzazione dell'evidenziazione per il testo giapponese in modalità TTS Alta Qualità
-• Le evidenziazioni ora seguono ogni frase con timing preciso
-• Migliorata la stabilità del backend con infrastruttura dedicata
-• Correzioni di bug minori
+Corretta la visualizzazione dell'evidenziazione per la riproduzione TTS Alta Qualità.
