@@ -1,6 +1,1 @@
-Significantly improved highlight accuracy during High Quality TTS playback.
-
-• Fixed highlight display for Japanese text in High Quality TTS mode
-• Highlights now follow each phrase with precise timing
-• Improved backend stability with dedicated infrastructure
-• Minor bug fixes
+Fixed highlight display accuracy for High Quality TTS playback.

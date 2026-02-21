@@ -1,6 +1,1 @@
-Độ chính xác tô sáng được cải thiện đáng kể trong quá trình phát TTS Chất lượng cao.
-
-• Đã sửa lỗi hiển thị tô sáng cho văn bản tiếng Nhật ở chế độ TTS Chất lượng cao
-• Tô sáng giờ đây theo từng cụm từ với thời gian chính xác
-• Cải thiện độ ổn định backend với cơ sở hạ tầng chuyên dụng
-• Sửa lỗi nhỏ
+Đã sửa lỗi hiển thị tô sáng cho phát TTS Chất lượng cao.
