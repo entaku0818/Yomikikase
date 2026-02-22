@@ -67,9 +67,9 @@ platform :ios do
       skip_app_version_update: false, # アプリバージョンの更新をスキップしない
       app_version: version_number,    # アプリのバージョン番号を指定
       skip_metadata: false,          # メタデータの更新をスキップしない
-      skip_screenshots: false,       # スクリーンショットのアップロードをスキップしない
+      skip_screenshots: true,        # スクリーンショットのアップロードをスキップ
       force: true,                   # 確認なしで強制的に実行
-      overwrite_screenshots: true,   # 既存のスクリーンショットを上書き
+      overwrite_screenshots: false,  # スクリーンショットの上書きを無効
       ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
       submit_for_review: false,      # 審査提出をスキップ
       run_precheck_before_submit: false,  # 事前チェックをスキップ
@@ -96,9 +96,9 @@ platform :ios do
       skip_app_version_update: false, # アプリバージョンの更新をスキップしない
       app_version: version_number,    # アプリのバージョン番号を指定
       skip_metadata: false,          # メタデータの更新をスキップしない
-      skip_screenshots: false,       # スクリーンショットのアップロードをスキップしない
+      skip_screenshots: true,        # スクリーンショットのアップロードをスキップ
       force: true,                   # 確認なしで強制的に実行
-      overwrite_screenshots: true,   # 既存のスクリーンショットを上書き
+      overwrite_screenshots: false,  # スクリーンショットの上書きを無効
       ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
       run_precheck_before_submit: true,  # 提出前の事前チェックを実行
       precheck_include_in_app_purchases: false,  # In-app purchasesのチェックをスキップ
@@ -109,7 +109,7 @@ platform :ios do
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
       },
-      build_number: "latest"  # 最新のビルド番号を自動選択
+      build_number: "4"  # ビルド番号を明示指定
     )
   end
 end 
