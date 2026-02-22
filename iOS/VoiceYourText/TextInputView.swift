@@ -502,7 +502,7 @@ struct TextInputView: View {
         }
     }
 
-    // AVSpeechSynthesizer の長テキスト制限対策: 文・段落境界でチャンク分割
+    // AVSpeechSynthesizer 用: 文字数ベースで分割（デバイス TTS 向け）
     private func splitIntoChunks(_ text: String, maxLength: Int) -> [(text: String, offset: Int)] {
         guard text.count > maxLength else { return [(text: text, offset: 0)] }
 
@@ -520,7 +520,6 @@ struct TextInputView: View {
             var splitIndex = text.index(startIndex, offsetBy: maxLength)
             let minBack = text.index(startIndex, offsetBy: max(0, maxLength - 500))
 
-            // 文・段落境界を後ろから探す
             var searchIndex = splitIndex
             while searchIndex > minBack {
                 let c = text[searchIndex]
@@ -537,6 +536,57 @@ struct TextInputView: View {
             let length = text.distance(from: startIndex, to: splitIndex)
             chunks.append((text: chunk, offset: offset))
             offset += length
+            startIndex = splitIndex
+        }
+
+        return chunks
+    }
+
+    // Cloud TTS API 用: UTF-8バイト数ベースで分割（サーバー側 len() 制限対応）
+    // 日本語は1文字=3バイトなので文字数ではなくバイト数で制限する必要がある
+    private func splitIntoChunksByBytes(_ text: String, maxBytes: Int) -> [(text: String, offset: Int)] {
+        guard text.utf8.count > maxBytes else { return [(text: text, offset: 0)] }
+
+        var chunks: [(text: String, offset: Int)] = []
+        var startIndex = text.startIndex
+        var charOffset = 0
+
+        while startIndex < text.endIndex {
+            let remaining = text[startIndex...]
+            guard remaining.utf8.count > maxBytes else {
+                chunks.append((text: String(remaining), offset: charOffset))
+                break
+            }
+
+            // maxBytes に収まる最後の文字インデックスを探す
+            var splitIndex = startIndex
+            var byteCount = 0
+            for idx in remaining.indices {
+                let charBytes = text[idx].utf8.count
+                if byteCount + charBytes > maxBytes { break }
+                byteCount += charBytes
+                splitIndex = text.index(after: idx)
+            }
+
+            // 文・段落境界を後ろから探す（最後の20%の範囲内）
+            let minSearchBytes = maxBytes * 4 / 5
+            var searchIndex = splitIndex > startIndex ? text.index(before: splitIndex) : startIndex
+            var searchByteCount = byteCount
+            while searchIndex > startIndex {
+                let c = text[searchIndex]
+                searchByteCount -= c.utf8.count
+                if searchByteCount < minSearchBytes { break }
+                if c == "\n" || c == "。" || c == "." || c == "!" || c == "?" || c == "！" || c == "？" {
+                    splitIndex = text.index(after: searchIndex)
+                    break
+                }
+                searchIndex = text.index(before: searchIndex)
+            }
+
+            let chunk = String(text[startIndex..<splitIndex])
+            let charLen = text.distance(from: startIndex, to: splitIndex)
+            chunks.append((text: chunk, offset: charOffset))
+            charOffset += charLen
             startIndex = splitIndex
         }
 
@@ -626,7 +676,8 @@ struct TextInputView: View {
         audioGenerationError = nil
 
         let voiceId = selectedVoice?.id ?? mapLanguageToVoiceId(languageCode)
-        let chunks = splitIntoChunks(text, maxLength: 4000)
+        // サーバーは len(text) = UTF-8バイト数で 5000 制限 → 4500 バイト以下で分割
+        let chunks = splitIntoChunksByBytes(text, maxBytes: 4500)
         infoLog("[TTS] Generating audio in \(chunks.count) chunks, voiceId: \(voiceId)")
 
         Task {

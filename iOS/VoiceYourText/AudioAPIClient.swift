@@ -128,6 +128,8 @@ extension AudioAPIClient: DependencyKey {
                 }
 
                 guard httpResponse.statusCode == 200 else {
+                    let body = String(data: data, encoding: .utf8) ?? "(non-UTF8 body)"
+                    errorLog("AudioAPI error \(httpResponse.statusCode): \(body)")
                     if httpResponse.statusCode == 401 {
                         throw AudioAPIError.unauthorized
                     }
