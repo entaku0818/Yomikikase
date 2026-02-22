@@ -6,7 +6,7 @@ set -e
 # ===========================================
 #
 # Required gcloud configuration:
-#   Project: aso-tool-prod
+#   Project: voiceyourtext
 #   Region: asia-northeast1
 #   Account: entaku19890818@gmail.com
 #
@@ -14,12 +14,12 @@ set -e
 #   gcloud config list
 #
 # To set config:
-#   gcloud config set project aso-tool-prod
+#   gcloud config set project voiceyourtext
 #   gcloud config set compute/region asia-northeast1
 #
 # ===========================================
 
-PROJECT_ID="aso-tool-prod"
+PROJECT_ID="voiceyourtext"
 REGION="asia-northeast1"
 SERVICE_NAME="voiceyourtext-tts"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
