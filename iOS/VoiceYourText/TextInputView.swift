@@ -32,6 +32,8 @@ struct TextInputView: View {
     @State private var highlightTimer: Timer?
     @State private var useCloudTTS: Bool = true // デフォルトはクラウドTTS
     @State private var cloudTTSAvailable: Bool = false // クラウドTTS音声が利用可能か
+    @State private var showingTextLimitAlert = false
+    @State private var showingSubscription = false
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
@@ -185,6 +187,17 @@ struct TextInputView: View {
                 selectedVoice: selectedVoice
             )
             .presentationDetents([.medium, .large])
+        }
+        .alert("文字数制限", isPresented: $showingTextLimitAlert) {
+            Button("プレミアムプランを確認") {
+                showingSubscription = true
+            }
+            Button("キャンセル", role: .cancel) {}
+        } message: {
+            Text("4,000文字を超えるテキストはプレミアムプランでのみご利用いただけます。")
+        }
+        .sheet(isPresented: $showingSubscription) {
+            SubscriptionView()
         }
     }
 
@@ -443,35 +456,41 @@ struct TextInputView: View {
         let volume: Float = 0.75
         infoLog("[Highlight] language: \(language), rate: \(rate), pitch: \(pitch)")
 
-        let speechUtterance = AVSpeechUtterance(string: text)
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-        speechUtterance.rate = rate
-        speechUtterance.pitchMultiplier = pitch
-        speechUtterance.volume = volume
+        // AVSpeechSynthesizer は長いテキストをサイレントに失敗するため、チャンクに分割して読み上げる
+        let chunks = splitIntoChunks(text, maxLength: 4000)
+        infoLog("[Highlight] Text split into \(chunks.count) chunks (total \(text.count) chars)")
 
         Task {
             do {
-                infoLog("[Highlight] Starting speakWithHighlight")
-                try await speechSynthesizer.speakWithHighlight(
-                    speechUtterance,
-                    { range, _ in
-                        infoLog("[Highlight] Highlight callback: location=\(range.location), length=\(range.length)")
-                        DispatchQueue.main.async {
-                            self.highlightedRange = range
-                            infoLog("[Highlight] highlightedRange set to: \(range)")
-                        }
-                    },
-                    {
-                        infoLog("[Highlight] Speech finished callback")
-                        DispatchQueue.main.async {
-                            self.isSpeaking = false
-                            self.highlightedRange = nil
-                            // 読み上げ完了時はnowPlayingを停止（コンテンツは保持）
-                            self.store.send(.nowPlaying(.stopPlaying))
-                        }
+                for (index, chunk) in chunks.enumerated() {
+                    guard isSpeaking else {
+                        infoLog("[Highlight] Stopped before chunk \(index)")
+                        break
                     }
-                )
-                infoLog("[Highlight] speakWithHighlight completed")
+                    infoLog("[Highlight] Speaking chunk \(index + 1)/\(chunks.count), offset=\(chunk.offset)")
+                    let utterance = AVSpeechUtterance(string: chunk.text)
+                    utterance.voice = AVSpeechSynthesisVoice(language: language)
+                    utterance.rate = rate
+                    utterance.pitchMultiplier = pitch
+                    utterance.volume = volume
+
+                    try await speechSynthesizer.speakWithHighlight(
+                        utterance,
+                        { range, _ in
+                            let offsetRange = NSRange(location: range.location + chunk.offset, length: range.length)
+                            DispatchQueue.main.async {
+                                self.highlightedRange = offsetRange
+                            }
+                        },
+                        {}
+                    )
+                }
+                infoLog("[Highlight] All chunks completed")
+                DispatchQueue.main.async {
+                    self.isSpeaking = false
+                    self.highlightedRange = nil
+                    self.store.send(.nowPlaying(.stopPlaying))
+                }
             } catch {
                 errorLog("[Highlight] Speech synthesis failed: \(error)")
                 DispatchQueue.main.async {
@@ -483,6 +502,47 @@ struct TextInputView: View {
         }
     }
 
+    // AVSpeechSynthesizer の長テキスト制限対策: 文・段落境界でチャンク分割
+    private func splitIntoChunks(_ text: String, maxLength: Int) -> [(text: String, offset: Int)] {
+        guard text.count > maxLength else { return [(text: text, offset: 0)] }
+
+        var chunks: [(text: String, offset: Int)] = []
+        var startIndex = text.startIndex
+        var offset = 0
+
+        while startIndex < text.endIndex {
+            let remaining = text.distance(from: startIndex, to: text.endIndex)
+            guard remaining > maxLength else {
+                chunks.append((text: String(text[startIndex...]), offset: offset))
+                break
+            }
+
+            var splitIndex = text.index(startIndex, offsetBy: maxLength)
+            let minBack = text.index(startIndex, offsetBy: max(0, maxLength - 500))
+
+            // 文・段落境界を後ろから探す
+            var searchIndex = splitIndex
+            while searchIndex > minBack {
+                let c = text[searchIndex]
+                if c == "\n" || c == "。" || c == "." || c == "!" || c == "?" || c == "！" || c == "？" {
+                    if let next = text.index(searchIndex, offsetBy: 1, limitedBy: text.endIndex) {
+                        splitIndex = next
+                    }
+                    break
+                }
+                searchIndex = text.index(before: searchIndex)
+            }
+
+            let chunk = String(text[startIndex..<splitIndex])
+            let length = text.distance(from: startIndex, to: splitIndex)
+            chunks.append((text: chunk, offset: offset))
+            offset += length
+            startIndex = splitIndex
+        }
+
+        return chunks
+    }
+
     private func stopSpeaking() {
         stopHighlightTimer()
         audioPlayer?.stop()
@@ -490,9 +550,15 @@ struct TextInputView: View {
         isSpeaking = false
         highlightedRange = nil
         store.send(.nowPlaying(.stopPlaying))
+        Task { await speechSynthesizer.stopSpeaking() }
     }
 
     private func handleSaveButtonTap() {
+        // 非課金ユーザーの4000文字制限チェック
+        if !UserDefaultsManager.shared.isPremiumUser && text.count > 4000 {
+            showingTextLimitAlert = true
+            return
+        }
         // 高音質TTSを選択している場合は、音声選択画面を表示
         if useCloudTTS {
             pendingSave = true
@@ -559,41 +625,74 @@ struct TextInputView: View {
         isGeneratingAudio = true
         audioGenerationError = nil
 
-        // Use selected voice or fallback to language mapping
         let voiceId = selectedVoice?.id ?? mapLanguageToVoiceId(languageCode)
-        infoLog("[TTS] Generating audio with voiceId: \(voiceId), fileId: \(fileId)")
+        let chunks = splitIntoChunks(text, maxLength: 4000)
+        infoLog("[TTS] Generating audio in \(chunks.count) chunks, voiceId: \(voiceId)")
 
         Task {
             do {
-                // Generate audio via Cloud Run TTS
-                infoLog("[TTS] Calling Cloud Run API...")
-                let response = try await audioAPI.generateAudio(text, voiceId)
-                infoLog("[TTS] API response received, audioUrl: \(response.audioUrl)")
-                infoLog("[TTS] Received \(response.timepoints?.count ?? 0) timepoints")
+                var chunkURLs: [URL] = []
+                var allTimepoints: [TTSTimepoint] = []
+                var cumulativeTime: Double = 0
 
-                guard let audioURL = URL(string: response.audioUrl) else {
-                    infoLog("[TTS] ERROR: Invalid audio URL")
-                    throw AudioAPIError.invalidURL
+                for (index, chunk) in chunks.enumerated() {
+                    infoLog("[TTS] Chunk \(index + 1)/\(chunks.count), offset=\(chunk.offset), length=\(chunk.text.count)")
+                    let response = try await audioAPI.generateAudio(chunk.text, voiceId)
+
+                    guard let audioURL = URL(string: response.audioUrl) else {
+                        throw AudioAPIError.invalidURL
+                    }
+
+                    let chunkId = chunks.count == 1 ? fileId.uuidString : "\(fileId.uuidString)-chunk-\(index)"
+                    let chunkLocalURL = try await audioFileManager.downloadAudio(audioURL, chunkId)
+                    chunkURLs.append(chunkLocalURL)
+
+                    // タイムポイントの文字インデックスと時刻をオフセット補正
+                    if let timepoints = response.timepoints {
+                        let adjusted = timepoints.compactMap { tp -> TTSTimepoint? in
+                            let parts = tp.markName.split(separator: ":")
+                            guard parts.count == 3,
+                                  let idx = Int(parts[0]),
+                                  let start = Int(parts[1]),
+                                  let end = Int(parts[2]) else { return nil }
+                            let mark = "\(idx):\(start + chunk.offset):\(end + chunk.offset)"
+                            return TTSTimepoint(markName: mark, timeSeconds: tp.timeSeconds + cumulativeTime)
+                        }
+                        allTimepoints.append(contentsOf: adjusted)
+                    }
+
+                    if chunks.count > 1 {
+                        cumulativeTime += WAVProcessor.duration(at: chunkLocalURL)
+                    }
                 }
 
-                // Download audio to local storage
-                infoLog("[TTS] Downloading audio from: \(audioURL)")
-                let localURL = try await audioFileManager.downloadAudio(audioURL, fileId.uuidString)
-                infoLog("[TTS] Audio downloaded and saved to: \(localURL.path)")
+                // 複数チャンクの場合はWAVを結合して最終ファイルを作成
+                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
+                let finalURL = audioDirectory.appendingPathComponent("\(fileId.uuidString).wav")
 
-                // Save timepoints to JSON file
-                if let timepoints = response.timepoints, !timepoints.isEmpty {
-                    let timepointsURL = localURL.deletingPathExtension().appendingPathExtension("json")
-                    let timepointsData = try JSONEncoder().encode(timepoints)
-                    try timepointsData.write(to: timepointsURL)
-                    infoLog("[TTS] Timepoints saved to: \(timepointsURL.path)")
+                if chunkURLs.count == 1 {
+                    if chunkURLs[0] != finalURL {
+                        try? FileManager.default.removeItem(at: finalURL)
+                        try FileManager.default.moveItem(at: chunkURLs[0], to: finalURL)
+                    }
+                } else {
+                    try WAVProcessor.concatenate(chunkURLs, to: finalURL)
+                    chunkURLs.forEach { try? FileManager.default.removeItem(at: $0) }
+                }
+
+                if !allTimepoints.isEmpty {
+                    let timepointsURL = finalURL.deletingPathExtension().appendingPathExtension("json")
+                    let data = try JSONEncoder().encode(allTimepoints)
+                    try data.write(to: timepointsURL)
+                    infoLog("[TTS] Saved \(allTimepoints.count) timepoints")
                 }
 
                 await MainActor.run {
-                    currentTimepoints = response.timepoints ?? []
+                    currentTimepoints = allTimepoints
                     isGeneratingAudio = false
                     isEditMode = false
-                    cloudTTSAvailable = true // クラウドTTS音声が生成された
+                    cloudTTSAvailable = true
                     infoLog("[TTS] Switched to player mode with Cloud TTS available")
                 }
             } catch {
@@ -602,12 +701,12 @@ struct TextInputView: View {
                 await MainActor.run {
                     isGeneratingAudio = false
                     audioGenerationError = error.localizedDescription
-                    // Still switch to player mode even if TTS fails
                     isEditMode = false
                 }
             }
         }
     }
+
 
     private func mapLanguageToVoiceId(_ languageCode: String) -> String {
         // Map language code to Cloud Run TTS voice ID
