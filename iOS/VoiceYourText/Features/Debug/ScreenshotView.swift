@@ -22,6 +22,10 @@ struct ScreenshotView: View {
                 MockScreenWithTopTab(title: "設定") {
                     SettingsContent()
                 }
+            case 4:
+                PDFReadingContent()
+            case 5:
+                UserDictionaryContent()
             default:
                 MockScreenWithTopTab(title: "読み上げ") {
                     HomeContent()
@@ -29,7 +33,7 @@ struct ScreenshotView: View {
             }
         }
         .onTapGesture {
-            if currentScreen < 3 {
+            if currentScreen < 5 {
                 currentScreen += 1
             } else {
                 dismiss()
@@ -357,6 +361,172 @@ struct SettingsContent: View {
                         .padding(.horizontal)
                 }
             }
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+// MARK: - PDF読み上げ画面コンテンツ
+struct PDFReadingContent: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            // ナビゲーションバー
+            HStack {
+                Image(systemName: "chevron.left")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+                Spacer()
+                Text("吾輩は猫である.pdf")
+                    .font(.headline)
+                    .lineLimit(1)
+                Spacer()
+                Image(systemName: "square.and.arrow.up")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            .padding(.top, 44)
+            .background(Color(.systemBackground))
+
+            // PDFテキスト表示エリア
+            ScrollView {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 0) {
+                        Text("吾輩は猫である。名前は")
+                        Text("まだ無い")
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 2)
+                            .background(Color.orange)
+                        Text("。")
+                    }
+                    .font(.body)
+                    Text("どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。")
+                        .font(.body)
+                    Text("吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。")
+                        .font(.body)
+                        .padding(.top, 4)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
+            }
+            .background(Color(.systemBackground))
+
+            // ページ表示
+            Text("1 / 12 ページ")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.vertical, 8)
+                .background(Color(.systemBackground))
+
+            Spacer()
+
+            // 再生コントロール
+            VStack(spacing: 16) {
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .frame(height: 4)
+                        Rectangle()
+                            .fill(Color.orange)
+                            .frame(width: geo.size.width * 0.15, height: 4)
+                    }
+                    .cornerRadius(2)
+                }
+                .frame(height: 4)
+                .padding(.horizontal)
+
+                HStack(spacing: 40) {
+                    Image(systemName: "gobackward.15")
+                        .font(.title)
+                        .foregroundColor(.primary)
+                    Image(systemName: "pause.circle.fill")
+                        .font(.system(size: 64))
+                        .foregroundColor(.orange)
+                    Image(systemName: "goforward.15")
+                        .font(.title)
+                        .foregroundColor(.primary)
+                }
+            }
+            .padding(.vertical, 20)
+            .background(Color(.systemBackground))
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+// MARK: - ユーザー辞書画面コンテンツ
+struct UserDictionaryContent: View {
+    let entries = [
+        ("薔薇", "ばら"),
+        ("麒麟", "きりん"),
+        ("Claude", "クロード"),
+        ("土御門", "つちみかど"),
+        ("読売新聞", "よみうりしんぶん"),
+    ]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // ナビゲーションバー
+            HStack {
+                Spacer()
+                Text("ユーザー辞書")
+                    .font(.headline)
+                Spacer()
+                Image(systemName: "plus")
+                    .font(.title2)
+                    .foregroundColor(.blue)
+            }
+            .padding()
+            .padding(.top, 44)
+            .background(Color(.systemBackground))
+
+            // 説明テキスト
+            HStack {
+                Text("単語の読み方をカスタマイズできます")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 8)
+            .background(Color(.systemGroupedBackground))
+
+            // 辞書エントリ一覧
+            ScrollView {
+                VStack(spacing: 0) {
+                    ForEach(Array(entries.enumerated()), id: \.offset) { index, entry in
+                        VStack(spacing: 0) {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(entry.0)
+                                        .font(.headline)
+                                    Text(entry.1)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .background(Color(.systemBackground))
+
+                            if index < entries.count - 1 {
+                                Divider().padding(.leading)
+                            }
+                        }
+                    }
+                }
+                .cornerRadius(12)
+                .padding(.horizontal)
+                .padding(.top, 8)
+            }
+            .background(Color(.systemGroupedBackground))
+
+            Spacer()
         }
         .background(Color(.systemGroupedBackground))
     }
