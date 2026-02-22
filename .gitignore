@@ -12,6 +12,7 @@ xcuserdata/
 
 # その他
 GoogleService-Info.plist
+*.apps.googleusercontent.com.plist
 
 # SwiftPM
 .build/
