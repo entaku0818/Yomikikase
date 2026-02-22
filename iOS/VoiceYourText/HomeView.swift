@@ -29,6 +29,21 @@ struct HomeView: View {
     @State private var selectedSpeech: Speeches.Speech? = nil
     @State private var showingFileViewer = false
 
+    // Link
+    @State private var showingLinkInput = false
+    @State private var linkExtractedText = ""
+    @State private var showingLinkTextView = false
+
+    // EPUB
+    @State private var showingEPUBPicker = false
+    @State private var epubExtractedText = ""
+    @State private var showingEPUBTextView = false
+
+    // Google Drive
+    @State private var showingGoogleDrive = false
+    @State private var googleDriveExtractedText = ""
+    @State private var showingGoogleDriveTextView = false
+
     struct ScannedDocument: Identifiable {
         let id = UUID()
         let text: String
@@ -91,32 +106,39 @@ struct HomeView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
 
-                            // Googleドライブ（無効）
-                            createButtonCard(
-                                icon: "externaldrive.fill",
-                                iconColor: .green,
-                                title: "Gドライブ",
-                                isEnabled: false,
-                                action: { onDevelopmentFeature("Googleドライブ") }
-                            )
-                            
-                            // Kindle（無効）
-                            createButtonCard(
-                                icon: "book.fill",
-                                iconColor: .orange,
-                                title: "Kindle",
-                                isEnabled: false,
-                                action: { onDevelopmentFeature("Kindle") }
-                            )
-                            
-                            // 本（無効）
-                            createButtonCard(
-                                icon: "books.vertical.fill",
-                                iconColor: .brown,
-                                title: "本",
-                                isEnabled: false,
-                                action: { onDevelopmentFeature("本") }
-                            )
+                            // Googleドライブ（有効）
+                            Button {
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingGoogleDrive = true
+                                }
+                            } label: {
+                                createButtonContent(
+                                    icon: "externaldrive.fill",
+                                    iconColor: .green,
+                                    title: "Gドライブ",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
+
+                            // 本 EPUB（有効）
+                            Button {
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingEPUBPicker = true
+                                }
+                            } label: {
+                                createButtonContent(
+                                    icon: "books.vertical.fill",
+                                    iconColor: .brown,
+                                    title: "本",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             
                             // スキャン（有効）
                             Button {
@@ -139,14 +161,22 @@ struct HomeView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
-                            // リンク（無効）
-                            createButtonCard(
-                                icon: "link",
-                                iconColor: .cyan,
-                                title: "リンク",
-                                isEnabled: false,
-                                action: { onDevelopmentFeature("リンク") }
-                            )
+                            // リンク（有効）
+                            Button {
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingLinkInput = true
+                                }
+                            } label: {
+                                createButtonContent(
+                                    icon: "link",
+                                    iconColor: .teal,
+                                    title: "リンク",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                         .padding(.horizontal)
                         .padding(.top)
@@ -316,6 +346,36 @@ struct HomeView: View {
             }
             .fullScreenCover(isPresented: $showingFileViewer) {
                 FileViewerContainer(speech: selectedSpeech, store: store)
+            }
+            // Link
+            .sheet(isPresented: $showingLinkInput) {
+                LinkInputView(store: store) { text in
+                    linkExtractedText = text
+                    showingLinkTextView = true
+                }
+            }
+            .navigationDestination(isPresented: $showingLinkTextView) {
+                TextInputView(store: store, initialText: linkExtractedText, fileId: nil)
+            }
+            // EPUB
+            .sheet(isPresented: $showingEPUBPicker) {
+                EPUBPickerView(store: store) { text in
+                    epubExtractedText = text
+                    showingEPUBTextView = true
+                }
+            }
+            .navigationDestination(isPresented: $showingEPUBTextView) {
+                TextInputView(store: store, initialText: epubExtractedText, fileId: nil)
+            }
+            // Google Drive
+            .sheet(isPresented: $showingGoogleDrive) {
+                GoogleDriveView(store: store) { text in
+                    googleDriveExtractedText = text
+                    showingGoogleDriveTextView = true
+                }
+            }
+            .navigationDestination(isPresented: $showingGoogleDriveTextView) {
+                TextInputView(store: store, initialText: googleDriveExtractedText, fileId: nil)
             }
         }
     }

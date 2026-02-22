@@ -79,11 +79,10 @@ struct HomeContent: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                 GridItemView(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
                 GridItemView(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
-                GridItemView(icon: "externaldrive.fill", title: "Gドライブ", color: .gray, isEnabled: false)
-                GridItemView(icon: "book.fill", title: "Kindle", color: .gray, isEnabled: false)
-                GridItemView(icon: "books.vertical.fill", title: "本", color: .gray, isEnabled: false)
-                GridItemView(icon: "camera.fill", title: "スキャン", color: .gray, isEnabled: false)
-                GridItemView(icon: "link", title: "リンク", color: .gray, isEnabled: false)
+                GridItemView(icon: "externaldrive.fill", title: "Gドライブ", color: .green, isEnabled: true)
+                GridItemView(icon: "books.vertical.fill", title: "本", color: .brown, isEnabled: true)
+                GridItemView(icon: "camera.fill", title: "スキャン", color: .indigo, isEnabled: true)
+                GridItemView(icon: "link", title: "リンク", color: .teal, isEnabled: true)
             }
             .padding(.horizontal, 20)
             .padding(.top, 16)
