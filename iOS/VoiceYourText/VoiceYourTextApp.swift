@@ -11,6 +11,7 @@ import UIKit
 import FirebaseCore
 import FirebaseCrashlytics
 import RevenueCat
+import GoogleSignIn
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
@@ -45,6 +46,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         infoLog("App launch completed")
         return true
+    }
+
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
     }
 
     // RevenueCatのAPIキーを取得するメソッド
