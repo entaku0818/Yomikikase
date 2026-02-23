@@ -22,6 +22,7 @@ type Job struct {
 	ID          string         `firestore:"id"          json:"id"`
 	Status      JobStatus      `firestore:"status"      json:"status"`
 	Text        string         `firestore:"text"        json:"text"`
+	TextURL     string         `firestore:"textUrl,omitempty" json:"textUrl,omitempty"` // GCS URL for large texts
 	VoiceID     string         `firestore:"voiceId"     json:"voiceId"`
 	Language    string         `firestore:"language"    json:"language"`
 	Style       string         `firestore:"style"       json:"style"`
@@ -70,4 +71,23 @@ type TTSGenerator interface {
 // AudioStorage stores a WAV file and returns its public URL.
 type AudioStorage interface {
 	Upload(ctx context.Context, data []byte, filename string) (audioURL string, err error)
+}
+
+// StreamingAudioStorage extends AudioStorage with a memory-efficient streaming
+// WAV upload. Instead of buffering all audio chunks in memory before uploading,
+// implementations should stream PCM data directly to the backing store.
+//
+// fillPCM is invoked with two callbacks:
+//   - setHeader(wav44 []byte): called once with the first chunk's 44-byte WAV
+//     header so the implementation can record sample-rate / format info.
+//   - writePCM(pcm []byte): called for each chunk's raw PCM bytes (after offset 44).
+//
+// Use this interface for production storage (e.g. GCS) to avoid OOM on large texts.
+type StreamingAudioStorage interface {
+	AudioStorage
+	UploadWAVStreaming(
+		ctx context.Context,
+		filename string,
+		fillPCM func(setHeader func([]byte), writePCM func([]byte)) error,
+	) (audioURL string, err error)
 }

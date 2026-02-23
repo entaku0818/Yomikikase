@@ -3,6 +3,8 @@ package jobs
 import (
 	"context"
 	"fmt"
+	"io"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -12,8 +14,9 @@ import (
 )
 
 // MaxChunkBytes is the maximum UTF-8 byte size per TTS API request.
-// The server validates len(text) <= 5000 (bytes); we use 4500 for safety.
-const MaxChunkBytes = 4500
+// Google TTS SSML limit is 5000 chars including tags. Each byte of text
+// generates ~2-3 chars of SSML overhead (mark tags), so 1000 bytes ≈ 3000 SSML chars.
+const MaxChunkBytes = 1000
 
 // TextChunk is a slice of the original text with its character offset.
 type TextChunk struct {
@@ -102,9 +105,31 @@ type ProcessResult struct {
 	Timepoints []TTSTimepoint
 }
 
+// downloadText fetches text from a URL (used when text is stored in GCS).
+func downloadText(ctx context.Context, url string) (string, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
+	if err != nil {
+		return "", fmt.Errorf("create request: %w", err)
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", fmt.Errorf("http get: %w", err)
+	}
+	defer resp.Body.Close()
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", fmt.Errorf("read body: %w", err)
+	}
+	return string(data), nil
+}
+
 // ProcessJob splits job.Text into chunks, generates TTS for each chunk,
 // concatenates the resulting WAV files, adjusts timepoints, and uploads
 // the final audio. All external I/O is injected via interfaces.
+//
+// When storage implements StreamingAudioStorage, PCM data is streamed directly
+// to GCS one chunk at a time (constant memory usage regardless of text length).
+// Otherwise it falls back to accumulating all chunks in memory before upload.
 func ProcessJob(
 	ctx context.Context,
 	job *Job,
@@ -112,12 +137,50 @@ func ProcessJob(
 	gen TTSGenerator,
 	storage AudioStorage,
 ) (*ProcessResult, error) {
-	chunks := SplitText(job.Text, MaxChunkBytes)
+	text := job.Text
+	if text == "" && job.TextURL != "" {
+		downloaded, err := downloadText(ctx, job.TextURL)
+		if err != nil {
+			return nil, fmt.Errorf("download text from GCS: %w", err)
+		}
+		text = downloaded
+	}
+	chunks := SplitText(text, MaxChunkBytes)
 
-	var wavFiles [][]byte
+	filename := fmt.Sprintf("audio/jobs/%s_%s.wav", job.VoiceID, uuid.New().String())
+
 	var allTimepoints []TTSTimepoint
 	var cumulativeTime float64
 
+	// Prefer streaming upload to avoid OOM on large texts.
+	if streamer, ok := storage.(StreamingAudioStorage); ok {
+		audioURL, err := streamer.UploadWAVStreaming(ctx, filename, func(setHeader func([]byte), writePCM func([]byte)) error {
+			headerSet := false
+			for _, chunk := range chunks {
+				audioData, tps, err := gen.Generate(ctx, chunk.Text, voice, job.Language)
+				if err != nil {
+					return fmt.Errorf("TTS generation failed at offset %d: %w", chunk.CharOffset, err)
+				}
+				if !headerSet && len(audioData) >= 44 {
+					setHeader(audioData[:44])
+					headerSet = true
+				}
+				allTimepoints = append(allTimepoints, AdjustTimepoints(tps, chunk.CharOffset, cumulativeTime)...)
+				cumulativeTime += wav.Duration(audioData)
+				if len(audioData) > 44 {
+					writePCM(audioData[44:])
+				}
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, fmt.Errorf("streaming WAV upload failed: %w", err)
+		}
+		return &ProcessResult{AudioURL: audioURL, Timepoints: allTimepoints}, nil
+	}
+
+	// Fallback: accumulate all WAV data in memory (used in unit tests with mock storage).
+	var wavFiles [][]byte
 	for _, chunk := range chunks {
 		audioData, tps, err := gen.Generate(ctx, chunk.Text, voice, job.Language)
 		if err != nil {
@@ -133,7 +196,6 @@ func ProcessJob(
 		return nil, fmt.Errorf("WAV concatenation failed: %w", err)
 	}
 
-	filename := fmt.Sprintf("audio/jobs/%s_%s.wav", job.VoiceID, uuid.New().String())
 	audioURL, err := storage.Upload(ctx, combined, filename)
 	if err != nil {
 		return nil, fmt.Errorf("audio upload failed: %w", err)

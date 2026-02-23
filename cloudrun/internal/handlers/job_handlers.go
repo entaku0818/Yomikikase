@@ -71,8 +71,9 @@ func (d *JobDeps) CreateJobHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	jobID := uuid.New().String()
 	job := &jobs.Job{
-		ID:          uuid.New().String(),
+		ID:          jobID,
 		Status:      jobs.JobStatusPending,
 		Text:        req.Text,
 		VoiceID:     req.VoiceID,
@@ -84,7 +85,21 @@ func (d *JobDeps) CreateJobHandler(w http.ResponseWriter, r *http.Request) {
 		UpdatedAt:   time.Now(),
 	}
 
+	// Firestore document limit is 1MB. For large texts, store in GCS instead.
 	ctx := r.Context()
+	const maxFirestoreTextBytes = 500_000
+	if len(req.Text) > maxFirestoreTextBytes {
+		textURL, err := d.Storage.Upload(ctx, []byte(req.Text), "text/jobs/"+jobID+".txt")
+		if err != nil {
+			log.Printf("CreateJob: upload text to GCS failed: %v", err)
+			http.Error(w, `{"error":"failed to upload text"}`, http.StatusInternalServerError)
+			return
+		}
+		job.Text = ""
+		job.TextURL = textURL
+		log.Printf("CreateJob: large text (%d bytes) stored at %s", len(req.Text), textURL)
+	}
+
 	if err := d.Store.Create(ctx, job); err != nil {
 		log.Printf("CreateJob: store.Create failed: %v", err)
 		http.Error(w, `{"error":"failed to create job"}`, http.StatusInternalServerError)
