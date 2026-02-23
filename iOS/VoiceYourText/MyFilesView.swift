@@ -17,10 +17,6 @@ struct MyFilesView: View {
     @State private var fileToDelete: FileItem?
     @State private var selectedTextFile: SavedTextFile?
     @State private var selectedPDFFile: SavedPDFFile?
-    @State private var selectedEPUBFile: SavedTextFile?
-    @State private var showingEPUBPicker = false
-    @State private var epubReimportedText = ""
-    @State private var showingEPUBTextView = false
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -46,8 +42,7 @@ struct MyFilesView: View {
                             } else if file.type == .epub {
                                 Button {
                                     if let textFile = textFiles.first(where: { $0.id == file.id }) {
-                                        selectedEPUBFile = textFile
-                                        showingEPUBPicker = true
+                                        selectedTextFile = textFile
                                     }
                                 } label: {
                                     FileItemView(file: file, onDelete: {
@@ -134,23 +129,6 @@ struct MyFilesView: View {
                 store: store,
                 initialText: textFile.text,
                 fileId: textFile.id
-            )
-        }
-        .sheet(isPresented: $showingEPUBPicker) {
-            EPUBPickerView(store: store) { text in
-                epubReimportedText = text
-                showingEPUBPicker = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    showingEPUBTextView = true
-                }
-            }
-        }
-        .fullScreenCover(isPresented: $showingEPUBTextView) {
-            TextInputView(
-                store: store,
-                initialText: epubReimportedText,
-                fileId: selectedEPUBFile?.id,
-                fileType: "epub"
             )
         }
         .fullScreenCover(item: $selectedPDFFile) { pdfFile in
