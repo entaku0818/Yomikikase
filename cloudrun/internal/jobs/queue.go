@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"time"
 
 	cloudtasks "cloud.google.com/go/cloudtasks/apiv2"
 	taskspb "cloud.google.com/go/cloudtasks/apiv2/cloudtaskspb"
+	"google.golang.org/protobuf/types/known/durationpb"
 )
 
 // CloudTasksQueue is the Cloud Tasks-backed implementation of TaskQueue.
@@ -47,6 +49,7 @@ func (q *CloudTasksQueue) Enqueue(ctx context.Context, jobID string) error {
 	req := &taskspb.CreateTaskRequest{
 		Parent: q.queuePath,
 		Task: &taskspb.Task{
+			DispatchDeadline: durationpb.New(30 * time.Minute),
 			MessageType: &taskspb.Task_HttpRequest{
 				HttpRequest: &taskspb.HttpRequest{
 					HttpMethod: taskspb.HttpMethod_POST,
