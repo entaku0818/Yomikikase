@@ -11,10 +11,24 @@ import AVFoundation
 import ComposableArchitecture
 
 
+struct JobSubmitResponse: Codable, Equatable {
+    let jobId: String
+}
+
+struct JobStatusResponse: Codable, Equatable {
+    let id: String
+    let status: String  // "pending", "processing", "completed", "failed"
+    let audioUrl: String?
+    let timepoints: [TTSTimepoint]?
+    let errorMsg: String?
+}
+
 @DependencyClient
 struct AudioAPIClient {
     var generateAudio: @Sendable (String, String?) async throws -> AudioResponse
     var getVoices: @Sendable (String?) async throws -> VoicesResponse
+    var submitJob: @Sendable (String, String?, String?) async throws -> String  // text, voiceId, language → jobId
+    var getJobStatus: @Sendable (String) async throws -> JobStatusResponse      // jobId → status
 }
 
 struct TTSTimepoint: Codable, Equatable {
@@ -142,6 +156,57 @@ extension AudioAPIClient: DependencyKey {
                     throw AudioAPIError.decodingError
                 }
             },
+            submitJob: { text, voiceId, language in
+                guard let baseURL = Bundle.main.infoDictionary?["AUDIO_API_BASE_URL"] as? String,
+                      !baseURL.isEmpty else {
+                    throw AudioAPIError.notConfigured
+                }
+                guard let url = URL(string: "\(baseURL)/jobs") else {
+                    throw AudioAPIError.invalidURL
+                }
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                if let apiKey = Bundle.main.infoDictionary?["CLOUDRUN_API_KEY"] as? String, !apiKey.isEmpty {
+                    request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+                }
+                let body: [String: Any] = [
+                    "text": text,
+                    "voiceId": voiceId ?? "ja-jp-female-a",
+                    "language": language ?? "ja-JP"
+                ]
+                request.httpBody = try JSONSerialization.data(withJSONObject: body)
+                let (data, response) = try await URLSession.shared.data(for: request)
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw AudioAPIError.networkError
+                }
+                guard httpResponse.statusCode == 202 else {
+                    let body = String(data: data, encoding: .utf8) ?? "(non-UTF8 body)"
+                    errorLog("submitJob error \(httpResponse.statusCode): \(body)")
+                    throw AudioAPIError.serverError(httpResponse.statusCode)
+                }
+                let decoded = try JSONDecoder().decode(JobSubmitResponse.self, from: data)
+                return decoded.jobId
+            },
+            getJobStatus: { jobId in
+                guard let baseURL = Bundle.main.infoDictionary?["AUDIO_API_BASE_URL"] as? String,
+                      !baseURL.isEmpty else {
+                    throw AudioAPIError.notConfigured
+                }
+                guard let url = URL(string: "\(baseURL)/jobs/\(jobId)") else {
+                    throw AudioAPIError.invalidURL
+                }
+                var request = URLRequest(url: url)
+                request.httpMethod = "GET"
+                if let apiKey = Bundle.main.infoDictionary?["CLOUDRUN_API_KEY"] as? String, !apiKey.isEmpty {
+                    request.setValue(apiKey, forHTTPHeaderField: "X-API-Key")
+                }
+                let (data, response) = try await URLSession.shared.data(for: request)
+                guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                    throw AudioAPIError.networkError
+                }
+                return try JSONDecoder().decode(JobStatusResponse.self, from: data)
+            },
             getVoices: { language in
                 guard let baseURL = Bundle.main.infoDictionary?["AUDIO_API_BASE_URL"] as? String,
                       !baseURL.isEmpty else {
@@ -200,6 +265,11 @@ extension AudioAPIClient: TestDependencyKey {
                     VoiceConfig(id: "ja-jp-female-a", name: "あかり", language: "ja-JP", gender: "female", description: "明るく優しい女性の声")
                 ]
             )
+        },
+        submitJob: { _, _, _ in "test-job-id" },
+        getJobStatus: { _ in
+            JobStatusResponse(id: "test-job-id", status: "completed",
+                              audioUrl: "https://example.com/test.wav", timepoints: nil, errorMsg: nil)
         }
     )
 }
