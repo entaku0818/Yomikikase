@@ -17,6 +17,10 @@ struct MyFilesView: View {
     @State private var fileToDelete: FileItem?
     @State private var selectedTextFile: SavedTextFile?
     @State private var selectedPDFFile: SavedPDFFile?
+    @State private var selectedEPUBFile: SavedTextFile?
+    @State private var showingEPUBPicker = false
+    @State private var epubReimportedText = ""
+    @State private var showingEPUBTextView = false
     let store: StoreOf<Speeches>
     
     var body: some View {
@@ -31,6 +35,19 @@ struct MyFilesView: View {
                                 Button {
                                     if let textFile = textFiles.first(where: { $0.id == file.id }) {
                                         selectedTextFile = textFile
+                                    }
+                                } label: {
+                                    FileItemView(file: file, onDelete: {
+                                        fileToDelete = file
+                                        showingDeleteAlert = true
+                                    })
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            } else if file.type == .epub {
+                                Button {
+                                    if let textFile = textFiles.first(where: { $0.id == file.id }) {
+                                        selectedEPUBFile = textFile
+                                        showingEPUBPicker = true
                                     }
                                 } label: {
                                     FileItemView(file: file, onDelete: {
@@ -119,6 +136,23 @@ struct MyFilesView: View {
                 fileId: textFile.id
             )
         }
+        .sheet(isPresented: $showingEPUBPicker) {
+            EPUBPickerView(store: store) { text in
+                epubReimportedText = text
+                showingEPUBPicker = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    showingEPUBTextView = true
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showingEPUBTextView) {
+            TextInputView(
+                store: store,
+                initialText: epubReimportedText,
+                fileId: selectedEPUBFile?.id,
+                fileType: "epub"
+            )
+        }
         .fullScreenCover(item: $selectedPDFFile) { pdfFile in
             PDFReaderView(
                 store: Store(
@@ -136,12 +170,13 @@ struct MyFilesView: View {
         
         // テキストファイルを追加
         files.append(contentsOf: textFiles.map { textFile in
-            FileItem(
+            let fileType: FileItem.FileType = textFile.fileType == "epub" ? .epub : .text
+            return FileItem(
                 id: textFile.id,
                 title: textFile.title,
-                subtitle: "あああああああ",
+                subtitle: textFile.fileType,
                 date: textFile.updatedAt,
-                type: .text,
+                type: fileType,
                 isProcessing: UserDefaultsManager.shared.pendingJobId(for: textFile.id) != nil
             )
         })
@@ -174,7 +209,8 @@ struct MyFilesView: View {
                 title: speech.title,
                 text: speech.text,
                 createdAt: speech.createdAt,
-                updatedAt: speech.updatedAt
+                updatedAt: speech.updatedAt,
+                fileType: speech.fileType ?? "text"
             )
         }
         
@@ -252,7 +288,7 @@ struct FileItem: Identifiable {
     var isProcessing: Bool = false
 
     enum FileType {
-        case text, pdf
+        case text, pdf, epub
     }
 }
 
@@ -262,6 +298,7 @@ struct SavedTextFile: Identifiable {
     let text: String
     let createdAt: Date
     let updatedAt: Date
+    var fileType: String = "text"
 }
 
 struct SavedPDFFile: Identifiable {
@@ -289,15 +326,32 @@ struct FileItemView: View {
         switch file.type {
         case .text: return "txt"
         case .pdf: return "pdf"
+        case .epub: return "epub"
+        }
+    }
+
+    private var fileIconName: String {
+        switch file.type {
+        case .text: return "doc.text.fill"
+        case .pdf: return "doc.richtext.fill"
+        case .epub: return "books.vertical.fill"
+        }
+    }
+
+    private var fileIconColor: Color {
+        switch file.type {
+        case .text: return .blue
+        case .pdf: return .red
+        case .epub: return .brown
         }
     }
 
     var body: some View {
         HStack(spacing: 12) {
             // ファイルアイコン
-            Image(systemName: file.type == .pdf ? "doc.richtext.fill" : "doc.text.fill")
+            Image(systemName: fileIconName)
                 .font(.system(size: 28))
-                .foregroundColor(file.type == .pdf ? .red : .blue)
+                .foregroundColor(fileIconColor)
                 .frame(width: 48, height: 48)
                 .background(Color.gray.opacity(0.1))
                 .cornerRadius(8)
