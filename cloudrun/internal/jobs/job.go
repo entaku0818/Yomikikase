@@ -19,19 +19,19 @@ const (
 
 // Job holds the request parameters and current state of a TTS generation job.
 type Job struct {
-	ID          string    `firestore:"id"`
-	Status      JobStatus `firestore:"status"`
-	Text        string    `firestore:"text"`
-	VoiceID     string    `firestore:"voiceId"`
-	Language    string    `firestore:"language"`
-	Style       string    `firestore:"style"`
-	FileID      string    `firestore:"fileId"`      // iOS file UUID (used to name the final audio)
-	DeviceToken string    `firestore:"deviceToken"` // FCM registration token
-	AudioURL    string         `firestore:"audioUrl,omitempty"`
-	Timepoints  []TTSTimepoint `firestore:"timepoints,omitempty"`
-	ErrorMsg    string         `firestore:"errorMsg,omitempty"`
-	CreatedAt   time.Time `firestore:"createdAt"`
-	UpdatedAt   time.Time `firestore:"updatedAt"`
+	ID          string         `firestore:"id"          json:"id"`
+	Status      JobStatus      `firestore:"status"      json:"status"`
+	Text        string         `firestore:"text"        json:"text"`
+	VoiceID     string         `firestore:"voiceId"     json:"voiceId"`
+	Language    string         `firestore:"language"    json:"language"`
+	Style       string         `firestore:"style"       json:"style"`
+	FileID      string         `firestore:"fileId"      json:"fileId"`
+	DeviceToken string         `firestore:"deviceToken" json:"-"` // never expose token in API response
+	AudioURL    string         `firestore:"audioUrl,omitempty"   json:"audioUrl,omitempty"`
+	Timepoints  []TTSTimepoint `firestore:"timepoints,omitempty" json:"timepoints,omitempty"`
+	ErrorMsg    string         `firestore:"errorMsg,omitempty"   json:"errorMsg,omitempty"`
+	CreatedAt   time.Time      `firestore:"createdAt"   json:"createdAt"`
+	UpdatedAt   time.Time      `firestore:"updatedAt"   json:"updatedAt"`
 }
 
 // TTSTimepoint mirrors the iOS model: markName encodes char indices as
