@@ -26,9 +26,9 @@ struct JobStatusResponse: Codable, Equatable {
 @DependencyClient
 struct AudioAPIClient {
     var generateAudio: @Sendable (String, String?) async throws -> AudioResponse
-    var getVoices: @Sendable (String?) async throws -> VoicesResponse
     var submitJob: @Sendable (String, String?, String?) async throws -> String  // text, voiceId, language → jobId
     var getJobStatus: @Sendable (String) async throws -> JobStatusResponse      // jobId → status
+    var getVoices: @Sendable (String?) async throws -> VoicesResponse
 }
 
 struct TTSTimepoint: Codable, Equatable {
@@ -258,6 +258,11 @@ extension AudioAPIClient: TestDependencyKey {
                 timepoints: [TTSTimepoint(markName: "0:0:3", timeSeconds: 0.0)]
             )
         },
+        submitJob: { _, _, _ in "test-job-id" },
+        getJobStatus: { _ in
+            JobStatusResponse(id: "test-job-id", status: "completed",
+                              audioUrl: "https://example.com/test.wav", timepoints: nil, errorMsg: nil)
+        },
         getVoices: { _ in
             VoicesResponse(
                 success: true,
@@ -265,11 +270,6 @@ extension AudioAPIClient: TestDependencyKey {
                     VoiceConfig(id: "ja-jp-female-a", name: "あかり", language: "ja-JP", gender: "female", description: "明るく優しい女性の声")
                 ]
             )
-        },
-        submitJob: { _, _, _ in "test-job-id" },
-        getJobStatus: { _ in
-            JobStatusResponse(id: "test-job-id", status: "completed",
-                              audioUrl: "https://example.com/test.wav", timepoints: nil, errorMsg: nil)
         }
     )
 }
