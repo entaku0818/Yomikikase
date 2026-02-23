@@ -195,9 +195,13 @@ struct HomeView: View {
                                 LazyVStack(spacing: 8) {
                                     ForEach(Array(viewStore.speechList.prefix(3))) { speech in
                                         HStack {
-                                            // スキャンファイルはカメラアイコン、それ以外はテキストアイコン
-                                            let iconName = speech.fileType == "scan" ? "camera.fill" : "doc.text.fill"
-                                            let iconColor: Color = speech.fileType == "scan" ? .gray : .blue
+                                            // fileTypeに応じてアイコンを切り替え
+                                            let iconName: String = speech.fileType == "scan" ? "camera.fill"
+                                                : speech.fileType == "epub" ? "books.vertical.fill"
+                                                : "doc.text.fill"
+                                            let iconColor: Color = speech.fileType == "scan" ? .gray
+                                                : speech.fileType == "epub" ? .brown
+                                                : .blue
 
                                             Image(systemName: iconName)
                                                 .font(.system(size: 20))
@@ -365,7 +369,7 @@ struct HomeView: View {
                 }
             }
             .navigationDestination(isPresented: $showingEPUBTextView) {
-                TextInputView(store: store, initialText: epubExtractedText, fileId: nil)
+                TextInputView(store: store, initialText: epubExtractedText, fileId: nil, fileType: "epub")
             }
             // Google Drive
             .sheet(isPresented: $showingGoogleDrive) {
