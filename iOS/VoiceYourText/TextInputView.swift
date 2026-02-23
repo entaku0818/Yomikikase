@@ -300,7 +300,7 @@ struct TextInputView: View {
             // プレイヤーコントロール
             PlayerControlView(
                 isSpeaking: isSpeaking,
-                isTextEmpty: text.isEmpty,
+                isTextEmpty: text.isEmpty || isJobProcessing,
                 speechRate: UserDefaultsManager.shared.speechRate,
                 onPlay: {
                     speakWithHighlight()
@@ -683,12 +683,17 @@ struct TextInputView: View {
         }
 
         // Generate TTS audio only if Cloud TTS is selected
-        if useCloudTTS {
+        // テキストが大きすぎる場合（20,000文字超）は高音質TTS非対応
+        let cloudTTSLimit = 20_000
+        if useCloudTTS && text.count <= cloudTTSLimit {
             infoLog("[TTS] Submitting TTS job for fileId: \(savedFileId)")
             submitJobAndStartPolling(for: savedFileId, text: text, languageCode: languageCode)
         } else {
-            infoLog("[TTS] Using Basic TTS, skipping audio generation")
-            // Switch to player mode immediately for Basic TTS
+            if useCloudTTS && text.count > cloudTTSLimit {
+                infoLog("[TTS] Text too large (\(text.count) chars) for Cloud TTS, falling back to Basic TTS")
+            } else {
+                infoLog("[TTS] Using Basic TTS, skipping audio generation")
+            }
             cloudTTSAvailable = false
             isEditMode = false
         }
