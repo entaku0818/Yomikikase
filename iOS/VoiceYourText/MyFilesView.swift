@@ -60,6 +60,9 @@ struct MyFilesView: View {
 
                     Spacer(minLength: 100)
                 }
+                .refreshable {
+                    loadFiles()
+                }
                 
                 // 広告バナー（最下部）
                 if !UserDefaultsManager.shared.isPremiumUser {
@@ -86,6 +89,9 @@ struct MyFilesView: View {
             loadFiles()
             // 7日以上前の削除済みアイテムをクリーンアップ
             SpeechTextRepository.shared.cleanupOldDeletedItems()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("TTSJobCompleted"))) { _ in
+            loadFiles()
         }
         .alert("削除の確認", isPresented: $showingDeleteAlert) {
             Button("キャンセル", role: .cancel) {
@@ -135,7 +141,8 @@ struct MyFilesView: View {
                 title: textFile.title,
                 subtitle: "あああああああ",
                 date: textFile.updatedAt,
-                type: .text
+                type: .text,
+                isProcessing: UserDefaultsManager.shared.pendingJobId(for: textFile.id) != nil
             )
         })
         
@@ -242,7 +249,8 @@ struct FileItem: Identifiable {
     let subtitle: String
     let date: Date
     let type: FileType
-    
+    var isProcessing: Bool = false
+
     enum FileType {
         case text, pdf
     }
@@ -316,7 +324,11 @@ struct FileItemView: View {
 
             Spacer()
 
-            if let onDelete = onDelete {
+            if file.isProcessing {
+                ProgressView()
+                    .scaleEffect(0.85)
+                    .frame(width: 32, height: 32)
+            } else if let onDelete = onDelete {
                 Menu {
                     Button(role: .destructive, action: onDelete) {
                         Label("削除", systemImage: "trash")
