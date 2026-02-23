@@ -683,17 +683,11 @@ struct TextInputView: View {
         }
 
         // Generate TTS audio only if Cloud TTS is selected
-        // テキストが大きすぎる場合（20,000文字超）は高音質TTS非対応
-        let cloudTTSLimit = 20_000
-        if useCloudTTS && text.count <= cloudTTSLimit {
-            infoLog("[TTS] Submitting TTS job for fileId: \(savedFileId)")
+        if useCloudTTS {
+            infoLog("[TTS] Submitting TTS job for fileId: \(savedFileId), text length: \(text.count) chars")
             submitJobAndStartPolling(for: savedFileId, text: text, languageCode: languageCode)
         } else {
-            if useCloudTTS && text.count > cloudTTSLimit {
-                infoLog("[TTS] Text too large (\(text.count) chars) for Cloud TTS, falling back to Basic TTS")
-            } else {
-                infoLog("[TTS] Using Basic TTS, skipping audio generation")
-            }
+            infoLog("[TTS] Using Basic TTS, skipping audio generation")
             cloudTTSAvailable = false
             isEditMode = false
         }

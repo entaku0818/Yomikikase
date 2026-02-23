@@ -52,7 +52,8 @@ gcloud run deploy "${SERVICE_NAME}" \
     --image "${IMAGE_NAME}" \
     --region "${REGION}" \
     --platform managed \
-    --allow-unauthenticated
+    --allow-unauthenticated \
+    --timeout=1800
 
 echo ""
 echo "=== Deployment Complete ==="
