@@ -53,8 +53,7 @@ gcloud run deploy "${SERVICE_NAME}" \
     --region "${REGION}" \
     --platform managed \
     --allow-unauthenticated \
-    --timeout=1800 \
-    --memory=1Gi
+    --timeout=1800
 
 echo ""
 echo "=== Deployment Complete ==="
