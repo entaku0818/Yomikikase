@@ -34,6 +34,7 @@ struct TextInputView: View {
     @State private var cloudTTSAvailable: Bool = false // クラウドTTS音声が利用可能か
     @State private var showingTextLimitAlert = false
     @State private var showingSubscription = false
+    @State private var isJobProcessing: Bool = false
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
@@ -150,6 +151,14 @@ struct TextInputView: View {
 
             // クラウドTTS音声の利用可否をチェック
             checkCloudTTSAvailability()
+
+            // 処理中のジョブがある場合はステータスを1回確認
+            if let fid = fileId,
+               let jobId = UserDefaultsManager.shared.pendingJobId(for: fid) {
+                isJobProcessing = true
+                checkJobStatus(jobId: jobId, fileId: fid)
+                infoLog("[TTS] Checking job status for jobId: \(jobId)")
+            }
         }
         .onDisappear {
             // Viewが閉じられる時も念のため停止
@@ -257,6 +266,20 @@ struct TextInputView: View {
     // MARK: - プレイヤーモード
     private var playerModeContent: some View {
         VStack(spacing: 0) {
+            // 音声生成中バナー
+            if isJobProcessing {
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .scaleEffect(0.85)
+                    Text("高音質音声を生成中...")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(Color(.systemGray6))
+            }
+
             // テキスト表示（読み取り専用）
             // UITextViewは自身でスクロールするため、外側のScrollViewは不要
             HighlightableTextView(
@@ -661,8 +684,8 @@ struct TextInputView: View {
 
         // Generate TTS audio only if Cloud TTS is selected
         if useCloudTTS {
-            infoLog("[TTS] Starting Cloud TTS generation for fileId: \(savedFileId)")
-            generateTTSAudio(for: savedFileId, text: text, languageCode: languageCode)
+            infoLog("[TTS] Submitting TTS job for fileId: \(savedFileId)")
+            submitJobAndStartPolling(for: savedFileId, text: text, languageCode: languageCode)
         } else {
             infoLog("[TTS] Using Basic TTS, skipping audio generation")
             // Switch to player mode immediately for Basic TTS
@@ -671,89 +694,82 @@ struct TextInputView: View {
         }
     }
 
-    private func generateTTSAudio(for fileId: UUID, text: String, languageCode: String) {
+    private func submitJobAndStartPolling(for fileId: UUID, text: String, languageCode: String) {
         isGeneratingAudio = true
         audioGenerationError = nil
 
         let voiceId = selectedVoice?.id ?? mapLanguageToVoiceId(languageCode)
-        // サーバーは len(text) = UTF-8バイト数で 5000 制限 → 4500 バイト以下で分割
-        let chunks = splitIntoChunksByBytes(text, maxBytes: 4500)
-        infoLog("[TTS] Generating audio in \(chunks.count) chunks, voiceId: \(voiceId)")
+        let locale = mapLanguageToLocale(languageCode)
 
         Task {
             do {
-                var chunkURLs: [URL] = []
-                var allTimepoints: [TTSTimepoint] = []
-                var cumulativeTime: Double = 0
-
-                for (index, chunk) in chunks.enumerated() {
-                    infoLog("[TTS] Chunk \(index + 1)/\(chunks.count), offset=\(chunk.offset), length=\(chunk.text.count)")
-                    let response = try await audioAPI.generateAudio(chunk.text, voiceId)
-
-                    guard let audioURL = URL(string: response.audioUrl) else {
-                        throw AudioAPIError.invalidURL
-                    }
-
-                    let chunkId = chunks.count == 1 ? fileId.uuidString : "\(fileId.uuidString)-chunk-\(index)"
-                    let chunkLocalURL = try await audioFileManager.downloadAudio(audioURL, chunkId)
-                    chunkURLs.append(chunkLocalURL)
-
-                    // タイムポイントの文字インデックスと時刻をオフセット補正
-                    if let timepoints = response.timepoints {
-                        let adjusted = timepoints.compactMap { tp -> TTSTimepoint? in
-                            let parts = tp.markName.split(separator: ":")
-                            guard parts.count == 3,
-                                  let idx = Int(parts[0]),
-                                  let start = Int(parts[1]),
-                                  let end = Int(parts[2]) else { return nil }
-                            let mark = "\(idx):\(start + chunk.offset):\(end + chunk.offset)"
-                            return TTSTimepoint(markName: mark, timeSeconds: tp.timeSeconds + cumulativeTime)
-                        }
-                        allTimepoints.append(contentsOf: adjusted)
-                    }
-
-                    if chunks.count > 1 {
-                        cumulativeTime += WAVProcessor.duration(at: chunkLocalURL)
-                    }
-                }
-
-                // 複数チャンクの場合はWAVを結合して最終ファイルを作成
-                let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
-                let finalURL = audioDirectory.appendingPathComponent("\(fileId.uuidString).wav")
-
-                if chunkURLs.count == 1 {
-                    if chunkURLs[0] != finalURL {
-                        try? FileManager.default.removeItem(at: finalURL)
-                        try FileManager.default.moveItem(at: chunkURLs[0], to: finalURL)
-                    }
-                } else {
-                    try WAVProcessor.concatenate(chunkURLs, to: finalURL)
-                    chunkURLs.forEach { try? FileManager.default.removeItem(at: $0) }
-                }
-
-                if !allTimepoints.isEmpty {
-                    let timepointsURL = finalURL.deletingPathExtension().appendingPathExtension("json")
-                    let data = try JSONEncoder().encode(allTimepoints)
-                    try data.write(to: timepointsURL)
-                    infoLog("[TTS] Saved \(allTimepoints.count) timepoints")
-                }
-
+                let jobId = try await audioAPI.submitJob(text, voiceId, locale)
+                infoLog("[TTS] Job submitted: \(jobId) for fileId: \(fileId)")
                 await MainActor.run {
-                    currentTimepoints = allTimepoints
+                    UserDefaultsManager.shared.setPendingJob(fileId: fileId, jobId: jobId)
                     isGeneratingAudio = false
+                    isJobProcessing = true
                     isEditMode = false
-                    cloudTTSAvailable = true
-                    infoLog("[TTS] Switched to player mode with Cloud TTS available")
                 }
+                checkJobStatus(jobId: jobId, fileId: fileId)
             } catch {
-                infoLog("[TTS] ERROR: TTS generation failed: \(error)")
-                errorLog("TTS generation failed: \(error)")
+                errorLog("[TTS] Job submission failed: \(error)")
                 await MainActor.run {
                     isGeneratingAudio = false
                     audioGenerationError = error.localizedDescription
                     isEditMode = false
                 }
+            }
+        }
+    }
+
+    private func checkJobStatus(jobId: String, fileId: UUID) {
+        Task {
+            do {
+                let status = try await audioAPI.getJobStatus(jobId)
+                infoLog("[TTS] Job \(jobId) status: \(status.status)")
+
+                if status.status == "completed", let audioUrlString = status.audioUrl,
+                   let audioURL = URL(string: audioUrlString) {
+                    let localURL = try await audioFileManager.downloadAudio(audioURL, fileId.uuidString)
+
+                    var savedTimepoints: [TTSTimepoint] = []
+                    if let timepoints = status.timepoints, !timepoints.isEmpty {
+                        let timepointsURL = localURL.deletingPathExtension().appendingPathExtension("json")
+                        let data = try JSONEncoder().encode(timepoints)
+                        try data.write(to: timepointsURL)
+                        savedTimepoints = timepoints
+                        infoLog("[TTS] Saved \(timepoints.count) timepoints from job")
+                    }
+
+                    await MainActor.run {
+                        UserDefaultsManager.shared.clearPendingJob(fileId: fileId)
+                        isJobProcessing = false
+                        cloudTTSAvailable = true
+                        currentTimepoints = savedTimepoints
+                        infoLog("[TTS] Job completed, audio available")
+                        NotificationCenter.default.post(
+                            name: Notification.Name("TTSJobCompleted"),
+                            object: fileId
+                        )
+                    }
+
+                } else if status.status == "failed" {
+                    await MainActor.run {
+                        UserDefaultsManager.shared.clearPendingJob(fileId: fileId)
+                        isJobProcessing = false
+                        audioGenerationError = status.errorMsg ?? "音声生成に失敗しました"
+                        infoLog("[TTS] Job failed: \(status.errorMsg ?? "unknown")")
+                        NotificationCenter.default.post(
+                            name: Notification.Name("TTSJobCompleted"),
+                            object: fileId
+                        )
+                    }
+                }
+                // pending/processing の場合はバナーを表示したまま（次回 onAppear で再確認）
+            } catch {
+                errorLog("[TTS] Job status check failed: \(error)")
+                // エラー時はバナーを表示したまま
             }
         }
     }
