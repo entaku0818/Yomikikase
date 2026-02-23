@@ -121,4 +121,26 @@ class UserDefaultsManager {
         isPremiumUser = false
         premiumPurchaseDate = nil
     }
+
+    // 処理中のTTSジョブ管理（fileId.uuidString → jobId）
+    var pendingJobs: [String: String] {
+        get { defaults.dictionary(forKey: "PendingTTSJobs") as? [String: String] ?? [:] }
+        set { defaults.set(newValue, forKey: "PendingTTSJobs") }
+    }
+
+    func setPendingJob(fileId: UUID, jobId: String) {
+        var jobs = pendingJobs
+        jobs[fileId.uuidString] = jobId
+        pendingJobs = jobs
+    }
+
+    func clearPendingJob(fileId: UUID) {
+        var jobs = pendingJobs
+        jobs.removeValue(forKey: fileId.uuidString)
+        pendingJobs = jobs
+    }
+
+    func pendingJobId(for fileId: UUID) -> String? {
+        pendingJobs[fileId.uuidString]
+    }
 }
