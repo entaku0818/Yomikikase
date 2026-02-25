@@ -18,6 +18,9 @@ struct MyFilesView: View {
     @State private var selectedTextFile: SavedTextFile?
     @State private var selectedPDFFile: SavedPDFFile?
     let store: StoreOf<Speeches>
+
+    @Dependency(\.audioAPI) var audioAPI
+    @Dependency(\.audioFileManager) var audioFileManager
     
     var body: some View {
         NavigationStack {
@@ -180,7 +183,7 @@ struct MyFilesView: View {
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
         let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
         let speeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
-        
+
         textFiles = speeches.filter { !$0.isDefault }.map { speech in
             SavedTextFile(
                 id: speech.id,
@@ -191,9 +194,45 @@ struct MyFilesView: View {
                 fileType: speech.fileType ?? "text"
             )
         }
-        
+
         // PDFファイルの読み込み
         loadPDFFiles()
+
+        // pending ジョブがあればサーバーの状態を確認して自動解除
+        checkPendingJobs()
+    }
+
+    private func checkPendingJobs() {
+        let pendingFiles = textFiles.filter {
+            UserDefaultsManager.shared.pendingJobId(for: $0.id) != nil
+        }
+        for file in pendingFiles {
+            guard let jobId = UserDefaultsManager.shared.pendingJobId(for: file.id) else { continue }
+            Task {
+                do {
+                    let status = try await audioAPI.getJobStatus(jobId)
+                    guard status.status == "completed" || status.status == "failed" else { return }
+
+                    if status.status == "completed",
+                       let audioUrlString = status.audioUrl,
+                       let audioURL = URL(string: audioUrlString) {
+                        let localURL = try await audioFileManager.downloadAudio(audioURL, file.id.uuidString)
+                        if let timepoints = status.timepoints, !timepoints.isEmpty {
+                            let timepointsURL = localURL.deletingPathExtension().appendingPathExtension("json")
+                            let data = try JSONEncoder().encode(timepoints)
+                            try data.write(to: timepointsURL)
+                        }
+                    }
+
+                    await MainActor.run {
+                        UserDefaultsManager.shared.clearPendingJob(fileId: file.id)
+                        loadFiles()
+                    }
+                } catch {
+                    // ネットワーク失敗時はスピナーを残す（次回 onAppear で再試行）
+                }
+            }
+        }
     }
     
     private func loadPDFFiles() {
