@@ -1,1 +1,3 @@
-Đã sửa lỗi hiển thị tô sáng cho phát TTS Chất lượng cao.
+· Văn bản hơn 4.000 ký tự giờ được phát trực tiếp bằng TTS của thiết bị mà không cần lưu
+· Sau khi mua hoặc khôi phục Premium, ứng dụng tự động quay lại màn hình trước
+· Các cải thiện ổn định khác

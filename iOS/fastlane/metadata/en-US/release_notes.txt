@@ -1,1 +1,3 @@
-Fixed highlight display accuracy for High Quality TTS playback.
+· Texts over 4,000 characters are now played directly with device TTS without saving
+· After purchasing or restoring Premium, the app now automatically returns to the previous screen
+· Other stability improvements
