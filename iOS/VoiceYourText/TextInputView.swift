@@ -76,8 +76,8 @@ struct TextInputView: View {
                         ProgressView()
                             .padding(.trailing, 16)
                     } else {
-                        // 保存ボタン
-                        Button("保存") {
+                        // 保存ボタン（文字数が多い場合は保存せず再生）
+                        Button(text.count > 4_000 ? "再生" : "保存") {
                             handleSaveButtonTap()
                         }
                         .disabled(text.isEmpty)
@@ -235,27 +235,34 @@ struct TextInputView: View {
 
             // TTS方式選択
             VStack(spacing: 12) {
-                HStack {
-                    Text("音声エンジン:")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-
-                    Picker("", selection: $useCloudTTS) {
-                        Text("高音質TTS").tag(true)
-                        Text("基本TTS").tag(false)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(maxWidth: 250)
-                }
-
-                if useCloudTTS {
-                    Text("高品質な音声で保存します（処理に時間がかかります）")
+                if text.count > 4_000 {
+                    Text("文字数が多いため、端末TTSで直接再生します（保存されません）")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
                 } else {
-                    Text("デバイスの基本音声で再生します（保存は不要です）")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    HStack {
+                        Text("音声エンジン:")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        Picker("", selection: $useCloudTTS) {
+                            Text("高音質TTS").tag(true)
+                            Text("基本TTS").tag(false)
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(maxWidth: 250)
+                    }
+
+                    if useCloudTTS {
+                        Text("高品質な音声で保存します（処理に時間がかかります）")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text("デバイスの基本音声で再生します（保存は不要です）")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
             .padding(.horizontal)
@@ -627,6 +634,12 @@ struct TextInputView: View {
     }
 
     private func handleSaveButtonTap() {
+        // 文字数が多い場合は保存せず端末TTSで直接再生
+        if text.count > 4_000 {
+            isEditMode = false
+            speakWithHighlight()
+            return
+        }
         // 非課金ユーザーの4000文字制限チェック
         if !UserDefaultsManager.shared.isPremiumUser && text.count > 4000 {
             showingTextLimitAlert = true
