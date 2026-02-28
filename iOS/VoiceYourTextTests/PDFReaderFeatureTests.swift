@@ -58,7 +58,10 @@ final class PDFReaderFeatureTests: XCTestCase {
             stopSpeaking: {
                 print("🧪 testSynthesizer.stopSpeaking呼び出し")
                 return true
-            }
+            },
+            pauseSpeaking: { return true },
+            continueSpeaking: { return true },
+            isPaused: { return false }
         )
     }
 
