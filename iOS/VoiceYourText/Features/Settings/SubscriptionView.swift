@@ -10,6 +10,7 @@ struct SubscriptionView: View {
     @State private var showingAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
+    @State private var shouldDismissAfterAlert = false
     @State private var showSafari = false
     @State private var safariURL: URL?
     
@@ -56,7 +57,11 @@ struct SubscriptionView: View {
             Alert(
                 title: Text(alertTitle),
                 message: Text(alertMessage),
-                dismissButton: .default(Text("OK"))
+                dismissButton: .default(Text("OK")) {
+                    if shouldDismissAfterAlert {
+                        dismiss()
+                    }
+                }
             )
         }
         .sheet(isPresented: $showSafari) {
@@ -163,13 +168,15 @@ struct SubscriptionView: View {
         let result = await viewModel.handlePurchase()
         alertTitle = result.title
         alertMessage = result.message
+        shouldDismissAfterAlert = result.success
         showingAlert = true
     }
-    
+
     private func restorePurchases() async {
         let result = await viewModel.handleRestore()
         alertTitle = result.title
         alertMessage = result.message
+        shouldDismissAfterAlert = result.success
         showingAlert = true
     }
 }
