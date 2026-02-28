@@ -1,1 +1,3 @@
-Yüksek Kaliteli TTS oynatımı için vurgulama görüntüsü düzeltildi.
+· 4.000 karakterden uzun metinler artık kaydedilmeden cihazın TTS'i ile doğrudan oynatılıyor
+· Premium satın alma veya geri yükleme sonrasında uygulama otomatik olarak önceki ekrana dönüyor
+· Diğer kararlılık iyileştirmeleri

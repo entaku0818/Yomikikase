@@ -1,1 +1,3 @@
-Hervorhebungsanzeige für High Quality TTS-Wiedergabe korrigiert.
+· Texte mit mehr als 4.000 Zeichen werden jetzt direkt mit der Geräte-TTS abgespielt, ohne gespeichert zu werden
+· Nach dem Kauf oder der Wiederherstellung von Premium kehrt die App automatisch zum vorherigen Bildschirm zurück
+· Weitere Stabilitätsverbesserungen

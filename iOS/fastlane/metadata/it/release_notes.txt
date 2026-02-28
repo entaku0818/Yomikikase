@@ -1,1 +1,3 @@
-Corretta la visualizzazione dell'evidenziazione per la riproduzione TTS Alta Qualità.
+· I testi con più di 4.000 caratteri vengono ora riprodotti direttamente con il TTS del dispositivo senza salvare
+· Dopo l'acquisto o il ripristino di Premium, l'app torna automaticamente alla schermata precedente
+· Altri miglioramenti della stabilità

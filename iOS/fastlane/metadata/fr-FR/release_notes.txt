@@ -1,1 +1,3 @@
-Correction de l'affichage du surlignage pour la lecture TTS Haute Qualité.
+· Les textes de plus de 4 000 caractères sont maintenant lus directement avec le TTS de l'appareil sans sauvegarde
+· Après l'achat ou la restauration de Premium, l'app revient automatiquement à l'écran précédent
+· Autres améliorations de stabilité
