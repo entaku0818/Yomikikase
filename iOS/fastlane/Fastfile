@@ -92,7 +92,7 @@ platform :ios do
     UI.success("Xcodeプロジェクトからバージョン番号を取得しました: #{version_number}")
     
     deliver(
-      skip_binary_upload: false,     # バイナリのアップロードを実行
+      skip_binary_upload: true,      # バイナリは既にアップロード済み
       skip_app_version_update: false, # アプリバージョンの更新をスキップしない
       app_version: version_number,    # アプリのバージョン番号を指定
       skip_metadata: false,          # メタデータの更新をスキップしない
@@ -109,7 +109,7 @@ platform :ios do
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
       },
-      build_number: "4"  # ビルド番号を明示指定
+      build_number: "5"  # ビルド番号を明示指定
     )
   end
 end 
