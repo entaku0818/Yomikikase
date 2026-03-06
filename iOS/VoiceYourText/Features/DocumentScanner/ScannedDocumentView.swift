@@ -205,6 +205,15 @@ struct ScannedDocumentView: View {
         // 既存の音声を停止
         stopSpeaking()
 
+        // 音声設定をアクティブにする（Synthesizerより先に行う）
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            errorLog("Failed to set audio session: \(error)")
+            return
+        }
+
         isSpeaking = true
 
         let synthesizer = AVSpeechSynthesizer()
@@ -224,14 +233,6 @@ struct ScannedDocumentView: View {
         utterance.voice = AVSpeechSynthesisVoice(language: languageCode)
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.75
         utterance.pitchMultiplier = 1.0
-
-        // 音声設定をアクティブにする
-        do {
-            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .spokenAudio)
-            try AVAudioSession.sharedInstance().setActive(true)
-        } catch {
-            errorLog("Failed to set audio session: \(error)")
-        }
 
         // テキストを選択（ハイライト風）
         store.send(.speechSelected(editableText))
