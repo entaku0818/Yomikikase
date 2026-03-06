@@ -1,3 +1,3 @@
-· Les textes de plus de 4 000 caractères sont maintenant lus directement avec le TTS de l'appareil sans sauvegarde
-· Après l'achat ou la restauration de Premium, l'app revient automatiquement à l'écran précédent
+· Correction d'un problème où la connexion à Google Drive provoquait un plantage
+· Correction d'un problème où l'app pouvait planter lors de la lecture après une numérisation
 · Autres améliorations de stabilité

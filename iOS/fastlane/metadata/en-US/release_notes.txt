@@ -1,3 +1,3 @@
-· Texts over 4,000 characters are now played directly with device TTS without saving
-· After purchasing or restoring Premium, the app now automatically returns to the previous screen
+· Fixed an issue where Google Drive sign-in would crash the app
+· Fixed an issue where the app could crash when reading aloud after scanning
 · Other stability improvements
