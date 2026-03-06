@@ -1,3 +1,3 @@
-· I testi con più di 4.000 caratteri vengono ora riprodotti direttamente con il TTS del dispositivo senza salvare
-· Dopo l'acquisto o il ripristino di Premium, l'app torna automaticamente alla schermata precedente
+· Risolto un problema per cui l'accesso a Google Drive causava un arresto anomalo
+· Risolto un problema per cui l'app poteva crashare durante la lettura ad alta voce dopo la scansione
 · Altri miglioramenti della stabilità
