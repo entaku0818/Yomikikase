@@ -29,7 +29,7 @@ struct Speeches: Reducer {
         @PresentationState var alert: AlertState<AlertAction>?
         var speechList: IdentifiedArrayOf<Speech> = []
         var currentText: String
-        var isMailComposePresented: Bool = false
+        var isFeedbackPresented: Bool = false
         var highlightedRange: NSRange? = nil
         var isSpeaking: Bool = false
         var nowPlaying: NowPlayingFeature.State = .init()
@@ -43,7 +43,7 @@ struct Speeches: Reducer {
         case currentTextChanged(String)
         case speechSelected(String)
         case alert(PresentationAction<AlertAction>)
-        case mailComposeDismissed
+        case feedbackDismissed
         case startSpeaking
         case stopSpeaking
         case highlightRange(NSRange?)
@@ -56,15 +56,16 @@ struct Speeches: Reducer {
         case onAddReview
         case onGoodReview
         case onBadReview
-        case onMailTap
     }
+
+    @Dependency(\.analytics) var analytics
 
     var body: some Reducer<State, Action> {
         Scope(state: \.nowPlaying, action: \.nowPlaying) {
             NowPlayingFeature()
         }
 
-        Reduce { state, action in
+        Reduce { [analytics] state, action in
             switch action {
             case .onAppear:
 
@@ -84,6 +85,7 @@ struct Speeches: Reducer {
                   let currentDate = Date()
                   if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
                       if interval >= 2 && reviewCount == 0 {
+                            analytics.logEvent("review_request_shown", ["trigger": "install_2days"])
                             state.alert = AlertState {
                                 TextState("このアプリについて")
                             } actions: {
@@ -99,7 +101,6 @@ struct Speeches: Reducer {
                                 )
                             }
                           UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
-
                       }
                   }
               } else {
@@ -133,22 +134,11 @@ struct Speeches: Reducer {
                     )
                     return .none
             case .alert(.presented(.onBadReview)):
-
-                    state.alert = AlertState(
-                      title: TextState("ご不便かけて申し訳ありません"),
-                      message: TextState("次の画面のメールにて詳細に状況を教えてください。"),
-                      dismissButton: .default(TextState("OK"),
-                      action: .send(.onMailTap))
-                    )
-                    return .none
-
-            case .alert(.presented(.onMailTap)):
-
                 state.alert = nil
-                state.isMailComposePresented.toggle()
+                state.isFeedbackPresented = true
                 return .none
-            case .mailComposeDismissed:
-                state.isMailComposePresented = false
+            case .feedbackDismissed:
+                state.isFeedbackPresented = false
                 return .none
             case .alert(.dismiss):
                 return .none
@@ -168,6 +158,25 @@ struct Speeches: Reducer {
                 // nowPlayingも停止
                 state.nowPlaying.isPlaying = false
                 state.nowPlaying.progress = 1.0
+                // 読み上げ完了カウントを増加し、5回ごとにレビューリクエスト
+                let completedCount = UserDefaultsManager.shared.speechCompletedCount + 1
+                UserDefaultsManager.shared.speechCompletedCount = completedCount
+                analytics.logEvent("speech_completed", ["count": completedCount])
+                if completedCount % 5 == 0 {
+                    analytics.logEvent("review_request_shown", ["trigger": "speech_completed", "count": completedCount])
+                    state.alert = AlertState {
+                        TextState("このアプリについて")
+                    } actions: {
+                        ButtonState(action: .send(.onGoodReview)) {
+                            TextState("はい")
+                        }
+                        ButtonState(action: .send(.onBadReview)) {
+                            TextState("いいえ、フィードバックを送信")
+                        }
+                    } message: {
+                        TextState("Voice Narratorに満足していますか？")
+                    }
+                }
                 return .none
 
             case .nowPlaying(.stopPlaying):
@@ -263,16 +272,11 @@ struct SpeechView: View {
                 }
                 .sheet(
                   isPresented: viewStore.binding(
-                    get: \.isMailComposePresented,
-                    send: Speeches.Action.mailComposeDismissed
+                    get: \.isFeedbackPresented,
+                    send: Speeches.Action.feedbackDismissed
                   )
                 ) {
-                  MailComposeViewControllerWrapper(
-                    isPresented: viewStore.binding(
-                      get: \.isMailComposePresented,
-                      send: Speeches.Action.mailComposeDismissed
-                    )
-                  )
+                    FeedbackView()
                 }
                 .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
                     ForEach(SpeechSettings.speedOptions, id: \.self) { speed in

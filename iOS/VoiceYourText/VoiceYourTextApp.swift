@@ -115,6 +115,7 @@ class AdConfig: ObservableObject {
 struct VoiceYourTextApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @State private var isPremiumChecked = false
+    @State private var showOnboarding = !UserDefaultsManager.shared.hasCompletedOnboarding
     @StateObject private var adConfig = AdConfig.shared
 
     let initialState = Speeches.State(
@@ -124,20 +125,37 @@ struct VoiceYourTextApp: App {
 
     var body: some Scene {
         WindowGroup {
-            MainView(store:
-                        Store(initialState: initialState) {
-                Speeches()
+            #if DEBUG
+            if UserDefaults.standard.bool(forKey: "screenshots") {
+                ScreenshotView()
+            } else {
+                mainContent
             }
-            )
-            .environmentObject(adConfig)
-            .onAppear {
-                // UIアプリケーションデリゲートの初期化後にもう一度チェック
-                if !isPremiumChecked {
-                    isPremiumChecked = true
-                    Task {
-                        await PurchaseManager.shared.checkPremiumStatus()
-                    }
+            #else
+            mainContent
+            #endif
+        }
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        MainView(store:
+                    Store(initialState: initialState) {
+            Speeches()
+        }
+        )
+        .environmentObject(adConfig)
+        .onAppear {
+            if !isPremiumChecked {
+                isPremiumChecked = true
+                Task {
+                    await PurchaseManager.shared.checkPremiumStatus()
                 }
+            }
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingView {
+                showOnboarding = false
             }
         }
     }

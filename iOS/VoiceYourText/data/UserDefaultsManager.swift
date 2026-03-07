@@ -15,6 +15,12 @@ class UserDefaultsManager {
         defaults = UserDefaults.standard
     }
 
+    // オンボーディング完了フラグ
+    var hasCompletedOnboarding: Bool {
+        get { defaults.bool(forKey: "HasCompletedOnboarding") }
+        set { defaults.set(newValue, forKey: "HasCompletedOnboarding") }
+    }
+
     // インストール日を保存するプロパティ
     var installDate: Date? {
         get {
@@ -32,6 +38,16 @@ class UserDefaultsManager {
         }
         set {
             defaults.set(newValue, forKey: "ReviewRequestCount")
+        }
+    }
+
+    // 読み上げ完了カウント
+    var speechCompletedCount: Int {
+        get {
+            defaults.object(forKey: "SpeechCompletedCount") as? Int ?? 0
+        }
+        set {
+            defaults.set(newValue, forKey: "SpeechCompletedCount")
         }
     }
 

@@ -12,6 +12,7 @@
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
 		61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61A1B2002DB8000000000001 /* FirebaseCrashlytics */; };
+		61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
 		61E4F0032DC8000200000001 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 61E4F0022DC8000200000001 /* ZIPFoundation */; };
@@ -69,6 +70,7 @@
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 				61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */,
+				61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */,
 				61E4F0032DC8000200000001 /* ZIPFoundation in Frameworks */,
 				61E4F0072DC8000200000001 /* GoogleSignIn in Frameworks */,
 				61E4F0082DC8000200000001 /* GoogleSignInSwift in Frameworks */,
@@ -98,6 +100,7 @@
 				61D9D3152DB52E9A0001F08F /* VoiceYourText */,
 				616D02572DB661FC00244A56 /* VoiceYourTextTests */,
 				61E1FA082C03121200155D23 /* VoiceYourTextUITests */,
+				61D17C8B2F5BD9E400FB1EAA /* Frameworks */,
 				614F56D22B11B81F00E21FE9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -110,6 +113,13 @@
 				614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		61D17C8B2F5BD9E400FB1EAA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		61E1FA082C03121200155D23 /* VoiceYourTextUITests */ = {
@@ -150,6 +160,7 @@
 				61E4F0022DC8000200000001 /* ZIPFoundation */,
 				61E4F0052DC8000200000001 /* GoogleSignIn */,
 				61E4F0062DC8000200000001 /* GoogleSignInSwift */,
+				61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */,
 			);
 			productName = VoiceYourText;
 			productReference = 614F56D12B11B81F00E21FE9 /* VoiceYourText.app */;
@@ -734,6 +745,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 		61E4F0022DC8000200000001 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;

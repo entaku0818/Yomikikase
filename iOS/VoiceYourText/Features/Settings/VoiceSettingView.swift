@@ -66,9 +66,9 @@ struct VoiceSettingView: View {
             }
         }
         .onAppear {
-            // 言語が選択されていない場合、デフォルトで英語を設定
+            // 言語が選択されていない場合、デフォルトで日本語を設定
             if UserDefaultsManager.shared.languageSetting == nil {
-                UserDefaultsManager.shared.languageSetting = "en"
+                UserDefaultsManager.shared.languageSetting = "ja"
             }
         }
         .alert("エラー", isPresented: $showError) {

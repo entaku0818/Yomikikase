@@ -15,17 +15,11 @@ struct ScreenshotView: View {
             case 1:
                 HighlightReadingContent()
             case 2:
-                MockScreenWithTopTab(title: "マイファイル") {
-                    MyFilesContent()
-                }
-            case 3:
                 MockScreenWithTopTab(title: "設定") {
                     SettingsContent()
                 }
-            case 4:
+            case 3:
                 PDFReadingContent()
-            case 5:
-                UserDictionaryContent()
             default:
                 MockScreenWithTopTab(title: "読み上げ") {
                     HomeContent()
@@ -33,13 +27,40 @@ struct ScreenshotView: View {
             }
         }
         .onTapGesture {
-            if currentScreen < 5 {
+            if currentScreen < 3 {
                 currentScreen += 1
             } else {
                 dismiss()
             }
         }
         .navigationBarHidden(true)
+    }
+}
+
+// MARK: - App Store スクリーンショットラッパー
+
+struct AppStoreScreenshot<Content: View>: View {
+    let caption: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text(caption)
+                .font(.system(size: 38, weight: .bold))
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
+                .minimumScaleFactor(0.8)
+                .padding(.horizontal, 28)
+                .padding(.top, 56)
+                .padding(.bottom, 28)
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+
+            content()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
     }
 }
 
@@ -79,6 +100,7 @@ struct HomeContent: View {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 16) {
                 GridItemView(icon: "doc.text.fill", title: "テキスト", color: .blue, isEnabled: true)
                 GridItemView(icon: "doc.richtext.fill", title: "PDF", color: .red, isEnabled: true)
+                GridItemView(icon: "doc.plaintext.fill", title: "TXTファイル", color: .orange, isEnabled: true)
                 GridItemView(icon: "externaldrive.fill", title: "Gドライブ", color: .green, isEnabled: true)
                 GridItemView(icon: "books.vertical.fill", title: "本", color: .brown, isEnabled: true)
                 GridItemView(icon: "camera.fill", title: "スキャン", color: .indigo, isEnabled: true)
@@ -115,90 +137,93 @@ struct GridItemView: View {
     }
 }
 
-// MARK: - ハイライト読み上げ画面コンテンツ
+// MARK: - ハイライト読み上げ画面コンテンツ（実際のSpeechViewに近いモック）
 struct HighlightReadingContent: View {
-    let sampleText = "国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。"
+    let speeches = [
+        "国境の長いトンネルを抜けると雪国であった。",
+        "吾輩は猫である。名前はまだない。",
+        "親譲の無鉄砲で小供の時から損ばかりしてい",
+    ]
 
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー（モック）
+            // ナビゲーションバー
             HStack {
-                Image(systemName: "chevron.left")
-                    .font(.title2)
-                    .foregroundColor(.blue)
                 Spacer()
-                Text("読み上げ")
+                Text("Voice Narrator")
                     .font(.headline)
                 Spacer()
-                Image(systemName: "square.and.arrow.up")
-                    .font(.title2)
-                    .foregroundColor(.blue)
             }
             .padding()
             .padding(.top, 44)
             .background(Color(.systemBackground))
 
-            // テキストエリア
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    // ハイライト付きテキスト
+            VStack(spacing: 0) {
+                // ハイライト付きテキスト入力エリア
+                ZStack(alignment: .topLeading) {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.gray, lineWidth: 1)
                     HStack(spacing: 0) {
                         Text("国境の長い")
+                            .font(.system(size: 16))
                         Text("トンネル")
+                            .font(.system(size: 16))
                             .foregroundColor(.white)
                             .padding(.horizontal, 2)
                             .background(Color.orange)
-                        Text("を抜けると雪国であった。")
+                        Text("を抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。")
+                            .font(.system(size: 16))
                     }
-                    .font(.title3)
-                    Text("夜の底が白くなった。信号所に汽車が止まった。")
-                        .font(.title3)
-                        .padding(.top, 8)
+                    .padding(8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20)
-            }
-            .frame(maxWidth: .infinity)
-            .background(Color(.systemBackground))
+                .frame(height: 100)
+                .padding()
 
-            Spacer()
-
-            // 再生コントロール
-            VStack(spacing: 16) {
-                // プログレスバー
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.3))
-                            .frame(height: 4)
-                        Rectangle()
-                            .fill(Color.blue)
-                            .frame(width: geo.size.width * 0.3, height: 4)
+                // スピーチリスト
+                List {
+                    ForEach(speeches, id: \.self) { speech in
+                        HStack {
+                            Image(systemName: "waveform")
+                                .foregroundColor(.blue)
+                                .frame(width: 32)
+                            Text(speech)
+                                .font(.subheadline)
+                                .lineLimit(2)
+                        }
+                        .padding(.vertical, 4)
                     }
-                    .cornerRadius(2)
                 }
-                .frame(height: 4)
-                .padding(.horizontal)
+                .listStyle(.plain)
 
-                // コントロールボタン（モック）
-                HStack(spacing: 40) {
-                    Image(systemName: "gobackward.15")
-                        .font(.title)
-                        .foregroundColor(.primary)
-
-                    Image(systemName: "pause.circle.fill")
-                        .font(.system(size: 64))
-                        .foregroundColor(.blue)
-
-                    Image(systemName: "goforward.15")
-                        .font(.title)
-                        .foregroundColor(.primary)
+                // プレイヤーコントロール
+                VStack(spacing: 8) {
+                    HStack(spacing: 24) {
+                        Text("x1.0")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.secondary)
+                            .frame(width: 44)
+                        Spacer()
+                        Button {} label: {
+                            Image(systemName: "stop.circle.fill")
+                                .font(.system(size: 52))
+                                .foregroundColor(.blue)
+                        }
+                        Spacer()
+                        Image(systemName: "info.circle")
+                            .font(.title3)
+                            .foregroundColor(.secondary)
+                            .frame(width: 44)
+                    }
+                    .padding(.horizontal, 40)
                 }
+                .padding(.vertical, 12)
+                .background(Color(.systemBackground))
+                .overlay(Divider(), alignment: .top)
             }
-            .padding(.vertical, 20)
-            .background(Color(.systemBackground))
+            .background(Color(.systemGroupedBackground))
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(.systemGroupedBackground))
     }
 }
@@ -206,9 +231,12 @@ struct HighlightReadingContent: View {
 // MARK: - マイファイル画面コンテンツ
 struct MyFilesContent: View {
     let files = [
-        ("親譲の無鉄砲で小供の時から損ばかりしてい", "今日", "txt"),
-        ("恥の多い生涯を送って来ました。自分", "今日", "txt"),
         ("国境の長いトンネルを抜けると雪国であった", "今日", "txt"),
+        ("吾輩は猫である。名前はまだない。どこで生れたかとんと見当がつかぬ。", "今日", "pdf"),
+        ("親譲の無鉄砲で小供の時から損ばかりしてい", "昨日", "txt"),
+        ("恥の多い生涯を送って来ました。自分には、人間の生活というものが、見当つかないのです。", "昨日", "txt"),
+        ("山路を登りながら、こう考えた。智に働けば角が立つ。情に棹させば流される。", "2日前", "txt"),
+        ("木曾路はすべて山の中である。あるところは岨づたいに行く崖の道であり", "3日前", "epub"),
     ]
 
     var body: some View {
@@ -282,14 +310,27 @@ struct SettingsContent: View {
                         Divider().padding(.leading)
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("声の速さ")
+                            HStack {
+                                Text("声の速さ")
+                                Spacer()
+                                Text("x1.0（標準）")
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.blue)
+                            }
                             HStack {
                                 Image(systemName: "tortoise.fill")
                                     .foregroundColor(.secondary)
-                                Slider(value: .constant(0.4))
+                                Slider(value: .constant(0.5))
                                     .tint(.blue)
                                 Image(systemName: "hare.fill")
                                     .foregroundColor(.secondary)
+                            }
+                            HStack {
+                                Text("遅い").font(.caption).foregroundColor(.secondary)
+                                Spacer()
+                                Text("標準 1.0").font(.caption).foregroundColor(.secondary)
+                                Spacer()
+                                Text("速い").font(.caption).foregroundColor(.secondary)
                             }
                         }
                         .padding()
@@ -298,14 +339,27 @@ struct SettingsContent: View {
                         Divider().padding(.leading)
 
                         VStack(alignment: .leading, spacing: 8) {
-                            Text("声の高さ")
                             HStack {
-                                Image(systemName: "arrow.down")
+                                Text("声の高さ")
+                                Spacer()
+                                Text("x1.0（標準）")
+                                    .font(.system(.body, design: .monospaced))
+                                    .foregroundColor(.blue)
+                            }
+                            HStack {
+                                Image(systemName: "speaker.wave.1.fill")
                                     .foregroundColor(.secondary)
-                                Slider(value: .constant(0.35))
+                                Slider(value: .constant(0.33))
                                     .tint(.blue)
-                                Image(systemName: "arrow.up")
+                                Image(systemName: "speaker.wave.3.fill")
                                     .foregroundColor(.secondary)
+                            }
+                            HStack {
+                                Text("低い").font(.caption).foregroundColor(.secondary)
+                                Spacer()
+                                Text("標準 1.0").font(.caption).foregroundColor(.secondary)
+                                Spacer()
+                                Text("高い").font(.caption).foregroundColor(.secondary)
                             }
                         }
                         .padding()
@@ -533,5 +587,77 @@ struct UserDictionaryContent: View {
 
 #Preview {
     ScreenshotView()
+}
+
+// MARK: - JA App Store Previews
+
+#Preview("JA 01 Welcome") {
+    AppStoreScreenshot(caption: "読み上げナレーター\nへようこそ") {
+        OnboardingView(onComplete: {}, initialStep: 0)
+    }
+}
+
+#Preview("JA 02 Demo") {
+    AppStoreScreenshot(caption: "体験して\nみよう") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+}
+
+#Preview("JA 03 Features") {
+    AppStoreScreenshot(caption: "PDF・ウェブ\n電子書籍も対応") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+}
+
+#Preview("JA 04 Highlight") {
+    AppStoreScreenshot(caption: "ハイライトで\n読み上げ") {
+        HighlightReadingContent()
+    }
+}
+
+// MARK: - EN App Store Previews
+
+#Preview("EN 01 Welcome") {
+    AppStoreScreenshot(caption: "Welcome to\nVoice Narrator") {
+        OnboardingView(onComplete: {}, initialStep: 0)
+    }
+}
+
+#Preview("EN 02 Demo") {
+    AppStoreScreenshot(caption: "Try it\nyourself") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+}
+
+#Preview("EN 03 Features") {
+    AppStoreScreenshot(caption: "PDF, Web &\neBooks supported") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+}
+
+#Preview("EN 04 Highlight") {
+    AppStoreScreenshot(caption: "Follow along\nwith highlights") {
+        HighlightReadingContent()
+    }
+}
+
+// MARK: - iPad Raw Previews
+
+#Preview("iPad Highlight", traits: .fixedLayout(width: 768, height: 1024)) {
+    HighlightReadingContent()
+}
+
+// MARK: - Raw Previews (no caption)
+
+#Preview("iPhone MyFiles") {
+    MockScreenWithTopTab(title: "マイファイル") {
+        MyFilesContent()
+    }
+}
+
+#Preview("iPad MyFiles", traits: .fixedLayout(width: 768, height: 1024)) {
+    MockScreenWithTopTab(title: "マイファイル") {
+        MyFilesContent()
+    }
 }
 #endif

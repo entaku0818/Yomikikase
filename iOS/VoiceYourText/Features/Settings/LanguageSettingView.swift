@@ -85,7 +85,7 @@ struct LanguageSettingView: View {
                                 Text("声の速さ")
                                     .font(.headline)
                                 Spacer()
-                                Text(String(format: "%.1f", store.speechRate))
+                                Text(speedLabel(store.speechRate))
                                     .font(.system(.body, design: .monospaced))
                                     .foregroundColor(.blue)
                             }
@@ -96,6 +96,19 @@ struct LanguageSettingView: View {
                                 Image(systemName: "hare.fill")
                                     .foregroundColor(.gray)
                             }
+                            HStack {
+                                Text("遅い")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("標準 1.0")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("速い")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
                         }
 
                         // 声の高さの調整
@@ -104,16 +117,29 @@ struct LanguageSettingView: View {
                                 Text("声の高さ")
                                     .font(.headline)
                                 Spacer()
-                                Text(String(format: "%.1f", store.speechPitch))
+                                Text(pitchLabel(store.speechPitch))
                                     .font(.system(.body, design: .monospaced))
                                     .foregroundColor(.blue)
                             }
                             HStack {
-                                Image(systemName: "arrow.down")
+                                Image(systemName: "speaker.wave.1.fill")
                                     .foregroundColor(.gray)
                                 Slider(value: $store.speechPitch, in: 0.5...2.0, step: 0.1)
-                                Image(systemName: "arrow.up")
+                                Image(systemName: "speaker.wave.3.fill")
                                     .foregroundColor(.gray)
+                            }
+                            HStack {
+                                Text("低い")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("標準 1.0")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Text("高い")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -138,6 +164,16 @@ struct LanguageSettingView: View {
 
                 Section(header: Text("キャッシュ")) {
                     CacheManagementView()
+                }
+
+                Section(header: Text("サポート")) {
+                    NavigationLink(destination: FeedbackView()) {
+                        HStack {
+                            Image(systemName: "envelope.fill")
+                                .foregroundColor(.blue)
+                            Text("お問い合わせ・フィードバック")
+                        }
+                    }
                 }
 
                 Button(action: {
@@ -176,7 +212,7 @@ struct LanguageSettingView: View {
                 AdmobBannerView().frame(width: .infinity, height: 50)
             }
         }
-        .navigationBarTitle("Settings")
+        .navigationBarTitle("設定")
         .onAppear {
             send(.onAppear)
         }
@@ -191,6 +227,20 @@ struct LanguageSettingView: View {
         }
         #endif
     }
+}
+
+private func speedLabel(_ rate: Float) -> String {
+    if abs(rate - 1.0) < 0.05 {
+        return "x1.0（標準）"
+    }
+    return String(format: "x%.1f", rate)
+}
+
+private func pitchLabel(_ pitch: Float) -> String {
+    if abs(pitch - 1.0) < 0.05 {
+        return "x1.0（標準）"
+    }
+    return String(format: "x%.1f", pitch)
 }
 
 struct PremiumFeatureRow: View {
