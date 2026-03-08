@@ -109,7 +109,29 @@ platform :ios do
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
       },
-      build_number: "6"  # ビルド番号を明示指定
+      build_number: "7"  # ビルド番号を明示指定
     )
   end
+  # スクリーンショットのみアップロード
+  desc "Upload screenshots to App Store Connect only"
+  lane :upload_screenshots_only do
+    version_number = get_version_number(
+      xcodeproj: "VoiceYourText.xcodeproj",
+      target: "VoiceYourText"
+    )
+    deliver(
+      skip_binary_upload: true,
+      skip_metadata: true,
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      app_version: version_number,
+      force: true,
+      ignore_language_directory_validation: true,
+      submit_for_review: false,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+
 end 
+# NOTE: Added upload_screenshots_only lane below the existing content

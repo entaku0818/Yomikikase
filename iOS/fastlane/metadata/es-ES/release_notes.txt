@@ -1,3 +1,3 @@
-· Corregido un problema donde el inicio de sesión en Google Drive causaba un cierre inesperado
-· Corregido un problema donde la app podía cerrarse inesperadamente al leer en voz alta después de escanear
-· Otras mejoras de estabilidad
+・Pantalla de incorporación añadida para nuevos usuarios
+・Función de comentarios añadida para enviar opiniones y solicitudes
+・Otras mejoras de estabilidad

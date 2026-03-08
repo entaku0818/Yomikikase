@@ -1,3 +1,3 @@
-· Google Drive girişinin uygulamanın çökmesine neden olduğu sorun düzeltildi
-· Tarama sonrası sesli okuma sırasında uygulamanın çökebileceği sorun düzeltildi
-· Diğer kararlılık iyileştirmeleri
+・Yeni kullanıcılar için katılım ekranı eklendi
+・Görüş ve isteklerinizi göndermek için geri bildirim özelliği eklendi
+・Diğer kararlılık iyileştirmeleri

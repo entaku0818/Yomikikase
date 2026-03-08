@@ -1,3 +1,3 @@
-· Risolto un problema per cui l'accesso a Google Drive causava un arresto anomalo
-· Risolto un problema per cui l'app poteva crashare durante la lettura ad alta voce dopo la scansione
-· Altri miglioramenti della stabilità
+・Aggiunta schermata di onboarding per i nuovi utenti
+・Aggiunta funzione di feedback per inviare opinioni e richieste
+・Altri miglioramenti alla stabilità
