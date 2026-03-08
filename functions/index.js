@@ -5,7 +5,7 @@ const https = require("https");
 
 initializeApp();
 
-const SLACK_WEBHOOK_URL = "SLACK_WEBHOOK_URL_REMOVED";
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
 exports.submitFeedback = onRequest(
   { region: "asia-northeast1", cors: false },
