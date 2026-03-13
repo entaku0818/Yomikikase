@@ -23,3 +23,8 @@ iOS/build/
 fastlane/.env
 fastlane/report.xml
 iOS/fastlane/report.xml
+
+# Local dev artifacts
+.playwright-mcp/
+firebase-debug.log
+temp/
