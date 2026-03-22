@@ -92,47 +92,27 @@ struct SubscriptionView: View {
     }
     
     private var subscriptionOptionsSection: some View {
-        VStack(spacing: 16) {
-            if isLoading {
-                // 読み込み中はローディング状態のカードを表示
-                SubscriptionOptionCard(
-                    title: viewModel.monthlyPlan?.name ?? "",  // ローディング中は空文字
-                    price: viewModel.monthlyPlan?.price ?? "",  // ローディング中は空文字
-                    isPopular: true,
-                    action: {
-                        // 読み込み中は何もしない
-                    },
-                    isLoading: true
-                )
-            } else {
-                // 情報取得成功時
-                if let monthlyPlan = viewModel.monthlyPlan {
-                    SubscriptionOptionCard(
-                        title: monthlyPlan.name,
-                        price: monthlyPlan.price,
-                        isPopular: true,
-                        action: {
-                            Task {
-                                await purchaseMonthly()
-                            }
-                        },
-                        isLoading: viewModel.isProcessing
-                    )
-                } else {
-                    // 情報取得失敗時もローディング状態のカードを表示
-                    SubscriptionOptionCard(
-                        title: "",
-                        price: "",
-                        isPopular: true,
-                        action: {
-                            Task {
-                                await purchaseMonthly()
-                            }
-                        },
-                        isLoading: true
-                    )
+        VStack(spacing: 12) {
+            // 年額プラン（おすすめ・上位表示）
+            AnnualPlanCard(
+                monthlyPlan: viewModel.monthlyPlan,
+                annualPlan: viewModel.annualPlan,
+                isLoading: isLoading,
+                isProcessing: viewModel.isProcessing,
+                onPurchase: {
+                    Task { await purchaseAnnual() }
                 }
-            }
+            )
+
+            // 月額プラン（セカンダリ）
+            MonthlyPlanCard(
+                plan: viewModel.monthlyPlan,
+                isLoading: isLoading,
+                isProcessing: viewModel.isProcessing,
+                onPurchase: {
+                    Task { await purchaseMonthly() }
+                }
+            )
         }
     }
     
@@ -165,7 +145,15 @@ struct SubscriptionView: View {
     }
     
     private func purchaseMonthly() async {
-        let result = await viewModel.handlePurchase()
+        let result = await viewModel.handlePurchase(planType: .monthly)
+        alertTitle = result.title
+        alertMessage = result.message
+        shouldDismissAfterAlert = result.success
+        showingAlert = true
+    }
+
+    private func purchaseAnnual() async {
+        let result = await viewModel.handlePurchase(planType: .annual)
         alertTitle = result.title
         alertMessage = result.message
         shouldDismissAfterAlert = result.success
@@ -217,112 +205,210 @@ struct FeatureRow: View {
     }
 }
 
-struct SubscriptionOptionCard: View {
-    let title: String
-    let price: String
-    let isPopular: Bool
-    let action: () -> Void
-    var isLoading: Bool = false
-    
+// MARK: - 年額プランカード（おすすめ・メイン表示）
+struct AnnualPlanCard: View {
+    let monthlyPlan: (name: String, price: String)?
+    let annualPlan: (name: String, price: String)?
+    let isLoading: Bool
+    let isProcessing: Bool
+    let onPurchase: () -> Void
+
     var body: some View {
-        VStack {
-            if isPopular {
-                Text("PREMIUM")
+        VStack(spacing: 0) {
+            // おすすめバッジ
+            HStack {
+                Spacer()
+                Text("おすすめ・約38%お得")
                     .font(.caption)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 4)
-                    .background(Color.blue)
-                    .cornerRadius(12)
-                    .padding(.bottom, 4)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 5)
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.orange, Color.pink]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .clipShape(Capsule())
+                Spacer()
             }
-            
-            VStack(spacing: 12) {
+            .padding(.bottom, 10)
+
+            VStack(spacing: 10) {
                 if isLoading {
-                    // ローディング中はプレースホルダーを表示
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
                         .frame(height: 20)
                         .cornerRadius(4)
                         .padding(.horizontal, 30)
-                        
                     Rectangle()
                         .fill(Color.gray.opacity(0.2))
-                        .frame(height: 30)
+                        .frame(height: 36)
                         .cornerRadius(4)
-                        .padding(.horizontal, 60)
+                        .padding(.horizontal, 50)
                 } else {
-                    Text(title)
+                    Text(annualPlan?.name ?? "年額プラン")
                         .font(.headline)
-                    
-                    Text(price)
-                        .font(.title)
-                        .fontWeight(.bold)
-                }
-                
-                Button(action: action) {
-                    if isLoading {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(12)
-                    } else {
-                        Text("購入する")
-                            .fontWeight(.semibold)
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(Color.blue)
-                            .cornerRadius(12)
+                    VStack(spacing: 2) {
+                        Text(annualPlan?.price ?? "¥2,800/年")
+                            .font(.title)
+                            .fontWeight(.bold)
+                        if let monthly = monthlyPlan?.price {
+                            Text("月額換算 \(monthly)/月 より割安")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
-                .disabled(isLoading)
-                .padding(.top, 8)
+
+                Button(action: onPurchase) {
+                    Group {
+                        if isLoading || isProcessing {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            Text("年額プランで購入する")
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .padding()
+                    .background(
+                        LinearGradient(
+                            gradient: Gradient(colors: [Color.blue, Color.purple]),
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
+                    .cornerRadius(12)
+                }
+                .disabled(isLoading || isProcessing)
+                .padding(.top, 4)
             }
             .padding()
             .background(Color(.secondarySystemBackground))
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(isPopular ? Color.blue : Color.clear, lineWidth: 2)
+                    .stroke(Color.blue, lineWidth: 2)
             )
             .opacity(isLoading ? 0.7 : 1)
         }
     }
 }
 
+// MARK: - 月額プランカード（セカンダリ表示）
+struct MonthlyPlanCard: View {
+    let plan: (name: String, price: String)?
+    let isLoading: Bool
+    let isProcessing: Bool
+    let onPurchase: () -> Void
+
+    var body: some View {
+        VStack(spacing: 10) {
+            if isLoading {
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 18)
+                    .cornerRadius(4)
+                    .padding(.horizontal, 40)
+                Rectangle()
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 28)
+                    .cornerRadius(4)
+                    .padding(.horizontal, 70)
+            } else {
+                Text(plan?.name ?? "月額プラン")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                Text(plan?.price ?? "¥380/月")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+            }
+
+            Button(action: onPurchase) {
+                Group {
+                    if isLoading || isProcessing {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Text("月額プランで購入する")
+                            .fontWeight(.medium)
+                            .foregroundColor(.blue)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.blue.opacity(0.4), lineWidth: 1)
+                )
+            }
+            .disabled(isLoading || isProcessing)
+        }
+        .padding()
+        .opacity(isLoading ? 0.7 : 1)
+    }
+}
+
+// 後方互換（既存コードが参照している場合のスタブ）
+struct SubscriptionOptionCard: View {
+    let title: String
+    let price: String
+    let isPopular: Bool
+    let action: () -> Void
+    var isLoading: Bool = false
+
+    var body: some View { EmptyView() }
+}
+
 class SubscriptionViewModel: ObservableObject {
     @Published var monthlyPlan: (name: String, price: String)?
+    @Published var annualPlan: (name: String, price: String)?
     @Published var isProcessing: Bool = false
     @Dependency(\.analytics) private var analytics
-    
+
     func fetchSubscriptionPlan() async {
         do {
-            let monthlyPlan = try await PurchaseManager.shared.fetchProPlan()
-            
+            let plans = try await PurchaseManager.shared.fetchAllPlans()
             await MainActor.run {
-                self.monthlyPlan = monthlyPlan
+                self.monthlyPlan = plans.monthly
+                self.annualPlan = plans.annual
             }
         } catch {
-            errorLog("Failed to fetch subscription plan: \(error)")
-            analytics.logEvent("subscription_plan_fetch_failed", [
-                "error": error.localizedDescription
-            ])
+            // フォールバック: 月額のみ取得
+            do {
+                let monthlyPlan = try await PurchaseManager.shared.fetchProPlan()
+                await MainActor.run {
+                    self.monthlyPlan = monthlyPlan
+                }
+            } catch {
+                errorLog("Failed to fetch subscription plan: \(error)")
+                analytics.logEvent("subscription_plan_fetch_failed", [
+                    "error": error.localizedDescription
+                ])
+            }
         }
     }
-    
-    func handlePurchase() async -> (success: Bool, title: String, message: String) {
+
+    func handlePurchase(planType: PurchaseManager.PlanType = .monthly) async -> (success: Bool, title: String, message: String) {
         isProcessing = true
         defer { isProcessing = false }
-        
+
+        let planTypeString = planType == .annual ? "annual" : "monthly"
+
         do {
-            let success = try await PurchaseManager.shared.purchasePro()
+            let success = try await PurchaseManager.shared.purchasePro(planType: planType)
             if success {
                 analytics.logEvent("subscription_purchase_success", [
-                    "plan_type": "monthly",
+                    "plan_type": planTypeString,
                     "source": "subscription_view"
                 ])
                 return (true, "購入完了", "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。")
@@ -332,7 +418,7 @@ class SubscriptionViewModel: ObservableObject {
             }
         } catch {
             analytics.logEvent("subscription_purchase_failed", [
-                "plan_type": "monthly",
+                "plan_type": planTypeString,
                 "error": error.localizedDescription
             ])
             return handlePurchaseError(error)

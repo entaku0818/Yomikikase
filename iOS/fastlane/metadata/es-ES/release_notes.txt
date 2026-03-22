@@ -1,3 +1,3 @@
-・Pantalla de incorporación añadida para nuevos usuarios
-・Función de comentarios añadida para enviar opiniones y solicitudes
-・Otras mejoras de estabilidad
+- Se corrigió un fallo durante la reproducción de texto a voz
+- Se corrigió la reproducción de audio tras escanear documentos
+- Mejoras de estabilidad

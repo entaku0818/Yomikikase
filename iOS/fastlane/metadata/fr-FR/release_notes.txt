@@ -1,3 +1,3 @@
-・Écran d'intégration ajouté pour les nouveaux utilisateurs
-・Fonction de retour d'information ajoutée pour envoyer vos avis et demandes
-・Autres améliorations de stabilité
+- Correction d'un plantage lors de la lecture vocale
+- Correction de la lecture audio après la numérisation de documents
+- Améliorations de la stabilité
