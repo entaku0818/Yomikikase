@@ -1,29 +1,35 @@
-Voice Narrator: Transforming Text into Voice Interactions
+Turn any text into speech — PDFs, websites, EPUB books, Google Drive files, scanned documents, and more. Voice Narrator is the all-in-one text-to-speech app that fits into your daily life.
 
-Introduction:
-In today’s fast-paced world, where multitasking has become the norm, VoiceYourText emerges as a revolutionary application designed to bridge the gap between digital text and verbal communication. This intuitive app turns your mobile device into a speaking partner, enabling users to convert any written text into spoken words. Whether you're driving, cooking, or simply prefer listening over reading, VoiceYourText offers a seamless solution to integrate voice into your daily activities.
+KEY FEATURES
 
-Features:
-Voice Narrator is packed with a variety of features to enhance your experience and make text-to-speech more accessible than ever:
+Read Any Content Aloud
+- PDF files: import and listen to documents, reports, and books
+- Web pages: paste a URL and hear any article read to you
+- EPUB: listen to ebooks from your library
+- Google Drive: open files directly from your cloud storage
+- Document Scanner: point your camera at any printed text and listen instantly
+- TXT files: import plain text from any source
 
-1. **User-Friendly Interface:** Designed with simplicity in mind, our app allows you to easily input or paste text that you wish to convert into speech. The clean layout ensures that users of all ages can navigate through the app without any hassle.
+Powerful Playback Controls
+- Adjust reading speed from 0.5x to 2x (or faster)
+- Control pitch to find the most comfortable voice for you
+- Background playback — keep listening while using other apps
+- Mini player for quick access during multitasking
 
-2. **Multilingual Support:** Our app supports multiple languages, offering users the flexibility to convert text into speech in various languages. This feature is particularly useful for language learners and those who consume content in multiple languages.
+Personalization
+- Custom user dictionary: fix mispronounced names, technical terms, or brand names
+- Multiple language support: switch between languages for multilingual content
+- Save frequently used texts for instant replay
 
-3. **Text Saving and History:** VoiceYourText allows you to save frequently used texts and maintains a history of your past conversions. This feature enables quick access to common phrases or texts without the need to retype or paste them again.
+Accessibility First
+- Designed for users with dyslexia, visual impairments, or reading fatigue
+- No account required — just open and listen
+- All processing done on-device for privacy
 
+WHO IT IS FOR
+- Students who want to review notes or textbooks hands-free
+- Professionals who listen to reports and documents during commutes
+- Language learners who improve listening comprehension
+- Anyone who prefers listening over reading
 
-Use Cases:
-VoiceYourText caters to a wide array of users and scenarios, making it a versatile tool for both personal and professional use.
-
-- **Accessibility:** Individuals with visual impairments or reading difficulties can greatly benefit from VoiceYourText, as it provides an alternative way to access written content.
-
-- **Learning and Education:** Language learners can improve their pronunciation and listening skills by converting written material into speech. Additionally, educators can use the app to create audio content for their students.
-
-- **Professional Use:** Busy professionals who need to go through large volumes of text can listen to reports, emails, and documents while commuting or during breaks, thus saving time and increasing efficiency.
-
-- **Personal Convenience:** For those who prefer auditory learning or simply want to rest their eyes, VoiceYourText offers a comfortable way to consume books, articles, and any other written content.
-
-Future Developments:
-We are constantly working to improve VoiceYourText and add new features that enhance user experience. Future updates will include more voice options, improved AI for natural-sounding speech, and enhanced integration capabilities with popular platforms and devices.
-
+Privacy: No account required. Your content stays on your device.

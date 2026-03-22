@@ -1,1 +1,1 @@
-text to speech,TTS,PDF reader,accessibility,voice,audiobook,read aloud,narrator,multilingual
+text to speech,PDF reader,speed reading,epub,listen,dyslexia,document scanner,web reader,voice
