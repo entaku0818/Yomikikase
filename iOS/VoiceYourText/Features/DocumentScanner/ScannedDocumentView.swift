@@ -23,6 +23,7 @@ struct ScannedDocumentView: View {
     @State private var isEditingText: Bool = false
     @State private var isSpeaking: Bool = false
     @State private var speechSynthesizer: AVSpeechSynthesizer?
+    @State private var speechCoordinator: SpeechCoordinator?
     @FocusState private var isTextEditorFocused: Bool
 
     enum ViewTab {
@@ -224,6 +225,7 @@ struct ScannedDocumentView: View {
                 self.isSpeaking = false
             }
         })
+        speechCoordinator = coordinator  // retain strongly; AVSpeechSynthesizer.delegate is weak
         synthesizer.delegate = coordinator
 
         let utterance = AVSpeechUtterance(string: editableText)
@@ -242,8 +244,10 @@ struct ScannedDocumentView: View {
 
     private func stopSpeaking() {
         isSpeaking = false
+        speechSynthesizer?.delegate = nil  // prevent callbacks after stop
         speechSynthesizer?.stopSpeaking(at: .immediate)
         speechSynthesizer = nil
+        speechCoordinator = nil
 
         // 全てのAVSpeechSynthesizerを停止
         NotificationCenter.default.post(

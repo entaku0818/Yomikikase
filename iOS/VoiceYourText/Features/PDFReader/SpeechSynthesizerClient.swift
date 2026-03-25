@@ -122,10 +122,19 @@ extension DependencyValues {
 private actor SpeechSynthesizer {
     var delegate: Delegate?
     var synthesizer: AVSpeechSynthesizer?
+    var activeContinuation: AsyncThrowingStream<Bool, Error>.Continuation?
 
     func stop() -> Bool {
-        self.synthesizer?.stopSpeaking(at: .immediate)
-        self.audioPlayer?.stop()
+        // Finish active continuation first to unblock any pending speak() task
+        activeContinuation?.finish()
+        activeContinuation = nil
+        // Nil out delegate before stopping to prevent callbacks on deallocated objects
+        synthesizer?.delegate = nil
+        synthesizer?.stopSpeaking(at: .immediate)
+        synthesizer = nil
+        delegate = nil
+        audioPlayer?.stop()
+        audioPlayer = nil
         return true
     }
 
@@ -142,7 +151,7 @@ private actor SpeechSynthesizer {
     func isPaused() -> Bool {
         return self.synthesizer?.isPaused ?? false
     }
-    
+
     var audioPlayer: AVAudioPlayer?
     
     func playAudioFromURL(_ urlString: String) async throws -> Bool {
@@ -169,74 +178,74 @@ private actor SpeechSynthesizer {
     func speak(utterance: AVSpeechUtterance) async throws -> Bool {
         self.stop()
         let stream = AsyncThrowingStream<Bool, Error> { continuation in
-            do {
-                self.delegate = Delegate(
-                    didFinish: { flag in
-                        continuation.yield(flag)
-                        continuation.finish()
-                    },
-                    didError: { error in
-                        if let error = error {
-                            continuation.finish(throwing: error)
-                        }
-                    },
-                    willSpeakRange: nil,
-                    onFinish: nil
-                )
-                let synthesizer = AVSpeechSynthesizer()
-                self.synthesizer = synthesizer
-                synthesizer.delegate = self.delegate
+            self.activeContinuation = continuation
+            self.delegate = Delegate(
+                didFinish: { flag in
+                    continuation.yield(flag)
+                    continuation.finish()
+                },
+                didError: { error in
+                    if let error = error {
+                        continuation.finish(throwing: error)
+                    }
+                },
+                willSpeakRange: nil,
+                onFinish: nil
+            )
+            let synthesizer = AVSpeechSynthesizer()
+            self.synthesizer = synthesizer
+            synthesizer.delegate = self.delegate
 
-                continuation.onTermination = { [synthesizer = UncheckedSendable(synthesizer)] _ in
-                    synthesizer.wrappedValue.stopSpeaking(at: .immediate)
-                }
-
-                synthesizer.speak(utterance)
-            } catch {
-                continuation.finish(throwing: error)
+            continuation.onTermination = { [synthesizer = UncheckedSendable(synthesizer)] _ in
+                synthesizer.wrappedValue.delegate = nil
+                synthesizer.wrappedValue.stopSpeaking(at: .immediate)
             }
+
+            synthesizer.speak(utterance)
         }
 
         for try await didFinish in stream {
+            activeContinuation = nil
             return didFinish
         }
+        activeContinuation = nil
         throw CancellationError()
     }
 
     func speakWithHighlight(utterance: AVSpeechUtterance, onHighlight: @escaping @Sendable (NSRange, String) -> Void, onFinish: @escaping @Sendable () -> Void) async throws -> Bool {
         self.stop()
         let stream = AsyncThrowingStream<Bool, Error> { continuation in
-            do {
-                self.delegate = Delegate(
-                    didFinish: { flag in
-                        continuation.yield(flag)
-                        continuation.finish()
-                    },
-                    didError: { error in
-                        if let error = error {
-                            continuation.finish(throwing: error)
-                        }
-                    },
-                    willSpeakRange: onHighlight,
-                    onFinish: onFinish
-                )
-                let synthesizer = AVSpeechSynthesizer()
-                self.synthesizer = synthesizer
-                synthesizer.delegate = self.delegate
+            self.activeContinuation = continuation
+            self.delegate = Delegate(
+                didFinish: { flag in
+                    continuation.yield(flag)
+                    continuation.finish()
+                },
+                didError: { error in
+                    if let error = error {
+                        continuation.finish(throwing: error)
+                    }
+                },
+                willSpeakRange: onHighlight,
+                onFinish: onFinish
+            )
+            let synthesizer = AVSpeechSynthesizer()
+            self.synthesizer = synthesizer
+            synthesizer.delegate = self.delegate
 
-                continuation.onTermination = { [synthesizer = UncheckedSendable(synthesizer)] _ in
-                    synthesizer.wrappedValue.stopSpeaking(at: .immediate)
-                }
-
-                synthesizer.speak(utterance)
-            } catch {
-                continuation.finish(throwing: error)
+            continuation.onTermination = { [synthesizer = UncheckedSendable(synthesizer)] _ in
+                synthesizer.wrappedValue.delegate = nil
+                synthesizer.wrappedValue.stopSpeaking(at: .immediate)
             }
+
+            synthesizer.speak(utterance)
         }
 
         for try await didFinish in stream {
+            activeContinuation = nil
             return didFinish
         }
+        activeContinuation = nil
         throw CancellationError()
     }
 }

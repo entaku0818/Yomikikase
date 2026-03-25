@@ -3,7 +3,9 @@ import RevenueCat
 import os.log
 protocol PurchaseManagerProtocol {
     func fetchProPlan() async throws -> (name: String, price: String)
+    func fetchAllPlans() async throws -> (monthly: (name: String, price: String)?, annual: (name: String, price: String)?)
     func purchasePro() async throws -> Bool
+    func purchasePro(planType: PurchaseManager.PlanType) async throws -> Bool
     func restorePurchases() async throws -> Bool
     func checkPremiumStatus() async
 }
@@ -14,6 +16,19 @@ class PurchaseManager: PurchaseManagerProtocol {
 
     private enum Package {
         static let pro = "$rc_monthly"
+        static let annual = "$rc_annual"
+    }
+
+    enum PlanType {
+        case monthly
+        case annual
+
+        fileprivate var packageIdentifier: String {
+            switch self {
+            case .monthly: return Package.pro
+            case .annual: return Package.annual
+            }
+        }
     }
 
     private init() {}
@@ -51,31 +66,57 @@ class PurchaseManager: PurchaseManagerProtocol {
                 price: package.localizedPriceString)
     }
 
+    func fetchAllPlans() async throws -> (monthly: (name: String, price: String)?, annual: (name: String, price: String)?) {
+        os_log("=== Fetch All Plans Start ===", log: logger, type: .debug)
+        let offerings = try await Purchases.shared.offerings()
+
+        guard let offering = offerings.current else {
+            os_log("No current offering found", log: logger, type: .error)
+            throw PurchaseError.productNotFound
+        }
+
+        let monthlyPackage = offering.availablePackages.first(where: { $0.identifier == Package.pro })
+        let annualPackage = offering.availablePackages.first(where: { $0.identifier == Package.annual })
+
+        let monthly = monthlyPackage.map { (name: $0.storeProduct.localizedTitle, price: $0.localizedPriceString) }
+        let annual = annualPackage.map { (name: $0.storeProduct.localizedTitle, price: $0.localizedPriceString) }
+
+        os_log("Fetched plans - monthly: %{public}@, annual: %{public}@",
+               log: logger, type: .debug,
+               monthly?.price ?? "nil", annual?.price ?? "nil")
+        return (monthly: monthly, annual: annual)
+    }
+
     func purchasePro() async throws -> Bool {
-        os_log("=== Purchase Pro Start ===", log: logger, type: .debug)
+        return try await purchasePro(planType: .monthly)
+    }
+
+    func purchasePro(planType: PlanType) async throws -> Bool {
+        os_log("=== Purchase Pro Start (planType: %{public}@) ===", log: logger, type: .debug,
+               planType == .annual ? "annual" : "monthly")
         let offerings = try await Purchases.shared.offerings()
 
         guard let offering = offerings.current,
-              let package = offering.availablePackages.first(where: { $0.identifier == Package.pro }) else {
-            os_log("Pro package not found", log: logger, type: .error)
+              let package = offering.availablePackages.first(where: { $0.identifier == planType.packageIdentifier }) else {
+            os_log("Package not found for planType", log: logger, type: .error)
             throw PurchaseError.productNotFound
         }
 
         do {
-            os_log("Starting pro purchase for package: %{public}@", log: logger, type: .debug, package.identifier)
+            os_log("Starting purchase for package: %{public}@", log: logger, type: .debug, package.identifier)
             let (_, customerInfo, _) = try await Purchases.shared.purchase(package: package)
 
             if customerInfo.entitlements["premium"]?.isActive == true {
-                os_log("Pro purchase successful", log: logger, type: .debug)
+                os_log("Purchase successful", log: logger, type: .debug)
                 UserDefaultsManager.shared.isPremiumUser = true
                 UserDefaultsManager.shared.premiumPurchaseDate = Date()
                 return true
             } else {
-                os_log("Pro purchase failed: premium not active", log: logger, type: .error)
+                os_log("Purchase failed: premium not active", log: logger, type: .error)
                 throw PurchaseError.purchaseFailed
             }
         } catch {
-            os_log("Pro purchase failed: %{public}@", log: logger, type: .error, error.localizedDescription)
+            os_log("Purchase failed: %{public}@", log: logger, type: .error, error.localizedDescription)
             throw error
         }
     }
