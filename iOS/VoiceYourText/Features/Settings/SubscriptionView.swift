@@ -252,9 +252,11 @@ struct AnnualPlanCard: View {
                     Text(annualPlan?.name ?? "年額プラン")
                         .font(.headline)
                     VStack(spacing: 2) {
-                        Text(annualPlan?.price ?? "¥2,800/年")
-                            .font(.title)
-                            .fontWeight(.bold)
+                        if let price = annualPlan?.price {
+                            Text(price)
+                                .font(.title)
+                                .fontWeight(.bold)
+                        }
                         if let monthly = monthlyPlan?.price {
                             Text("月額換算 \(monthly)/月 より割安")
                                 .font(.caption)
@@ -325,9 +327,11 @@ struct MonthlyPlanCard: View {
                 Text(plan?.name ?? "月額プラン")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                Text(plan?.price ?? "¥380/月")
-                    .font(.title2)
-                    .fontWeight(.semibold)
+                if let price = plan?.price {
+                    Text(price)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
             }
 
             Button(action: onPurchase) {
