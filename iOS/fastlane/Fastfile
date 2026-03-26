@@ -109,7 +109,7 @@ platform :ios do
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
       },
-      build_number: "7"  # ビルド番号を明示指定
+      build_number: "9"  # ビルド番号を明示指定
     )
   end
   # スクリーンショットのみアップロード

@@ -1,3 +1,4 @@
+- Jahresabonnement eingeführt (ca. 38% günstiger als monatlich)
 - Absturz während der Text-zu-Sprache-Wiedergabe behoben
 - Audiowiedergabe nach dem Dokumentenscan behoben
 - Stabilitätsverbesserungen

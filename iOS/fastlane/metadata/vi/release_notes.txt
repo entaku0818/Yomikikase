@@ -1,3 +1,4 @@
+- Ra mắt gói đăng ký hàng năm (tiết kiệm ~38% so với gói tháng)
 - Đã sửa lỗi xảy ra trong khi phát văn bản thành giọng nói
 - Đã sửa lỗi phát âm thanh sau khi quét tài liệu
 - Cải thiện độ ổn định

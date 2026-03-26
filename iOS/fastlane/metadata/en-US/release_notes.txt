@@ -1,3 +1,4 @@
+- Introduced annual subscription plan (save ~38% vs monthly)
 - Fixed a crash that occurred during text-to-speech playback
 - Fixed audio playback after document scanning
 - Stability improvements

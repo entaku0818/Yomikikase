@@ -1,3 +1,4 @@
+- Yıllık abonelik planı tanıtıldı (aylığa göre ~%38 tasarruf)
 - Metin okuma sırasında oluşan çökme sorunu giderildi
 - Belge taramasından sonra ses oynatma hatası düzeltildi
 - Kararlılık iyileştirmeleri

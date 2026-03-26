@@ -1,3 +1,4 @@
+- Nuovo piano annuale disponibile (risparmia il 38% rispetto al mensile)
 - Corretto un arresto anomalo durante la riproduzione text-to-speech
 - Corretta la riproduzione audio dopo la scansione di documenti
 - Miglioramenti alla stabilità
