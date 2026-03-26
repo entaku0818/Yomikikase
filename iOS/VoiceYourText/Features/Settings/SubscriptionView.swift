@@ -224,13 +224,7 @@ struct AnnualPlanCard: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 14)
                     .padding(.vertical, 5)
-                    .background(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color.orange, Color.pink]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .background(AppTheme.badgeBackground)
                     .clipShape(Capsule())
                 Spacer()
             }
@@ -279,13 +273,7 @@ struct AnnualPlanCard: View {
                         }
                     }
                     .padding()
-                    .background(
-                        LinearGradient(
-                            gradient: Gradient(colors: [Color.blue, Color.purple]),
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
+                    .background(AppTheme.primary)
                     .cornerRadius(12)
                 }
                 .disabled(isLoading || isProcessing)
@@ -296,7 +284,7 @@ struct AnnualPlanCard: View {
             .cornerRadius(16)
             .overlay(
                 RoundedRectangle(cornerRadius: 16)
-                    .stroke(Color.blue, lineWidth: 2)
+                    .stroke(AppTheme.annualCardBorder, lineWidth: 1.5)
             )
             .opacity(isLoading ? 0.7 : 1)
         }
@@ -343,7 +331,7 @@ struct MonthlyPlanCard: View {
                     } else {
                         Text("月額プランで購入する")
                             .fontWeight(.medium)
-                            .foregroundColor(.blue)
+                            .foregroundColor(AppTheme.secondaryForeground)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -352,7 +340,7 @@ struct MonthlyPlanCard: View {
                 .cornerRadius(12)
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.blue.opacity(0.4), lineWidth: 1)
+                        .stroke(AppTheme.monthlyCardBorder, lineWidth: 1)
                 )
             }
             .disabled(isLoading || isProcessing)
