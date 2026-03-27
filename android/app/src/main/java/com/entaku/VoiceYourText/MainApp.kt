@@ -23,10 +23,10 @@ import com.entaku.VoiceYourText.tts.SpeechScreen
 import com.entaku.VoiceYourText.tts.TtsViewModel
 
 @Composable
-fun MainApp() {
+fun MainApp(initialSharedText: String? = null) {
     val ttsViewModel: TtsViewModel = viewModel()
     var selectedTab by remember { mutableIntStateOf(0) }
-    var pendingText by remember { mutableStateOf("") }
+    var pendingText by remember { mutableStateOf(initialSharedText ?: "") }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
