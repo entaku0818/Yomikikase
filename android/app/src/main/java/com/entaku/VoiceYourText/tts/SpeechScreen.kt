@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import com.entaku.VoiceYourText.file.FilePickerButton
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
@@ -40,9 +41,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.entaku.VoiceYourText.file.FilePickerButton
+import com.entaku.VoiceYourText.file.TextFileReader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,6 +61,7 @@ fun SpeechScreen(
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val isInitialized by viewModel.isInitialized.collectAsState()
 
+    val context = LocalContext.current
     var inputText by remember { mutableStateOf("") }
     var languageDropdownExpanded by remember { mutableStateOf(false) }
 
@@ -92,7 +97,7 @@ fun SpeechScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Text input area
+            // Text input area with file picker
             OutlinedTextField(
                 value = inputText,
                 onValueChange = { inputText = it },
@@ -102,7 +107,15 @@ fun SpeechScreen(
                     .fillMaxWidth()
                     .height(180.dp),
                 shape = RoundedCornerShape(12.dp),
-                maxLines = 8
+                maxLines = 8,
+                trailingIcon = {
+                    FilePickerButton(
+                        onFilePicked = { uri ->
+                            TextFileReader.read(context, uri)
+                                .onSuccess { inputText = it }
+                        }
+                    )
+                }
             )
 
             // Language selector
