@@ -1,8 +1,10 @@
 package com.entaku.VoiceYourText.tts
 
 import android.app.Application
+import android.content.Intent
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -93,11 +95,26 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         tts?.setSpeechRate(_speechRate.value)
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())
         saveToHistory(text)
+        startNotificationService(text.take(60))
     }
 
     fun stop() {
         tts?.stop()
         _state.value = TtsState.IDLE
+        stopNotificationService()
+    }
+
+    private fun startNotificationService(title: String) {
+        val intent = Intent(getApplication(), TtsNotificationService::class.java).apply {
+            putExtra(TtsNotificationService.EXTRA_TITLE, title)
+        }
+        ContextCompat.startForegroundService(getApplication(), intent)
+    }
+
+    private fun stopNotificationService() {
+        getApplication<Application>().stopService(
+            Intent(getApplication(), TtsNotificationService::class.java)
+        )
     }
 
     fun setSpeechRate(rate: Float) {
@@ -137,5 +154,6 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         tts?.stop()
         tts?.shutdown()
         tts = null
+        stopNotificationService()
     }
 }
