@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Voice Your Text</string>
+    <string name="tab_speech">Speech</string>
+    <string name="tab_history">History</string>
+    <string name="input_label">Enter text to read aloud</string>
+    <string name="input_placeholder">Type your text here…</string>
+    <string name="language_label">Language</string>
+    <string name="speed_label">Speed</string>
+    <string name="speed_slow">Slow</string>
+    <string name="speed_normal">Normal 1.0</string>
+    <string name="speed_fast">Fast</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="history_empty">No history yet</string>
+    <string name="history_empty_hint">History will be saved when you read text</string>
+    <string name="open_file">Open text file</string>
+    <string name="tts_error">Failed to initialize TTS engine</string>
+    <string name="delete">Delete</string>
+</resources>

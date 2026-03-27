@@ -1,3 +1,19 @@
 <resources>
-    <string name="app_name">VoiceYourText</string>
+    <string name="app_name">Voice Your Text</string>
+    <string name="tab_speech">読み上げ</string>
+    <string name="tab_history">履歴</string>
+    <string name="input_label">読み上げるテキストを入力</string>
+    <string name="input_placeholder">ここにテキストを入力してください…</string>
+    <string name="language_label">言語</string>
+    <string name="speed_label">速さ</string>
+    <string name="speed_slow">遅い</string>
+    <string name="speed_normal">標準 1.0</string>
+    <string name="speed_fast">速い</string>
+    <string name="play">再生</string>
+    <string name="stop">停止</string>
+    <string name="history_empty">履歴がありません</string>
+    <string name="history_empty_hint">テキストを読み上げると履歴が保存されます</string>
+    <string name="open_file">テキストファイルを開く</string>
+    <string name="tts_error">TTSエンジンの初期化に失敗しました</string>
+    <string name="delete">削除</string>
 </resources>
