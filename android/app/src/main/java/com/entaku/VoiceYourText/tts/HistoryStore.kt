@@ -12,7 +12,6 @@ class HistoryStore(context: Context) {
         history.add(0, text)
         val trimmed = history.take(MAX_ITEMS)
         prefs.edit {
-            putStringSet(KEY_HISTORY, trimmed.toSet())
             putString(KEY_ORDER, trimmed.joinToString(SEPARATOR) { it.replace(SEPARATOR, " ") })
         }
     }
@@ -26,7 +25,6 @@ class HistoryStore(context: Context) {
         val history = getAll().toMutableList()
         history.remove(text)
         prefs.edit {
-            putStringSet(KEY_HISTORY, history.toSet())
             putString(KEY_ORDER, history.joinToString(SEPARATOR) { it.replace(SEPARATOR, " ") })
         }
     }

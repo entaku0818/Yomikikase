@@ -86,7 +86,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun speak(text: String) {
-        if (text.isBlank()) return
+        if (text.isBlank() || !_isInitialized.value) return
         tts?.setSpeechRate(_speechRate.value)
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())
         saveToHistory(text)
