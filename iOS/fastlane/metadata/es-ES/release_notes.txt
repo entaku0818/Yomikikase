@@ -1,4 +1,1 @@
-- Nuevo plan de suscripción anual (ahorra un 38% frente al mensual)
-- Se corrigió un fallo durante la reproducción de texto a voz
-- Se corrigió la reproducción de audio tras escanear documentos
-- Mejoras de estabilidad
+

@@ -1,4 +1,1 @@
-- Nouveau forfait annuel disponible (38% moins cher que le mensuel)
-- Correction d'un plantage lors de la lecture vocale
-- Correction de la lecture audio après la numérisation de documents
-- Améliorations de la stabilité
+
