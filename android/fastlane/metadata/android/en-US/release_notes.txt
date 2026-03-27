@@ -1,0 +1,9 @@
+🎉 Initial Android Release
+
+· Text-to-speech in 7 languages
+· PDF viewer
+· Speed and pitch control
+· Reading history (up to 50 items)
+· Text file import
+· Share text from any app
+· Home screen widget

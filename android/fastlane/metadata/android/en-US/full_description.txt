@@ -1,0 +1,35 @@
+Voice Your Text is a TTS (Text-to-Speech) app that reads aloud any text you type or import.
+
+【Key Features】
+
+📖 Text to Speech
+Type or paste any text and hear it read aloud instantly.
+
+🌍 7 Languages Supported
+Japanese, English, Chinese, Korean, French, German, and Spanish.
+
+📄 PDF Viewer
+Open and browse PDF files directly in the app.
+
+📂 Text File Import
+Load .txt files and read them aloud with a single tap.
+
+🔗 Share from Any App
+Share text from your browser, notes, or any app — Voice Your Text reads it immediately.
+
+🎛 Speed & Pitch Control
+Adjust reading speed from 0.5x to 2.0x, and fine-tune the voice pitch.
+
+📋 History
+Your last 50 read texts are saved. Tap any entry to replay it.
+
+🏠 Home Screen Widget
+Launch the app instantly from your home screen.
+
+【Perfect for】
+· Listening to long articles while multitasking
+· Language learning and pronunciation practice
+· Resting your eyes while consuming content
+· Reviewing documents hands-free
+
+From the same team behind our popular iOS app.
