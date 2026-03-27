@@ -207,8 +207,8 @@ struct FeatureRow: View {
 
 // MARK: - 年額プランカード（おすすめ・メイン表示）
 struct AnnualPlanCard: View {
-    let monthlyPlan: (name: String, price: String)?
-    let annualPlan: (name: String, price: String)?
+    let monthlyPlan: (name: String, price: String, trialDays: Int?)?
+    let annualPlan: (name: String, price: String, trialDays: Int?)?
     let isLoading: Bool
     let isProcessing: Bool
     let onPurchase: () -> Void
@@ -218,14 +218,25 @@ struct AnnualPlanCard: View {
             // おすすめバッジ
             HStack {
                 Spacer()
-                Text("おすすめ・約38%お得")
-                    .font(.caption)
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 5)
-                    .background(AppTheme.badgeBackground)
-                    .clipShape(Capsule())
+                if let days = annualPlan?.trialDays {
+                    Text("\(days)日間無料・約38%お得")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 5)
+                        .background(AppTheme.badgeBackground)
+                        .clipShape(Capsule())
+                } else {
+                    Text("おすすめ・約38%お得")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 5)
+                        .background(AppTheme.badgeBackground)
+                        .clipShape(Capsule())
+                }
                 Spacer()
             }
             .padding(.bottom, 10)
@@ -266,7 +277,7 @@ struct AnnualPlanCard: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text("年額プランで購入する")
+                            Text(annualPlan?.trialDays != nil ? "7日間無料で試す" : "年額プランで購入する")
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -293,7 +304,7 @@ struct AnnualPlanCard: View {
 
 // MARK: - 月額プランカード（セカンダリ表示）
 struct MonthlyPlanCard: View {
-    let plan: (name: String, price: String)?
+    let plan: (name: String, price: String, trialDays: Int?)?
     let isLoading: Bool
     let isProcessing: Bool
     let onPurchase: () -> Void
@@ -320,6 +331,11 @@ struct MonthlyPlanCard: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
+                if let days = plan?.trialDays {
+                    Text("\(days)日間無料トライアル付き")
+                        .font(.caption)
+                        .foregroundColor(AppTheme.primary)
+                }
             }
 
             Button(action: onPurchase) {
@@ -329,7 +345,7 @@ struct MonthlyPlanCard: View {
                             .progressViewStyle(CircularProgressViewStyle(tint: .blue))
                             .frame(maxWidth: .infinity)
                     } else {
-                        Text("月額プランで購入する")
+                        Text(plan?.trialDays != nil ? "7日間無料で試す" : "月額プランで購入する")
                             .fontWeight(.medium)
                             .foregroundColor(AppTheme.secondaryForeground)
                             .frame(maxWidth: .infinity)
@@ -362,8 +378,8 @@ struct SubscriptionOptionCard: View {
 }
 
 class SubscriptionViewModel: ObservableObject {
-    @Published var monthlyPlan: (name: String, price: String)?
-    @Published var annualPlan: (name: String, price: String)?
+    @Published var monthlyPlan: (name: String, price: String, trialDays: Int?)?
+    @Published var annualPlan: (name: String, price: String, trialDays: Int?)?
     @Published var isProcessing: Bool = false
     @Dependency(\.analytics) private var analytics
 
@@ -377,9 +393,9 @@ class SubscriptionViewModel: ObservableObject {
         } catch {
             // フォールバック: 月額のみ取得
             do {
-                let monthlyPlan = try await PurchaseManager.shared.fetchProPlan()
+                let plan = try await PurchaseManager.shared.fetchProPlan()
                 await MainActor.run {
-                    self.monthlyPlan = monthlyPlan
+                    self.monthlyPlan = (name: plan.name, price: plan.price, trialDays: nil)
                 }
             } catch {
                 errorLog("Failed to fetch subscription plan: \(error)")

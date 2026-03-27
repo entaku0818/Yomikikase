@@ -39,6 +39,14 @@ Upload metadata and screenshots to App Store Connect only
 
 Upload metadata and screenshots to App Store Connect and submit for review
 
+### ios upload_screenshots_only
+
+```sh
+[bundle exec] fastlane ios upload_screenshots_only
+```
+
+Upload screenshots to App Store Connect only
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.

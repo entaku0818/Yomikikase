@@ -3,7 +3,7 @@ import RevenueCat
 import os.log
 protocol PurchaseManagerProtocol {
     func fetchProPlan() async throws -> (name: String, price: String)
-    func fetchAllPlans() async throws -> (monthly: (name: String, price: String)?, annual: (name: String, price: String)?)
+    func fetchAllPlans() async throws -> (monthly: (name: String, price: String, trialDays: Int?)?, annual: (name: String, price: String, trialDays: Int?)?)
     func purchasePro() async throws -> Bool
     func purchasePro(planType: PurchaseManager.PlanType) async throws -> Bool
     func restorePurchases() async throws -> Bool
@@ -66,7 +66,7 @@ class PurchaseManager: PurchaseManagerProtocol {
                 price: package.localizedPriceString)
     }
 
-    func fetchAllPlans() async throws -> (monthly: (name: String, price: String)?, annual: (name: String, price: String)?) {
+    func fetchAllPlans() async throws -> (monthly: (name: String, price: String, trialDays: Int?)?, annual: (name: String, price: String, trialDays: Int?)?) {
         os_log("=== Fetch All Plans Start ===", log: logger, type: .debug)
         let offerings = try await Purchases.shared.offerings()
 
@@ -78,13 +78,33 @@ class PurchaseManager: PurchaseManagerProtocol {
         let monthlyPackage = offering.availablePackages.first(where: { $0.identifier == Package.pro })
         let annualPackage = offering.availablePackages.first(where: { $0.identifier == Package.annual })
 
-        let monthly = monthlyPackage.map { (name: $0.storeProduct.localizedTitle, price: $0.localizedPriceString) }
-        let annual = annualPackage.map { (name: $0.storeProduct.localizedTitle, price: $0.localizedPriceString) }
+        let monthly = monthlyPackage.map {
+            (name: $0.storeProduct.localizedTitle,
+             price: $0.localizedPriceString,
+             trialDays: trialDays(from: $0))
+        }
+        let annual = annualPackage.map {
+            (name: $0.storeProduct.localizedTitle,
+             price: $0.localizedPriceString,
+             trialDays: trialDays(from: $0))
+        }
 
         os_log("Fetched plans - monthly: %{public}@, annual: %{public}@",
                log: logger, type: .debug,
                monthly?.price ?? "nil", annual?.price ?? "nil")
         return (monthly: monthly, annual: annual)
+    }
+
+    private func trialDays(from package: RevenueCat.Package) -> Int? {
+        guard let discount = package.storeProduct.introductoryDiscount,
+              discount.paymentMode == .freeTrial else { return nil }
+        let period = discount.subscriptionPeriod
+        switch period.unit {
+        case .day:   return period.value
+        case .week:  return period.value * 7
+        case .month: return period.value * 30
+        default:     return nil
+        }
     }
 
     func purchasePro() async throws -> Bool {
