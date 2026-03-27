@@ -16,4 +16,6 @@
     <string name="open_file">テキストファイルを開く</string>
     <string name="tts_error">TTSエンジンの初期化に失敗しました</string>
     <string name="delete">削除</string>
+    <string name="widget_description">Voice Your Text クイック起動</string>
+    <string name="widget_tap_to_open">タップして開く</string>
 </resources>

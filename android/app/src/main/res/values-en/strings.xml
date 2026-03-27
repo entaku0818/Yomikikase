@@ -16,4 +16,6 @@
     <string name="open_file">Open text file</string>
     <string name="tts_error">Failed to initialize TTS engine</string>
     <string name="delete">Delete</string>
+    <string name="widget_description">Voice Your Text Quick Launch</string>
+    <string name="widget_tap_to_open">Tap to open</string>
 </resources>
