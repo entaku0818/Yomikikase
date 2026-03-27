@@ -1,0 +1,69 @@
+default_platform(:android)
+
+platform :android do
+
+  desc "Build debug APK"
+  lane :build_debug do
+    gradle(
+      task: "assemble",
+      build_type: "Debug",
+      project_dir: "../"
+    )
+  end
+
+  desc "Build release AAB"
+  lane :build_release do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "../",
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_STORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEYSTORE_KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEYSTORE_KEY_PASSWORD"],
+      }
+    )
+  end
+
+  desc "Upload metadata only to Google Play (no binary)"
+  lane :upload_metadata_only do
+    supply(
+      track: "production",
+      skip_upload_apk: true,
+      skip_upload_aab: true,
+      skip_upload_screenshots: true,
+      skip_upload_images: true,
+      metadata_path: "./metadata/android"
+    )
+  end
+
+  desc "Upload to Google Play Internal Testing"
+  lane :upload_internal do
+    build_release
+    supply(
+      track: "internal",
+      aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
+      metadata_path: "./metadata/android"
+    )
+  end
+
+  desc "Promote Internal to Production"
+  lane :promote_to_production do
+    supply(
+      track: "internal",
+      track_promote_to: "production",
+      skip_upload_apk: true,
+      skip_upload_aab: true
+    )
+  end
+
+  desc "Run unit tests"
+  lane :test do
+    gradle(
+      task: "test",
+      project_dir: "../"
+    )
+  end
+
+end
