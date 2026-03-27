@@ -34,6 +34,7 @@ fun SettingsScreen(
     modifier: Modifier = Modifier
 ) {
     val speechRate by viewModel.speechRate.collectAsState()
+    val pitch by viewModel.pitch.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
 
     Scaffold(
@@ -131,6 +132,42 @@ fun SettingsScreen(
                             Text("遅い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("標準 1.0", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             Text("速い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        }
+                    }
+
+                    HorizontalDivider()
+
+                    // Pitch
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "声の高さ",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "x${"%.1f".format(pitch)}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        Slider(
+                            value = pitch,
+                            onValueChange = { viewModel.setPitch(it) },
+                            valueRange = 0.5f..2.0f,
+                            steps = 5,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text("低い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("標準 1.0", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text("高い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }

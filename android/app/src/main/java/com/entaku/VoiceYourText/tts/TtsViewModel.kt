@@ -39,6 +39,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     private val _speechRate = MutableStateFlow(1.0f)
     val speechRate: StateFlow<Float> = _speechRate.asStateFlow()
 
+    private val _pitch = MutableStateFlow(1.0f)
+    val pitch: StateFlow<Float> = _pitch.asStateFlow()
+
     private val _selectedLanguage = MutableStateFlow(SpeechLanguage.JAPANESE)
     val selectedLanguage: StateFlow<SpeechLanguage> = _selectedLanguage.asStateFlow()
 
@@ -100,6 +103,11 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     fun setSpeechRate(rate: Float) {
         _speechRate.value = rate
         tts?.setSpeechRate(rate)
+    }
+
+    fun setPitch(pitch: Float) {
+        _pitch.value = pitch
+        tts?.setPitch(pitch)
     }
 
     fun setLanguage(language: SpeechLanguage) {
