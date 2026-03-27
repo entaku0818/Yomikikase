@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -19,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.entaku.VoiceYourText.pdf.PdfViewerScreen
 import com.entaku.VoiceYourText.settings.SettingsScreen
 import com.entaku.VoiceYourText.tts.HistoryScreen
 import com.entaku.VoiceYourText.tts.SpeechScreen
@@ -49,6 +51,12 @@ fun MainApp(initialSharedText: String? = null) {
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { selectedTab = 2 },
+                    icon = { Icon(Icons.Default.PictureAsPdf, contentDescription = "PDF") },
+                    label = { Text("PDF") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { selectedTab = 3 },
                     icon = { Icon(Icons.Default.Settings, contentDescription = "設定") },
                     label = { Text("設定") }
                 )
@@ -70,7 +78,11 @@ fun MainApp(initialSharedText: String? = null) {
                 },
                 modifier = Modifier.padding(innerPadding)
             )
-            2 -> SettingsScreen(
+            2 -> PdfViewerScreen(
+                ttsViewModel = ttsViewModel,
+                modifier = Modifier.padding(innerPadding)
+            )
+            3 -> SettingsScreen(
                 viewModel = ttsViewModel,
                 modifier = Modifier.padding(innerPadding)
             )
