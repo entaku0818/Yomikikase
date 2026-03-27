@@ -80,6 +80,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         if (_state.value != TtsState.ERROR) return
         tts?.shutdown()
         tts = null
+        _state.value = TtsState.IDLE
         _isInitialized.value = false
         initTts()
     }
