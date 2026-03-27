@@ -16,14 +16,18 @@ data class PdfPage(
 
 object PdfRenderer {
 
+    /** Max pages to render at once to avoid OOM on large PDFs */
+    private const val MAX_PAGES = 50
+
     /**
-     * Renders all pages of a PDF as bitmaps.
+     * Renders PDF pages as bitmaps (up to MAX_PAGES).
      * Uses Android's built-in PdfRenderer (API 21+, no external libs).
+     * Uses RGB_565 (half the memory of ARGB_8888) since PDF pages are opaque.
      */
     suspend fun renderPages(
         context: Context,
         uri: Uri,
-        widthPx: Int = 1080
+        widthPx: Int = 900
     ): Result<List<PdfPage>> = withContext(Dispatchers.IO) {
         runCatching {
             val pfd: ParcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
@@ -32,11 +36,12 @@ object PdfRenderer {
             pfd.use { descriptor ->
                 val renderer = android.graphics.pdf.PdfRenderer(descriptor)
                 renderer.use { pdf ->
-                    (0 until pdf.pageCount).map { index ->
+                    val pageCount = minOf(pdf.pageCount, MAX_PAGES)
+                    (0 until pageCount).map { index ->
                         pdf.openPage(index).use { page ->
                             val height = (widthPx.toFloat() / page.width * page.height).toInt()
-                            val bitmap = Bitmap.createBitmap(widthPx, height, Bitmap.Config.ARGB_8888)
-                            // Fill with white background
+                            // RGB_565 uses ~50% less memory than ARGB_8888 for opaque content
+                            val bitmap = Bitmap.createBitmap(widthPx, height, Bitmap.Config.RGB_565)
                             Canvas(bitmap).drawColor(android.graphics.Color.WHITE)
                             page.render(bitmap, null, null, android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                             PdfPage(index, bitmap)

@@ -141,7 +141,7 @@ fun PdfViewerScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${s.pages.size}ページ",
+                            text = if (s.pages.size >= 50) "${s.pages.size}ページ（最大50ページ）" else "${s.pages.size}ページ",
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
