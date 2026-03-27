@@ -222,15 +222,29 @@ fun SpeechScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Status indicator
+            // Status indicator with retry
             if (ttsState == TtsState.ERROR) {
-                Text(
-                    text = "TTSエンジンの初期化に失敗しました",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
-                )
+                ) {
+                    Text(
+                        text = "TTSエンジンの初期化に失敗しました",
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center
+                    )
+                    Button(
+                        onClick = { viewModel.retryInit() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        )
+                    ) {
+                        Text("再試行")
+                    }
+                }
             }
 
             // Play/Stop button

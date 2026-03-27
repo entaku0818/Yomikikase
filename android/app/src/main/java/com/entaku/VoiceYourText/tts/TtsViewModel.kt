@@ -75,6 +75,15 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         registerStopReceiver()
     }
 
+    /** Retry TTS initialization after ERROR state */
+    fun retryInit() {
+        if (_state.value != TtsState.ERROR) return
+        tts?.shutdown()
+        tts = null
+        _isInitialized.value = false
+        initTts()
+    }
+
     private fun registerStopReceiver() {
         val filter = IntentFilter("com.entaku.VoiceYourText.TTS_STOP")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
