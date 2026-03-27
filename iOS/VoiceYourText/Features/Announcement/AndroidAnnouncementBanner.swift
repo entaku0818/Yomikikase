@@ -8,8 +8,9 @@ struct AndroidAnnouncementBanner: View {
     var body: some View {
         if !isDismissed {
             HStack(spacing: 12) {
-                Image(systemName: "android")
-                    .font(.system(size: 24))
+                // "android" SF Symbol は存在しないため play.rectangle.fill (Google Play風) を使用
+                Image(systemName: "play.rectangle.fill")
+                    .font(.system(size: 20))
                     .foregroundColor(.white)
                     .frame(width: 40, height: 40)
                     .background(Color.green.opacity(0.8))
@@ -58,5 +59,5 @@ struct AndroidAnnouncementBanner: View {
         AndroidAnnouncementBanner()
         Spacer()
     }
-    .background(Color(UIColor.systemGroupedBackground))
+    .background(Color(.systemGroupedBackground))
 }

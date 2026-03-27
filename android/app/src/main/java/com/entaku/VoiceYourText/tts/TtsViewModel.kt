@@ -1,7 +1,11 @@
 package com.entaku.VoiceYourText.tts
 
 import android.app.Application
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.core.content.ContextCompat
@@ -56,9 +60,28 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     private var tts: TextToSpeech? = null
     private val historyStore = HistoryStore(application)
 
+    /** BroadcastReceiver: receives TTS_STOP from TtsNotificationService stop button */
+    private val stopReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            if (intent?.action == "com.entaku.VoiceYourText.TTS_STOP") {
+                stop()
+            }
+        }
+    }
+
     init {
         _history.value = historyStore.getAll()
         initTts()
+        registerStopReceiver()
+    }
+
+    private fun registerStopReceiver() {
+        val filter = IntentFilter("com.entaku.VoiceYourText.TTS_STOP")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getApplication<Application>().registerReceiver(stopReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
+        } else {
+            getApplication<Application>().registerReceiver(stopReceiver, filter)
+        }
     }
 
     private fun initTts() {
@@ -151,6 +174,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
+        runCatching { getApplication<Application>().unregisterReceiver(stopReceiver) }
         tts?.stop()
         tts?.shutdown()
         tts = null
