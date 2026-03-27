@@ -14,16 +14,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import com.entaku.VoiceYourText.file.FilePickerButton
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -63,7 +61,7 @@ fun SpeechScreen(
 
     val context = LocalContext.current
     var inputText by remember { mutableStateOf("") }
-    var languageDropdownExpanded by remember { mutableStateOf(false) }
+    var showLanguageSheet by remember { mutableStateOf(false) }
 
     // Apply text from history selection
     LaunchedEffect(initialText) {
@@ -118,54 +116,48 @@ fun SpeechScreen(
                 }
             )
 
-            // Language selector
+            // Language selector (BottomSheet)
             Card(
+                onClick = { showLanguageSheet = true },
                 shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceVariant
                 )
             ) {
-                Column(
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "言語",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    ExposedDropdownMenuBox(
-                        expanded = languageDropdownExpanded,
-                        onExpandedChange = { languageDropdownExpanded = it }
-                    ) {
-                        OutlinedTextField(
-                            value = selectedLanguage.displayName,
-                            onValueChange = {},
-                            readOnly = true,
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = languageDropdownExpanded) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .menuAnchor(),
-                            shape = RoundedCornerShape(8.dp)
+                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            text = "言語",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
-                        ExposedDropdownMenu(
-                            expanded = languageDropdownExpanded,
-                            onDismissRequest = { languageDropdownExpanded = false }
-                        ) {
-                            SpeechLanguage.ALL.forEach { language ->
-                                DropdownMenuItem(
-                                    text = { Text(language.displayName) },
-                                    onClick = {
-                                        viewModel.setLanguage(language)
-                                        languageDropdownExpanded = false
-                                    }
-                                )
-                            }
-                        }
+                        Text(
+                            text = selectedLanguage.displayName,
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
+                        )
                     }
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
                 }
+            }
+
+            if (showLanguageSheet) {
+                LanguageBottomSheet(
+                    selectedLanguage = selectedLanguage,
+                    onLanguageSelected = { viewModel.setLanguage(it) },
+                    onDismiss = { showLanguageSheet = false }
+                )
             }
 
             // Speed control
