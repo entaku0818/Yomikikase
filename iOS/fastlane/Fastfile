@@ -80,17 +80,19 @@ platform :ios do
   # メタデータとスクリーンショットのアップロード、審査提出
   desc "Upload metadata and screenshots to App Store Connect and submit for review"
   lane :upload_metadata do
-    # Xcodeプロジェクトからバージョン番号を取得
+    # Xcodeプロジェクトからバージョン番号・ビルド番号を取得
     version_number = get_version_number(
       xcodeproj: "VoiceYourText.xcodeproj",
       target: "VoiceYourText"
     )
-    
-    # バージョン番号が取得できなかった場合はエラー
+    build_number = get_build_number(
+      xcodeproj: "VoiceYourText.xcodeproj"
+    )
+
     UI.user_error!("バージョン番号をXcodeプロジェクトから取得できませんでした。") unless version_number && !version_number.empty?
-    
-    UI.success("Xcodeプロジェクトからバージョン番号を取得しました: #{version_number}")
-    
+
+    UI.success("Xcodeプロジェクトからバージョン番号を取得しました: #{version_number} (#{build_number})")
+
     deliver(
       skip_binary_upload: true,      # バイナリは既にアップロード済み
       skip_app_version_update: false, # アプリバージョンの更新をスキップしない
@@ -109,7 +111,7 @@ platform :ios do
         export_compliance_uses_encryption: false,  # 暗号化なし
         export_compliance_platform: "ios"  # プラットフォームはiOS
       },
-      build_number: "9"  # ビルド番号を明示指定
+      build_number: build_number
     )
   end
   # スクリーンショットのみアップロード
