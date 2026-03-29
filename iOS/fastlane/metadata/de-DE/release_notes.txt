@@ -1,1 +1,3 @@
-
+- Android-Version jetzt auf Google Play verfügbar!
+- Android-Ankündigungsbanner auf dem Startbildschirm hinzugefügt
+- Stabilitätsverbesserungen

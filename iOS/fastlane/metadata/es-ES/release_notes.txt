@@ -1,1 +1,3 @@
-
+- ¡La versión de Android ya está disponible en Google Play!
+- Se añadió banner de anuncio de Android en la pantalla de inicio
+- Mejoras de estabilidad
