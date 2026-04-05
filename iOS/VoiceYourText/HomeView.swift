@@ -391,7 +391,7 @@ struct HomeView: View {
     private func createButtonContent(
         icon: String,
         iconColor: Color,
-        title: String,
+        title: LocalizedStringKey,
         isEnabled: Bool
     ) -> some View {
         VStack(spacing: 12) {
@@ -420,7 +420,7 @@ struct HomeView: View {
     private func createButtonCard(
         icon: String,
         iconColor: Color,
-        title: String,
+        title: LocalizedStringKey,
         isEnabled: Bool,
         action: @escaping () -> Void
     ) -> some View {

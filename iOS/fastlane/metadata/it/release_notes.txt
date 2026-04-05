@@ -1,4 +1,4 @@
-- Nuovo piano annuale disponibile (risparmia il 38% rispetto al mensile)
-- Corretto un arresto anomalo durante la riproduzione text-to-speech
-- Corretta la riproduzione audio dopo la scansione di documenti
+- Miglioramento significativo delle traduzioni dell'interfaccia in inglese e spagnolo
+- Le etichette dei pulsanti nella schermata Home ora vengono visualizzate correttamente in ogni lingua
+- Le etichette di velocità e tono nelle Impostazioni ora mostrano le traduzioni corrette
 - Miglioramenti alla stabilità

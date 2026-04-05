@@ -1,3 +1,4 @@
-- ¡La versión de Android ya está disponible en Google Play!
-- Se añadió banner de anuncio de Android en la pantalla de inicio
+- Mejoras significativas en las traducciones de la interfaz en inglés y español
+- Las etiquetas de los botones de la pantalla de inicio ahora se muestran correctamente en cada idioma
+- Las etiquetas de velocidad y tono en Ajustes ahora muestran las traducciones correctas
 - Mejoras de estabilidad

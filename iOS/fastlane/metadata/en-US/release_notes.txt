@@ -1,3 +1,4 @@
-- Android version now available on Google Play!
-- Added Android launch announcement banner on home screen
+- Significantly improved English and Spanish UI translations
+- Home screen button labels now display correctly in each language
+- Speed and pitch labels in Settings now show proper translations
 - Stability improvements

@@ -1,3 +1,4 @@
-- Android-Version jetzt auf Google Play verfügbar!
-- Android-Ankündigungsbanner auf dem Startbildschirm hinzugefügt
+- Erhebliche Verbesserung der englischen und spanischen UI-Übersetzungen
+- Schaltflächenbeschriftungen auf dem Startbildschirm werden jetzt korrekt in jeder Sprache angezeigt
+- Geschwindigkeits- und Tonhöhenbezeichnungen in den Einstellungen werden jetzt korrekt übersetzt
 - Stabilitätsverbesserungen

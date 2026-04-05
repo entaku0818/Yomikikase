@@ -1,4 +1,4 @@
-- Yıllık abonelik planı tanıtıldı (aylığa göre ~%38 tasarruf)
-- Metin okuma sırasında oluşan çökme sorunu giderildi
-- Belge taramasından sonra ses oynatma hatası düzeltildi
+- İngilizce ve İspanyolca arayüz çevirileri önemli ölçüde iyileştirildi
+- Ana ekran düğme etiketleri artık her dilde doğru görüntüleniyor
+- Ayarlar'daki hız ve perde etiketleri artık doğru çevirileri gösteriyor
 - Kararlılık iyileştirmeleri

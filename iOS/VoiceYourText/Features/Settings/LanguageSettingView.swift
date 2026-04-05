@@ -231,14 +231,14 @@ struct LanguageSettingView: View {
 
 private func speedLabel(_ rate: Float) -> String {
     if abs(rate - 1.0) < 0.05 {
-        return "x1.0（標準）"
+        return String(localized: "x1.0（標準）")
     }
     return String(format: "x%.1f", rate)
 }
 
 private func pitchLabel(_ pitch: Float) -> String {
     if abs(pitch - 1.0) < 0.05 {
-        return "x1.0（標準）"
+        return String(localized: "x1.0（標準）")
     }
     return String(format: "x%.1f", pitch)
 }
