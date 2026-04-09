@@ -77,37 +77,64 @@ struct Speeches: Reducer {
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
 
-              let installDate = UserDefaultsManager.shared.installDate
-              let reviewCount = UserDefaultsManager.shared.reviewRequestCount
+                let installDate = UserDefaultsManager.shared.installDate
+                let reviewCount = UserDefaultsManager.shared.reviewRequestCount
 
-              // 初回起動時
-              if let installDate = installDate {
-                  let currentDate = Date()
-                  if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
-                      if interval >= 2 && reviewCount == 0 {
+                // 初回起動時
+                if let installDate = installDate {
+                    let currentDate = Date()
+                    if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
+                        if interval >= 2 && reviewCount == 0 {
                             analytics.logEvent("review_request_shown", ["trigger": "install_2days"])
                             state.alert = AlertState {
-                                TextState("このアプリについて")
+                                TextState("review.title")
                             } actions: {
                                 ButtonState(action: .send(.onGoodReview)) {
-                                    TextState("はい")
+                                    TextState("review.button.yes")
                                 }
                                 ButtonState(action: .send(.onBadReview)) {
-                                    TextState("いいえ、フィードバックを送信")
+                                    TextState("review.button.no")
                                 }
                             } message: {
-                                TextState(
-                                    "Voice Narratorに満足していますか？"
-                                )
+                                TextState("review.message.reinstall")
                             }
-                          UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
-                      }
-                  }
-              } else {
-                  UserDefaultsManager.shared.installDate = Date()
-              }
+                            UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
+                            UserDefaultsManager.shared.lastReviewRequestDate = Date()
+                        }
+                    }
+                } else {
+                    UserDefaultsManager.shared.installDate = Date()
+                }
 
-              return .none
+                // 再表示ロジック: 過去に表示済み・テキスト未入力・1回以上読み上げ・「はい」未押下・3日以上経過
+                let completedCountForReappear = UserDefaultsManager.shared.speechCompletedCount
+                let reviewCountForReappear = UserDefaultsManager.shared.reviewRequestCount
+                let hasAnswered = UserDefaultsManager.shared.hasAnsweredReviewPositively
+                if !hasAnswered &&
+                   reviewCountForReappear >= 1 &&
+                   state.currentText.isEmpty &&
+                   completedCountForReappear >= 1,
+                   let lastDate = UserDefaultsManager.shared.lastReviewRequestDate,
+                   let daysSince = Calendar.current.dateComponents([.day], from: lastDate, to: Date()).day,
+                   daysSince >= 3 {
+                    analytics.logEvent("review_request_shown", ["trigger": "reappear"])
+                    state.alert = AlertState {
+                        TextState("review.title")
+                    } actions: {
+                        ButtonState(action: .send(.onGoodReview)) {
+                            TextState("review.button.yes")
+                        }
+                        ButtonState(action: .send(.onBadReview)) {
+                            TextState("review.button.no")
+                        }
+                    } message: {
+                        TextState("review.message.reinstall")
+                    }
+                    UserDefaultsManager.shared.reviewRequestCount = reviewCountForReappear + 1
+                    UserDefaultsManager.shared.lastReviewRequestDate = Date()
+                }
+
+                return .none
 
             case .onTap:
                 return .none
@@ -125,10 +152,10 @@ struct Speeches: Reducer {
                     }
                     return .none
             case .alert(.presented(.onGoodReview)):
-
+                    UserDefaultsManager.shared.hasAnsweredReviewPositively = true
                     state.alert = AlertState(
-                      title: TextState("Voice Narratorについて"),
-                      message: TextState("ご利用ありがとうございます！次の画面でアプリの評価をお願いします。"),
+                      title: TextState("review.thanks.title"),
+                      message: TextState("review.thanks.message"),
                       dismissButton: .default(TextState("OK"),
                                                                action: .send(.onAddReview))
                     )
@@ -162,20 +189,23 @@ struct Speeches: Reducer {
                 let completedCount = UserDefaultsManager.shared.speechCompletedCount + 1
                 UserDefaultsManager.shared.speechCompletedCount = completedCount
                 analytics.logEvent("speech_completed", ["count": completedCount])
-                if completedCount % 5 == 0 {
-                    analytics.logEvent("review_request_shown", ["trigger": "speech_completed", "count": completedCount])
+                let reviewCountForSpeech = UserDefaultsManager.shared.reviewRequestCount
+                if reviewCountForSpeech == 0 && completedCount == 1 {
+                    analytics.logEvent("review_request_shown", ["trigger": "speech_completed_first"])
                     state.alert = AlertState {
-                        TextState("このアプリについて")
+                        TextState("review.title")
                     } actions: {
                         ButtonState(action: .send(.onGoodReview)) {
-                            TextState("はい")
+                            TextState("review.button.yes")
                         }
                         ButtonState(action: .send(.onBadReview)) {
-                            TextState("いいえ、フィードバックを送信")
+                            TextState("review.button.no")
                         }
                     } message: {
-                        TextState("Voice Narratorに満足していますか？")
+                        TextState("review.message.first")
                     }
+                    UserDefaultsManager.shared.reviewRequestCount = reviewCountForSpeech + 1
+                    UserDefaultsManager.shared.lastReviewRequestDate = Date()
                 }
                 return .none
 

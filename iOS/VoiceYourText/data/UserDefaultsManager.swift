@@ -138,6 +138,18 @@ class UserDefaultsManager {
         premiumPurchaseDate = nil
     }
 
+    // レビューダイアログ最終表示日
+    var lastReviewRequestDate: Date? {
+        get { defaults.object(forKey: "LastReviewRequestDate") as? Date }
+        set { defaults.set(newValue, forKey: "LastReviewRequestDate") }
+    }
+
+    // 「はい」ボタン押下済みフラグ
+    var hasAnsweredReviewPositively: Bool {
+        get { defaults.bool(forKey: "HasAnsweredReviewPositively") }
+        set { defaults.set(newValue, forKey: "HasAnsweredReviewPositively") }
+    }
+
     // 処理中のTTSジョブ管理（fileId.uuidString → jobId）
     var pendingJobs: [String: String] {
         get { defaults.dictionary(forKey: "PendingTTSJobs") as? [String: String] ?? [:] }
