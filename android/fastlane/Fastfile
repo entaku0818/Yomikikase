@@ -7,7 +7,7 @@ platform :android do
     gradle(
       task: "assemble",
       build_type: "Debug",
-      project_dir: "../"
+      project_dir: "./"
     )
   end
 
@@ -16,7 +16,7 @@ platform :android do
     gradle(
       task: "bundle",
       build_type: "Release",
-      project_dir: "../",
+      project_dir: "./",
       properties: {
         "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
         "android.injected.signing.store.password" => ENV["KEYSTORE_STORE_PASSWORD"],
@@ -34,7 +34,7 @@ platform :android do
       skip_upload_aab: true,
       skip_upload_screenshots: true,
       skip_upload_images: true,
-      metadata_path: "./metadata/android"
+      metadata_path: "./fastlane/metadata/android"
     )
   end
 
@@ -44,7 +44,9 @@ platform :android do
     supply(
       track: "internal",
       aab: lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH],
-      metadata_path: "./metadata/android"
+      skip_upload_apk: true,
+      release_status: "draft",
+      metadata_path: "./fastlane/metadata/android"
     )
   end
 
@@ -62,7 +64,7 @@ platform :android do
   lane :test do
     gradle(
       task: "test",
-      project_dir: "../"
+      project_dir: "./"
     )
   end
 
