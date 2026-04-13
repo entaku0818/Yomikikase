@@ -1,4 +1,4 @@
-- Significantly improved English and Spanish UI translations
-- Home screen button labels now display correctly in each language
-- Speed and pitch labels in Settings now show proper translations
+- Read files directly from Google Drive
+- EPUB (ebook) support added
+- Read web pages via URL link
 - Stability improvements

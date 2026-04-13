@@ -64,11 +64,12 @@ platform :ios do
     
     deliver(
       skip_binary_upload: true,      # バイナリのアップロードをスキップ
-      skip_app_version_update: false, # アプリバージョンの更新をスキップしない
+      skip_app_version_update: true,  # バージョン番号の更新をスキップ（既存バージョンへのメタデータ更新のみ）
       app_version: version_number,    # アプリのバージョン番号を指定
       skip_metadata: false,          # メタデータの更新をスキップしない
       skip_screenshots: true,        # スクリーンショットのアップロードをスキップ
       force: true,                   # 確認なしで強制的に実行
+
       overwrite_screenshots: false,  # スクリーンショットの上書きを無効
       ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
       submit_for_review: false,      # 審査提出をスキップ

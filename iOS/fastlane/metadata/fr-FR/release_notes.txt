@@ -1,4 +1,4 @@
-- Amélioration significative des traductions de l'interface en anglais et en espagnol
-- Les libellés des boutons de l'écran d'accueil s'affichent désormais correctement dans chaque langue
-- Les libellés de vitesse et de hauteur dans Paramètres affichent maintenant les traductions correctes
+- Lisez des fichiers directement depuis Google Drive
+- Prise en charge EPUB (livres numériques) ajoutée
+- Lisez des pages web via un lien URL
 - Améliorations de stabilité

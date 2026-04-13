@@ -1,4 +1,4 @@
-- Erhebliche Verbesserung der englischen und spanischen UI-Übersetzungen
-- Schaltflächenbeschriftungen auf dem Startbildschirm werden jetzt korrekt in jeder Sprache angezeigt
-- Geschwindigkeits- und Tonhöhenbezeichnungen in den Einstellungen werden jetzt korrekt übersetzt
+- Dateien direkt aus Google Drive vorlesen
+- EPUB-Unterstützung (E-Books) hinzugefügt
+- Webseiten über URL-Link vorlesen
 - Stabilitätsverbesserungen

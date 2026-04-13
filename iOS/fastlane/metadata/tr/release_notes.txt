@@ -1,4 +1,4 @@
-- İngilizce ve İspanyolca arayüz çevirileri önemli ölçüde iyileştirildi
-- Ana ekran düğme etiketleri artık her dilde doğru görüntüleniyor
-- Ayarlar'daki hız ve perde etiketleri artık doğru çevirileri gösteriyor
+- Google Drive'dan doğrudan dosya okuyun
+- EPUB (e-kitap) desteği eklendi
+- URL bağlantısıyla web sayfalarını okuyun
 - Kararlılık iyileştirmeleri

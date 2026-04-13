@@ -1,4 +1,4 @@
-- Cải thiện đáng kể bản dịch giao diện tiếng Anh và tiếng Tây Ban Nha
-- Nhãn nút trên màn hình chính hiện hiển thị đúng trong từng ngôn ngữ
-- Nhãn tốc độ và cao độ trong Cài đặt hiện hiển thị bản dịch chính xác
+- Đọc file trực tiếp từ Google Drive
+- Hỗ trợ EPUB (sách điện tử)
+- Đọc trang web qua liên kết URL
 - Cải thiện độ ổn định

@@ -1,4 +1,4 @@
-- Miglioramento significativo delle traduzioni dell'interfaccia in inglese e spagnolo
-- Le etichette dei pulsanti nella schermata Home ora vengono visualizzate correttamente in ogni lingua
-- Le etichette di velocità e tono nelle Impostazioni ora mostrano le traduzioni corrette
+- Leggi file direttamente da Google Drive
+- Supporto EPUB (ebook) aggiunto
+- Leggi pagine web tramite link URL
 - Miglioramenti alla stabilità
