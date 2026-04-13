@@ -1,0 +1,30 @@
+Voice Your Text est une application TTS qui lit à voix haute n'importe quel texte, PDF ou fichier. Idéale pour le multitâche — écoutez en mains libres pendant vos trajets, votre sport ou vos tâches ménagères.
+
+【Fonctionnalités principales】
+
+🎧 Lecture en arrière-plan
+La lecture continue même lorsque vous fermez l'écran. Contrôlez depuis le panneau de notifications.
+
+📖 Texte en parole
+Saisissez ou collez n'importe quel texte et écoutez-le instantanément.
+
+📄 Lecteur PDF
+Ouvrez des fichiers PDF directement et écoutez-les.
+
+📂 Import de fichiers texte
+Chargez des fichiers .txt et lisez-les en un seul appui.
+
+🔗 Partage depuis n'importe quelle app
+Partagez du texte depuis votre navigateur ou vos notes — Voice Your Text le lit immédiatement.
+
+🌍 7 langues
+Japonais, anglais, chinois, coréen, français, allemand et espagnol.
+
+🎛 Contrôle de la vitesse et du ton
+Ajustez la vitesse de 0,5x à 2,0x et la hauteur de la voix.
+
+📋 Historique
+Vos 50 derniers textes lus sont sauvegardés pour les réécouter.
+
+🏠 Widget écran d'accueil
+Lancez l'app instantanément depuis votre écran d'accueil.

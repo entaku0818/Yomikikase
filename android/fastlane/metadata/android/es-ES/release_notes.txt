@@ -1,0 +1,3 @@
+· Reproducción en segundo plano — controla la lectura desde el panel de notificaciones
+· La reproducción continúa aunque cierres la pantalla
+· Mejoras de estabilidad

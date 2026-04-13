@@ -1,9 +1,3 @@
-🎉 Initial Android Release
-
-· Text-to-speech in 7 languages
-· PDF viewer
-· Speed and pitch control
-· Reading history (up to 50 items)
-· Text file import
-· Share text from any app
-· Home screen widget
+· Background playback support — control reading from the notification panel
+· Playback continues even when the screen is off or you switch apps
+· Stability improvements

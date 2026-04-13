@@ -1,0 +1,3 @@
+· Lecture en arrière-plan — contrôlez depuis le panneau de notifications
+· La lecture continue même écran éteint
+· Améliorations de stabilité
