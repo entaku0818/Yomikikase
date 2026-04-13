@@ -84,7 +84,6 @@ struct MockScreenWithTopTab<Content: View>: View {
                 Spacer()
             }
             .padding()
-            .padding(.top, 44)
             .background(Color(.systemBackground))
 
             content
@@ -139,6 +138,15 @@ struct GridItemView: View {
 
 // MARK: - ハイライト読み上げ画面コンテンツ（実際のSpeechViewに近いモック）
 struct HighlightReadingContent: View {
+    var highlightedText: AttributedString {
+        var text = AttributedString("国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。")
+        if let range = text.range(of: "トンネル") {
+            text[range].backgroundColor = .orange
+            text[range].foregroundColor = .white
+        }
+        return text
+    }
+
     let speeches = [
         "国境の長いトンネルを抜けると雪国であった。",
         "吾輩は猫である。名前はまだない。",
@@ -155,7 +163,6 @@ struct HighlightReadingContent: View {
                 Spacer()
             }
             .padding()
-            .padding(.top, 44)
             .background(Color(.systemBackground))
 
             VStack(spacing: 0) {
@@ -163,38 +170,15 @@ struct HighlightReadingContent: View {
                 ZStack(alignment: .topLeading) {
                     RoundedRectangle(cornerRadius: 10)
                         .stroke(Color.gray, lineWidth: 1)
-                    HStack(spacing: 0) {
-                        Text("国境の長い")
-                            .font(.system(size: 16))
-                        Text("トンネル")
-                            .font(.system(size: 16))
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 2)
-                            .background(Color.orange)
-                        Text("を抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。")
-                            .font(.system(size: 16))
-                    }
-                    .padding(8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    Text(highlightedText)
+                        .font(.system(size: 16))
+                        .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(height: 100)
                 .padding()
 
-                // スピーチリスト
-                List {
-                    ForEach(speeches, id: \.self) { speech in
-                        HStack {
-                            Image(systemName: "waveform")
-                                .foregroundColor(.blue)
-                                .frame(width: 32)
-                            Text(speech)
-                                .font(.subheadline)
-                                .lineLimit(2)
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-                .listStyle(.plain)
+                Spacer()
 
                 // プレイヤーコントロール
                 VStack(spacing: 8) {
@@ -659,5 +643,377 @@ struct UserDictionaryContent: View {
     MockScreenWithTopTab(title: "マイファイル") {
         MyFilesContent()
     }
+}
+
+// MARK: - Phone Mockup Frame
+
+struct PhoneMockupView<Content: View>: View {
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        GeometryReader { geo in
+            let w = geo.size.width
+            let h = geo.size.height
+            let outerCR = w * 0.125
+            let bezel: CGFloat = 8
+            let innerCR = outerCR - bezel
+            let diWidth = w * 0.30
+            let diHeight: CGFloat = max(h * 0.022, 16)
+            let diTopPad: CGFloat = max(h * 0.012, 8)
+            let topReserved = bezel + diTopPad + diHeight + 2
+
+            ZStack(alignment: .top) {
+                // Phone body
+                RoundedRectangle(cornerRadius: outerCR)
+                    .fill(Color.black)
+
+                // Screen area background
+                RoundedRectangle(cornerRadius: innerCR)
+                    .fill(Color(.systemBackground))
+                    .padding(bezel)
+
+                // Content pushed below Dynamic Island
+                VStack(spacing: 0) {
+                    Color.clear.frame(height: topReserved)
+                    content()
+                }
+                .clipShape(RoundedRectangle(cornerRadius: innerCR))
+                .padding(bezel)
+
+                // Dynamic Island
+                Capsule()
+                    .fill(Color.black)
+                    .frame(width: diWidth, height: diHeight)
+                    .padding(.top, diTopPad + bezel)
+            }
+            .frame(width: w, height: h)
+        }
+    }
+}
+
+// MARK: - App Store Screenshot with Phone Frame
+
+struct AppStoreScreenshotWithFrame<Content: View>: View {
+    let caption: String
+    @ViewBuilder let content: () -> Content
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Text(caption)
+                .font(.system(size: 44, weight: .bold, design: .default))
+                .multilineTextAlignment(.center)
+                .foregroundColor(.black)
+                .lineSpacing(4)
+                .padding(.horizontal, 36)
+                .padding(.top, 36)
+                .padding(.bottom, 20)
+                .frame(maxWidth: .infinity)
+
+            Spacer(minLength: 0)
+
+            PhoneMockupView {
+                content()
+            }
+            .aspectRatio(9.0 / 19.5, contentMode: .fit)
+            .padding(.horizontal, 28)
+
+            Spacer(minLength: 24)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
+    }
+}
+
+// MARK: - Framed App Store Previews (caption + phone frame, ready for fastlane)
+// iPhone 6.7" frame: 430 × 932 pt
+
+// ── JA ──
+#Preview("📱 JA 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "読む手間を、\n声に任せよう") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "ja"))
+}
+
+#Preview("📱 JA 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF・Web・\n電子書籍に対応") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "ja"))
+}
+
+#Preview("📱 JA 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "リアルタイム\nハイライトで聴きやすい") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "ja"))
+}
+
+#Preview("📱 JA 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "保存して、\nいつでも続きから") {
+        MockScreenWithTopTab(title: "マイファイル") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "ja"))
+}
+
+// ── EN ──
+#Preview("📱 EN 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Let Your Voice\nDo the Reading") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "en"))
+}
+
+#Preview("📱 EN 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, Web &\neBooks Supported") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "en"))
+}
+
+#Preview("📱 EN 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Follow Along\nwith Highlights") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "en"))
+}
+
+#Preview("📱 EN 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Save &\nContinue Anytime") {
+        MockScreenWithTopTab(title: "My Files") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "en"))
+}
+
+// ── DE ──
+#Preview("📱 DE 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Lesen leicht\ngemacht") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "de"))
+}
+
+#Preview("📱 DE 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, Web und\neBooks unterstützt") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "de"))
+}
+
+#Preview("📱 DE 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Echtzeit-\nHervorhebung") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "de"))
+}
+
+#Preview("📱 DE 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Speichern &\nJederzeit weiterlesen") {
+        MockScreenWithTopTab(title: "Meine Dateien") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "de"))
+}
+
+// ── ES ──
+#Preview("📱 ES 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Deja que la voz\nlea por ti") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "es"))
+}
+
+#Preview("📱 ES 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, web\ny eBooks") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "es"))
+}
+
+#Preview("📱 ES 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Subrayado\nen tiempo real") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "es"))
+}
+
+#Preview("📱 ES 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Guarda y\ncontinúa siempre") {
+        MockScreenWithTopTab(title: "Mis archivos") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "es"))
+}
+
+// ── FR ──
+#Preview("📱 FR 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Laissez la voix\nfaire la lecture") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "fr"))
+}
+
+#Preview("📱 FR 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, Web et\ne-books pris en charge") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "fr"))
+}
+
+#Preview("📱 FR 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Surlignage\nen temps réel") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "fr"))
+}
+
+#Preview("📱 FR 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Enregistrez &\nreprenez à tout moment") {
+        MockScreenWithTopTab(title: "Mes fichiers") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "fr"))
+}
+
+// ── IT ──
+#Preview("📱 IT 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Lascia che la voce\nlegga per te") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "it"))
+}
+
+#Preview("📱 IT 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, Web ed\ne-book supportati") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "it"))
+}
+
+#Preview("📱 IT 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Evidenziazione\nin tempo reale") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "it"))
+}
+
+#Preview("📱 IT 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Salva e\ncontinua sempre") {
+        MockScreenWithTopTab(title: "I miei file") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "it"))
+}
+
+// ── KO ──
+#Preview("📱 KO 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "읽는 수고를\n목소리에 맡겨요") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "ko"))
+}
+
+#Preview("📱 KO 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF・웹・\n전자책 지원") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "ko"))
+}
+
+#Preview("📱 KO 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "실시간 하이라이트로\n듣기 편해요") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "ko"))
+}
+
+#Preview("📱 KO 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "저장하고\n언제든지 이어서") {
+        MockScreenWithTopTab(title: "내 파일") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "ko"))
+}
+
+// ── TH ──
+#Preview("📱 TH 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "ปล่อยให้เสียง\nอ่านแทนคุณ") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "th"))
+}
+
+#Preview("📱 TH 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "รองรับ PDF\nเว็บ และ eBook") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "th"))
+}
+
+#Preview("📱 TH 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "ไฮไลต์\nแบบเรียลไทม์") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "th"))
+}
+
+#Preview("📱 TH 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "บันทึกแล้ว\nต่อได้ทุกเมื่อ") {
+        MockScreenWithTopTab(title: "ไฟล์ของฉัน") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "th"))
+}
+
+// ── TR ──
+#Preview("📱 TR 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Okuma zahmetini\nsese bırakın") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "tr"))
+}
+
+#Preview("📱 TR 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "PDF, Web ve\ne-Kitap desteği") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "tr"))
+}
+
+#Preview("📱 TR 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Gerçek zamanlı\nvurgu") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "tr"))
+}
+
+#Preview("📱 TR 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Kaydet &\nistediğinde devam et") {
+        MockScreenWithTopTab(title: "Dosyalarım") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "tr"))
+}
+
+// ── VI ──
+#Preview("📱 VI 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Để giọng nói\nđọc cho bạn") {
+        OnboardingView(onComplete: {}, initialStep: 1)
+    }
+    .environment(\.locale, .init(identifier: "vi"))
+}
+
+#Preview("📱 VI 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Hỗ trợ PDF\nWeb & eBook") {
+        OnboardingView(onComplete: {}, initialStep: 2)
+    }
+    .environment(\.locale, .init(identifier: "vi"))
+}
+
+#Preview("📱 VI 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Tô sáng\ntheo thời gian thực") {
+        HighlightReadingContent()
+    }
+    .environment(\.locale, .init(identifier: "vi"))
+}
+
+#Preview("📱 VI 04 MyFiles", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "Lưu lại &\ntiếp tục bất cứ lúc nào") {
+        MockScreenWithTopTab(title: "Tệp của tôi") { MyFilesContent() }
+    }
+    .environment(\.locale, .init(identifier: "vi"))
 }
 #endif
