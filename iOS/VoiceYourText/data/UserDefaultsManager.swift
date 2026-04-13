@@ -138,6 +138,12 @@ class UserDefaultsManager {
         premiumPurchaseDate = nil
     }
 
+    // アプリ起動回数
+    var appLaunchCount: Int {
+        get { defaults.integer(forKey: "AppLaunchCount") }
+        set { defaults.set(newValue, forKey: "AppLaunchCount") }
+    }
+
     // レビューダイアログ最終表示日
     var lastReviewRequestDate: Date? {
         get { defaults.object(forKey: "LastReviewRequestDate") as? Date }

@@ -77,42 +77,64 @@ struct Speeches: Reducer {
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
 
+                // 起動カウントを増やす
+                let launchCount = UserDefaultsManager.shared.appLaunchCount + 1
+                UserDefaultsManager.shared.appLaunchCount = launchCount
+
                 let installDate = UserDefaultsManager.shared.installDate
                 let reviewCount = UserDefaultsManager.shared.reviewRequestCount
 
-                // 初回起動時
-                if let installDate = installDate {
-                    let currentDate = Date()
-                    if let interval = Calendar.current.dateComponents([.day], from: installDate, to: currentDate).day {
-                        if interval >= 2 && reviewCount == 0 {
-                            analytics.logEvent("review_request_shown", ["trigger": "install_2days"])
-                            state.alert = AlertState {
-                                TextState("review.title")
-                            } actions: {
-                                ButtonState(action: .send(.onGoodReview)) {
-                                    TextState("review.button.yes")
-                                }
-                                ButtonState(action: .send(.onBadReview)) {
-                                    TextState("review.button.no")
-                                }
-                            } message: {
-                                TextState("review.message.reinstall")
-                            }
-                            UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
-                            UserDefaultsManager.shared.lastReviewRequestDate = Date()
-                        }
-                    }
-                } else {
+                // インストール日の初期化
+                if installDate == nil {
                     UserDefaultsManager.shared.installDate = Date()
                 }
 
-                // 再表示ロジック: 過去に表示済み・テキスト未入力・1回以上読み上げ・「はい」未押下・3日以上経過
+                // 2回目起動でレビューリクエスト（まだ一度も表示していない場合）
+                if launchCount == 2 && reviewCount == 0 {
+                    analytics.logEvent("review_request_shown", ["trigger": "second_launch"])
+                    state.alert = AlertState {
+                        TextState("review.title")
+                    } actions: {
+                        ButtonState(action: .send(.onGoodReview)) {
+                            TextState("review.button.yes")
+                        }
+                        ButtonState(action: .send(.onBadReview)) {
+                            TextState("review.button.no")
+                        }
+                    } message: {
+                        TextState("review.message.first")
+                    }
+                    UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
+                    UserDefaultsManager.shared.lastReviewRequestDate = Date()
+                }
+
+                // インストール2日後でもまだ表示されていない場合
+                if let installDate = installDate,
+                   let interval = Calendar.current.dateComponents([.day], from: installDate, to: Date()).day,
+                   interval >= 2 && reviewCount == 0 {
+                    analytics.logEvent("review_request_shown", ["trigger": "install_2days"])
+                    state.alert = AlertState {
+                        TextState("review.title")
+                    } actions: {
+                        ButtonState(action: .send(.onGoodReview)) {
+                            TextState("review.button.yes")
+                        }
+                        ButtonState(action: .send(.onBadReview)) {
+                            TextState("review.button.no")
+                        }
+                    } message: {
+                        TextState("review.message.reinstall")
+                    }
+                    UserDefaultsManager.shared.reviewRequestCount = reviewCount + 1
+                    UserDefaultsManager.shared.lastReviewRequestDate = Date()
+                }
+
+                // 再表示ロジック: 過去に表示済み・1回以上読み上げ・「はい」未押下・3日以上経過
                 let completedCountForReappear = UserDefaultsManager.shared.speechCompletedCount
                 let reviewCountForReappear = UserDefaultsManager.shared.reviewRequestCount
                 let hasAnswered = UserDefaultsManager.shared.hasAnsweredReviewPositively
                 if !hasAnswered &&
                    reviewCountForReappear >= 1 &&
-                   state.currentText.isEmpty &&
                    completedCountForReappear >= 1,
                    let lastDate = UserDefaultsManager.shared.lastReviewRequestDate,
                    let daysSince = Calendar.current.dateComponents([.day], from: lastDate, to: Date()).day,
@@ -190,8 +212,10 @@ struct Speeches: Reducer {
                 UserDefaultsManager.shared.speechCompletedCount = completedCount
                 analytics.logEvent("speech_completed", ["count": completedCount])
                 let reviewCountForSpeech = UserDefaultsManager.shared.reviewRequestCount
-                if reviewCountForSpeech == 0 && completedCount == 1 {
-                    analytics.logEvent("review_request_shown", ["trigger": "speech_completed_first"])
+                let hasAnsweredForSpeech = UserDefaultsManager.shared.hasAnsweredReviewPositively
+                if !hasAnsweredForSpeech && completedCount % 5 == 0 {
+                    let trigger = completedCount == 5 ? "speech_completed_first" : "speech_completed_\(completedCount)"
+                    analytics.logEvent("review_request_shown", ["trigger": trigger])
                     state.alert = AlertState {
                         TextState("review.title")
                     } actions: {
@@ -202,7 +226,7 @@ struct Speeches: Reducer {
                             TextState("review.button.no")
                         }
                     } message: {
-                        TextState("review.message.first")
+                        TextState(completedCount == 5 ? "review.message.first" : "review.message.reinstall")
                     }
                     UserDefaultsManager.shared.reviewRequestCount = reviewCountForSpeech + 1
                     UserDefaultsManager.shared.lastReviewRequestDate = Date()
