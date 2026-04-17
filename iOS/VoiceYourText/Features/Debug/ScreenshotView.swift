@@ -178,6 +178,27 @@ struct HighlightReadingContent: View {
                 .frame(height: 100)
                 .padding()
 
+                // スピーチ履歴リスト
+                VStack(spacing: 0) {
+                    ForEach(speeches, id: \.self) { speech in
+                        HStack(spacing: 12) {
+                            Image(systemName: "waveform")
+                                .font(.system(size: 18))
+                                .foregroundColor(.blue)
+                                .frame(width: 24)
+                            Text(speech)
+                                .font(.system(size: 14))
+                                .foregroundColor(.primary)
+                                .multilineTextAlignment(.leading)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        Divider()
+                    }
+                }
+                .background(Color(.systemBackground))
+
                 Spacer()
 
                 // プレイヤーコントロール
