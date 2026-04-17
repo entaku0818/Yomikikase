@@ -730,14 +730,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── JA ──
 #Preview("📱 JA 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "読む手間を、\n声に任せよう") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "読み上げ") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "ja"))
 }
 
 #Preview("📱 JA 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF・Web・\n電子書籍に対応") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "ja"))
 }
@@ -759,14 +759,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── EN ──
 #Preview("📱 EN 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Let Your Voice\nDo the Reading") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "en"))
 }
 
 #Preview("📱 EN 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, Web &\neBooks Supported") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "en"))
 }
@@ -788,14 +788,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── DE ──
 #Preview("📱 DE 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Lesen leicht\ngemacht") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "de"))
 }
 
 #Preview("📱 DE 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, Web und\neBooks unterstützt") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "de"))
 }
@@ -817,14 +817,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── ES ──
 #Preview("📱 ES 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Deja que la voz\nlea por ti") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "es"))
 }
 
 #Preview("📱 ES 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, web\ny eBooks") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "es"))
 }
@@ -846,14 +846,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── FR ──
 #Preview("📱 FR 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Laissez la voix\nfaire la lecture") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "fr"))
 }
 
 #Preview("📱 FR 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, Web et\ne-books pris en charge") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "fr"))
 }
@@ -875,14 +875,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── IT ──
 #Preview("📱 IT 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Lascia che la voce\nlegga per te") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "it"))
 }
 
 #Preview("📱 IT 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, Web ed\ne-book supportati") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "it"))
 }
@@ -904,14 +904,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── KO ──
 #Preview("📱 KO 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "읽는 수고를\n목소리에 맡겨요") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "ko"))
 }
 
 #Preview("📱 KO 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF・웹・\n전자책 지원") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "ko"))
 }
@@ -933,14 +933,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── TH ──
 #Preview("📱 TH 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "ปล่อยให้เสียง\nอ่านแทนคุณ") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "th"))
 }
 
 #Preview("📱 TH 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "รองรับ PDF\nเว็บ และ eBook") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "th"))
 }
@@ -962,14 +962,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── TR ──
 #Preview("📱 TR 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Okuma zahmetini\nsese bırakın") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "tr"))
 }
 
 #Preview("📱 TR 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "PDF, Web ve\ne-Kitap desteği") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "tr"))
 }
@@ -991,14 +991,14 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // ── VI ──
 #Preview("📱 VI 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Để giọng nói\nđọc cho bạn") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "vi"))
 }
 
 #Preview("📱 VI 02 Features", traits: .fixedLayout(width: 430, height: 932)) {
     AppStoreScreenshotWithFrame(caption: "Hỗ trợ PDF\nWeb & eBook") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        PDFReadingContent()
     }
     .environment(\.locale, .init(identifier: "vi"))
 }
