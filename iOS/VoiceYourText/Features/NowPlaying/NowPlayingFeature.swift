@@ -50,9 +50,14 @@ struct NowPlayingFeature {
         case navigateToSource
         case speechFinished
         case setCloudTTSMode(Bool)
+        case observeRemoteCommands
+        case remoteCommandReceived(RemoteCommandEvent)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
+    @Dependency(\.nowPlayingClient) var nowPlayingClient
+
+    private enum CancelID { case remoteCommands }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -66,11 +71,13 @@ struct NowPlayingFeature {
                 state.progress = 0.0
                 state.useCloudTTS = false
                 state.cloudTTSAudioURL = nil
-                return .run { _ in
+                nowPlayingClient.updateNowPlayingInfo(title, true)
+                return .run { send in
                     // 既存の再生を完全に停止
                     _ = await speechSynthesizer.stopSpeaking()
                     // すべてのAVAudioPlayerに停止を通知
                     NotificationCenter.default.post(name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+                    await send(.observeRemoteCommands)
                 }
 
             case let .startPlayingWithCloudTTS(title, text, source, audioURL):
@@ -82,17 +89,20 @@ struct NowPlayingFeature {
                 state.progress = 0.0
                 state.useCloudTTS = true
                 state.cloudTTSAudioURL = audioURL
-                return .run { _ in
+                nowPlayingClient.updateNowPlayingInfo(title, true)
+                return .run { send in
                     // 既存の再生を完全に停止
                     _ = await speechSynthesizer.stopSpeaking()
                     // すべてのAVAudioPlayerに停止を通知
                     NotificationCenter.default.post(name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+                    await send(.observeRemoteCommands)
                 }
 
             case .resumePlaying:
                 // ミニプレイヤーから再生を再開
                 guard !state.currentText.isEmpty else { return .none }
                 state.isPlaying = true
+                nowPlayingClient.updateNowPlayingInfo(state.currentTitle, true)
 
                 let text = state.currentText
                 let useCloudTTS = state.useCloudTTS
@@ -181,6 +191,7 @@ struct NowPlayingFeature {
             case .stopPlaying:
                 // 一時停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
                 state.isPlaying = false
+                nowPlayingClient.updateNowPlayingInfo(state.currentTitle, false)
                 return .run { _ in
                     _ = await speechSynthesizer.pauseSpeaking()
                 }
@@ -194,9 +205,11 @@ struct NowPlayingFeature {
                 state.source = nil
                 state.useCloudTTS = false
                 state.cloudTTSAudioURL = nil
-                return .run { _ in
-                    _ = await speechSynthesizer.stopSpeaking()
-                }
+                nowPlayingClient.clearNowPlayingInfo()
+                return .merge(
+                    .cancel(id: CancelID.remoteCommands),
+                    .run { _ in _ = await speechSynthesizer.stopSpeaking() }
+                )
 
             case let .updateProgress(progress):
                 state.progress = progress
@@ -209,11 +222,32 @@ struct NowPlayingFeature {
             case .speechFinished:
                 state.isPlaying = false
                 state.progress = 1.0
-                return .none
+                nowPlayingClient.clearNowPlayingInfo()
+                return .cancel(id: CancelID.remoteCommands)
 
             case .setCloudTTSMode(let useCloud):
                 state.useCloudTTS = useCloud
                 return .none
+
+            case .observeRemoteCommands:
+                return .run { send in
+                    for await event in nowPlayingClient.remoteCommandEvents() {
+                        await send(.remoteCommandReceived(event))
+                    }
+                }
+                .cancellable(id: CancelID.remoteCommands, cancelInFlight: true)
+
+            case .remoteCommandReceived(let event):
+                switch event {
+                case .play, .togglePlayPause where !state.isPlaying:
+                    return .send(.resumePlaying)
+                case .pause, .togglePlayPause where state.isPlaying:
+                    return .send(.stopPlaying)
+                case .stop:
+                    return .send(.dismiss)
+                default:
+                    return .none
+                }
             }
         }
     }
