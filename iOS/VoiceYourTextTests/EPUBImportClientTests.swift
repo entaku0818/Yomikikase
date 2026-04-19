@@ -55,4 +55,59 @@ final class EPUBImportClientTests: XCTestCase {
             XCTAssertNotNil(error)
         }
     }
+
+    // MARK: - 不正なファイル内容
+
+    func test_ZIPでないファイルはエラーになる() async {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString + ".epub")
+        try? "not a zip file content".write(to: tempURL, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+
+        let client = EPUBImportClient.liveValue
+        do {
+            _ = try await client.extractText(tempURL)
+            XCTFail("エラーが発生するべき")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+
+    func test_空ファイルはエラーになる() async {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString + ".epub")
+        try? Data().write(to: tempURL)
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+
+        let client = EPUBImportClient.liveValue
+        do {
+            _ = try await client.extractText(tempURL)
+            XCTFail("エラーが発生するべき")
+        } catch {
+            XCTAssertNotNil(error)
+        }
+    }
+
+    // MARK: - EPUBError の網羅
+
+    func test_全EPUBエラーのerrorDescriptionが非空() {
+        let errors: [EPUBTextExtractor.EPUBError] = [
+            .invalidEPUB, .containerNotFound, .opfNotFound, .noContent
+        ]
+        for error in errors {
+            XCTAssertNotNil(error.errorDescription, "\(error) の errorDescription が nil")
+            XCTAssertFalse(error.errorDescription!.isEmpty, "\(error) の errorDescription が空")
+        }
+    }
+
+    func test_EPUBErrorは異なるケースで異なるメッセージを持つ() {
+        let messages = [
+            EPUBTextExtractor.EPUBError.invalidEPUB.errorDescription!,
+            EPUBTextExtractor.EPUBError.containerNotFound.errorDescription!,
+            EPUBTextExtractor.EPUBError.opfNotFound.errorDescription!,
+            EPUBTextExtractor.EPUBError.noContent.errorDescription!,
+        ]
+        // 各エラーメッセージが重複していない
+        XCTAssertEqual(Set(messages).count, messages.count)
+    }
 }

@@ -186,4 +186,146 @@ final class HTMLTextExtractorTests: XCTestCase {
         let result = HTMLTextExtractor.extract(from: text)
         XCTAssertEqual(result, text)
     }
+
+    // MARK: - 空・空白入力
+
+    func test_空文字列で空文字を返す() {
+        let result = HTMLTextExtractor.extract(from: "")
+        XCTAssertTrue(result.isEmpty)
+    }
+
+    func test_空白のみで空文字を返す() {
+        let result = HTMLTextExtractor.extract(from: "   \n\t  ")
+        XCTAssertTrue(result.isEmpty)
+    }
+
+    // MARK: - br・見出しタグ
+
+    func test_brタグを改行に変換できる() {
+        let html = "<p>Line1<br>Line2<br/>Line3</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Line1"))
+        XCTAssertTrue(result.contains("Line2"))
+        XCTAssertTrue(result.contains("Line3"))
+        XCTAssertTrue(result.contains("\n"))
+    }
+
+    func test_h1からh6タグが改行付きで取り出せる() {
+        let html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>H3</h3>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Heading 1"))
+        XCTAssertTrue(result.contains("Heading 2"))
+        XCTAssertTrue(result.contains("H3"))
+        XCTAssertTrue(result.contains("\n"))
+    }
+
+    func test_liタグが改行で区切られる() {
+        let html = "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Item 1"))
+        XCTAssertTrue(result.contains("Item 2"))
+        XCTAssertTrue(result.contains("\n"))
+    }
+
+    // MARK: - HTMLコメント
+
+    func test_HTMLコメントを除去できる() {
+        let html = "<!-- This is a comment --><p>Visible text</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertFalse(result.contains("This is a comment"))
+        XCTAssertTrue(result.contains("Visible text"))
+    }
+
+    func test_複数行のHTMLコメントを除去できる() {
+        let html = """
+        <p>Before</p>
+        <!--
+            Multi-line
+            comment here
+        -->
+        <p>After</p>
+        """
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertFalse(result.contains("Multi-line"))
+        XCTAssertTrue(result.contains("Before"))
+        XCTAssertTrue(result.contains("After"))
+    }
+
+    // MARK: - タブ文字の正規化
+
+    func test_タブ文字がスペースに変換される() {
+        let html = "<p>Word1\tWord2</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertFalse(result.contains("\t"))
+        XCTAssertTrue(result.contains("Word1"))
+        XCTAssertTrue(result.contains("Word2"))
+    }
+
+    // MARK: - 追加HTMLエンティティ
+
+    func test_mdashエンティティをデコードできる() {
+        let html = "<p>before&mdash;after</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "before\u{2014}after")
+    }
+
+    func test_ndashエンティティをデコードできる() {
+        let html = "<p>2020&ndash;2024</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "2020\u{2013}2024")
+    }
+
+    func test_hellipエンティティをデコードできる() {
+        let html = "<p>続く&hellip;</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "続く\u{2026}")
+    }
+
+    func test_aposエンティティをデコードできる() {
+        let html = "<p>it&apos;s</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "it's")
+    }
+
+    func test_copyエンティティをデコードできる() {
+        let html = "<p>&copy; 2024 Example</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "\u{00A9} 2024 Example")
+    }
+
+    func test_regエンティティをデコードできる() {
+        let html = "<p>Brand&reg;</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "Brand\u{00AE}")
+    }
+
+    func test_laquoRaquoエンティティをデコードできる() {
+        let html = "<p>&laquo;quoted&raquo;</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertEqual(result, "\u{00AB}quoted\u{00BB}")
+    }
+
+    // MARK: - malformed HTML
+
+    func test_閉じタグなしのHTMLでもクラッシュしない() {
+        let html = "<p>Unclosed paragraph<div>No closing tags"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Unclosed paragraph"))
+        XCTAssertTrue(result.contains("No closing tags"))
+    }
+
+    func test_imgタグなど自己終了タグでもテキストを抽出できる() {
+        let html = #"<p>Text<img src="image.png" alt="image"/>More text</p>"#
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Text"))
+        XCTAssertTrue(result.contains("More text"))
+        XCTAssertFalse(result.contains("src="))
+    }
+
+    func test_blockquoteタグが改行に変換される() {
+        let html = "<blockquote>Quoted text</blockquote><p>Normal text</p>"
+        let result = HTMLTextExtractor.extract(from: html)
+        XCTAssertTrue(result.contains("Quoted text"))
+        XCTAssertTrue(result.contains("Normal text"))
+    }
 }

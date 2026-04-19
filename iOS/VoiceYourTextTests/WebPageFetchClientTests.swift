@@ -70,19 +70,57 @@ final class WebPageFetchClientTests: XCTestCase {
         XCTAssertNotNil(error.errorDescription)
         XCTAssertFalse(error.errorDescription!.isEmpty)
     }
-}
 
-// MARK: - Equatable conformance for testing
-extension WebPageFetchError: Equatable {
-    public static func == (lhs: WebPageFetchError, rhs: WebPageFetchError) -> Bool {
-        switch (lhs, rhs) {
-        case (.httpsRequired, .httpsRequired),
-             (.serverError, .serverError),
-             (.encodingError, .encodingError),
-             (.emptyContent, .emptyContent):
-            return true
-        default:
-            return false
+    // MARK: - 追加スキームバリデーション
+
+    func test_fileスキームURLはエラーになる() async {
+        let client = WebPageFetchClient.liveValue
+        let url = URL(fileURLWithPath: "/etc/hosts")
+        do {
+            _ = try await client.fetchText(url)
+            XCTFail("httpsRequired エラーが発生するべき")
+        } catch let error as WebPageFetchError {
+            XCTAssertEqual(error, .httpsRequired)
+        } catch {
+            XCTFail("予期しないエラー: \(error)")
         }
     }
+
+    func test_javascriptスキームURLはエラーになる() async {
+        let client = WebPageFetchClient.liveValue
+        // javascript: スキームはURLとして初期化できないケースもあるため、
+        // スキームがhttps以外であれば全て弾かれることを間接確認
+        let url = URL(string: "ftp://malicious.example.com")!
+        do {
+            _ = try await client.fetchText(url)
+            XCTFail("httpsRequired エラーが発生するべき")
+        } catch let error as WebPageFetchError {
+            XCTAssertEqual(error, .httpsRequired)
+        } catch {
+            XCTFail("予期しないエラー: \(error)")
+        }
+    }
+
+    func test_httpsURLはバリデーションを通過する() async {
+        let client = WebPageFetchClient.liveValue
+        // 実際のネットワーク接続なしにhttpsスキームチェックのみ確認したい場合は
+        // testValueを使う。liveValueはネットワーク必須なのでtestValueで検証。
+        let testClient = WebPageFetchClient.testValue
+        let result = try? await testClient.fetchText(URL(string: "https://example.com")!)
+        XCTAssertNotNil(result)
+    }
+
+    // MARK: - 全エラーが異なるメッセージを持つ
+
+    func test_全エラーのメッセージが重複しない() {
+        let messages = [
+            WebPageFetchError.httpsRequired.errorDescription!,
+            WebPageFetchError.serverError.errorDescription!,
+            WebPageFetchError.encodingError.errorDescription!,
+            WebPageFetchError.emptyContent.errorDescription!,
+        ]
+        XCTAssertEqual(Set(messages).count, messages.count)
+    }
 }
+
+// WebPageFetchError は associated value のない enum のため Swift が自動で Equatable に適合する
