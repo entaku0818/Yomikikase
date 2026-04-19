@@ -14,7 +14,7 @@ struct GoogleDriveFeature {
         var didExtractText: Bool = false
     }
 
-    enum Action: ViewAction {
+    enum Action: ViewAction, Equatable {
         case view(View)
         case filesLoaded([GoogleDriveFile])
         case fileTextLoaded(String)
@@ -22,7 +22,7 @@ struct GoogleDriveFeature {
         case signedIn
         case signedOut
 
-        enum View {
+        enum View: Equatable {
             case onAppear
             case signInTapped
             case signOutTapped
@@ -88,6 +88,10 @@ struct GoogleDriveFeature {
 
             case .fileTextLoaded(let text):
                 state.isLoadingFile = false
+                guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    state.errorMessage = "ファイルのテキストが空です"
+                    return .none
+                }
                 state.extractedText = text
                 state.didExtractText = true
                 return .none
