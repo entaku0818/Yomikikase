@@ -6,3 +6,5 @@
   
 */
 CFBundleDisplayName = "読み上げ";
+
+NSCameraUsageDescription = "ドキュメントをスキャンしてテキストを読み取るためにカメラを使用します";

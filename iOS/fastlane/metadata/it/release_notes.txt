@@ -1,4 +1,3 @@
-- Leggi file direttamente da Google Drive
-- Supporto EPUB (ebook) aggiunto
-- Leggi pagine web tramite link URL
-- Miglioramenti alla stabilità
+- Controlla la riproduzione dalla schermata di blocco e dal Centro di Controllo
+- Migliorata la stabilità della riproduzione in background
+- Miglioramenti generali alla stabilità e alle prestazioni

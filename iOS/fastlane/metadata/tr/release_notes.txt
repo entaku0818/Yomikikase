@@ -1,4 +1,3 @@
-- Google Drive'dan doğrudan dosya okuyun
-- EPUB (e-kitap) desteği eklendi
-- URL bağlantısıyla web sayfalarını okuyun
-- Kararlılık iyileştirmeleri
+- Kilit ekranı ve Kontrol Merkezi'nden oynatmayı kontrol edin
+- Arka plan ses kararlılığı iyileştirildi
+- Genel kararlılık ve performans iyileştirmeleri

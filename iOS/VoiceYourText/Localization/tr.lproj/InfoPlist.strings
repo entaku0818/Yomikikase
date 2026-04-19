@@ -6,3 +6,5 @@
   
 */
 CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Belgeleri taramak ve metni sesli okumak için kullanılır.";

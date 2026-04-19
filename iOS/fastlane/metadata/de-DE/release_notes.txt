@@ -1,4 +1,3 @@
-- Dateien direkt aus Google Drive vorlesen
-- EPUB-Unterstützung (E-Books) hinzugefügt
-- Webseiten über URL-Link vorlesen
-- Stabilitätsverbesserungen
+- Wiedergabe über den Sperrbildschirm und das Kontrollzentrum steuern
+- Verbesserte Stabilität bei der Hintergrundwiedergabe
+- Allgemeine Stabilitäts- und Leistungsverbesserungen

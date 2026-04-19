@@ -1,4 +1,3 @@
-- Lisez des fichiers directement depuis Google Drive
-- Prise en charge EPUB (livres numériques) ajoutée
-- Lisez des pages web via un lien URL
-- Améliorations de stabilité
+- Contrôlez la lecture depuis l'écran verrouillé et le Centre de contrôle
+- Amélioration de la stabilité de la lecture en arrière-plan
+- Améliorations générales de la stabilité et des performances

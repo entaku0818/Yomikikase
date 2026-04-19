@@ -6,3 +6,5 @@
   
 */
 CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Wird verwendet, um Dokumente zu scannen und Text vorzulesen.";

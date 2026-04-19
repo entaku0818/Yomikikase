@@ -6,3 +6,5 @@
   
 */
 CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Dùng để quét tài liệu và đọc văn bản to.";

@@ -1,4 +1,3 @@
-- Lee archivos directamente desde Google Drive
-- Soporte para EPUB (libros electrónicos)
-- Lee páginas web mediante enlace URL
-- Mejoras de estabilidad
+- Controla la reproducción desde la pantalla de bloqueo y el Centro de control
+- Estabilidad de audio en segundo plano mejorada
+- Mejoras generales de estabilidad y rendimiento

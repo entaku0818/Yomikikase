@@ -6,3 +6,5 @@
   
 */
 CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Utilizzato per scansionare documenti e leggere testo ad alta voce.";

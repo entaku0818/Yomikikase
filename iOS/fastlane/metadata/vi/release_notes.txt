@@ -1,4 +1,3 @@
-- Đọc file trực tiếp từ Google Drive
-- Hỗ trợ EPUB (sách điện tử)
-- Đọc trang web qua liên kết URL
-- Cải thiện độ ổn định
+- Điều khiển phát lại từ Màn hình khóa và Trung tâm điều khiển
+- Cải thiện độ ổn định âm thanh nền
+- Cải tiến ổn định và hiệu suất chung

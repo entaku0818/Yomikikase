@@ -1,4 +1,3 @@
-- Read files directly from Google Drive
-- EPUB (ebook) support added
-- Read web pages via URL link
-- Stability improvements
+- Control playback from the Lock Screen and Control Center
+- Improved background audio stability
+- General stability and performance improvements
