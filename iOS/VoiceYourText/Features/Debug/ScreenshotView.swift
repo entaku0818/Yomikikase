@@ -76,14 +76,15 @@ struct MockScreenWithTopTab<Content: View>: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // 上部ナビゲーションバー（モック）
+            // ナビゲーションバー（大タイトルスタイル）
             HStack {
-                Spacer()
                 Text(title)
-                    .font(.headline)
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
                 Spacer()
             }
-            .padding()
             .background(Color(.systemBackground))
 
             content
@@ -124,162 +125,212 @@ struct GridItemView: View {
         VStack(spacing: 12) {
             Image(systemName: icon)
                 .font(.system(size: 32))
-                .foregroundColor(isEnabled ? color : .gray)
+                .foregroundColor(isEnabled ? color : Color.gray.opacity(0.5))
+                .frame(width: 50, height: 50)
+                .background((isEnabled ? color : Color.gray).opacity(0.1))
+                .cornerRadius(12)
             Text(title)
-                .font(.subheadline)
-                .foregroundColor(isEnabled ? .primary : .gray)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isEnabled ? .primary : .secondary)
+                .multilineTextAlignment(.center)
+                .lineLimit(2)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 24)
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .frame(height: 100)
+        .background(isEnabled ? Color(.systemBackground) : Color(.systemGray6))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
     }
 }
 
-// MARK: - ハイライト読み上げ画面コンテンツ（実際のSpeechViewに近いモック）
+// MARK: - ハイライト読み上げ画面コンテンツ
 struct HighlightReadingContent: View {
-    var highlightedText: AttributedString {
-        var text = AttributedString("国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。信号所に汽車が止まった。")
-        if let range = text.range(of: "トンネル") {
-            text[range].backgroundColor = .orange
-            text[range].foregroundColor = .white
+    // 読み上げ中の段落：ハイライト単語 + Boldフォント
+    var activeText: AttributedString {
+        var text = AttributedString("どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。")
+        if let range = text.range(of: "じめじめした") {
+            text[range].backgroundColor = Color.orange
+            text[range].foregroundColor = Color.white
+            text[range].font = Font.system(size: 19, weight: .bold)
         }
         return text
     }
 
-    let speeches = [
-        "国境の長いトンネルを抜けると雪国であった。",
-        "吾輩は猫である。名前はまだない。",
-        "親譲の無鉄砲で小供の時から損ばかりしてい",
-    ]
-
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー
+            // ナビゲーションバー：アイコン + タイトル + 音声波形インジケーター
             HStack {
+                HStack(spacing: 6) {
+                    Image(systemName: "waveform")
+                        .font(.title2)
+                        .foregroundColor(.orange)
+                    Text("Voice Narrator")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
                 Spacer()
-                Text("Voice Narrator")
-                    .font(.headline)
-                Spacer()
+                // 再生中アニメーション風バー（静止版）
+                HStack(alignment: .bottom, spacing: 3) {
+                    ForEach([8, 14, 10, 18, 12], id: \.self) { h in
+                        Capsule()
+                            .fill(Color.orange)
+                            .frame(width: 3, height: CGFloat(h))
+                    }
+                }
+                .padding(.trailing, 16)
             }
-            .padding()
             .background(Color(.systemBackground))
 
             VStack(spacing: 0) {
-                // ハイライト付きテキスト入力エリア
-                ZStack(alignment: .topLeading) {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.gray, lineWidth: 1)
-                    Text(highlightedText)
+                // テキストエリア：3段階表示（済み / 現在 / 次）
+                VStack(alignment: .leading, spacing: 14) {
+                    // 読み上げ済み（薄め）
+                    Text("国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。")
                         .font(.system(size: 16))
-                        .padding(8)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                .frame(height: 100)
-                .padding()
+                        .foregroundColor(.secondary)
+                        .lineSpacing(5)
 
-                // スピーチ履歴リスト
-                VStack(spacing: 0) {
-                    ForEach(speeches, id: \.self) { speech in
-                        HStack(spacing: 12) {
-                            Image(systemName: "waveform")
-                                .font(.system(size: 18))
-                                .foregroundColor(.blue)
-                                .frame(width: 24)
-                            Text(speech)
-                                .font(.system(size: 14))
-                                .foregroundColor(.primary)
-                                .multilineTextAlignment(.leading)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        Divider()
+                    // 現在読み上げ中（左縦線 + 薄オレンジ背景 + ハイライト単語）
+                    HStack(spacing: 0) {
+                        Rectangle()
+                            .fill(Color.orange)
+                            .frame(width: 3)
+                            .cornerRadius(1.5)
+                        Text(activeText)
+                            .font(.system(size: 19))
+                            .lineSpacing(7)
+                            .padding(.leading, 10)
+                            .padding(.vertical, 10)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    .background(Color.orange.opacity(0.08))
+                    .cornerRadius(8)
+
+                    // 次の段落（より薄め）
+                    Text("吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。")
+                        .font(.system(size: 16))
+                        .foregroundColor(Color(.tertiaryLabel))
+                        .lineSpacing(5)
                 }
-                .background(Color(.systemBackground))
+                .padding(16)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer()
 
                 // プレイヤーコントロール
-                VStack(spacing: 8) {
-                    HStack(spacing: 24) {
-                        Text("x1.0")
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundColor(.secondary)
-                            .frame(width: 44)
-                        Spacer()
-                        Button {} label: {
-                            Image(systemName: "stop.circle.fill")
-                                .font(.system(size: 52))
-                                .foregroundColor(.blue)
+                VStack(spacing: 0) {
+                    // プログレスバー
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            Capsule()
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 4)
+                            Capsule()
+                                .fill(Color.orange)
+                                .frame(width: geo.size.width * 0.38, height: 4)
                         }
-                        Spacer()
-                        Image(systemName: "info.circle")
-                            .font(.title3)
-                            .foregroundColor(.secondary)
-                            .frame(width: 44)
                     }
-                    .padding(.horizontal, 40)
+                    .frame(height: 4)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 14)
+
+                    HStack(spacing: 40) {
+                        Image(systemName: "gobackward.10")
+                            .font(.title2)
+                            .foregroundColor(.primary)
+                        Image(systemName: "pause.circle.fill")
+                            .font(.system(size: 62))
+                            .foregroundColor(.orange)
+                        Image(systemName: "goforward.10")
+                            .font(.title2)
+                            .foregroundColor(.primary)
+                    }
+                    .padding(.vertical, 14)
+
+                    Text("x1.0")
+                        .font(.system(size: 14, weight: .semibold, design: .rounded))
+                        .foregroundColor(.secondary)
+                        .padding(.bottom, 10)
                 }
-                .padding(.vertical, 12)
                 .background(Color(.systemBackground))
                 .overlay(Divider(), alignment: .top)
             }
-            .background(Color(.systemGroupedBackground))
+            .background(Color(.systemBackground))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemGroupedBackground))
+        .background(Color(.systemBackground))
     }
 }
 
-// MARK: - マイファイル画面コンテンツ
+// MARK: - マイファイル画面コンテンツ（HomeViewの最近のファイルセクションに合わせる）
 struct MyFilesContent: View {
+    struct FileItem {
+        let title: String
+        let date: String
+        let fileType: String
+    }
+
     let files = [
-        ("国境の長いトンネルを抜けると雪国であった", "今日", "txt"),
-        ("吾輩は猫である。名前はまだない。どこで生れたかとんと見当がつかぬ。", "今日", "pdf"),
-        ("親譲の無鉄砲で小供の時から損ばかりしてい", "昨日", "txt"),
-        ("恥の多い生涯を送って来ました。自分には、人間の生活というものが、見当つかないのです。", "昨日", "txt"),
-        ("山路を登りながら、こう考えた。智に働けば角が立つ。情に棹させば流される。", "2日前", "txt"),
-        ("木曾路はすべて山の中である。あるところは岨づたいに行く崖の道であり", "3日前", "epub"),
+        FileItem(title: "マーケティング戦略2025.pdf", date: "今日", fileType: "pdf"),
+        FileItem(title: "会議メモ_4月", date: "今日", fileType: "txt"),
+        FileItem(title: "英語学習テキスト_Unit3", date: "昨日", fileType: "txt"),
+        FileItem(title: "プロジェクト計画書.txt", date: "昨日", fileType: "txt"),
+        FileItem(title: "読書記録_春", date: "2日前", fileType: "txt"),
+        FileItem(title: "技術書_Swift入門", date: "3日前", fileType: "epub"),
     ]
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(spacing: 12) {
-                    ForEach(files, id: \.0) { file in
-                        HStack(spacing: 16) {
-                            Image(systemName: "doc.text.fill")
-                                .font(.title)
-                                .foregroundColor(.blue)
-                                .frame(width: 50, height: 50)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(8)
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(file.0)
-                                    .font(.subheadline)
-                                    .lineLimit(2)
-                                HStack {
-                                    Text(file.1)
-                                    Text("・")
-                                    Text(file.2)
-                                }
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                            }
-
-                            Spacer()
-                        }
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .cornerRadius(12)
-                    }
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 10)
+            // セクションヘッダー
+            HStack {
+                Text("最近のファイル")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                Spacer()
             }
+            .padding(.horizontal, 16)
+            .padding(.top, 16)
+            .padding(.bottom, 8)
+
+            // ファイル一覧（VStack - ImageRenderer対応）
+            VStack(spacing: 8) {
+                ForEach(Array(files.enumerated()), id: \.offset) { _, file in
+                    let iconName = file.fileType == "epub" ? "books.vertical.fill" : "doc.text.fill"
+                    let iconColor: Color = file.fileType == "epub" ? .brown : .blue
+
+                    HStack {
+                        Image(systemName: iconName)
+                            .font(.system(size: 20))
+                            .foregroundColor(iconColor)
+                            .frame(width: 32, height: 32)
+                            .background(iconColor.opacity(0.1))
+                            .cornerRadius(6)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(file.title)
+                                .font(.system(size: 16, weight: .medium))
+                                .lineLimit(1)
+                            Text(file.date)
+                                .font(.system(size: 14))
+                                .foregroundColor(.secondary)
+                        }
+
+                        Spacer()
+
+                        Image(systemName: "play.circle")
+                            .font(.system(size: 24))
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(12)
+                    .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
+                }
+            }
+            .padding(.horizontal, 16)
 
             Spacer()
         }
@@ -290,10 +341,9 @@ struct MyFilesContent: View {
 // MARK: - 設定画面コンテンツ
 struct SettingsContent: View {
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    Text("音声設定")
+        // ScrollViewはImageRendererで空白になるのでVStackで直接表示
+        VStack(alignment: .leading, spacing: 20) {
+            Text("音声設定")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.horizontal)
@@ -417,8 +467,6 @@ struct SettingsContent: View {
                         .background(Color(.systemBackground))
                         .cornerRadius(12)
                         .padding(.horizontal)
-                }
-            }
         }
         .background(Color(.systemGroupedBackground))
     }
@@ -428,7 +476,7 @@ struct SettingsContent: View {
 struct PDFReadingContent: View {
     var body: some View {
         VStack(spacing: 0) {
-            // ナビゲーションバー
+            // ナビゲーションバー（PhoneMockupViewのtopReservedがあるのでpadding(.top, 44)不要）
             HStack {
                 Image(systemName: "chevron.left")
                     .font(.title2)
@@ -443,38 +491,28 @@ struct PDFReadingContent: View {
                     .foregroundColor(.blue)
             }
             .padding()
-            .padding(.top, 44)
             .background(Color(.systemBackground))
 
-            // PDFテキスト表示エリア
-            ScrollView {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 0) {
-                        Text("吾輩は猫である。名前は")
-                        Text("まだ無い")
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 2)
-                            .background(Color.orange)
-                        Text("。")
-                    }
-                    .font(.body)
-                    Text("どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。")
-                        .font(.body)
-                    Text("吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。")
-                        .font(.body)
-                        .padding(.top, 4)
+            // PDFテキスト表示エリア（ScrollViewはImageRendererで空白になるのでVStackで直接表示）
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 0) {
+                    Text("吾輩は猫である。名前は")
+                    Text("まだ無い")
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 2)
+                        .background(Color.orange)
+                    Text("。")
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(20)
+                .font(.body)
+                Text("どこで生れたかとんと見当がつかぬ。何でも薄暗いじめじめした所でニャーニャー泣いていた事だけは記憶している。")
+                    .font(.body)
+                Text("吾輩はここで始めて人間というものを見た。しかもあとで聞くとそれは書生という人間中で一番獰悪な種族であったそうだ。")
+                    .font(.body)
+                    .padding(.top, 4)
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(20)
             .background(Color(.systemBackground))
-
-            // ページ表示
-            Text("1 / 12 ページ")
-                .font(.caption)
-                .foregroundColor(.secondary)
-                .padding(.vertical, 8)
-                .background(Color(.systemBackground))
 
             Spacer()
 
@@ -679,9 +717,9 @@ struct PhoneMockupView<Content: View>: View {
             let bezel: CGFloat = 8
             let innerCR = outerCR - bezel
             let diWidth = w * 0.30
-            let diHeight: CGFloat = max(h * 0.022, 16)
-            let diTopPad: CGFloat = max(h * 0.012, 8)
-            let topReserved = bezel + diTopPad + diHeight + 2
+            let diHeight: CGFloat = max(h * 0.030, 22)   // 実機に近い縦幅
+            let diTopPad: CGFloat = max(h * 0.018, 12)   // 上余白を広めに
+            let topReserved = bezel + diTopPad + diHeight + 4
 
             ZStack(alignment: .top) {
                 // Phone body
@@ -721,10 +759,11 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
     var body: some View {
         VStack(spacing: 0) {
             Text(caption)
-                .font(.system(size: 44, weight: .bold, design: .default))
+                .font(.system(size: 44, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.black)
                 .lineSpacing(4)
+                .minimumScaleFactor(0.7)
                 .padding(.horizontal, 36)
                 .padding(.top, 36)
                 .padding(.bottom, 20)
