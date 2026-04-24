@@ -342,11 +342,18 @@ struct TextInputView: View {
             warningLog("TextInputView: Cannot speak - text is empty")
             return
         }
-
-        // 既存の再生を完全に停止
-        stopSpeaking()
-
+        // re-entry防止: isSpeaking=true を先に立てて二重起動をブロック
+        // stopSpeaking() を呼ぶと isSpeaking=false になるので、inline で stop 処理を行う
+        guard !isSpeaking else { return }
         isSpeaking = true
+
+        // 既存の再生を停止（isSpeaking は変えない）
+        stopHighlightTimer()
+        audioPlayer?.stop()
+        audioPlayer = nil
+        highlightedRange = nil
+        store.send(.nowPlaying(.stopPlaying))
+        Task { await speechSynthesizer.stopSpeaking() }
 
         // nowPlayingを更新（ミニプレイヤー用）
         let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
