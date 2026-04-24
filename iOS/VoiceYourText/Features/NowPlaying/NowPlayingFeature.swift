@@ -63,7 +63,6 @@ struct NowPlayingFeature {
         Reduce { state, action in
             switch action {
             case let .startPlaying(title, text, source):
-                // 既存の再生を完全に停止してから新しい再生を開始
                 state.isPlaying = true
                 state.currentTitle = title
                 state.currentText = text
@@ -73,10 +72,7 @@ struct NowPlayingFeature {
                 state.cloudTTSAudioURL = nil
                 nowPlayingClient.updateNowPlayingInfo(title, true)
                 return .run { send in
-                    // 既存の再生を完全に停止
-                    _ = await speechSynthesizer.stopSpeaking()
-                    // すべてのAVAudioPlayerに停止を通知
-                    NotificationCenter.default.post(name: NSNotification.Name("StopAllAudioPlayers"), object: nil)
+                    // SpeechSynthesizer 内部で stop() を呼ぶため、ここでの stopSpeaking() は不要かつレースコンディションの原因になる
                     await send(.observeRemoteCommands)
                 }
 
@@ -190,11 +186,11 @@ struct NowPlayingFeature {
 
             case .stopPlaying:
                 // 一時停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
+                // pauseSpeaking() は呼ばない: 完了後の stopPlaying が次の再生を即座に pause するレースコンディションの原因になる
+                // 手動停止は TextInputView.stopSpeaking() が直接 stopSpeaking() を呼ぶため effect は不要
                 state.isPlaying = false
                 nowPlayingClient.updateNowPlayingInfo(state.currentTitle, false)
-                return .run { _ in
-                    _ = await speechSynthesizer.pauseSpeaking()
-                }
+                return .none
 
             case .dismiss:
                 // ミニプレイヤーを完全に閉じる

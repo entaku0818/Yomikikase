@@ -333,12 +333,7 @@ struct TextInputView: View {
             return
         }
 
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
-        let audioPath = audioDirectory.appendingPathComponent("\(currentFileId.uuidString).wav")
-
-        cloudTTSAvailable = fileManager.fileExists(atPath: audioPath.path)
+        cloudTTSAvailable = audioFileManager.audioExists(currentFileId.uuidString)
         infoLog("[TTS Mode] Cloud TTS available: \(cloudTTSAvailable)")
     }
 
@@ -368,18 +363,11 @@ struct TextInputView: View {
 
         // Check user preference and Cloud TTS availability
         infoLog("[Highlight] useCloudTTS: \(useCloudTTS), cloudTTSAvailable: \(cloudTTSAvailable)")
-        if useCloudTTS && cloudTTSAvailable, let currentFileId = currentFileId {
-            // User prefers Cloud TTS and it's available
-            let fileManager = FileManager.default
-            let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let audioDirectory = documentsURL.appendingPathComponent("audio", isDirectory: true)
-            let audioPath = audioDirectory.appendingPathComponent("\(currentFileId.uuidString).wav")
-
-            if fileManager.fileExists(atPath: audioPath.path) {
-                infoLog("[Highlight] Playing Cloud TTS audio: \(audioPath.path)")
-                playDownloadedAudio(url: audioPath)
-                return
-            }
+        if useCloudTTS && cloudTTSAvailable, let currentFileId = currentFileId,
+           let audioPath = audioFileManager.getLocalAudioPath(currentFileId.uuidString) {
+            infoLog("[Highlight] Playing Cloud TTS audio: \(audioPath.path)")
+            playDownloadedAudio(url: audioPath)
+            return
         }
 
         // Use device TTS (with highlight support)
@@ -735,11 +723,14 @@ struct TextInputView: View {
         }
     }
 
-    private func checkJobStatus(jobId: String, fileId: UUID) {
+    private func checkJobStatus(jobId: String, fileId: UUID, retryCount: Int = 0) {
+        let maxRetries = 30  // 最大30回（約5分）
+        let retryInterval: UInt64 = 10_000_000_000  // 10秒
+
         Task {
             do {
                 let status = try await audioAPI.getJobStatus(jobId)
-                infoLog("[TTS] Job \(jobId) status: \(status.status)")
+                infoLog("[TTS] Job \(jobId) status: \(status.status) (attempt \(retryCount + 1))")
 
                 if status.status == "completed", let audioUrlString = status.audioUrl,
                    let audioURL = URL(string: audioUrlString) {
@@ -777,11 +768,32 @@ struct TextInputView: View {
                             object: fileId
                         )
                     }
+
+                } else if retryCount < maxRetries {
+                    // pending/processing: 10秒後に再確認
+                    try await Task.sleep(nanoseconds: retryInterval)
+                    checkJobStatus(jobId: jobId, fileId: fileId, retryCount: retryCount + 1)
+                } else {
+                    // タイムアウト
+                    await MainActor.run {
+                        UserDefaultsManager.shared.clearPendingJob(fileId: fileId)
+                        isJobProcessing = false
+                        audioGenerationError = "音声生成がタイムアウトしました"
+                        infoLog("[TTS] Job timed out after \(maxRetries) retries")
+                    }
                 }
-                // pending/processing の場合はバナーを表示したまま（次回 onAppear で再確認）
             } catch {
                 errorLog("[TTS] Job status check failed: \(error)")
-                // エラー時はバナーを表示したまま
+                if retryCount < maxRetries {
+                    try? await Task.sleep(nanoseconds: retryInterval)
+                    checkJobStatus(jobId: jobId, fileId: fileId, retryCount: retryCount + 1)
+                } else {
+                    await MainActor.run {
+                        UserDefaultsManager.shared.clearPendingJob(fileId: fileId)
+                        isJobProcessing = false
+                        audioGenerationError = "音声生成の確認に失敗しました"
+                    }
+                }
             }
         }
     }
