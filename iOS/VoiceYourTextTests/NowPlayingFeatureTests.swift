@@ -140,6 +140,107 @@ final class NowPlayingFeatureTests: XCTestCase {
         XCTAssertEqual(store.state.progress, 0.4)
     }
 
+    // MARK: - regression: pauseSpeaking() レースコンディション修正
+
+    /// stopPlaying が pauseSpeaking() を呼ばないことを確認する。
+    /// 修正前: 完了後の stopPlaying が非同期で pauseSpeaking() を実行し、
+    /// 直後に開始された新しい再生を即座に停止させていた。
+    func test_stopPlaying_pauseSpeakingを呼ばない() async {
+        var pauseSpeakingCalled = false
+
+        let store = TestStore(
+            initialState: NowPlayingFeature.State(
+                isPlaying: true,
+                currentTitle: "タイトル",
+                currentText: "テキスト"
+            )
+        ) {
+            NowPlayingFeature()
+        } withDependencies: {
+            $0.nowPlayingClient = .testValue
+            $0.speechSynthesizer = SpeechSynthesizerClient(
+                speak: { _ in true },
+                speakWithHighlight: { _, _, _ in true },
+                speakWithAPI: { _, _ in true },
+                stopSpeaking: { true },
+                pauseSpeaking: {
+                    pauseSpeakingCalled = true
+                    return false
+                },
+                continueSpeaking: { true },
+                isPaused: { false }
+            )
+        }
+
+        await store.send(.stopPlaying) { state in
+            state.isPlaying = false
+        }
+
+        XCTAssertFalse(pauseSpeakingCalled,
+            "stopPlaying が pauseSpeaking() を呼ぶと次の再生を即座に止めるレースコンディションが発生する")
+    }
+
+    /// stopPlaying が副作用なし(.none)で完了することを確認する。
+    /// exhaustivity = .on のままで未処理 effect がないことを検証。
+    func test_stopPlaying_effectを発火しない() async {
+        let store = TestStore(
+            initialState: NowPlayingFeature.State(
+                isPlaying: true,
+                currentTitle: "タイトル",
+                currentText: "テキスト"
+            )
+        ) {
+            NowPlayingFeature()
+        } withDependencies: {
+            $0.nowPlayingClient = .testValue
+            $0.speechSynthesizer = .testValue
+        }
+        // exhaustivity = .on (デフォルト) で未処理 effect があればテスト失敗
+
+        await store.send(.stopPlaying) { state in
+            state.isPlaying = false
+        }
+    }
+
+    // MARK: - regression: startPlaying の stopSpeaking() レースコンディション修正
+
+    /// startPlaying が speechSynthesizer.stopSpeaking() を effect で呼ばないことを確認する。
+    /// 修正前: startPlaying の effect が stopSpeaking() を呼び、
+    /// TextInputView.playWithDeviceTTS() の speakWithHighlight() と競合して
+    /// CancellationError を引き起こしていた。
+    func test_startPlaying_stopSpeakingを非同期で呼ばない() async {
+        var stopSpeakingCalled = false
+
+        let store = TestStore(initialState: NowPlayingFeature.State()) {
+            NowPlayingFeature()
+        } withDependencies: {
+            $0.nowPlayingClient = .testValue
+            $0.speechSynthesizer = SpeechSynthesizerClient(
+                speak: { _ in true },
+                speakWithHighlight: { _, _, _ in true },
+                speakWithAPI: { _, _ in true },
+                stopSpeaking: {
+                    stopSpeakingCalled = true
+                    return true
+                },
+                pauseSpeaking: { false },
+                continueSpeaking: { true },
+                isPaused: { false }
+            )
+        }
+        store.exhaustivity = .off
+
+        await store.send(.startPlaying(
+            title: "タイトル", text: "テキスト", source: .speech(id: UUID())
+        )) { state in
+            state.isPlaying = true
+        }
+        await store.finish()
+
+        XCTAssertFalse(stopSpeakingCalled,
+            "startPlaying の effect が stopSpeaking() を呼ぶと playWithDeviceTTS との競合で CancellationError が発生する")
+    }
+
     // MARK: - dismiss
 
     func test_dismissで全stateがリセットされる() async {
