@@ -60,15 +60,22 @@ extension GoogleDriveClient: DependencyKey {
                 throw GoogleDriveError.notSignedIn
             }
 
-            // Refresh token if expired
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                user.refreshTokensIfNeeded { _, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume()
+            // Refresh token if expired (15s timeout to prevent indefinite hang)
+            try await withThrowingTaskGroup(of: Void.self) { group in
+                group.addTask {
+                    try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
+                        user.refreshTokensIfNeeded { _, error in
+                            if let error { cont.resume(throwing: error) }
+                            else { cont.resume() }
+                        }
                     }
                 }
+                group.addTask {
+                    try await Task.sleep(nanoseconds: 15_000_000_000)
+                    throw GoogleDriveError.tokenRefreshTimeout
+                }
+                try await group.next()!
+                group.cancelAll()
             }
 
             guard let token = GIDSignIn.sharedInstance.currentUser?.accessToken.tokenString else {
@@ -144,6 +151,7 @@ enum GoogleDriveError: Error, LocalizedError {
     case presentingViewControllerNotFound
     case invalidResponse
     case encodingError
+    case tokenRefreshTimeout
 
     var errorDescription: String? {
         switch self {
@@ -155,6 +163,8 @@ enum GoogleDriveError: Error, LocalizedError {
             return "レスポンスの解析に失敗しました"
         case .encodingError:
             return "テキストのエンコーディングに失敗しました"
+        case .tokenRefreshTimeout:
+            return "トークンの更新がタイムアウトしました。再度サインインしてください"
         }
     }
 }
