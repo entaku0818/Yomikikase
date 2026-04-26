@@ -369,11 +369,22 @@ struct TextInputView: View {
         }
 
         // Check user preference and Cloud TTS availability
-        infoLog("[Highlight] useCloudTTS: \(useCloudTTS), cloudTTSAvailable: \(cloudTTSAvailable)")
-        if useCloudTTS && cloudTTSAvailable, let currentFileId = currentFileId,
-           let audioPath = audioFileManager.getLocalAudioPath(currentFileId.uuidString) {
-            infoLog("[Highlight] Playing Cloud TTS audio: \(audioPath.path)")
-            playDownloadedAudio(url: audioPath)
+        infoLog("[Highlight] useCloudTTS: \(useCloudTTS), cloudTTSAvailable: \(cloudTTSAvailable), isJobProcessing: \(isJobProcessing)")
+        if useCloudTTS {
+            if cloudTTSAvailable, let currentFileId = currentFileId,
+               let audioPath = audioFileManager.getLocalAudioPath(currentFileId.uuidString) {
+                infoLog("[Highlight] Playing Cloud TTS audio: \(audioPath.path)")
+                playDownloadedAudio(url: audioPath)
+                return
+            } else if !isJobProcessing, let currentFileId = currentFileId {
+                // 音声ファイルが存在しない場合はデバイスTTSへのサイレントフォールバックを避け再生成する
+                infoLog("[Highlight] Cloud TTS selected but audio missing, re-submitting job")
+                isSpeaking = false
+                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                submitJobAndStartPolling(for: currentFileId, text: text, languageCode: languageCode)
+                return
+            }
+            isSpeaking = false
             return
         }
 
