@@ -17,6 +17,7 @@ struct MyFilesView: View {
     @State private var fileToDelete: FileItem?
     @State private var selectedTextFile: SavedTextFile?
     @State private var selectedPDFFile: SavedPDFFile?
+    @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
     let store: StoreOf<Speeches>
 
     @Dependency(\.audioAPI) var audioAPI
@@ -80,7 +81,7 @@ struct MyFilesView: View {
                 }
                 
                 // 広告バナー（最下部）
-                if !UserDefaultsManager.shared.isPremiumUser {
+                if !isPremium {
                     AdmobBannerView()
                         .frame(height: 50)
                 }
@@ -107,6 +108,9 @@ struct MyFilesView: View {
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("TTSJobCompleted"))) { _ in
             loadFiles()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
+            isPremium = UserDefaultsManager.shared.isPremiumUser
         }
         .alert("削除の確認", isPresented: $showingDeleteAlert) {
             Button("キャンセル", role: .cancel) {

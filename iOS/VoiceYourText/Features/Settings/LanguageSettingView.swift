@@ -14,6 +14,7 @@ import Dependencies
 @ViewAction(for: SettingsReducer.self)
 struct LanguageSettingView: View {
     @Bindable var store: StoreOf<SettingsReducer>
+    @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
     #if DEBUG
     @State private var showScreenshotView = false
     #endif
@@ -208,7 +209,7 @@ struct LanguageSettingView: View {
                 #endif
             }
             Spacer()
-            if !UserDefaultsManager.shared.isPremiumUser {
+            if !isPremium {
                 AdmobBannerView().frame(width: .infinity, height: 50)
             }
         }
@@ -220,6 +221,9 @@ struct LanguageSettingView: View {
             isPresented: $store.showSubscriptionView
         ) {
             SubscriptionView()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
+            isPremium = UserDefaultsManager.shared.isPremiumUser
         }
         #if DEBUG
         .fullScreenCover(isPresented: $showScreenshotView) {

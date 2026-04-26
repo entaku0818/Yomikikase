@@ -263,6 +263,7 @@ struct SpeechView: View {
     let store: Store<Speeches.State, Speeches.Action>
 
     @State private var showingSpeedPicker = false
+    @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
 
     let settingStore = Store(
         initialState: SettingsReducer.State(languageSetting: UserDefaultsManager.shared.languageSetting)) {
@@ -320,7 +321,7 @@ struct SpeechView: View {
                         onTTSInfoTap: nil
                     )
 
-                    if !UserDefaultsManager.shared.isPremiumUser {
+                    if !isPremium {
                         AdmobBannerView().frame(width: .infinity, height: 50)
                     }
                 }
@@ -345,6 +346,9 @@ struct SpeechView: View {
                     viewStore.send(.onAppear)
                 }
                 .alert(store: self.store.scope(state: \.$alert, action: Speeches.Action.alert))
+                .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
+                    isPremium = UserDefaultsManager.shared.isPremiumUser
+                }
             }
         }
     }

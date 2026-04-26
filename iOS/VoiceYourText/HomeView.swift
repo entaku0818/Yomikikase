@@ -19,6 +19,7 @@ struct HomeView: View {
     @State private var showingImportedTextView = false
     @State private var showingImportError = false
     @State private var importErrorMessage = ""
+    @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
     @State private var showingPremiumAlert = false
     @State private var showingSubscription = false
     @State private var showingNewTextView = false
@@ -251,7 +252,7 @@ struct HomeView: View {
                 }
                 
                 // 広告バナー（最下部）
-                if !UserDefaultsManager.shared.isPremiumUser {
+                if !isPremium {
                     AdmobBannerView()
                         .frame(height: 50)
                 }
@@ -383,6 +384,9 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showingGoogleDriveTextView) {
                 TextInputView(store: store, initialText: googleDriveExtractedText, fileId: nil)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
+                isPremium = UserDefaultsManager.shared.isPremiumUser
             }
         }
     }
