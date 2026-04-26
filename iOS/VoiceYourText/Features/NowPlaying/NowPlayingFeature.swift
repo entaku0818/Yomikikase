@@ -209,7 +209,10 @@ struct NowPlayingFeature {
                 return .merge(
                     .cancel(id: CancelID.remoteCommands),
                     .cancel(id: CancelID.playback),
-                    .run { _ in _ = await speechSynthesizer.stopSpeaking() }
+                    .run { _ in
+                        _ = await speechSynthesizer.stopSpeaking()
+                        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                    }
                 )
 
             case let .updateProgress(progress):
@@ -224,18 +227,35 @@ struct NowPlayingFeature {
                 state.isPlaying = false
                 state.progress = 1.0
                 nowPlayingClient.clearNowPlayingInfo()
-                return .cancel(id: CancelID.remoteCommands)
+                return .merge(
+                    .cancel(id: CancelID.remoteCommands),
+                    .cancel(id: CancelID.playback),
+                    .run { _ in
+                        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                    }
+                )
 
             case .setCloudTTSMode(let useCloud):
                 state.useCloudTTS = useCloud
                 return .none
 
             case .observeRemoteCommands:
-                return .run { send in
-                    for await event in nowPlayingClient.remoteCommandEvents() {
-                        await send(.remoteCommandReceived(event))
+                return .merge(
+                    .run { send in
+                        for await event in nowPlayingClient.remoteCommandEvents() {
+                            await send(.remoteCommandReceived(event))
+                        }
+                    },
+                    .run { send in
+                        for await notification in NotificationCenter.default.notifications(
+                            named: AVAudioSession.interruptionNotification
+                        ) {
+                            guard let typeValue = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+                                  typeValue == AVAudioSession.InterruptionType.began.rawValue else { continue }
+                            await send(.stopPlaying)
+                        }
                     }
-                }
+                )
                 .cancellable(id: CancelID.remoteCommands, cancelInFlight: true)
 
             case .remoteCommandReceived(let event):
