@@ -57,7 +57,7 @@ struct NowPlayingFeature {
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.nowPlayingClient) var nowPlayingClient
 
-    private enum CancelID { case remoteCommands }
+    private enum CancelID { case remoteCommands, playback }
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -112,25 +112,25 @@ struct NowPlayingFeature {
                             try audioSession.setCategory(.playback, mode: .spokenAudio)
                             try audioSession.setActive(true)
 
-                            let audioPlayer = try AVAudioPlayer(contentsOf: audioURL)
-
-                            // 速度設定を適用（TextInputViewと同じロジック）
-                            audioPlayer.enableRate = true
-                            // AVAudioPlayerのrateは0.5〜2.0（AVSpeechUtteranceは0.0〜1.0でデフォルト0.5）
-                            // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
-                            // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
+                            let player = try AVAudioPlayer(contentsOf: audioURL)
+                            player.enableRate = true
                             let speechRate = UserDefaultsManager.shared.speechRate
-                            let playbackRate = max(0.5, min(2.0, speechRate * 2.0))
-                            audioPlayer.rate = playbackRate
+                            player.rate = max(0.5, min(2.0, speechRate * 2.0))
+                            player.play()
 
-                            audioPlayer.play()
-
-                            // Wait for playback to finish
-                            while audioPlayer.isPlaying {
-                                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 second
+                            try await withTaskCancellationHandler {
+                                while player.isPlaying {
+                                    try await Task.sleep(nanoseconds: 100_000_000)
+                                }
+                            } onCancel: {
+                                player.stop()
                             }
 
-                            await send(.speechFinished)
+                            if !Task.isCancelled {
+                                await send(.speechFinished)
+                            }
+                        } catch is CancellationError {
+                            // stopPlaying によりキャンセル済み、何もしない
                         } catch {
                             errorLog("Cloud TTS playback failed: \(error)")
                             await send(.speechFinished)
@@ -183,14 +183,18 @@ struct NowPlayingFeature {
                         }
                     }
                 }
+                .cancellable(id: CancelID.playback, cancelInFlight: true)
 
             case .stopPlaying:
                 // 一時停止するがコンテンツは保持（ミニプレイヤーは表示したまま）
                 // pauseSpeaking() は呼ばない: 完了後の stopPlaying が次の再生を即座に pause するレースコンディションの原因になる
-                // 手動停止は TextInputView.stopSpeaking() が直接 stopSpeaking() を呼ぶため effect は不要
+                // ミニプレイヤーからの停止に対応するため playback をキャンセルし synthesizer も止める
                 state.isPlaying = false
                 nowPlayingClient.updateNowPlayingInfo(state.currentTitle, false)
-                return .none
+                return .merge(
+                    .cancel(id: CancelID.playback),
+                    .run { _ in _ = await speechSynthesizer.stopSpeaking() }
+                )
 
             case .dismiss:
                 // ミニプレイヤーを完全に閉じる
@@ -204,6 +208,7 @@ struct NowPlayingFeature {
                 nowPlayingClient.clearNowPlayingInfo()
                 return .merge(
                     .cancel(id: CancelID.remoteCommands),
+                    .cancel(id: CancelID.playback),
                     .run { _ in _ = await speechSynthesizer.stopSpeaking() }
                 )
 
