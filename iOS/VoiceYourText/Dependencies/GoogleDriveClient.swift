@@ -36,15 +36,19 @@ extension GoogleDriveClient: DependencyKey {
                 throw GoogleDriveError.presentingViewControllerNotFound
             }
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                GIDSignIn.sharedInstance.signIn(
-                    withPresenting: viewController,
-                    hint: nil,
-                    additionalScopes: ["https://www.googleapis.com/auth/drive.readonly"]
-                ) { _, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                    } else {
-                        continuation.resume()
+                // GIDSignIn internally presents SFSafariViewController, which requires the main thread.
+                // On iOS 26+, calling presentViewController off the main thread is a hard crash.
+                DispatchQueue.main.async {
+                    GIDSignIn.sharedInstance.signIn(
+                        withPresenting: viewController,
+                        hint: nil,
+                        additionalScopes: ["https://www.googleapis.com/auth/drive.readonly"]
+                    ) { _, error in
+                        if let error {
+                            continuation.resume(throwing: error)
+                        } else {
+                            continuation.resume()
+                        }
                     }
                 }
             }
