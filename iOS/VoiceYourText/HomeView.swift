@@ -59,9 +59,6 @@ struct HomeView: View {
             WithViewStore(store, observe: { $0 }) { viewStore in
                 ScrollView {
                     VStack(spacing: 20) {
-                        // Android版告知バナー
-                        AndroidAnnouncementBanner()
-
                         // 機能ボタングリッド
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
