@@ -754,20 +754,33 @@ struct PhoneMockupView<Content: View>: View {
 
 struct AppStoreScreenshotWithFrame<Content: View>: View {
     let caption: String
+    var subtitle: String? = nil
     @ViewBuilder let content: () -> Content
 
     var body: some View {
         VStack(spacing: 0) {
-            Text(caption)
-                .font(.system(size: 44, weight: .bold, design: .rounded))
-                .multilineTextAlignment(.center)
-                .foregroundColor(.black)
-                .lineSpacing(4)
-                .minimumScaleFactor(0.7)
-                .padding(.horizontal, 36)
-                .padding(.top, 36)
-                .padding(.bottom, 20)
-                .frame(maxWidth: .infinity)
+            VStack(spacing: 8) {
+                Text(caption)
+                    .font(.system(size: 44, weight: .bold, design: .rounded))
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.black)
+                    .lineSpacing(4)
+                    .minimumScaleFactor(0.7)
+                    .frame(maxWidth: .infinity)
+
+                if let subtitle {
+                    Text(subtitle)
+                        .font(.system(size: 16, weight: .regular, design: .rounded))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                        .lineSpacing(3)
+                        .minimumScaleFactor(0.85)
+                        .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.horizontal, 36)
+            .padding(.top, 36)
+            .padding(.bottom, 20)
 
             Spacer(minLength: 0)
 
@@ -788,9 +801,12 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 // iPhone 6.7" frame: 430 × 932 pt
 
 // ── JA ──
-#Preview("📱 JA 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
-    AppStoreScreenshotWithFrame(caption: "読む手間を、\n声に任せよう") {
-        MockScreenWithTopTab(title: "読み上げ") { HomeContent() }
+#Preview("📱 JA 01 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(
+        caption: "移動中に\nPDFを読み上げ",
+        subtitle: "通勤・運動・料理中にPDFや長文を自動読み上げ。\n耳でインプット、毎日のながら時間を活用。"
+    ) {
+        HighlightReadingContent()
     }
     .environment(\.locale, .init(identifier: "ja"))
 }
@@ -802,9 +818,9 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
     .environment(\.locale, .init(identifier: "ja"))
 }
 
-#Preview("📱 JA 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
-    AppStoreScreenshotWithFrame(caption: "リアルタイム\nハイライトで聴きやすい") {
-        HighlightReadingContent()
+#Preview("📱 JA 03 Sources", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "7つのソースから\nかんたんインポート") {
+        MockScreenWithTopTab(title: "読み上げ") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "ja"))
 }
@@ -817,9 +833,12 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
 }
 
 // ── EN ──
-#Preview("📱 EN 01 Demo", traits: .fixedLayout(width: 430, height: 932)) {
-    AppStoreScreenshotWithFrame(caption: "Let Your Voice\nDo the Reading") {
-        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
+#Preview("📱 EN 01 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(
+        caption: "Listen While\nYou Move",
+        subtitle: "Auto-read PDFs, ebooks & web pages hands-free.\nTurn your commute into learning time."
+    ) {
+        HighlightReadingContent()
     }
     .environment(\.locale, .init(identifier: "en"))
 }
@@ -831,9 +850,9 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
     .environment(\.locale, .init(identifier: "en"))
 }
 
-#Preview("📱 EN 03 Highlight", traits: .fixedLayout(width: 430, height: 932)) {
-    AppStoreScreenshotWithFrame(caption: "Follow Along\nwith Highlights") {
-        HighlightReadingContent()
+#Preview("📱 EN 03 Sources", traits: .fixedLayout(width: 430, height: 932)) {
+    AppStoreScreenshotWithFrame(caption: "7 Sources,\nOne App") {
+        MockScreenWithTopTab(title: "Voice Narrator") { HomeContent() }
     }
     .environment(\.locale, .init(identifier: "en"))
 }
