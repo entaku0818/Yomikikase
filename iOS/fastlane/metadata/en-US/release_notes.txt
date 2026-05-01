@@ -1,3 +1,2 @@
-- Control playback from the Lock Screen and Control Center
-- Improved background audio stability
+- Improved app discoverability in search
 - General stability and performance improvements
