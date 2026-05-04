@@ -1,1 +1,1 @@
-Text-to-Speech, Multilingual, Voice Customization, Text Saving, Audio Sharing,
+텍스트음성변환,TTS,PDF,읽어주기,EPUB,전자책,오디오북,웹페이지,구글드라이브,접근성,스캐너,난독증,시각장애,배경재생,다국어,음성합성,학습,언어학습,듣기,교육

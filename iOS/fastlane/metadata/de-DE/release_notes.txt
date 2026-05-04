@@ -1,3 +1,2 @@
-- Wiedergabe über den Sperrbildschirm und das Kontrollzentrum steuern
-- Verbesserte Stabilität bei der Hintergrundwiedergabe
-- Allgemeine Stabilitäts- und Leistungsverbesserungen
+- Stabilitäts- und Leistungsverbesserungen
+- Kleinere Fehlerbehebungen

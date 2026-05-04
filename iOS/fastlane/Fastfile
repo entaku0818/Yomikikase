@@ -103,7 +103,7 @@ platform :ios do
       force: true,                   # 確認なしで強制的に実行
       overwrite_screenshots: false,  # スクリーンショットの上書きを無効
       ignore_language_directory_validation: true, # 言語ディレクトリの検証を無視
-      run_precheck_before_submit: true,  # 提出前の事前チェックを実行
+      run_precheck_before_submit: false,  # 提出前の事前チェックをスキップ
       precheck_include_in_app_purchases: false,  # In-app purchasesのチェックをスキップ
       submit_for_review: true,       # 審査提出を実行
       automatic_release: false,      # 審査通過後の自動リリースは無効

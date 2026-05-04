@@ -1,1 +1,1 @@
-text to speech,PDF reader,read aloud,epub,ebook reader,audiobook,web reader,google drive,highlight
+text to speech,tts,PDF reader,read aloud,epub,ebook reader,web reader,google drive,dyslexia,scanner

@@ -1,35 +1,38 @@
-Turn any text into speech — PDFs, websites, EPUB books, Google Drive files, scanned documents, and more. Voice Narrator is the all-in-one text-to-speech app that fits into your daily life.
+Voice Narrator is the all-in-one text-to-speech (TTS) app that reads anything aloud — PDFs, web pages, EPUB books, Google Drive files, scanned documents, and more. No account needed. Everything stays on your device.
 
-KEY FEATURES
-
-Read Any Content Aloud
-- PDF files: import and listen to documents, reports, and books
-- Web pages: paste a URL and hear any article read to you
+7 WAYS TO ADD CONTENT
+- Text input: type or paste any text and listen instantly
+- PDF: import documents, books, and reports
+- Web pages: paste a URL — any article read aloud
 - EPUB: listen to ebooks from your library
-- Google Drive: open files directly from your cloud storage
-- Document Scanner: point your camera at any printed text and listen instantly
+- Google Drive: stream files directly from cloud storage
+- Scanner: point your camera at printed text and listen
 - TXT files: import plain text from any source
 
-Powerful Playback Controls
-- Adjust reading speed from 0.5x to 2x (or faster)
-- Control pitch to find the most comfortable voice for you
+REAL-TIME TEXT HIGHLIGHTING
+See every word highlighted as it's read aloud. Auto-scroll keeps you in sync with the audio — great for studying, following along, or checking pronunciation. Works in PDFs too.
+
+DESIGNED FOR ACCESSIBILITY
+Built for users with dyslexia, visual impairments, or reading fatigue. Adjustable speed, pitch, and multiple voice options help everyone find their ideal listening experience.
+
+PLAYBACK CONTROLS
+- Reading speed: 0.5x to 2x
+- Voice pitch adjustment
 - Background playback — keep listening while using other apps
-- Mini player for quick access during multitasking
 
-Personalization
-- Custom user dictionary: fix mispronounced names, technical terms, or brand names
-- Multiple language support: switch between languages for multilingual content
-- Save frequently used texts for instant replay
+PERSONALIZATION
+- Custom dictionary: correct mispronounced names, technical terms, and brand names
+- 10+ languages supported
+- Save frequently used texts for quick replay
 
-Accessibility First
-- Designed for users with dyslexia, visual impairments, or reading fatigue
-- No account required — just open and listen
-- All processing done on-device for privacy
+WHO IT'S FOR
+- Students reviewing notes or textbooks hands-free
+- Professionals catching up on documents during commutes
+- Language learners improving listening comprehension
+- Anyone with dyslexia, low vision, or reading fatigue
 
-WHO IT IS FOR
-- Students who want to review notes or textbooks hands-free
-- Professionals who listen to reports and documents during commutes
-- Language learners who improve listening comprehension
-- Anyone who prefers listening over reading
+PREMIUM
+- Remove all ads
+- Unlimited PDF storage (free plan: 3 files)
 
-Privacy: No account required. Your content stays on your device.
+Privacy: No account required. All content is processed on-device.

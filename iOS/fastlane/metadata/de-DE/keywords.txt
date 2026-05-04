@@ -1,1 +1,1 @@
-Text-to-Speech, Mehrsprachig, Sprachanpassung, Textspeicherung, Audio-Teilen,
+vorlesen,Sprachausgabe,PDF,EPUB,Hörbuch,Legasthenie,Webseite,Google Drive,Scanner,Barrierefreiheit

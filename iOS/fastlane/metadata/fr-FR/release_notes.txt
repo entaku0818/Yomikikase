@@ -1,3 +1,2 @@
-- Contrôlez la lecture depuis l'écran verrouillé et le Centre de contrôle
-- Amélioration de la stabilité de la lecture en arrière-plan
-- Améliorations générales de la stabilité et des performances
+- Améliorations de stabilité et des performances
+- Corrections mineures

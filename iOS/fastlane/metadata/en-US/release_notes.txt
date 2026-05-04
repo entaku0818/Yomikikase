@@ -1,2 +1,2 @@
-- Improved app discoverability in search
-- General stability and performance improvements
+- Stability and performance improvements
+- Minor bug fixes

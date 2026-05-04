@@ -1,3 +1,2 @@
-- Điều khiển phát lại từ Màn hình khóa và Trung tâm điều khiển
-- Cải thiện độ ổn định âm thanh nền
-- Cải tiến ổn định và hiệu suất chung
+- Cải thiện độ ổn định và hiệu suất
+- Sửa lỗi nhỏ

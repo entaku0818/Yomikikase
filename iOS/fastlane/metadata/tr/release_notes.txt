@@ -1,3 +1,2 @@
-- Kilit ekranı ve Kontrol Merkezi'nden oynatmayı kontrol edin
-- Arka plan ses kararlılığı iyileştirildi
-- Genel kararlılık ve performans iyileştirmeleri
+- Kararlılık ve performans iyileştirmeleri
+- Küçük hata düzeltmeleri

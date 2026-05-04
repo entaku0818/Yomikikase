@@ -1,3 +1,2 @@
-- Controla la reproducción desde la pantalla de bloqueo y el Centro de control
-- Estabilidad de audio en segundo plano mejorada
-- Mejoras generales de estabilidad y rendimiento
+- Mejoras de estabilidad y rendimiento
+- Correcciones menores de errores
