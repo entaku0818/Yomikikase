@@ -1,2 +1,1 @@
-- Stabilitäts- und Leistungsverbesserungen
-- Kleinere Fehlerbehebungen
+Verbessertes Onboarding mit einer interaktiven PDF-Vorlesedemo, damit Sie die Kernfunktion der App gleich von Anfang an erleben können.

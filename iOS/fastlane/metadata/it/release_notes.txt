@@ -1,2 +1,1 @@
-- Miglioramenti alla stabilità e alle prestazioni
-- Correzioni minori
+Onboarding migliorato con una demo interattiva di lettura ad alta voce di PDF, per sperimentare la funzione principale dell'app fin dall'inizio.

@@ -1,2 +1,1 @@
-- Kararlılık ve performans iyileştirmeleri
-- Küçük hata düzeltmeleri
+Uygulamanın temel özelliğini başından itibaren deneyimleyebilmeniz için etkileşimli PDF sesli okuma demosuyla katılım süreci iyileştirildi.

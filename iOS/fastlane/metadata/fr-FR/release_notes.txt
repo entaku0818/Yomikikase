@@ -1,2 +1,1 @@
-- Améliorations de stabilité et des performances
-- Corrections mineures
+Intégration améliorée avec une démonstration interactive de lecture PDF à voix haute, pour découvrir la fonctionnalité principale de l'application dès le départ.

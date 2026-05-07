@@ -1,2 +1,1 @@
-- Cải thiện độ ổn định và hiệu suất
-- Sửa lỗi nhỏ
+Cải thiện quá trình giới thiệu với bản demo đọc to PDF tương tác, để bạn trải nghiệm tính năng cốt lõi của ứng dụng ngay từ đầu.

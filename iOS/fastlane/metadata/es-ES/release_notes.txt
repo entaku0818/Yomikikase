@@ -1,2 +1,1 @@
-- Mejoras de estabilidad y rendimiento
-- Correcciones menores de errores
+Incorporación mejorada con una demostración interactiva de lectura en voz alta de PDF, para que puedas experimentar la función principal de la app desde el primer momento.
