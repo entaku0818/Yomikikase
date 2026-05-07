@@ -1,5 +1,65 @@
 import SwiftUI
 import AVFoundation
+import PDFKit
+import ComposableArchitecture
+
+// MARK: - Sample PDF
+
+private func makeSamplePDFData() -> Data {
+    let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)
+    let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
+    return renderer.pdfData { ctx in
+        ctx.beginPage()
+        let titleAttrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 26),
+            .foregroundColor: UIColor.black
+        ]
+        let bodyAttrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 17),
+            .foregroundColor: UIColor.darkGray
+        ]
+        let lineAttrs: [NSAttributedString.Key: Any] = [
+            .font: UIFont.systemFont(ofSize: 15),
+            .foregroundColor: UIColor(white: 0.5, alpha: 1)
+        ]
+        "読み上げナレーターの使い方".draw(at: CGPoint(x: 48, y: 60), withAttributes: titleAttrs)
+        UIColor(white: 0.85, alpha: 1).setFill()
+        UIRectFill(CGRect(x: 48, y: 100, width: 499, height: 1))
+        let body = "このアプリは、PDFや電子書籍、ウェブページを\n音声で読み上げます。\n\n使い方はとても簡単です。\nファイルを開いて、再生ボタンを押すだけ。\n\n通勤中、料理中、運動中など\nながら聴きに最適です。"
+        (body as NSString).draw(
+            in: CGRect(x: 48, y: 120, width: 499, height: 400),
+            withAttributes: bodyAttrs
+        )
+        let footer = "読み上げナレーター  |  ver 1.0"
+        (footer as NSString).draw(at: CGPoint(x: 48, y: 800), withAttributes: lineAttrs)
+    }
+}
+
+private let sampleReadText = "読み上げナレーターの使い方。このアプリは、PDFや電子書籍、ウェブページを音声で読み上げます。使い方はとても簡単です。ファイルを開いて、再生ボタンを押すだけ。通勤中、料理中、運動中など、ながら聴きに最適です。"
+
+// MARK: - PDF UIViewRepresentable
+
+private struct SamplePDFView: UIViewRepresentable {
+    let data: Data
+
+    func makeUIView(context: Context) -> PDFKit.PDFView {
+        let view = PDFKit.PDFView()
+        view.displayMode = .singlePage
+        view.autoScales = true
+        view.backgroundColor = .white
+        view.isUserInteractionEnabled = false
+        if let doc = PDFDocument(data: data) {
+            view.document = doc
+        }
+        return view
+    }
+
+    func updateUIView(_ uiView: PDFKit.PDFView, context: Context) {
+        guard uiView.document == nil, !data.isEmpty,
+              let doc = PDFDocument(data: data) else { return }
+        uiView.document = doc
+    }
+}
 
 // MARK: - Speech Helper
 
@@ -8,6 +68,8 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
     @Published var hasPlayed = false
 
     private let synthesizer = AVSpeechSynthesizer()
+    var speakStartTime: Date?
+    var onCompleted: ((Double) -> Void)?
 
     override init() {
         super.init()
@@ -19,6 +81,7 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
         let utterance = AVSpeechUtterance(string: text)
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate
         utterance.volume = 1.0
+        speakStartTime = Date()
         isSpeaking = true
         synthesizer.speak(utterance)
     }
@@ -32,6 +95,8 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
         DispatchQueue.main.async {
             self.isSpeaking = false
             self.hasPlayed = true
+            let duration = self.speakStartTime.map { Date().timeIntervalSince($0) } ?? 0
+            self.onCompleted?(duration)
         }
     }
 
@@ -48,8 +113,9 @@ struct OnboardingView: View {
     var onComplete: () -> Void
 
     @State private var currentStep: Int
-    @State private var demoText = "こんにちは！読み上げナレーターです。"
+    @State private var samplePDFData: Data?
     @StateObject private var speaker = OnboardingSpeaker()
+    @Dependency(\.analytics) private var analytics
 
     init(onComplete: @escaping () -> Void, initialStep: Int = 0) {
         self.onComplete = onComplete
@@ -61,7 +127,6 @@ struct OnboardingView: View {
             Color(uiColor: .systemBackground).ignoresSafeArea()
 
             VStack(spacing: 0) {
-                // ステップインジケーター
                 HStack(spacing: 8) {
                     ForEach(0..<3) { i in
                         Capsule()
@@ -73,7 +138,6 @@ struct OnboardingView: View {
                 .padding(.top, 20)
                 .padding(.bottom, 32)
 
-                // コンテンツ
                 Group {
                     switch currentStep {
                     case 0: welcomeStep
@@ -86,14 +150,24 @@ struct OnboardingView: View {
                     removal: .move(edge: .leading).combined(with: .opacity)
                 ))
                 .id(currentStep)
+                .onAppear {
+                    analytics.logEvent("onboarding_step_view", ["step": currentStep])
+                }
 
                 Spacer()
 
-                // ナビゲーションボタン
                 navigationButtons
                     .padding(.bottom, 48)
                     .padding(.horizontal, 24)
             }
+        }
+        .onAppear {
+            speaker.onCompleted = { duration in
+                analytics.logEvent("onboarding_demo_completed", ["listen_duration": duration])
+            }
+        }
+        .task {
+            samplePDFData = makeSamplePDFData()
         }
     }
 
@@ -136,53 +210,56 @@ struct OnboardingView: View {
         .frame(maxWidth: .infinity)
     }
 
-    // MARK: - Step 2: Interactive Demo
+    // MARK: - Step 2: PDF Demo
 
     private var demoStep: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 20) {
             VStack(spacing: 8) {
-                Text("実際に試してみよう")
+                Text("PDFをそのまま読み上げ")
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("テキストを編集して\n再生ボタンを押してください")
+                Text("サンプルPDFで試してみよう")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
             }
 
-            // テキスト入力エリア
-            ZStack(alignment: .topLeading) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(uiColor: .secondarySystemBackground))
-                    .frame(height: 140)
+            RoundedRectangle(cornerRadius: 12)
+                .fill(Color.white)
+                .overlay(
+                    Group {
+                        if let data = samplePDFData {
+                            SamplePDFView(data: data)
+                        } else {
+                            ProgressView()
+                        }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(
+                            speaker.isSpeaking ? Color.blue : Color.gray.opacity(0.25),
+                            lineWidth: speaker.isSpeaking ? 2 : 1
+                        )
+                        .animation(.easeInOut, value: speaker.isSpeaking)
+                )
+                .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
+                .frame(height: 210)
+                .padding(.horizontal, 24)
 
-                TextEditor(text: $demoText)
-                    .font(.body)
-                    .padding(12)
-                    .frame(height: 140)
-                    .scrollContentBackground(.hidden)
-                    .background(Color.clear)
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: 16)
-                    .stroke(speaker.isSpeaking ? Color.blue : Color.clear, lineWidth: 2)
-                    .animation(.easeInOut, value: speaker.isSpeaking)
-            )
-            .padding(.horizontal, 24)
-
-            // 再生ボタン
             Button {
                 if speaker.isSpeaking {
                     speaker.stop()
                 } else {
-                    speaker.speak(demoText)
+                    analytics.logEvent("onboarding_demo_played", ["demo_type": "pdf"])
+                    speaker.speak(sampleReadText)
                 }
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: speaker.isSpeaking ? "stop.circle.fill" : "play.circle.fill")
                         .font(.system(size: 28))
-                    Text(speaker.isSpeaking ? "停止" : "読み上げる")
+                    Text(speaker.isSpeaking ? "停止" : "▶ 読み上げる")
                         .font(.headline)
                 }
                 .foregroundColor(.white)
@@ -278,6 +355,9 @@ struct OnboardingView: View {
                 }
             } else if currentStep == 1 {
                 Button {
+                    if !speaker.hasPlayed {
+                        analytics.logEvent("onboarding_skipped", ["step": currentStep])
+                    }
                     speaker.stop()
                     advance()
                 } label: {
@@ -291,6 +371,7 @@ struct OnboardingView: View {
                 }
             } else {
                 Button {
+                    analytics.logEvent("onboarding_completed", ["completed_demo": speaker.hasPlayed ? 1 : 0])
                     UserDefaultsManager.shared.hasCompletedOnboarding = true
                     onComplete()
                 } label: {
@@ -319,7 +400,7 @@ struct OnboardingView: View {
     OnboardingView(onComplete: {}, initialStep: 0)
 }
 
-#Preview("Step2 Demo") {
+#Preview("Step2 PDF Demo") {
     OnboardingView(onComplete: {}, initialStep: 1)
 }
 
@@ -331,7 +412,7 @@ struct OnboardingView: View {
     OnboardingView(onComplete: {}, initialStep: 0)
 }
 
-#Preview("iPad Step2 Demo", traits: .fixedLayout(width: 768, height: 1024)) {
+#Preview("iPad Step2 PDF Demo", traits: .fixedLayout(width: 768, height: 1024)) {
     OnboardingView(onComplete: {}, initialStep: 1)
 }
 
