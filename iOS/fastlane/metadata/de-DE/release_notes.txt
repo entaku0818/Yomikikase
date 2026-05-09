@@ -1,1 +1,1 @@
-Verbessertes Onboarding mit einer interaktiven PDF-Vorlesedemo, damit Sie die Kernfunktion der App gleich von Anfang an erleben können.
+Kleinere Fehlerbehebungen und Verbesserungen.

@@ -1,1 +1,1 @@
-Cải thiện quá trình giới thiệu với bản demo đọc to PDF tương tác, để bạn trải nghiệm tính năng cốt lõi của ứng dụng ngay từ đầu.
+Sửa lỗi nhỏ và cải tiến.

@@ -1,1 +1,1 @@
-Uygulamanın temel özelliğini başından itibaren deneyimleyebilmeniz için etkileşimli PDF sesli okuma demosuyla katılım süreci iyileştirildi.
+Küçük hata düzeltmeleri ve iyileştirmeler.

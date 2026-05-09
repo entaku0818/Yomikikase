@@ -1,1 +1,1 @@
-Intégration améliorée avec une démonstration interactive de lecture PDF à voix haute, pour découvrir la fonctionnalité principale de l'application dès le départ.
+Corrections de bugs mineurs et améliorations.

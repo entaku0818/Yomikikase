@@ -1,1 +1,1 @@
-Improved onboarding with an interactive PDF read-aloud demo, so you can experience the app's core feature right from the start.
+Minor bug fixes and improvements.
