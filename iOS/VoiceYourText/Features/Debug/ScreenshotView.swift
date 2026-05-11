@@ -1,4 +1,5 @@
 import SwiftUI
+import ComposableArchitecture
 
 #if DEBUG
 struct ScreenshotView: View {
@@ -636,19 +637,25 @@ struct UserDictionaryContent: View {
 
 #Preview("JA 01 Welcome") {
     AppStoreScreenshot(caption: "読み上げナレーター\nへようこそ") {
-        OnboardingView(onComplete: {}, initialStep: 0)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 
 #Preview("JA 02 Demo") {
     AppStoreScreenshot(caption: "体験して\nみよう") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 
 #Preview("JA 03 Features") {
     AppStoreScreenshot(caption: "PDF・ウェブ\n電子書籍も対応") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 
@@ -662,19 +669,25 @@ struct UserDictionaryContent: View {
 
 #Preview("EN 01 Welcome") {
     AppStoreScreenshot(caption: "Welcome to\nVoice Narrator") {
-        OnboardingView(onComplete: {}, initialStep: 0)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 
 #Preview("EN 02 Demo") {
     AppStoreScreenshot(caption: "Try it\nyourself") {
-        OnboardingView(onComplete: {}, initialStep: 1)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 
 #Preview("EN 03 Features") {
     AppStoreScreenshot(caption: "PDF, Web &\neBooks supported") {
-        OnboardingView(onComplete: {}, initialStep: 2)
+        OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
+            OnboardingReducer(onComplete: {})
+        })
     }
 }
 

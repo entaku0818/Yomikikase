@@ -5,7 +5,7 @@ import ComposableArchitecture
 
 // MARK: - Sample PDF
 
-private func makeSamplePDFData() -> Data {
+func makeSamplePDFData() -> Data {
     let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)
     let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
     return renderer.pdfData { ctx in
@@ -64,12 +64,10 @@ private struct SamplePDFView: UIViewRepresentable {
 // MARK: - Speech Helper
 
 private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, ObservableObject {
-    @Published var isSpeaking = false
-    @Published var hasPlayed = false
-
     private let synthesizer = AVSpeechSynthesizer()
     var speakStartTime: Date?
     var onCompleted: ((Double) -> Void)?
+    var onCancelled: (() -> Void)?
 
     override init() {
         super.init()
@@ -82,19 +80,15 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate
         utterance.volume = 1.0
         speakStartTime = Date()
-        isSpeaking = true
         synthesizer.speak(utterance)
     }
 
     func stop() {
         synthesizer.stopSpeaking(at: .immediate)
-        isSpeaking = false
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.isSpeaking = false
-            self.hasPlayed = true
             let duration = self.speakStartTime.map { Date().timeIntervalSince($0) } ?? 0
             self.onCompleted?(duration)
         }
@@ -102,7 +96,7 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
-            self.isSpeaking = false
+            self.onCancelled?()
         }
     }
 }
@@ -110,17 +104,8 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
 // MARK: - OnboardingView
 
 struct OnboardingView: View {
-    var onComplete: () -> Void
-
-    @State private var currentStep: Int
-    @State private var samplePDFData: Data?
+    @Bindable var store: StoreOf<OnboardingReducer>
     @StateObject private var speaker = OnboardingSpeaker()
-    @Dependency(\.analytics) private var analytics
-
-    init(onComplete: @escaping () -> Void, initialStep: Int = 0) {
-        self.onComplete = onComplete
-        self._currentStep = State(initialValue: initialStep)
-    }
 
     var body: some View {
         ZStack {
@@ -130,16 +115,16 @@ struct OnboardingView: View {
                 HStack(spacing: 8) {
                     ForEach(0..<3) { i in
                         Capsule()
-                            .fill(i == currentStep ? Color.blue : Color.gray.opacity(0.3))
-                            .frame(width: i == currentStep ? 24 : 8, height: 8)
-                            .animation(.spring(response: 0.4), value: currentStep)
+                            .fill(i == store.currentStep ? Color.blue : Color.gray.opacity(0.3))
+                            .frame(width: i == store.currentStep ? 24 : 8, height: 8)
+                            .animation(.spring(response: 0.4), value: store.currentStep)
                     }
                 }
                 .padding(.top, 20)
                 .padding(.bottom, 32)
 
                 Group {
-                    switch currentStep {
+                    switch store.currentStep {
                     case 0: welcomeStep
                     case 1: demoStep
                     default: featuresStep
@@ -149,9 +134,9 @@ struct OnboardingView: View {
                     insertion: .move(edge: .trailing).combined(with: .opacity),
                     removal: .move(edge: .leading).combined(with: .opacity)
                 ))
-                .id(currentStep)
+                .id(store.currentStep)
                 .onAppear {
-                    analytics.logEvent("onboarding_step_view", ["step": currentStep])
+                    store.send(.view(.stepViewAppeared(store.currentStep)))
                 }
 
                 Spacer()
@@ -163,11 +148,18 @@ struct OnboardingView: View {
         }
         .onAppear {
             speaker.onCompleted = { duration in
-                analytics.logEvent("onboarding_demo_completed", ["listen_duration": duration])
+                store.send(.speechCompleted(duration))
+            }
+            speaker.onCancelled = {
+                store.send(.speechCancelled)
             }
         }
         .task {
-            samplePDFData = makeSamplePDFData()
+            // PDF generation is CPU-bound; offload to avoid blocking the main thread
+            let data = await Task.detached(priority: .utility) {
+                makeSamplePDFData()
+            }.value
+            store.send(.samplePDFGenerated(data))
         }
     }
 
@@ -228,7 +220,7 @@ struct OnboardingView: View {
                 .fill(Color.white)
                 .overlay(
                     Group {
-                        if let data = samplePDFData {
+                        if let data = store.samplePDFData {
                             SamplePDFView(data: data)
                         } else {
                             ProgressView()
@@ -239,39 +231,40 @@ struct OnboardingView: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(
-                            speaker.isSpeaking ? Color.blue : Color.gray.opacity(0.25),
-                            lineWidth: speaker.isSpeaking ? 2 : 1
+                            store.isSpeaking ? Color.blue : Color.gray.opacity(0.25),
+                            lineWidth: store.isSpeaking ? 2 : 1
                         )
-                        .animation(.easeInOut, value: speaker.isSpeaking)
+                        .animation(.easeInOut, value: store.isSpeaking)
                 )
                 .shadow(color: .black.opacity(0.06), radius: 8, x: 0, y: 2)
                 .frame(height: 210)
                 .padding(.horizontal, 24)
 
             Button {
-                if speaker.isSpeaking {
+                if store.isSpeaking {
                     speaker.stop()
+                    store.send(.view(.demoStopTapped))
                 } else {
-                    analytics.logEvent("onboarding_demo_played", ["demo_type": "pdf"])
+                    store.send(.view(.demoPlayTapped))
                     speaker.speak(sampleReadText)
                 }
             } label: {
                 HStack(spacing: 12) {
-                    Image(systemName: speaker.isSpeaking ? "stop.circle.fill" : "play.circle.fill")
+                    Image(systemName: store.isSpeaking ? "stop.circle.fill" : "play.circle.fill")
                         .font(.system(size: 28))
-                    Text(speaker.isSpeaking ? "停止" : "▶ 読み上げる")
+                    Text(store.isSpeaking ? "停止" : "▶ 読み上げる")
                         .font(.headline)
                 }
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(speaker.isSpeaking ? Color.red : Color.blue)
+                .background(store.isSpeaking ? Color.red : Color.blue)
                 .cornerRadius(16)
                 .padding(.horizontal, 24)
             }
-            .animation(.easeInOut(duration: 0.2), value: speaker.isSpeaking)
+            .animation(.easeInOut(duration: 0.2), value: store.isSpeaking)
 
-            if speaker.hasPlayed {
+            if store.hasPlayed {
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.green)
@@ -341,9 +334,9 @@ struct OnboardingView: View {
 
     private var navigationButtons: some View {
         VStack(spacing: 12) {
-            if currentStep == 0 {
+            if store.currentStep == 0 {
                 Button {
-                    advance()
+                    store.send(.view(.nextTapped), animation: .easeInOut(duration: 0.3))
                 } label: {
                     Text("はじめる")
                         .font(.headline)
@@ -353,27 +346,26 @@ struct OnboardingView: View {
                         .background(Color.blue)
                         .cornerRadius(16)
                 }
-            } else if currentStep == 1 {
+            } else if store.currentStep == 1 {
                 Button {
-                    if !speaker.hasPlayed {
-                        analytics.logEvent("onboarding_skipped", ["step": currentStep])
-                    }
                     speaker.stop()
-                    advance()
+                    if store.hasPlayed {
+                        store.send(.view(.nextTapped), animation: .easeInOut(duration: 0.3))
+                    } else {
+                        store.send(.view(.skipTapped), animation: .easeInOut(duration: 0.3))
+                    }
                 } label: {
-                    Text(speaker.hasPlayed ? "次へ" : "スキップ")
+                    Text(store.hasPlayed ? "次へ" : "スキップ")
                         .font(.headline)
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(speaker.hasPlayed ? Color.blue : Color.gray)
+                        .background(store.hasPlayed ? Color.blue : Color.gray)
                         .cornerRadius(16)
                 }
             } else {
                 Button {
-                    analytics.logEvent("onboarding_completed", ["completed_demo": speaker.hasPlayed ? 1 : 0])
-                    UserDefaultsManager.shared.hasCompletedOnboarding = true
-                    onComplete()
+                    store.send(.view(.completeTapped))
                 } label: {
                     Text("使い始める")
                         .font(.headline)
@@ -386,36 +378,42 @@ struct OnboardingView: View {
             }
         }
     }
-
-    // MARK: - Helpers
-
-    private func advance() {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            currentStep += 1
-        }
-    }
 }
 
+// MARK: - Previews
+
 #Preview("Step1 Welcome") {
-    OnboardingView(onComplete: {}, initialStep: 0)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
+        OnboardingReducer(onComplete: {})
+    })
 }
 
 #Preview("Step2 PDF Demo") {
-    OnboardingView(onComplete: {}, initialStep: 1)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
+        OnboardingReducer(onComplete: {})
+    })
 }
 
 #Preview("Step3 Features") {
-    OnboardingView(onComplete: {}, initialStep: 2)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
+        OnboardingReducer(onComplete: {})
+    })
 }
 
 #Preview("iPad Step1 Welcome", traits: .fixedLayout(width: 768, height: 1024)) {
-    OnboardingView(onComplete: {}, initialStep: 0)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
+        OnboardingReducer(onComplete: {})
+    })
 }
 
 #Preview("iPad Step2 PDF Demo", traits: .fixedLayout(width: 768, height: 1024)) {
-    OnboardingView(onComplete: {}, initialStep: 1)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
+        OnboardingReducer(onComplete: {})
+    })
 }
 
 #Preview("iPad Step3 Features", traits: .fixedLayout(width: 768, height: 1024)) {
-    OnboardingView(onComplete: {}, initialStep: 2)
+    OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
+        OnboardingReducer(onComplete: {})
+    })
 }

@@ -154,9 +154,22 @@ struct VoiceYourTextApp: App {
             }
         }
         .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView {
-                showOnboarding = false
-            }
+            OnboardingSheetContainer(onComplete: { showOnboarding = false })
         }
+    }
+}
+
+// Wrapper that holds the OnboardingReducer Store stable across parent re-renders
+private struct OnboardingSheetContainer: View {
+    @State private var store: StoreOf<OnboardingReducer>
+
+    init(onComplete: @escaping @Sendable () -> Void) {
+        _store = State(wrappedValue: Store(initialState: OnboardingReducer.State()) {
+            OnboardingReducer(onComplete: onComplete)
+        })
+    }
+
+    var body: some View {
+        OnboardingView(store: store)
     }
 }
