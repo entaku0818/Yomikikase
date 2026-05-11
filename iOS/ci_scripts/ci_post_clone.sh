@@ -11,8 +11,8 @@ defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
 # xcconfig ファイルが存在しない場合（Xcode Cloud など）に生成する
 CONFIG_DIR="${CI_WORKSPACE}/iOS/VoiceYourText/config"
 
-REVENUECAT_KEY="${REVENUECAT_API_KEY:-appl_uzNTTPCOYqmjHfKBqfkpsFctzfU}"
-CLOUDRUN_KEY="${CLOUDRUN_API_KEY:-893d923d1fa0bd0773a6d1130d906aafdc63bf28abbd3ea207580a5318a257c4}"
+REVENUECAT_KEY="${REVENUECAT_API_KEY:-REVENUECAT_API_KEY_NOT_SET}"
+CLOUDRUN_KEY="${CLOUDRUN_API_KEY:-CLOUDRUN_API_KEY_NOT_SET}"
 
 if [ ! -f "${CONFIG_DIR}/Debug.xcconfig" ]; then
   cat > "${CONFIG_DIR}/Debug.xcconfig" << EOF
@@ -25,7 +25,7 @@ EOF
 fi
 
 if [ ! -f "${CONFIG_DIR}/Release.xcconfig" ]; then
-  ADMOB_PROD="${ADMOB_BANNER_ID:-ca-app-pub-3484697221349891/9659272677}"
+  ADMOB_PROD="${ADMOB_BANNER_ID:-ADMOB_BANNER_ID_NOT_SET}"
   cat > "${CONFIG_DIR}/Release.xcconfig" << EOF
 REVENUECAT_API_KEY = ${REVENUECAT_KEY}
 ADMOB_BANNER_ID = ${ADMOB_PROD}
