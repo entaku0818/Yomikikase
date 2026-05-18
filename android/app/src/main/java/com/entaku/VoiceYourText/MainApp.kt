@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.entaku.VoiceYourText.ads.BannerAdView
 import com.entaku.VoiceYourText.pdf.PdfViewerScreen
 import com.entaku.VoiceYourText.settings.SettingsScreen
 import com.entaku.VoiceYourText.tts.HistoryScreen
@@ -35,6 +37,8 @@ fun MainApp(initialSharedText: String? = null) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
+            Column {
+            BannerAdView()
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == 0,
@@ -60,6 +64,7 @@ fun MainApp(initialSharedText: String? = null) {
                     icon = { Icon(Icons.Default.Settings, contentDescription = "設定") },
                     label = { Text("設定") }
                 )
+            }
             }
         }
     ) { innerPadding ->

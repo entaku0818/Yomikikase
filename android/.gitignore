@@ -10,3 +10,5 @@
 local.properties
 *.jks
 *.keystore
+play-store-credentials.json
+*.pem

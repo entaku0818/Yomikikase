@@ -1,7 +1,14 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+}
+
+val localProperties = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) load(f.inputStream())
 }
 
 android {
@@ -16,6 +23,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val admobAppId = localProperties.getProperty("admob.app.id", "ca-app-pub-3940256099942544~3347511713")
+        val bannerUnitId = localProperties.getProperty("admob.banner.unit.id", "ca-app-pub-3940256099942544/6300978111")
+        manifestPlaceholders["admobAppId"] = admobAppId
+        buildConfigField("String", "BANNER_AD_UNIT_ID", "\"$bannerUnitId\"")
     }
 
     buildTypes {
@@ -36,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -52,6 +65,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.media)
+    implementation(libs.play.services.ads)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)
     androidTestImplementation(libs.androidx.junit)
