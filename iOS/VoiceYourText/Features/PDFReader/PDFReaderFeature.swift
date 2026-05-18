@@ -52,6 +52,7 @@ struct PDFReaderFeature: Reducer {
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioAPI) var audioAPI
     @Dependency(\.audioFileManager) var audioFileManager
+    @Dependency(\.userDefaults) var userDefaults
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -102,7 +103,7 @@ struct PDFReaderFeature: Reducer {
                 guard !state.pdfText.isEmpty else { return .none }
 
                 let useCloud = state.useCloudTTS
-                let voiceId = state.cloudTTSVoiceId ?? UserDefaultsManager.shared.cloudTTSVoiceId
+                let voiceId = state.cloudTTSVoiceId ?? userDefaults.cloudTTSVoiceId()
                 let pdfText = state.pdfText
 
                 if useCloud {
@@ -150,9 +151,9 @@ struct PDFReaderFeature: Reducer {
                     state.isReading = true
 
                     // ユーザー設定から音声設定を取得
-                    let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                    let rate = UserDefaultsManager.shared.speechRate
-                    let pitch = UserDefaultsManager.shared.speechPitch
+                    let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                    let rate = userDefaults.speechRate()
+                    let pitch = userDefaults.speechPitch()
                     let volume: Float = 0.75
 
                     let utterance = AVSpeechUtterance(string: pdfText)
@@ -230,7 +231,7 @@ struct PDFReaderFeature: Reducer {
             case .setCloudTTSVoice(let voiceId):
                 state.cloudTTSVoiceId = voiceId
                 if let voiceId = voiceId {
-                    UserDefaultsManager.shared.cloudTTSVoiceId = voiceId
+                    userDefaults.setCloudTTSVoiceId(voiceId)
                 }
                 return .none
 

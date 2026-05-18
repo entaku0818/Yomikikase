@@ -56,6 +56,7 @@ struct NowPlayingFeature {
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.nowPlayingClient) var nowPlayingClient
+    @Dependency(\.userDefaults) var userDefaults
 
     private enum CancelID { case remoteCommands, playback }
 
@@ -114,7 +115,7 @@ struct NowPlayingFeature {
 
                             let player = try AVAudioPlayer(contentsOf: audioURL)
                             player.enableRate = true
-                            let speechRate = UserDefaultsManager.shared.speechRate
+                            let speechRate = userDefaults.speechRate()
                             player.rate = max(0.5, min(2.0, speechRate * 2.0))
                             player.play()
 
@@ -152,9 +153,9 @@ struct NowPlayingFeature {
                             }
 
                             // ユーザー設定から音声設定を取得
-                            let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                            let rate = UserDefaultsManager.shared.speechRate
-                            let pitch = UserDefaultsManager.shared.speechPitch
+                            let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                            let rate = userDefaults.speechRate()
+                            let pitch = userDefaults.speechPitch()
                             let volume: Float = 0.75
 
                             let utterance = AVSpeechUtterance(string: text)

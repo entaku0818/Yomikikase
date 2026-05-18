@@ -29,6 +29,7 @@ struct OnboardingReducer {
 
     let onComplete: @Sendable () -> Void
     @Dependency(\.analytics) var analytics
+    @Dependency(\.userDefaults) var userDefaults
 
     var body: some ReducerOf<Self> {
         Reduce { state, action in
@@ -59,7 +60,7 @@ struct OnboardingReducer {
 
             case .view(.completeTapped):
                 analytics.logEvent("onboarding_completed", ["completed_demo": state.hasPlayed ? 1 : 0])
-                UserDefaultsManager.shared.hasCompletedOnboarding = true
+                userDefaults.setHasCompletedOnboarding(true)
                 return .run { _ in
                     await MainActor.run { onComplete() }
                 }

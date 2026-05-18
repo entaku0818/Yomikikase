@@ -22,13 +22,14 @@ struct PDFListFeature: Reducer {
         var pdfFiles: [PDFFile] = []
         var showingFilePicker = false
         var showingPremiumAlert = false // プレミアムアラート表示フラグ
-        
+        var isPremiumUser: Bool = false
+
         // 最大登録可能なPDFファイル数 (無料版)
         let maxFreePDFCount = 3
-        
+
         // 無料ユーザーの場合に登録制限に達しているかチェック
         var hasReachedFreeLimit: Bool {
-            !UserDefaultsManager.shared.isPremiumUser && pdfFiles.count >= maxFreePDFCount
+            !isPremiumUser && pdfFiles.count >= maxFreePDFCount
         }
     }
 
@@ -50,10 +51,13 @@ struct PDFListFeature: Reducer {
         case hidePremiumAlert
     }
 
+    @Dependency(\.userDefaults) var userDefaults
+
     var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
             case .loadPDFFiles:
+                state.isPremiumUser = userDefaults.isPremiumUser()
                 // アプリのドキュメントディレクトリからPDFファイルを読み込む
                 return .run { send in
                     let files = try await loadPDFFilesFromDocuments()
@@ -240,7 +244,7 @@ struct PDFListView: View {
                 }
                 
                 // 無料ユーザーの場合に登録制限の表示
-                if !UserDefaultsManager.shared.isPremiumUser {
+                if !viewStore.isPremiumUser {
                     HStack {
                         Text("無料版: \(viewStore.pdfFiles.count)/\(viewStore.maxFreePDFCount)ファイル")
                             .font(.caption)
@@ -259,7 +263,7 @@ struct PDFListView: View {
                 }
                 
                 // 広告バナーを追加
-                if !UserDefaultsManager.shared.isPremiumUser {
+                if !viewStore.isPremiumUser {
                     AdmobBannerView().frame(width: .infinity, height: 50)
                 }
             }

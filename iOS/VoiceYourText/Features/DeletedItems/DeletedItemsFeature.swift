@@ -31,12 +31,15 @@ struct DeletedItemsFeature {
         }
     }
 
+    @Dependency(\.userDefaults) var userDefaults
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                let languageCode = userDefaults.languageSetting() ?? "en"
                 return .run { send in
-                    let files = loadDeletedFiles()
+                    let files = loadDeletedFiles(languageCode: languageCode)
                     await send(.filesLoaded(files))
                 }
 
@@ -80,8 +83,9 @@ struct DeletedItemsFeature {
                 guard let file = state.selectedFile else { return .none }
                 SpeechTextRepository.shared.restore(id: file.id)
                 state.selectedFile = nil
+                let restoreLanguageCode = userDefaults.languageSetting() ?? "en"
                 return .run { send in
-                    let files = loadDeletedFiles()
+                    let files = loadDeletedFiles(languageCode: restoreLanguageCode)
                     await send(.filesLoaded(files))
                 }
 
@@ -89,8 +93,9 @@ struct DeletedItemsFeature {
                 guard let file = state.selectedFile else { return .none }
                 SpeechTextRepository.shared.permanentlyDelete(id: file.id)
                 state.selectedFile = nil
+                let deleteLanguageCode = userDefaults.languageSetting() ?? "en"
                 return .run { send in
-                    let files = loadDeletedFiles()
+                    let files = loadDeletedFiles(languageCode: deleteLanguageCode)
                     await send(.filesLoaded(files))
                 }
 
@@ -108,8 +113,7 @@ struct DeletedItemsFeature {
 
 // MARK: - Helper Functions
 
-private func loadDeletedFiles() -> [DeletedFileItem] {
-    let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+private func loadDeletedFiles(languageCode: String) -> [DeletedFileItem] {
     let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
     let speeches = SpeechTextRepository.shared.fetchDeletedSpeechText(language: languageSetting)
 
