@@ -29,9 +29,35 @@ extension SpeechSynthesizerClient: DependencyKey {
         @Dependency(\.userDictionary) var userDictionary
         @Dependency(\.audioAPI) var audioAPI
         @Dependency(\.audioFileManager) var audioFileManager
+        @Dependency(\.kokoroTTS) var kokoroTTS
 
         return Self(
             speak: { utterance in
+                // Kokoro TTS パス（英語 or 日本語 / モデルDL済み / 有効）
+                if UserDefaults.standard.bool(forKey: "KokoroEnabled"),
+                   let lang = UserDefaults.standard.string(forKey: "LanguageSetting"),
+                   (lang.hasPrefix("en") || lang.hasPrefix("ja")),
+                   kokoroTTS.isAvailable() {
+                    let isJapanese = lang.hasPrefix("ja")
+                    let voiceName = UserDefaults.standard.string(forKey: "KokoroVoice") ?? ""
+                    let candidate = KokoroVoice(rawValue: voiceName)
+                    // 言語とボイスの方向が一致していなければデフォルトに落とす
+                    let voice: KokoroVoice
+                    if isJapanese {
+                        voice = (candidate?.isJapanese == true) ? candidate! : .defaultJapanese
+                    } else {
+                        voice = (candidate?.isJapanese == false) ? candidate! : .default
+                    }
+                    do {
+                        let data = try await kokoroTTS.synthesize(
+                            utterance.speechString, voice, utterance.rate
+                        )
+                        return try await speechSynthesizer.playWAVData(data)
+                    } catch {
+                        // Kokoro失敗時はAVSpeechSynthesizerにフォールバック
+                    }
+                }
+
                 // ユーザー辞書の読み方を適用
                 let text = utterance.speechString
                 let words = text.components(separatedBy: .whitespacesAndNewlines)
@@ -153,7 +179,23 @@ private actor SpeechSynthesizer {
     }
 
     var audioPlayer: AVAudioPlayer?
-    
+
+    func playWAVData(_ data: Data) async throws -> Bool {
+        stop()
+        return await withCheckedContinuation { continuation in
+            do {
+                let player = try AVAudioPlayer(data: data)
+                self.audioPlayer = player
+                player.delegate = AudioPlayerDelegate { success in
+                    continuation.resume(returning: success)
+                }
+                player.play()
+            } catch {
+                continuation.resume(returning: false)
+            }
+        }
+    }
+
     func playAudioFromURL(_ urlString: String) async throws -> Bool {
         guard let url = URL(string: urlString) else {
             throw AudioAPIError.invalidURL

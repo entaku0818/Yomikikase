@@ -177,4 +177,15 @@ class UserDefaultsManager {
     func pendingJobId(for fileId: UUID) -> String? {
         pendingJobs[fileId.uuidString]
     }
+
+    // Kokoro TTS
+    var kokoroEnabled: Bool {
+        get { defaults.bool(forKey: "KokoroEnabled") }
+        set { defaults.set(newValue, forKey: "KokoroEnabled") }
+    }
+
+    var kokoroVoice: String? {
+        get { defaults.string(forKey: "KokoroVoice") }
+        set { defaults.set(newValue, forKey: "KokoroVoice") }
+    }
 }

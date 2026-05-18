@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		610ECE0E2FB85AA800454BB8 /* KokoroSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 610ECE0D2FB85AA800454BB8 /* KokoroSwift */; };
+		610ECE0F2FB85B4800454BB8 /* KokoroSwift in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 610ECE0D2FB85AA800454BB8 /* KokoroSwift */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 612C8A312D85769B00614ED0 /* RevenueCat */; };
 		614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 614F56FF2B11D13700E21FE9 /* FirebaseAnalytics */; };
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
@@ -36,6 +38,20 @@
 			remoteInfo = VoiceYourText;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		610ECE102FB85B4800454BB8 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				610ECE0F2FB85B4800454BB8 /* KokoroSwift in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +84,7 @@
 				612C8A322D85769B00614ED0 /* RevenueCat in Frameworks */,
 				619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */,
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
+				610ECE0E2FB85AA800454BB8 /* KokoroSwift in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 				61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */,
 				61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */,
@@ -142,6 +159,7 @@
 				614F56CE2B11B81F00E21FE9 /* Frameworks */,
 				614F56CF2B11B81F00E21FE9 /* Resources */,
 				61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */,
+				610ECE102FB85B4800454BB8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -161,6 +179,7 @@
 				61E4F0052DC8000200000001 /* GoogleSignIn */,
 				61E4F0062DC8000200000001 /* GoogleSignInSwift */,
 				61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */,
+				610ECE0D2FB85AA800454BB8 /* KokoroSwift */,
 			);
 			productName = VoiceYourText;
 			productReference = 614F56D12B11B81F00E21FE9 /* VoiceYourText.app */;
@@ -253,6 +272,7 @@
 				612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 				61E4F0012DC8000200000001 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				61E4F0042DC8000200000001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */,
 			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
@@ -409,7 +429,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -468,7 +488,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -499,7 +519,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -538,7 +558,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -564,7 +584,7 @@
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -583,7 +603,7 @@
 				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourTextTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -670,6 +690,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/KokoroSwift;
+		};
 		612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
@@ -721,6 +745,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		610ECE0D2FB85AA800454BB8 /* KokoroSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */;
+			productName = KokoroSwift;
+		};
 		612C8A312D85769B00614ED0 /* RevenueCat */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */;

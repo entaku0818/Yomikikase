@@ -31,6 +31,10 @@ struct SettingsReducer {
         var selectedVoiceIdentifier: String?
         var showVoiceSettingView: Bool = false
 
+        // Kokoro TTS
+        var kokoroEnabled: Bool = false
+        var kokoroVoice: String = KokoroVoice.default.rawValue
+
         // 既存のプロパティ
         var title: String = ""
         var text: String = ""
@@ -77,11 +81,14 @@ struct SettingsReducer {
             case setSubscriptionNavigation(Bool)
             case navigateToUserDictionary
             case setUserDictionaryNavigation(Bool)
+            case setKokoroEnabled(Bool)
+            case setKokoroVoice(String)
         }
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.analytics) var analytics
+    @Dependency(\.userDefaults) var userDefaults
 
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -100,7 +107,7 @@ struct SettingsReducer {
 
             case .view(.setVoiceIdentifier(let identifier)):
                 state.selectedVoiceIdentifier = identifier
-                UserDefaultsManager.shared.selectedVoiceIdentifier = identifier
+                userDefaults.setSelectedVoiceIdentifier(identifier)
                 return .none
 
             case .view(.previewVoice(let text)):
@@ -118,7 +125,7 @@ struct SettingsReducer {
 
             case .view(.setLanguage(let languageCode)):
 
-                UserDefaultsManager.shared.languageSetting = languageCode
+                userDefaults.setLanguageSetting(languageCode)
                 if let code = languageCode, let languageName = State.availableLanguages.first(where: { $0.1 == code })?.0 {
                     state.languageSetting = languageName
                 } else {
@@ -128,14 +135,16 @@ struct SettingsReducer {
 
             case .view(.onAppear):
                 analytics.logEvent("view_settings", nil)
-                if let languageName = State.availableLanguages.first(where: { $0.1 == UserDefaultsManager.shared.languageSetting })?.0 {
+                if let languageName = State.availableLanguages.first(where: { $0.1 == userDefaults.languageSetting() })?.0 {
                     state.languageSetting = languageName
                 } else {
                     state.languageSetting = "English"
                 }
-                state.speechPitch = UserDefaultsManager.shared.speechPitch
-                state.speechRate = UserDefaultsManager.shared.speechRate
-                state.selectedVoiceIdentifier = UserDefaultsManager.shared.selectedVoiceIdentifier
+                state.speechPitch = userDefaults.speechPitch()
+                state.speechRate = userDefaults.speechRate()
+                state.selectedVoiceIdentifier = userDefaults.selectedVoiceIdentifier()
+                state.kokoroEnabled = userDefaults.kokoroEnabled()
+                state.kokoroVoice = userDefaults.kokoroVoice() ?? KokoroVoice.default.rawValue
                 return .none
 
             case .view(.setTitle(let title)):
@@ -149,17 +158,17 @@ struct SettingsReducer {
             case .view(.setSpeechRate(let rate)):
 
                 state.speechRate = rate
-                UserDefaultsManager.shared.speechRate = state.speechRate
+                userDefaults.setSpeechRate(state.speechRate)
                 return .none
 
             case .view(.setSpeechPitch(let pitch)):
 
                 state.speechPitch = pitch
-                UserDefaultsManager.shared.speechPitch = state.speechPitch
+                userDefaults.setSpeechPitch(state.speechPitch)
                 return .none
 
             case .view(.confirmDelete(let id)):
-                guard let languageCode = UserDefaultsManager.shared.languageSetting else { return .none }
+                guard let languageCode = userDefaults.languageSetting() else { return .none }
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
                 guard let speechToDelete = state.speeches.first(where: { $0.id == id }) else { return .none }
@@ -208,6 +217,16 @@ struct SettingsReducer {
                 state.showUserDictionaryView = isPresented
                 return .none
 
+            case .view(.setKokoroEnabled(let enabled)):
+                state.kokoroEnabled = enabled
+                userDefaults.setKokoroEnabled(enabled)
+                return .none
+
+            case .view(.setKokoroVoice(let voice)):
+                state.kokoroVoice = voice
+                userDefaults.setKokoroVoice(voice)
+                return .none
+
             case .view(.insert):
                 guard !state.title.isEmpty && !state.text.isEmpty else {
                     state.showError = true
@@ -218,9 +237,9 @@ struct SettingsReducer {
                     }
                 }
                 
-                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageCode = userDefaults.languageSetting() ?? "en"
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
-                
+
                 SpeechTextRepository.shared.insert(
                     title: state.title,
                     text: state.text,
@@ -238,7 +257,7 @@ struct SettingsReducer {
                 }
 
             case .view(.fetchSpeeches):
-                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageCode = userDefaults.languageSetting() ?? "en"
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 let fetchedSpeeches = SpeechTextRepository.shared.fetchAllSpeechText(language: languageSetting)
                 
@@ -257,8 +276,8 @@ struct SettingsReducer {
             case .view(.resetToDefault):
                 state.speechRate = 0.5
                 state.speechPitch = 1.0
-                UserDefaultsManager.shared.speechRate = state.speechRate
-                UserDefaultsManager.shared.speechPitch = state.speechPitch
+                userDefaults.setSpeechRate(state.speechRate)
+                userDefaults.setSpeechPitch(state.speechPitch)
                 return .none
 
             case .view(.dismissSuccess):
@@ -271,7 +290,7 @@ struct SettingsReducer {
                 return .none
 
             case .view(.deleteSpeech(let id)):
-                let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
+                let languageCode = userDefaults.languageSetting() ?? "en"
                 let languageSetting = SpeechTextRepository.LanguageSetting(rawValue: languageCode) ?? .english
                 
                 SpeechTextRepository.shared.delete(id: id)

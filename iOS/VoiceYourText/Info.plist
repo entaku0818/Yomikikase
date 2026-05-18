@@ -23,6 +23,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>ドキュメントをスキャンしてテキストを読み取るためにカメラを使用します</string>
+	<key>NSPersonalVoiceUsageDescription</key>
+	<string>あなたの声で読み上げるためにパーソナルボイスを使用します</string>
 	<key>ADMOB_BANNER_ID</key>
 	<string>$(ADMOB_BANNER_ID)</string>
 	<key>REVENUECAT_API_KEY</key>
