@@ -9,6 +9,7 @@ import ComposableArchitecture
 import SwiftUI
 import UIKit
 import FirebaseCore
+import FirebaseAnalytics
 import FirebaseCrashlytics
 import RevenueCat
 import GoogleSignIn
@@ -37,12 +38,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Purchases.configure(withAPIKey: apiKey)
         infoLog("RevenueCat configured successfully")
 
-        // アプリ起動時にプレミアムステータスを確認
+        // アプリ起動時にプレミアムステータスを確認・GA4ユーザープロパティを設定
         Task {
             infoLog("Checking premium status...")
             await PurchaseManager.shared.checkPremiumStatus()
             infoLog("Premium status check completed")
         }
+        let isPremium = UserDefaultsManager.shared.isPremiumUser
+        Analytics.setUserProperty(isPremium ? "true" : "false", forName: "is_premium")
 
         infoLog("App launch completed")
         return true

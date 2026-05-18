@@ -1,5 +1,6 @@
 import StoreKit
 import RevenueCat
+import FirebaseAnalytics
 import os.log
 protocol PurchaseManagerProtocol {
     func fetchProPlan() async throws -> (name: String, price: String)
@@ -130,6 +131,7 @@ class PurchaseManager: PurchaseManagerProtocol {
                 os_log("Purchase successful", log: logger, type: .debug)
                 UserDefaultsManager.shared.isPremiumUser = true
                 UserDefaultsManager.shared.premiumPurchaseDate = Date()
+                Analytics.setUserProperty("true", forName: "is_premium")
                 return true
             } else {
                 os_log("Purchase failed: premium not active", log: logger, type: .error)
@@ -151,10 +153,12 @@ class PurchaseManager: PurchaseManagerProtocol {
                 if UserDefaultsManager.shared.premiumPurchaseDate == nil {
                     UserDefaultsManager.shared.premiumPurchaseDate = Date()
                 }
+                Analytics.setUserProperty("true", forName: "is_premium")
                 return true
             } else {
                 os_log("Restore failed: no entitlements found", log: logger, type: .error)
                 UserDefaultsManager.shared.resetPremiumStatus()
+                Analytics.setUserProperty("false", forName: "is_premium")
                 throw PurchaseError.noEntitlements
             }
         } catch {
@@ -168,6 +172,7 @@ class PurchaseManager: PurchaseManagerProtocol {
             let customerInfo = try await Purchases.shared.customerInfo()
             let isPremium = customerInfo.entitlements["premium"]?.isActive == true
             
+            Analytics.setUserProperty(isPremium ? "true" : "false", forName: "is_premium")
             if isPremium != UserDefaultsManager.shared.isPremiumUser {
                 UserDefaultsManager.shared.isPremiumUser = isPremium
                 if isPremium && UserDefaultsManager.shared.premiumPurchaseDate == nil {
