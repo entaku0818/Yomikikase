@@ -13,6 +13,7 @@ struct OnboardingReducer {
 
     enum Action: ViewAction, Equatable {
         case view(View)
+        case delegate(Delegate)
         case samplePDFGenerated(Data)
         case speechCompleted(Double)
         case speechCancelled
@@ -25,9 +26,12 @@ struct OnboardingReducer {
             case skipTapped
             case completeTapped
         }
+
+        enum Delegate: Equatable {
+            case completed
+        }
     }
 
-    let onComplete: @Sendable () -> Void
     @Dependency(\.analytics) var analytics
     @Dependency(\.userDefaults) var userDefaults
 
@@ -48,22 +52,18 @@ struct OnboardingReducer {
                 return .none
 
             case .view(.nextTapped):
-                state.isSpeaking = false
-                state.currentStep += 1
+                advanceStep(state: &state)
                 return .none
 
             case .view(.skipTapped):
                 analytics.logEvent("onboarding_skipped", ["step": state.currentStep])
-                state.isSpeaking = false
-                state.currentStep += 1
+                advanceStep(state: &state)
                 return .none
 
             case .view(.completeTapped):
                 analytics.logEvent("onboarding_completed", ["completed_demo": state.hasPlayed ? 1 : 0])
                 userDefaults.setHasCompletedOnboarding(true)
-                return .run { _ in
-                    await MainActor.run { onComplete() }
-                }
+                return .send(.delegate(.completed))
 
             case let .samplePDFGenerated(data):
                 state.samplePDFData = data
@@ -78,7 +78,15 @@ struct OnboardingReducer {
             case .speechCancelled:
                 state.isSpeaking = false
                 return .none
+
+            case .delegate:
+                return .none
             }
         }
+    }
+
+    private func advanceStep(state: inout State) {
+        state.isSpeaking = false
+        state.currentStep += 1
     }
 }

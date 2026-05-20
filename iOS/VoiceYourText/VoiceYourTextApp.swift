@@ -170,7 +170,13 @@ private struct OnboardingSheetContainer: View {
 
     init(onComplete: @escaping @Sendable () -> Void) {
         _store = State(wrappedValue: Store(initialState: OnboardingReducer.State()) {
-            OnboardingReducer(onComplete: onComplete)
+            Reduce { _, action in
+                if case .delegate(.completed) = action {
+                    onComplete()
+                }
+                return .none
+            }
+            OnboardingReducer()
         })
     }
 
