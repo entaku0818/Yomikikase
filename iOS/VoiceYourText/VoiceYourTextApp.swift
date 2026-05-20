@@ -78,7 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         // APIキーが見つからない場合はエラーメッセージを表示して終了
-        fatalError("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
+        assertionFailure("RevenueCat API key not found. Please set it in Info.plist or environment variable.")
+        return ""
     }
 }
 
@@ -110,7 +111,8 @@ class AdConfig: ObservableObject {
         }
 
         // 広告ユニットIDが見つからない場合はエラーメッセージを表示して終了
-        fatalError("AdMob banner ID not found. Please set it in Info.plist or environment variable.")
+        assertionFailure("AdMob banner ID not found. Please set it in Info.plist or environment variable.")
+        return ""
     }
 }
 

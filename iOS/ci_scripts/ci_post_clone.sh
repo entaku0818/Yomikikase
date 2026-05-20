@@ -26,6 +26,17 @@ fi
 
 if [ ! -f "${CONFIG_DIR}/Release.xcconfig" ]; then
   ADMOB_PROD="${ADMOB_BANNER_ID:-ADMOB_BANNER_ID_NOT_SET}"
+
+  # Releaseビルドでは必須キーが未設定の場合はビルドを中断する
+  if [ "${REVENUECAT_KEY}" = "REVENUECAT_API_KEY_NOT_SET" ]; then
+    echo "ERROR: REVENUECAT_API_KEY が設定されていません。Xcode Cloud の環境変数を確認してください。" >&2
+    exit 1
+  fi
+  if [ "${ADMOB_PROD}" = "ADMOB_BANNER_ID_NOT_SET" ]; then
+    echo "ERROR: ADMOB_BANNER_ID が設定されていません。Xcode Cloud の環境変数を確認してください。" >&2
+    exit 1
+  fi
+
   cat > "${CONFIG_DIR}/Release.xcconfig" << EOF
 REVENUECAT_API_KEY = ${REVENUECAT_KEY}
 ADMOB_BANNER_ID = ${ADMOB_PROD}
