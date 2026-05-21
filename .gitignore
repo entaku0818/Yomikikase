@@ -26,5 +26,10 @@ iOS/fastlane/report.xml
 
 # Local dev artifacts
 .playwright-mcp/
+.playwright-cli/
+iOS/.playwright-cli/
 firebase-debug.log
 temp/
+
+# Claude Code runtime files
+.claude/scheduled_tasks.lock
