@@ -49,7 +49,7 @@ jobs:
           --region ${{ env.REGION }} \
           --platform managed \
           --allow-unauthenticated \
-          --set-env-vars "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},STORAGE_BUCKET_NAME=${{ secrets.STORAGE_BUCKET_NAME }},API_KEY=${{ secrets.CLOUDRUN_API_KEY }}"
+          --set-env-vars "GOOGLE_CLOUD_PROJECT=${{ env.PROJECT_ID }},GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},STORAGE_BUCKET_NAME=${{ secrets.STORAGE_BUCKET_NAME }},API_KEY=${{ secrets.CLOUDRUN_API_KEY }},CLOUD_TASKS_LOCATION=${{ env.REGION }},CLOUD_TASKS_QUEUE=tts-jobs,SERVICE_URL=https://voiceyourtext-tts-990821915106.asia-northeast1.run.app"
 
     - name: Show Service URL
       run: |
