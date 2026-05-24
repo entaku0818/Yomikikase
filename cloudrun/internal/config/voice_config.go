@@ -240,6 +240,57 @@ var AvailableVoices = []VoiceOption{
 		Description:  "เสียงผู้หญิงไทยที่ชัดเจน",
 		WavenetVoice: "th-TH-Standard-A",
 	},
+	// Chinese (Simplified) voices
+	{
+		ID:           "zh-cn-female-a",
+		Name:         "晓雨",
+		Language:     "cmn-CN",
+		Gender:       "female",
+		Description:  "清晰的中文女声",
+		WavenetVoice: "cmn-CN-Wavenet-A",
+	},
+	{
+		ID:           "zh-cn-male-b",
+		Name:         "云扬",
+		Language:     "cmn-CN",
+		Gender:       "male",
+		Description:  "专业的中文男声",
+		WavenetVoice: "cmn-CN-Wavenet-C",
+	},
+	// Portuguese (Brazil) voices
+	{
+		ID:           "pt-br-female-a",
+		Name:         "Ana",
+		Language:     "pt-BR",
+		Gender:       "female",
+		Description:  "Voz feminina brasileira clara",
+		WavenetVoice: "pt-BR-Wavenet-A",
+	},
+	{
+		ID:           "pt-br-male-b",
+		Name:         "Lucas",
+		Language:     "pt-BR",
+		Gender:       "male",
+		Description:  "Voz masculina brasileira profissional",
+		WavenetVoice: "pt-BR-Wavenet-B",
+	},
+	// Russian voices
+	{
+		ID:           "ru-ru-female-a",
+		Name:         "Анна",
+		Language:     "ru-RU",
+		Gender:       "female",
+		Description:  "Чёткий русский женский голос",
+		WavenetVoice: "ru-RU-Wavenet-A",
+	},
+	{
+		ID:           "ru-ru-male-b",
+		Name:         "Дмитрий",
+		Language:     "ru-RU",
+		Gender:       "male",
+		Description:  "Профессиональный русский мужской голос",
+		WavenetVoice: "ru-RU-Wavenet-B",
+	},
 }
 
 // GetVoiceByID returns a voice by its ID

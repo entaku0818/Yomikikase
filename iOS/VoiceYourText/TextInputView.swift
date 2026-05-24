@@ -840,6 +840,12 @@ struct TextInputView: View {
             return "vi-vn-female-a"
         case "th", "th-th":
             return "th-th-female-a"
+        case "zh", "zh-cn", "zh-hans":
+            return "zh-cn-female-a"
+        case "pt", "pt-br", "pt-pt":
+            return "pt-br-female-a"
+        case "ru", "ru-ru":
+            return "ru-ru-female-a"
         default:
             return "ja-jp-female-a"
         }
@@ -868,6 +874,12 @@ struct TextInputView: View {
             return "vi-VN"
         case "th", "th-th":
             return "th-TH"
+        case "zh", "zh-cn", "zh-hans":
+            return "cmn-CN"
+        case "pt", "pt-br", "pt-pt":
+            return "pt-BR"
+        case "ru", "ru-ru":
+            return "ru-RU"
         default:
             return "ja-JP"
         }

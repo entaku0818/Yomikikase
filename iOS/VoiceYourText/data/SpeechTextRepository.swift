@@ -28,6 +28,9 @@ class SpeechTextRepository: NSObject {
         case thai = "th"
         case korean = "ko"
         case italian = "it"
+        case chinese = "zh"
+        case portuguese = "pt"
+        case russian = "ru"
     }
 
     override init() {

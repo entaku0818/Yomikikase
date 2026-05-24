@@ -1,4 +1,5 @@
 import Foundation
+import MLXUtilsLibrary
 
 /// Japanese G2P processor.
 /// Pipeline: Japanese text → hiragana (via CFStringTokenizer) → Kokoro IPA phonemes

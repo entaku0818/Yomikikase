@@ -384,36 +384,36 @@ struct OnboardingView: View {
 
 #Preview("Step1 Welcome") {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }
 
 #Preview("Step2 PDF Demo") {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }
 
 #Preview("Step3 Features") {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }
 
 #Preview("iPad Step1 Welcome", traits: .fixedLayout(width: 768, height: 1024)) {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }
 
 #Preview("iPad Step2 PDF Demo", traits: .fixedLayout(width: 768, height: 1024)) {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }
 
 #Preview("iPad Step3 Features", traits: .fixedLayout(width: 768, height: 1024)) {
     OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
-        OnboardingReducer(onComplete: {})
+        OnboardingReducer()
     })
 }

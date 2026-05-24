@@ -638,7 +638,7 @@ struct UserDictionaryContent: View {
 #Preview("JA 01 Welcome") {
     AppStoreScreenshot(caption: "読み上げナレーター\nへようこそ") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }
@@ -646,7 +646,7 @@ struct UserDictionaryContent: View {
 #Preview("JA 02 Demo") {
     AppStoreScreenshot(caption: "体験して\nみよう") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }
@@ -654,7 +654,7 @@ struct UserDictionaryContent: View {
 #Preview("JA 03 Features") {
     AppStoreScreenshot(caption: "PDF・ウェブ\n電子書籍も対応") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }
@@ -670,7 +670,7 @@ struct UserDictionaryContent: View {
 #Preview("EN 01 Welcome") {
     AppStoreScreenshot(caption: "Welcome to\nVoice Narrator") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 0)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }
@@ -678,7 +678,7 @@ struct UserDictionaryContent: View {
 #Preview("EN 02 Demo") {
     AppStoreScreenshot(caption: "Try it\nyourself") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 1)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }
@@ -686,7 +686,7 @@ struct UserDictionaryContent: View {
 #Preview("EN 03 Features") {
     AppStoreScreenshot(caption: "PDF, Web &\neBooks supported") {
         OnboardingView(store: Store(initialState: OnboardingReducer.State(currentStep: 2)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         })
     }
 }

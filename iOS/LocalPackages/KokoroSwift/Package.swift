@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "KokoroSwift",
     platforms: [
-        .iOS(.v17), .macOS(.v14)
+        .iOS(.v18), .macOS(.v14)
     ],
     products: [
         .library(

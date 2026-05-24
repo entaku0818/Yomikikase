@@ -1,1 +1,1 @@
-metinden sese,PDF,EPUB,sesli kitap,web sayfası,Google Drive,erişilebilirlik,disleksi,çok dilli,okuma
+metinden sese,TTS,PDF,EPUB,sesli kitap,Google Drive,erişilebilirlik,disleksi

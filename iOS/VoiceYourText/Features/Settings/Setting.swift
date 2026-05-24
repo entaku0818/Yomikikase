@@ -24,7 +24,10 @@ struct SettingsReducer {
             ("Vietnamese", "vi"),
             ("Thai", "th"),
             ("Korean", "ko"),
-            ("Italian", "it")
+            ("Italian", "it"),
+            ("Chinese", "zh"),
+            ("Portuguese", "pt"),
+            ("Russian", "ru")
         ]
 
         // 音声設定

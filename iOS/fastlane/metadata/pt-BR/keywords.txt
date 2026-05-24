@@ -1,0 +1,1 @@
+texto para voz,tts,leitor PDF,leitura em voz,epub,ebook,leitor web,google drive,dislexia,scanner

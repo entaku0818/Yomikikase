@@ -158,8 +158,8 @@
 				614F56CD2B11B81F00E21FE9 /* Sources */,
 				614F56CE2B11B81F00E21FE9 /* Frameworks */,
 				614F56CF2B11B81F00E21FE9 /* Resources */,
-				61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */,
 				610ECE102FB85B4800454BB8 /* Embed Frameworks */,
+				61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */,
 			);
 			buildRules = (
 			);
@@ -524,7 +524,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.28.0;
+				MARKETING_VERSION = 0.29.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -563,7 +563,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.28.0;
+				MARKETING_VERSION = 0.29.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
