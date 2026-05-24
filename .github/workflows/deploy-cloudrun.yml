@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'cloudrun/**'
+  workflow_dispatch:
 
 env:
   PROJECT_ID: voiceyourtext
