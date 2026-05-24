@@ -7,7 +7,7 @@ on:
       - 'cloudrun/**'
 
 env:
-  PROJECT_ID: aso-tool-prod
+  PROJECT_ID: voiceyourtext
   REGION: asia-northeast1
   SERVICE_NAME: voiceyourtext-tts
 
