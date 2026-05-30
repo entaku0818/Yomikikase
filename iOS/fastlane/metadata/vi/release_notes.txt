@@ -1,1 +1,1 @@
-Sửa lỗi nhỏ và cải tiến.
+Cải thiện thiết kế màn hình đăng ký và mô tả tính năng.

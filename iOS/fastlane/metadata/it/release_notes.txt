@@ -1,1 +1,1 @@
-Correzioni di bug minori e miglioramenti.
+Migliorato il design della schermata di abbonamento e le descrizioni delle funzionalità.

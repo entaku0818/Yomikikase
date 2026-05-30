@@ -1,1 +1,1 @@
-Corrections de bugs mineurs et améliorations.
+Amélioration du design de l'écran d'abonnement et des descriptions de fonctionnalités.

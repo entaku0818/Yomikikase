@@ -1,1 +1,1 @@
-Kleinere Fehlerbehebungen und Verbesserungen.
+Design und Beschreibungen des Abonnement-Bildschirms verbessert.

@@ -1,1 +1,1 @@
-Correcciones de errores menores y mejoras.
+Mejoras en el diseño de la pantalla de suscripción y descripciones de funciones.
