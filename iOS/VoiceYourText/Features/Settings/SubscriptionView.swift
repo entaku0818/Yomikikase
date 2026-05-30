@@ -22,11 +22,11 @@ struct SubscriptionView: View {
         ScrollView {
             VStack(spacing: 24) {
                 // Header
-                Text("Premium Features")
+                Text("読み上げをもっと快適に")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top)
-                
+
                 // Features list
                 featuresSection
                 
@@ -52,7 +52,7 @@ struct SubscriptionView: View {
             .padding()
         }
         .navigationBarTitleDisplayMode(.inline)
-        .navigationTitle("Premium")
+        .navigationTitle("プレミアム")
         .alert(isPresented: $showingAlert) {
             Alert(
                 title: Text(alertTitle),
@@ -79,12 +79,19 @@ struct SubscriptionView: View {
     
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Unlock Premium Features")
-                .font(.headline)
-                .padding(.bottom, 4)
-            
-            FeatureRow(icon: "xmark.circle.fill", title: "広告の削除", description: "アプリ内の広告をすべて削除します")
+            HStack {
+                Spacer()
+                Image(systemName: "waveform.circle.fill")
+                    .font(.system(size: 60))
+                    .foregroundColor(.blue)
+                Spacer()
+            }
+            .padding(.bottom, 4)
+
+            FeatureRow(icon: "hand.thumbsup.fill", title: "広告の削除", description: "アプリ内の広告をすべて削除します")
             FeatureRow(icon: "doc.fill", title: "無制限ファイル登録", description: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）")
+            FeatureRow(icon: "waveform", title: "高品質な音声読み上げ", description: "より自然で聞き取りやすい音声で読み上げます")
+            FeatureRow(icon: "doc.text.fill", title: "長文テキスト無制限", description: "制限なく長い文章を読み上げられます")
         }
         .padding()
         .background(Color(.secondarySystemBackground))
