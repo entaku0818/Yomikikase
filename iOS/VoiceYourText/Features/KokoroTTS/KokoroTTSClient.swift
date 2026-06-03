@@ -114,17 +114,24 @@ actor KokoroEngine {
     private var ttsJapanese: KokoroTTS?
     private var voices: [String: MLXArray]?
 
+    // 同一言語の初回ロードが並行して走っても二重ロード（≒600MB×2）にならないよう
+    // 進行中のロード Task をキャッシュして共有する。
+    private var englishLoadTask: Task<KokoroTTS, Error>?
+    private var japaneseLoadTask: Task<KokoroTTS, Error>?
+
     func synthesize(text: String, voice: KokoroVoice, speed: Float) async throws -> Data {
         guard KokoroModelManager.checkDownloaded(),
               let modelURL  = await KokoroModelManager.shared.modelFileURL(),
               let voicesURL = await KokoroModelManager.shared.voicesFileURL()
         else { throw KokoroError.modelNotDownloaded }
 
-        // 初回のみロード（重い処理）
+        // 初回のみロード（重い処理）。約600MBのモデル読み込み＋複数NNの構築は
+        // メインスレッド・アクターのエグゼキュータを塞がないよう detached Task で実行する。
+        let tts: KokoroTTS
         if voice.isJapanese {
-            if ttsJapanese == nil { ttsJapanese = KokoroTTS(modelPath: modelURL, g2p: .japanese) }
+            tts = try await loadJapaneseTTS(modelURL: modelURL)
         } else {
-            if ttsEnglish == nil { ttsEnglish = KokoroTTS(modelPath: modelURL, g2p: .misaki) }
+            tts = try await loadEnglishTTS(modelURL: modelURL)
         }
         if voices == nil {
             voices = try loadVoicesNPZ(url: voicesURL)
@@ -135,7 +142,6 @@ actor KokoroEngine {
             throw KokoroError.synthesisFailure("Voice '\(voice.rawValue)' not found in voices.npz")
         }
 
-        let tts = voice.isJapanese ? ttsJapanese! : ttsEnglish!
         let language: Language = voice.isJapanese ? .ja : .enUS
 
         let (samples, _) = try tts.generateAudio(
@@ -146,6 +152,50 @@ actor KokoroEngine {
         )
 
         return try pcmToWAV(samples: samples, sampleRate: 24000)
+    }
+
+    // MARK: - モデルロード（off-main / 二重ロード防止）
+
+    private func loadEnglishTTS(modelURL: URL) async throws -> KokoroTTS {
+        if let tts = ttsEnglish {
+            return tts
+        }
+        if let task = englishLoadTask {
+            return try await task.value
+        }
+        let task = Task.detached(priority: .userInitiated) {
+            try KokoroTTS(modelPath: modelURL, g2p: .misaki)
+        }
+        englishLoadTask = task
+        defer { englishLoadTask = nil }
+        do {
+            let tts = try await task.value
+            ttsEnglish = tts
+            return tts
+        } catch {
+            throw KokoroError.synthesisFailure("モデルの読み込みに失敗しました: \(error.localizedDescription)")
+        }
+    }
+
+    private func loadJapaneseTTS(modelURL: URL) async throws -> KokoroTTS {
+        if let tts = ttsJapanese {
+            return tts
+        }
+        if let task = japaneseLoadTask {
+            return try await task.value
+        }
+        let task = Task.detached(priority: .userInitiated) {
+            try KokoroTTS(modelPath: modelURL, g2p: .japanese)
+        }
+        japaneseLoadTask = task
+        defer { japaneseLoadTask = nil }
+        do {
+            let tts = try await task.value
+            ttsJapanese = tts
+            return tts
+        } catch {
+            throw KokoroError.synthesisFailure("モデルの読み込みに失敗しました: \(error.localizedDescription)")
+        }
     }
 
     // NPZ（ZIP of NPY files）を読み込み MLXArray の辞書を返す
