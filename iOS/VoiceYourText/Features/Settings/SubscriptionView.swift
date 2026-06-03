@@ -2,11 +2,15 @@ import SwiftUI
 import RevenueCat
 import SafariServices
 import Dependencies
+import PaywallAnalytics
 
 struct SubscriptionView: View {
+    /// Paywall を開いた導線。GA4 `paywall_view` イベントの source パラメータに使う。
+    var source: String = "unknown"
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = SubscriptionViewModel()
     @State private var isLoading = true
+    @State private var didLogPaywallView = false
     @State private var showingAlert = false
     @State private var alertTitle = ""
     @State private var alertMessage = ""
@@ -70,6 +74,10 @@ struct SubscriptionView: View {
             }
         }
         .onAppear {
+            if !didLogPaywallView {
+                didLogPaywallView = true
+                viewModel.trackPaywallView(source: source)
+            }
             Task {
                 await viewModel.fetchSubscriptionPlan()
                 isLoading = false
@@ -388,6 +396,11 @@ class SubscriptionViewModel: ObservableObject {
     @Published var annualPlan: (name: String, price: String, trialDays: Int?)?
     @Published var isProcessing: Bool = false
     @Dependency(\.analytics) private var analytics
+
+    func trackPaywallView(source: String) {
+        let event = PaywallAnalyticsEvent.paywallView(source: PaywallSource(rawSource: source))
+        analytics.logEvent(event.name, event.parameters)
+    }
 
     func fetchSubscriptionPlan() async {
         do {

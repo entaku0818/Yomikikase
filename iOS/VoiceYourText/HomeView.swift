@@ -296,7 +296,7 @@ struct HomeView: View {
                 Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
             }
             .sheet(isPresented: $showingSubscription) {
-                SubscriptionView()
+                SubscriptionView(source: "home_file_limit")
             }
             .fullScreenCover(isPresented: $showingNewTextView) {
                 TextInputView(store: store, initialText: "", fileId: nil)

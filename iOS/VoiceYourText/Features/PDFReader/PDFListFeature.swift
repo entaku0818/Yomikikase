@@ -304,7 +304,7 @@ struct PDFListView: View {
                 Text("無料版では最大\(viewStore.maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
             }
             .sheet(isPresented: $showingSubscription) {
-                SubscriptionView()
+                SubscriptionView(source: "pdf_list_limit")
             }
         }
         .onAppear {
