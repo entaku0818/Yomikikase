@@ -10,7 +10,7 @@ final class OnboardingReducerTests: XCTestCase {
 
     func test_nextTapped_incrementsStep() async {
         let store = TestStore(initialState: OnboardingReducer.State()) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
@@ -28,7 +28,7 @@ final class OnboardingReducerTests: XCTestCase {
 
     func test_demoPlayTapped_setsSpeaking() async {
         let store = TestStore(initialState: OnboardingReducer.State()) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
@@ -40,7 +40,7 @@ final class OnboardingReducerTests: XCTestCase {
 
     func test_demoStopTapped_clearsSpeaking() async {
         let store = TestStore(initialState: OnboardingReducer.State(isSpeaking: true)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
@@ -55,7 +55,7 @@ final class OnboardingReducerTests: XCTestCase {
     func test_skipTapped_logsEventAndAdvances() async {
         var loggedEvent: String?
         let store = TestStore(initialState: OnboardingReducer.State(currentStep: 1)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics.logEvent = { name, _ in loggedEvent = name }
             $0.analytics.setUserProperty = { _, _ in }
@@ -73,7 +73,7 @@ final class OnboardingReducerTests: XCTestCase {
 
     func test_speechCompleted_setsHasPlayedAndClearsSpeaking() async {
         let store = TestStore(initialState: OnboardingReducer.State(isSpeaking: true)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
@@ -86,7 +86,7 @@ final class OnboardingReducerTests: XCTestCase {
 
     func test_speechCancelled_clearsSpeaking() async {
         let store = TestStore(initialState: OnboardingReducer.State(isSpeaking: true)) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
@@ -98,28 +98,29 @@ final class OnboardingReducerTests: XCTestCase {
 
     // MARK: - Complete
 
-    func test_completeTapped_logsEventAndCallsOnComplete() async {
-        var completeCalled = false
+    func test_completeTapped_logsEventAndSendsDelegate() async {
         var loggedEvent: String?
+        var completedOnboardingSet: Bool?
         let store = TestStore(initialState: OnboardingReducer.State(currentStep: 2, hasPlayed: true)) {
-            OnboardingReducer(onComplete: { completeCalled = true })
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics.logEvent = { name, _ in loggedEvent = name }
             $0.analytics.setUserProperty = { _, _ in }
+            $0.userDefaults.setHasCompletedOnboarding = { completedOnboardingSet = $0 }
         }
 
         await store.send(.view(.completeTapped))
-        await store.finish()
+        await store.receive(.delegate(.completed))
 
         XCTAssertEqual(loggedEvent, "onboarding_completed")
-        XCTAssertTrue(completeCalled)
+        XCTAssertEqual(completedOnboardingSet, true)
     }
 
     // MARK: - PDF generation
 
     func test_samplePDFGenerated_storesData() async {
         let store = TestStore(initialState: OnboardingReducer.State()) {
-            OnboardingReducer(onComplete: {})
+            OnboardingReducer()
         } withDependencies: {
             $0.analytics = .testValue
         }
