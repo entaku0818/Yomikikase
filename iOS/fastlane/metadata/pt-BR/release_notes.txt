@@ -1,1 +1,1 @@
-Correções de bugs menores e melhorias de desempenho.
+Melhorias no design da tela de assinatura e descrições de recursos.

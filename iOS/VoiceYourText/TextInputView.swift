@@ -206,7 +206,7 @@ struct TextInputView: View {
             Text("4,000文字を超えるテキストはプレミアムプランでのみご利用いただけます。")
         }
         .sheet(isPresented: $showingSubscription) {
-            SubscriptionView()
+            SubscriptionView(source: "text_char_limit")
         }
     }
 

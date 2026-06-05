@@ -14,6 +14,7 @@
 		614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 614F570A2B11EE7C00E21FE9 /* ComposableArchitecture */; };
 		619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 619AE5EF2BAD5AEB00CE4C4C /* GoogleMobileAds */; };
 		61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61A1B2002DB8000000000001 /* FirebaseCrashlytics */; };
+		61AAAA010000000000000001 /* PaywallAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 61AAAA010000000000000002 /* PaywallAnalytics */; };
 		61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
@@ -85,6 +86,7 @@
 				619AE5F02BAD5AEB00CE4C4C /* GoogleMobileAds in Frameworks */,
 				614F570C2B12542200E21FE9 /* ComposableArchitecture in Frameworks */,
 				610ECE0E2FB85AA800454BB8 /* KokoroSwift in Frameworks */,
+				61AAAA010000000000000001 /* PaywallAnalytics in Frameworks */,
 				614F57002B11D13700E21FE9 /* FirebaseAnalytics in Frameworks */,
 				61A1B2012DB8000000000001 /* FirebaseCrashlytics in Frameworks */,
 				61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */,
@@ -180,6 +182,7 @@
 				61E4F0062DC8000200000001 /* GoogleSignInSwift */,
 				61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */,
 				610ECE0D2FB85AA800454BB8 /* KokoroSwift */,
+				61AAAA010000000000000002 /* PaywallAnalytics */,
 			);
 			productName = VoiceYourText;
 			productReference = 614F56D12B11B81F00E21FE9 /* VoiceYourText.app */;
@@ -272,7 +275,8 @@
 				612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */,
 				61E4F0012DC8000200000001 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 				61E4F0042DC8000200000001 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
-				610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */,
+				610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "LocalPackages/KokoroSwift" */,
+				61AAAA010000000000000003 /* XCLocalSwiftPackageReference "LocalPackages/PaywallAnalytics" */,
 			);
 			productRefGroup = 614F56D22B11B81F00E21FE9 /* Products */;
 			projectDirPath = "";
@@ -507,7 +511,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"VoiceYourText/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				ENABLE_PREVIEWS = YES;
@@ -524,7 +528,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.29.0;
+				MARKETING_VERSION = 0.30.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -546,7 +550,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 21;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"VoiceYourText/Preview Content\"";
 				DEVELOPMENT_TEAM = 4YZQY4C47E;
 				ENABLE_PREVIEWS = YES;
@@ -563,7 +567,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.29.0;
+				MARKETING_VERSION = 0.30.0;
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.entaku.VoiceYourText;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -689,11 +693,18 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */ = {
+/* Begin XCLocalSwiftPackageReference section */
+		610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "LocalPackages/KokoroSwift" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = LocalPackages/KokoroSwift;
 		};
+		61AAAA010000000000000003 /* XCLocalSwiftPackageReference "LocalPackages/PaywallAnalytics" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = LocalPackages/PaywallAnalytics;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
 		612C8A302D85769B00614ED0 /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
@@ -747,7 +758,7 @@
 /* Begin XCSwiftPackageProductDependency section */
 		610ECE0D2FB85AA800454BB8 /* KokoroSwift */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "KokoroSwift" */;
+			package = 610ECE0C2FB85AA800454BB8 /* XCLocalSwiftPackageReference "LocalPackages/KokoroSwift" */;
 			productName = KokoroSwift;
 		};
 		612C8A312D85769B00614ED0 /* RevenueCat */ = {
@@ -774,6 +785,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 614F56FE2B11D13700E21FE9 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		61AAAA010000000000000002 /* PaywallAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 61AAAA010000000000000003 /* XCLocalSwiftPackageReference "LocalPackages/PaywallAnalytics" */;
+			productName = PaywallAnalytics;
 		};
 		61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;

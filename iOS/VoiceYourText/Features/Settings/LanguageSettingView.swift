@@ -220,7 +220,7 @@ struct LanguageSettingView: View {
         .navigationDestination(
             isPresented: $store.showSubscriptionView
         ) {
-            SubscriptionView()
+            SubscriptionView(source: "settings")
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
             isPremium = UserDefaultsManager.shared.isPremiumUser
