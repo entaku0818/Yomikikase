@@ -1,1 +1,1 @@
-Design und Beschreibungen des Abonnement-Bildschirms verbessert.
+Verbesserungen bei Leistung und Stabilität sowie kleinere Fehlerbehebungen.

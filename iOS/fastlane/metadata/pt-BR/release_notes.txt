@@ -1,1 +1,1 @@
-Melhorias no design da tela de assinatura e descrições de recursos.
+Melhorias de desempenho e estabilidade, além de pequenas correções de bugs.

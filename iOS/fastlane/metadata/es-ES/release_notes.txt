@@ -1,1 +1,1 @@
-Mejoras en el diseño de la pantalla de suscripción y descripciones de funciones.
+Mejoras de rendimiento y estabilidad, además de correcciones de errores menores.

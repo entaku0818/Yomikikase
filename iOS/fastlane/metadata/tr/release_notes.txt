@@ -1,1 +1,1 @@
-Abonelik ekranı tasarımı ve özellik açıklamaları iyileştirildi.
+Performans ve kararlılık iyileştirmeleri ile küçük hata düzeltmeleri.

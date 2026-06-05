@@ -1,1 +1,1 @@
-Improved subscription screen design and feature descriptions.
+Performance and stability improvements, plus minor bug fixes.
