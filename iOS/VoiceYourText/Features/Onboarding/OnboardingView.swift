@@ -115,7 +115,7 @@ struct OnboardingView: View {
                 HStack(spacing: 8) {
                     ForEach(0..<3) { i in
                         Capsule()
-                            .fill(i == store.currentStep ? Color.blue : Color.gray.opacity(0.3))
+                            .fill(i == store.currentStep ? AppTheme.primary : Color.gray.opacity(0.3))
                             .frame(width: i == store.currentStep ? 24 : 8, height: 8)
                             .animation(.spring(response: 0.4), value: store.currentStep)
                     }
@@ -169,7 +169,7 @@ struct OnboardingView: View {
         VStack(spacing: 24) {
             Image(systemName: "waveform.circle.fill")
                 .font(.system(size: 80))
-                .foregroundStyle(.blue.gradient)
+                .foregroundColor(AppTheme.primary)
                 .padding(.bottom, 8)
 
             VStack(spacing: 16) {
@@ -188,10 +188,10 @@ struct OnboardingView: View {
                         Text(tag)
                             .font(.footnote)
                             .fontWeight(.medium)
-                            .foregroundColor(.blue)
+                            .foregroundColor(AppTheme.primary)
                             .padding(.horizontal, 12)
                             .padding(.vertical, 6)
-                            .background(Color.blue.opacity(0.1))
+                            .background(AppTheme.primarySoft)
                             .cornerRadius(20)
                     }
                 }
@@ -231,7 +231,7 @@ struct OnboardingView: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(
-                            store.isSpeaking ? Color.blue : Color.gray.opacity(0.25),
+                            store.isSpeaking ? AppTheme.primary : Color.gray.opacity(0.25),
                             lineWidth: store.isSpeaking ? 2 : 1
                         )
                         .animation(.easeInOut, value: store.isSpeaking)
@@ -255,10 +255,10 @@ struct OnboardingView: View {
                     Text(store.isSpeaking ? "停止" : "▶ 読み上げる")
                         .font(.headline)
                 }
-                .foregroundColor(.white)
+                .foregroundColor(AppTheme.onPrimary)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
-                .background(store.isSpeaking ? Color.red : Color.blue)
+                .background(AppTheme.primary)
                 .cornerRadius(16)
                 .padding(.horizontal, 24)
             }
@@ -267,7 +267,7 @@ struct OnboardingView: View {
             if store.hasPlayed {
                 HStack(spacing: 6) {
                     Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
+                        .foregroundColor(AppTheme.primary)
                     Text("体験完了！次へ進めます")
                         .font(.footnote)
                         .foregroundColor(.secondary)
@@ -292,26 +292,26 @@ struct OnboardingView: View {
             }
 
             VStack(spacing: 12) {
-                featureRow(icon: "doc.richtext.fill", color: .red,
+                featureRow(icon: "doc.richtext.fill",
                            title: "PDF・書類", description: "PDFやスキャン書類を読み上げ")
-                featureRow(icon: "link", color: .teal,
+                featureRow(icon: "link",
                            title: "ウェブページ", description: "URLを貼るだけで本文を読み上げ")
-                featureRow(icon: "books.vertical.fill", color: .brown,
+                featureRow(icon: "books.vertical.fill",
                            title: "電子書籍", description: "EPUBファイルをそのまま読み上げ")
-                featureRow(icon: "externaldrive.fill", color: .green,
+                featureRow(icon: "externaldrive.fill",
                            title: "Googleドライブ", description: "クラウドのファイルに直接アクセス")
             }
             .padding(.horizontal, 24)
         }
     }
 
-    private func featureRow(icon: String, color: Color, title: String, description: String) -> some View {
+    private func featureRow(icon: String, title: String, description: String) -> some View {
         HStack(spacing: 16) {
             Image(systemName: icon)
-                .font(.system(size: 22))
-                .foregroundColor(color)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(AppTheme.primary)
                 .frame(width: 44, height: 44)
-                .background(color.opacity(0.12))
+                .background(AppTheme.primarySoft)
                 .cornerRadius(12)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -340,10 +340,10 @@ struct OnboardingView: View {
                 } label: {
                     Text("はじめる")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppTheme.onPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(Color.blue)
+                        .background(AppTheme.primary)
                         .cornerRadius(16)
                 }
             } else if store.currentStep == 1 {
@@ -357,10 +357,10 @@ struct OnboardingView: View {
                 } label: {
                     Text(store.hasPlayed ? "次へ" : "スキップ")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppTheme.onPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(store.hasPlayed ? Color.blue : Color.gray)
+                        .background(store.hasPlayed ? AppTheme.primary : Color.gray)
                         .cornerRadius(16)
                 }
             } else {
@@ -369,10 +369,10 @@ struct OnboardingView: View {
                 } label: {
                     Text("使い始める")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(AppTheme.onPrimary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(Color.blue)
+                        .background(AppTheme.primary)
                         .cornerRadius(16)
                 }
             }

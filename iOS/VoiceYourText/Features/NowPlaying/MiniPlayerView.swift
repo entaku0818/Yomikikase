@@ -17,7 +17,7 @@ struct MiniPlayerView: View {
                 // スピーカーアイコン（再生中のみアニメーション）
                 Image(systemName: viewStore.isPlaying ? "speaker.wave.2.fill" : "speaker.fill")
                     .font(.system(size: 18))
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.primary)
                     .symbolEffect(.variableColor.iterative, options: .repeating, isActive: viewStore.isPlaying)
 
                 // タイトル
@@ -38,7 +38,7 @@ struct MiniPlayerView: View {
                 } label: {
                     Image(systemName: viewStore.isPlaying ? "pause.fill" : "play.fill")
                         .font(.system(size: 20))
-                        .foregroundColor(.primary)
+                        .foregroundColor(AppTheme.primary)
                         .frame(width: 44, height: 44)
                 }
 

@@ -28,7 +28,7 @@ struct LanguageSettingView: View {
                         HStack(spacing: 12) {
                             Image(systemName: "crown.fill")
                                 .font(.title2)
-                                .foregroundColor(.yellow)
+                                .foregroundColor(AppTheme.primary)
                             VStack(alignment: .leading, spacing: 4) {
                                 Text("プレミアムにアップグレード")
                                     .font(.headline)
@@ -49,14 +49,8 @@ struct LanguageSettingView: View {
                             }
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [Color.blue, Color.purple]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
-                            .foregroundColor(.white)
+                            .background(AppTheme.primary)
+                            .foregroundColor(AppTheme.onPrimary)
                             .cornerRadius(12)
                         }
                     }
@@ -88,7 +82,7 @@ struct LanguageSettingView: View {
                                 Spacer()
                                 Text(speedLabel(store.speechRate))
                                     .font(.system(.body, design: .monospaced))
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(AppTheme.primary)
                             }
                             HStack {
                                 Image(systemName: "tortoise.fill")
@@ -120,7 +114,7 @@ struct LanguageSettingView: View {
                                 Spacer()
                                 Text(pitchLabel(store.speechPitch))
                                     .font(.system(.body, design: .monospaced))
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(AppTheme.primary)
                             }
                             HStack {
                                 Image(systemName: "speaker.wave.1.fill")
@@ -171,7 +165,7 @@ struct LanguageSettingView: View {
                     NavigationLink(destination: FeedbackView()) {
                         HStack {
                             Image(systemName: "envelope.fill")
-                                .foregroundColor(.blue)
+                                .foregroundColor(AppTheme.primary)
                             Text("お問い合わせ・フィードバック")
                         }
                     }
@@ -254,7 +248,7 @@ struct PremiumFeatureRow: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: iconName)
-                .foregroundColor(.green)
+                .foregroundColor(AppTheme.primary)
             Text(text)
                 .font(.subheadline)
             Spacer()
@@ -272,7 +266,7 @@ struct CacheManagementView: View {
         VStack(spacing: 0) {
             HStack {
                 Image(systemName: "internaldrive")
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.primary)
                 VStack(alignment: .leading) {
                     Text("音声キャッシュ")
                     Text(formatBytes(cacheSize))

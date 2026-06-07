@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ナレーター — デザイン統一 仕様書</title>
+<style>
+  :root{
+    --accent:#4B47E0; --accent-dark:#8B87FF; --soft:rgba(75,71,224,0.10);
+    --ink:#1c1c22; --ink2:#5b5b66; --ink3:#8a8a95;
+    --bg:#f6f6f8; --card:#ffffff; --line:rgba(20,20,40,0.10);
+    --bad:#C0392B; --good:#1F8A5B; --warn:#B8860B;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.7;}
+  .wrap{max-width:840px;margin:0 auto;padding:0 24px 120px;}
+
+  /* hero */
+  header.hero{background:var(--accent);color:#fff;padding:64px 0 52px;margin-bottom:0;}
+  header.hero .wrap{padding-bottom:0;}
+  .eyebrow{font-size:13px;font-weight:700;letter-spacing:2px;opacity:.8;}
+  h1{font-size:40px;line-height:1.2;font-weight:800;letter-spacing:-0.8px;margin:10px 0 14px;}
+  .lede{font-size:17px;line-height:1.65;opacity:.92;max-width:620px;margin:0;}
+  .metarow{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .metarow span{font-size:12.5px;font-weight:600;background:rgba(255,255,255,0.18);padding:6px 12px;border-radius:100px;}
+
+  /* TOC */
+  nav.toc{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:22px 26px;margin:-32px auto 48px;position:relative;}
+  nav.toc h4{margin:0 0 12px;font-size:12px;letter-spacing:1px;color:var(--ink3);font-weight:700;text-transform:uppercase;}
+  nav.toc ol{margin:0;padding:0;list-style:none;counter-reset:t;display:grid;grid-template-columns:1fr 1fr;column-gap:32px;row-gap:2px;}
+  nav.toc li{counter-increment:t;margin:6px 0;break-inside:avoid;}
+  nav.toc a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;display:flex;gap:10px;align-items:baseline;}
+  nav.toc a:hover{color:var(--accent);}
+  nav.toc a::before{content:counter(t,decimal-leading-zero);color:var(--accent);font-weight:700;font-variant-numeric:tabular-nums;font-size:13px;}
+
+  section{margin-bottom:52px;scroll-margin-top:24px;}
+  h2{font-size:13px;font-weight:700;letter-spacing:1px;color:var(--accent);text-transform:uppercase;margin:0 0 6px;}
+  h2 + .title{font-size:27px;font-weight:800;letter-spacing:-0.5px;margin:0 0 18px;line-height:1.25;}
+  h3{font-size:18px;font-weight:700;margin:30px 0 10px;letter-spacing:-0.2px;}
+  p{margin:0 0 14px;color:var(--ink2);font-size:15.5px;}
+  p strong, li strong{color:var(--ink);font-weight:700;}
+  .card{background:var(--card);border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.05);padding:24px 26px;margin:16px 0;}
+
+  /* before/after table */
+  table{width:100%;border-collapse:collapse;font-size:14.5px;margin:12px 0;}
+  th{text-align:left;font-size:12px;letter-spacing:.5px;color:var(--ink3);font-weight:700;text-transform:uppercase;padding:0 12px 8px;border-bottom:1px solid var(--line);}
+  td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink2);}
+  td:first-child{font-weight:600;color:var(--ink);white-space:nowrap;}
+  tr:last-child td{border-bottom:none;}
+  .before{color:var(--bad);font-weight:600;}
+  .after{color:var(--good);font-weight:600;}
+  .arrow{color:var(--ink3);padding:0 4px;}
+
+  code{font-family:var(--mono);font-size:13px;background:var(--soft);color:var(--accent);padding:2px 6px;border-radius:5px;font-weight:600;}
+  pre{font-family:var(--mono);font-size:13px;background:#1c1c22;color:#e8e8ef;border-radius:12px;padding:18px 20px;overflow:auto;line-height:1.6;margin:14px 0;}
+  pre .c{color:#7d8590;} pre .k{color:#ff9b88;} pre .s{color:#9be19b;} pre .n{color:#a5b4ff;}
+
+  ul.clean{list-style:none;padding:0;margin:8px 0;}
+  ul.clean li{padding:8px 0 8px 28px;position:relative;font-size:15.5px;color:var(--ink2);border-bottom:1px solid var(--line);}
+  ul.clean li:last-child{border-bottom:none;}
+  ul.clean li::before{content:"";position:absolute;left:4px;top:15px;width:7px;height:7px;border-radius:2px;background:var(--accent);}
+  ul.check li::before{content:"";left:2px;top:12px;width:16px;height:16px;border-radius:5px;background:var(--soft);border:1.5px solid var(--accent);}
+
+  .swatches{display:flex;flex-wrap:wrap;gap:12px;margin:16px 0;}
+  .sw{flex:1;min-width:150px;background:var(--card);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);overflow:hidden;}
+  .sw .chip{height:64px;}
+  .sw .meta{padding:11px 13px;}
+  .sw .nm{font-size:13px;font-weight:700;}
+  .sw .hx{font-size:12px;font-family:var(--mono);color:var(--ink3);margin-top:2px;}
+
+  .callout{border-radius:14px;padding:16px 18px 16px 20px;margin:16px 0;font-size:14.5px;line-height:1.6;border-left:4px solid;}
+  .callout.bad{background:rgba(192,57,43,.06);border-color:var(--bad);}
+  .callout.good{background:rgba(31,138,91,.06);border-color:var(--good);}
+  .callout.note{background:var(--soft);border-color:var(--accent);}
+  .callout b{display:block;margin-bottom:3px;color:var(--ink);}
+
+  .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:100px;vertical-align:middle;}
+  .pill.del{background:rgba(192,57,43,.12);color:var(--bad);}
+  .pill.new{background:rgba(31,138,91,.12);color:var(--good);}
+  .pill.mod{background:var(--soft);color:var(--accent);}
+
+  .files{font-family:var(--mono);font-size:12.5px;color:var(--ink2);}
+  footer{color:var(--ink3);font-size:13px;text-align:center;border-top:1px solid var(--line);padding-top:24px;}
+  @media (max-width:680px){ nav.toc ol{grid-template-columns:1fr;} h1{font-size:32px;} }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">VOICE NARRATOR / ナレーター</div>
+    <h1>デザイン統一 仕様書</h1>
+    <p class="lede">アプリ全体の「色・操作・余白」を1つのルールに揃え、画面ごとの矛盾をなくすための変更仕様。決定したブランドカラーは <strong>インディゴ</strong>。本書はキャンバスのビジュアル案に対応する実装ハンドオフです。</p>
+    <div class="metarow"><span>v1.0 · 2026-06-07</span><span>対象：iOS（SwiftUI / TCA）</span><span>確定アクセント：インディゴ</span></div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="toc">
+    <h4>目次</h4>
+    <ol>
+      <li><a href="#overview">背景と原則</a></li>
+      <li><a href="#color">カラートークン</a></li>
+      <li><a href="#icon">アイコン統一ルール</a></li>
+      <li><a href="#player">統一プレイヤー仕様</a></li>
+      <li><a href="#screens">画面別の変更点</a></li>
+      <li><a href="#foundation">余白・角丸・影・文字</a></li>
+      <li><a href="#checklist">実装チェックリスト</a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section id="overview">
+    <h2>01 — Background</h2>
+    <div class="title">背景と原則</div>
+    <p>現状、<code>AppTheme.swift</code> には「アクセントは Indigo で統一」「グラデーション不使用」と明記されているにもかかわらず、本体UIではその方針が守られていません。具体的には次の3つの矛盾があります。</p>
+    <div class="callout bad">
+      <b>現状の3つの矛盾</b>
+      ① ホームのアイコンが7色（青・赤・紫・緑・茶・グレー・水色）に分かれている。<br>
+      ② 再生ボタンの色が画面ごとに違う（テキスト＝青 / PDF＝オレンジ / ミニプレイヤー＝黒）。<br>
+      ③ プレイヤーの操作系がテキストとPDFで全く別物。ユーザーは同じ「再生」を画面ごとに学び直す必要がある。
+    </div>
+    <h3>統一の3原則</h3>
+    <ul class="clean">
+      <li><strong>1色ルール</strong>：意味を持つUI（操作・誘導）はすべてアクセント1色。機能ごとの色分けは廃止する。</li>
+      <li><strong>1操作系ルール</strong>：再生・一時停止・スキップは、どのコンテンツでも同じ部品・同じ並び。</li>
+      <li><strong>ネイティブ準拠</strong>：SF Symbols・大タイトル・グループ化リスト・システムカラーを尊重し、ライト/ダーク両対応。</li>
+    </ul>
+  </section>
+
+  <!-- 02 -->
+  <section id="color">
+    <h2>02 — Color Tokens</h2>
+    <div class="title">カラートークン</div>
+    <p>アクセントはインディゴに確定。ダークモードは黒背景でのコントラスト確保のため明度を上げた値を使う。<code>AppTheme</code> を「全画面が参照する唯一の色の出どころ」として拡張する。</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#4B47E0"></div><div class="meta"><div class="nm">アクセント / Light</div><div class="hx">#4B47E0</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8B87FF"></div><div class="meta"><div class="nm">アクセント / Dark</div><div class="hx">#8B87FF</div></div></div>
+      <div class="sw"><div class="chip" style="background:rgba(75,71,224,0.10)"></div><div class="meta"><div class="nm">アクセント soft（地）</div><div class="hx">accent / 10〜20%</div></div></div>
+    </div>
+    <table>
+      <thead><tr><th>用途</th><th>ライト</th><th>ダーク</th></tr></thead>
+      <tbody>
+        <tr><td>背景（グループ）</td><td>#F2F2F7</td><td>#000000</td></tr>
+        <tr><td>カード / セル</td><td>#FFFFFF</td><td>#1C1C1E</td></tr>
+        <tr><td>本文テキスト</td><td>#1C1C1E</td><td>#FFFFFF</td></tr>
+        <tr><td>補助テキスト</td><td>label・60%</td><td>label・60%</td></tr>
+        <tr><td>区切り線</td><td>separator</td><td>separator</td></tr>
+      </tbody>
+    </table>
+    <div class="callout note">
+      <b>適用ルール（暗記用）</b>
+      アクセント＝<strong>再生ボタン・全アイコン・CTA・タブのアクティブ・進捗バー・選択中のフィルタ</strong>。それ以外（文字・背景・区切り線）はすべてニュートラル。グラデーション禁止。
+    </div>
+    <h3>SwiftUI への落とし込み（AppTheme 拡張）</h3>
+    <pre><span class="c">// AppTheme.swift — アクセントをカスタム Indigo に固定し、soft を追加</span>
+<span class="k">enum</span> AppTheme {
+    <span class="c">// Asset Catalog に Light/Dark 2値で登録した色を参照</span>
+    <span class="k">static let</span> primary       = Color(<span class="s">"AccentIndigo"</span>)   <span class="c">// L:#4B47E0 / D:#8B87FF</span>
+    <span class="k">static let</span> primarySoft   = primary.opacity(<span class="n">0.12</span>) <span class="c">// アイコン地・選択地</span>
+    <span class="k">static let</span> onPrimary     = Color.white
+    <span class="c">// 背景・文字はシステムカラーをそのまま使う（ダーク自動対応）</span>
+    <span class="k">static let</span> groupedBg     = Color(.systemGroupedBackground)
+    <span class="k">static let</span> card          = Color(.secondarySystemGroupedBackground)
+}</pre>
+    <p>バッジ・課金カードに使っていた <code>Color.orange</code> / <code>Color.indigo</code> 直書きは廃止し、すべて <code>AppTheme.primary</code> 経由に統一する。</p>
+  </section>
+
+  <!-- 03 -->
+  <section id="icon">
+    <h2>03 — Icons</h2>
+    <div class="title">アイコン統一ルール</div>
+    <p><code>HomeView.swift</code> の <code>createButtonContent</code> は現在、ソースごとに <code>iconColor</code> を個別指定しています。この引数を撤廃し、<strong>すべて <code>AppTheme.primary</code></strong> に固定します。地（背景）は <code>primarySoft</code>。</p>
+    <table>
+      <thead><tr><th>ソース</th><th>SF Symbol</th><th>現状の色 <span class="arrow">→</span> 変更後</th></tr></thead>
+      <tbody>
+        <tr><td>テキスト</td><td class="files">doc.text.fill</td><td><span class="before">青</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>PDF</td><td class="files">doc.richtext.fill</td><td><span class="before">赤</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>TXTファイル</td><td class="files">doc.plaintext.fill</td><td><span class="before">紫</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>Gドライブ</td><td class="files">externaldrive.fill</td><td><span class="before">緑</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>本（EPUB）</td><td class="files">books.vertical.fill</td><td><span class="before">茶</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>スキャン</td><td class="files">camera.fill</td><td><span class="before">グレー</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+        <tr><td>リンク</td><td class="files">link</td><td><span class="before">水色</span> <span class="arrow">→</span> <span class="after">アクセント</span></td></tr>
+      </tbody>
+    </table>
+    <div class="callout good">
+      <b>形状ルール</b>
+      アイコン地は <strong>52×52 / 角丸15</strong>（ホームタイル）、リスト行は <strong>40×40 / 角丸11</strong>。アイコン本体サイズ・ウェイトはタイルとリストで統一。<code>createButtonCard</code> は <code>createButtonContent</code> と重複しているので削除して1つに統合する。
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="player">
+    <h2>04 — Unified Player</h2>
+    <div class="title">統一プレイヤー仕様</div>
+    <p>今ある3種類の再生UIを廃止し、<strong>1つの共通操作バー</strong>に統合します。テキスト・PDF・スキャン・EPUB・Web、すべて同じ部品を使う。</p>
+    <table>
+      <thead><tr><th>画面</th><th>現状</th><th>統一後</th></tr></thead>
+      <tbody>
+        <tr><td>PDF（PlayerControlView 系）</td><td class="before">オレンジ丸・15秒送りのみ</td><td class="after" rowspan="3" style="vertical-align:middle">共通 PlayerBar</td></tr>
+        <tr><td>テキスト</td><td class="before">青丸・停止/速度/情報</td></tr>
+        <tr><td>ミニプレイヤー</td><td class="before">黒の再生アイコン</td></tr>
+      </tbody>
+    </table>
+    <h3>共通 PlayerBar の構成（固定）</h3>
+    <p>下から順に積む。コントロール行の<strong>並びはどの画面でも不変</strong>。</p>
+    <ul class="clean">
+      <li><strong>スクラバー</strong>：左に経過、右に残り（PDFは「1ページ / 12」表記）。塗りは <code>AppTheme.primary</code>、つまみは白丸。</li>
+      <li><strong>コントロール行</strong>（左→右で固定）：<code>速度ピル</code> ・ <code>15秒戻し</code> ・ <code>再生/一時停止（アクセント丸・66pt）</code> ・ <code>15秒送り</code> ・ <code>声/設定</code>。</li>
+      <li><strong>再生ボタン</strong>：直径66pt・アクセント塗り・白アイコン・薄いアクセントの影。<span class="pill mod">全画面共通</span></li>
+      <li><strong>停止の扱い</strong>：「停止（stop）」と「一時停止（pause）」が混在しているので <strong>pause/play トグルに統一</strong>。停止は廃止。</li>
+    </ul>
+    <div class="callout bad">
+      <b>削除するもの <span class="pill del">DELETE</span></b>
+      PDFのオレンジ <code>#FF9500</code> 再生ボタン／テキスト画面の青 <code>stop.fill</code>／<code>systemGray5</code> 地の info・speed 角丸ボタン／ミニプレイヤーの <code>foregroundColor(.primary)</code>（黒）再生アイコン。
+    </div>
+    <div class="callout good">
+      <b>ミニプレイヤーの変更 <span class="pill mod">MODIFY</span></b>
+      再生アイコンを <code>.primary</code> から <code>AppTheme.primary</code> に変更。スピーカー波形アイコンもアクセント色で揃える（現状すでに青なので置換）。
+    </div>
+    <h3>速度ピルの仕様</h3>
+    <p>現状の <code>x1.0</code> 表記（systemGray5の角丸）を、<strong>fillの丸ピル＋<code>1.0×</code> 表記</strong>に統一。タップでシート表示は踏襲。</p>
+  </section>
+
+  <!-- 05 -->
+  <section id="screens">
+    <h2>05 — Per-Screen</h2>
+    <div class="title">画面別の変更点</div>
+
+    <h3>ホーム <span class="files">HomeView.swift</span></h3>
+    <ul class="clean">
+      <li>ナビタイトルを <code>Voice Narrator</code> から <strong>「ナレーター」</strong>に統一（タブ名・アプリ名と一致させる）。サブタイトルで用途を一言。</li>
+      <li>ソースタイルのアイコンを全アクセント化（§03）。</li>
+      <li>「最近のファイル」行の再生ボタンを、青の <code>play.circle</code> から<strong>アクセント塗りの丸 <code>play.fill</code></strong> に変更（プレイヤーと同じ見た目）。</li>
+    </ul>
+
+    <h3>マイファイル <span class="files">MyFilesView.swift</span> <span class="pill new">空状態</span></h3>
+    <ul class="clean">
+      <li>現状は中身が空のまま。<strong>ファイル一覧</strong>（アイコン地＝アクセント・進捗バー・更新日）を実装する。</li>
+      <li>上部に<strong>検索フィールド</strong>と<strong>セグメントフィルタ</strong>（すべて / PDF / テキスト / 本）。選択中のみアクセント。</li>
+      <li>ファイルが0件のときの<strong>エンプティステート</strong>（アクセントのアイコン＋「ホームから読み込もう」導線）も用意。</li>
+    </ul>
+
+    <h3>設定 <span class="files">LanguageSettingView / SettingsView</span></h3>
+    <ul class="clean">
+      <li>最上部に<strong>プレミアム誘導バナー</strong>（アクセント地・王冠）。課金導線をアクセントに集約。</li>
+      <li>グループ化リストで「読み上げ（言語・声・速度）」「一般（辞書・削除項目・バックグラウンド再生）」を整理。行アイコン地は <code>primarySoft</code>。</li>
+      <li>速度はインラインのスライダー行（つまみ＝白、塗り＝アクセント、右端に <code>1.0×</code>）。</li>
+    </ul>
+
+    <h3>プレミアム <span class="files">SubscriptionView.swift</span></h3>
+    <ul class="clean">
+      <li>年額カードは<strong>アクセントの枠＋「2ヶ月分お得」バッジ</strong>、月額は控えめなニュートラル枠。<code>Color.orange</code> バッジは廃止しアクセントに。</li>
+      <li>特典リストのチェックは <code>primarySoft</code> 地＋アクセントの <code>checkmark</code>。CTAはアクセント塗り。</li>
+    </ul>
+
+    <h3>オンボーディング <span class="files">OnboardingView.swift</span></h3>
+    <ul class="clean">
+      <li>アプリアイコン的なアクセント角丸＋スピーカー波形。見出し「読みたいものを、声に任せよう。」</li>
+      <li>3つの特典を縦並び（アイコン地＝アクセント soft）。CTAとページドットもアクセント。</li>
+    </ul>
+  </section>
+
+  <!-- 06 -->
+  <section id="foundation">
+    <h2>06 — Foundation</h2>
+    <div class="title">余白・角丸・影・文字</div>
+    <p>バラバラな数値を、少数のスケールに丸める。</p>
+    <table>
+      <thead><tr><th>項目</th><th>ルール</th></tr></thead>
+      <tbody>
+        <tr><td>角丸</td><td>カード/シート <strong>16</strong> ・ セル/タイル <strong>14〜18</strong> ・ アイコン地 <strong>11〜15</strong> ・ ピル <strong>100</strong></td></tr>
+        <tr><td>画面端の余白</td><td>左右 <strong>20</strong> を基本（リスト内テキストは 16）</td></tr>
+        <tr><td>影</td><td>カードは <code>0 1 3 / 5%</code> の極薄1段のみ。多重影・濃い影は使わない。ダークは影を消し <strong>0.5px の区切り線</strong>で代替。</td></tr>
+        <tr><td>文字</td><td>大タイトル 32/700 ・ 見出し 20/700 ・ 本文 16/400 ・ 補助 13〜14（secondary）。最小フォント 12。</td></tr>
+        <tr><td>ヒット領域</td><td>タップ可能要素は <strong>最低 44×44pt</strong> を確保。</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 07 -->
+  <section id="checklist">
+    <h2>07 — Checklist</h2>
+    <div class="title">実装チェックリスト</div>
+    <ul class="clean check">
+      <li>Asset Catalog に <code>AccentIndigo</code>（Light #4B47E0 / Dark #8B87FF）を登録</li>
+      <li><code>AppTheme</code> に <code>primary / primarySoft / onPrimary</code> を定義、<code>Color.indigo</code>・<code>Color.orange</code> 直書きを全廃</li>
+      <li><code>HomeView</code> の <code>iconColor</code> 引数を撤廃し全アイコンをアクセント化、<code>createButtonCard</code> 重複を統合</li>
+      <li>共通 <code>PlayerBar</code> を新設し、PDF/テキスト/ミニプレイヤーの再生UIを置換</li>
+      <li>再生ボタンを pause/play トグルに統一（stop 廃止）、色をアクセントに</li>
+      <li>ミニプレイヤーの再生アイコンを <code>.primary</code> → <code>AppTheme.primary</code></li>
+      <li>マイファイルの一覧・検索・フィルタ・空状態を実装</li>
+      <li>設定／課金／オンボーディングのアクセント・余白を本書に合わせて調整</li>
+      <li>ライト/ダーク両方で全画面のコントラスト確認（最小フォント12・ヒット領域44）</li>
+    </ul>
+    <div class="callout note">
+      <b>対象ファイル</b>
+      <span class="files">AppTheme.swift / HomeView.swift / MyFilesView.swift / Features/Player/PlayerControlView.swift / Features/NowPlaying/MiniPlayerView.swift / PDFReader/PDFReaderFeature.swift / Settings/SubscriptionView.swift / Onboarding/OnboardingView.swift</span>
+    </div>
+  </section>
+
+  <footer>ナレーター デザイン統一 仕様書 · v1.0 · ビジュアル案はキャンバス「ナレーター デザイン統一案」を参照</footer>
+</div>
+</body>
+</html>

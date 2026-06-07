@@ -47,7 +47,7 @@ struct SubscriptionView: View {
                     }
                 }) {
                     Text("Restore Purchases")
-                        .foregroundColor(.blue)
+                        .foregroundColor(AppTheme.primary)
                 }
                 .padding(.top)
                 
@@ -91,7 +91,7 @@ struct SubscriptionView: View {
                 Spacer()
                 Image(systemName: "waveform.circle.fill")
                     .font(.system(size: 60))
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.primary)
                 Spacer()
             }
             .padding(.bottom, 4)
@@ -140,7 +140,7 @@ struct SubscriptionView: View {
             }) {
                 Text("プライバシーポリシー")
                     .font(.footnote)
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.primary)
                     .underline()
             }
             
@@ -151,7 +151,7 @@ struct SubscriptionView: View {
             }) {
                 Text("利用規約")
                     .font(.footnote)
-                    .foregroundColor(.blue)
+                    .foregroundColor(AppTheme.primary)
                     .underline()
             }
         }
@@ -203,9 +203,11 @@ struct FeatureRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
             Image(systemName: icon)
-                .font(.system(size: 22))
-                .foregroundColor(.blue)
-                .frame(width: 24, height: 24)
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(AppTheme.primary)
+                .frame(width: 36, height: 36)
+                .background(AppTheme.primarySoft)
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
             
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
@@ -356,7 +358,7 @@ struct MonthlyPlanCard: View {
                 Group {
                     if isLoading || isProcessing {
                         ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                            .progressViewStyle(CircularProgressViewStyle(tint: AppTheme.primary))
                             .frame(maxWidth: .infinity)
                     } else {
                         Text(plan?.trialDays != nil ? "7日間無料で試す" : "月額プランで購入する")

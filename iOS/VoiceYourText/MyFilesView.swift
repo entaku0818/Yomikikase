@@ -13,6 +13,7 @@ struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
     @State private var pdfFiles: [SavedPDFFile] = []
     @State private var searchText = ""
+    @State private var selectedFilter: FileFilter = .all
     @State private var showingDeleteAlert = false
     @State private var fileToDelete: FileItem?
     @State private var selectedTextFile: SavedTextFile?
@@ -26,11 +27,46 @@ struct MyFilesView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                
-                // ファイルリスト
+
+                // 検索フィールド
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.secondary)
+                    TextField("ファイルを検索", text: $searchText)
+                        .textFieldStyle(.plain)
+                    if !searchText.isEmpty {
+                        Button {
+                            searchText = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .padding(.horizontal, 12)
+                .frame(height: 40)
+                .background(Color(.systemGray6))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal)
+                .padding(.top, 8)
+
+                // セグメントフィルタ
+                Picker("", selection: $selectedFilter) {
+                    ForEach(FileFilter.allCases, id: \.self) { filter in
+                        Text(filter.title).tag(filter)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+
+                // ファイルリスト / 空状態
+                if filteredFiles.isEmpty {
+                    emptyState
+                } else {
                 ScrollView {
                     LazyVStack(spacing: 12) {
-                        ForEach(combinedFiles) { file in
+                        ForEach(filteredFiles) { file in
                             if file.type == .text {
                                 Button {
                                     if let textFile = textFiles.first(where: { $0.id == file.id }) {
@@ -79,7 +115,8 @@ struct MyFilesView: View {
                 .refreshable {
                     loadFiles()
                 }
-                
+                }
+
                 // 広告バナー（最下部）
                 if !isPremium {
                     AdmobBannerView()
@@ -179,9 +216,38 @@ struct MyFilesView: View {
         
         return files.sorted { $0.date > $1.date }
     }
-    
-    
-    
+
+    /// 検索テキストとセグメントフィルタを適用したファイル一覧。
+    private var filteredFiles: [FileItem] {
+        combinedFiles.filter { file in
+            let matchesFilter = selectedFilter.matches(file.type)
+            let matchesSearch = searchText.isEmpty
+                || file.title.localizedCaseInsensitiveContains(searchText)
+            return matchesFilter && matchesSearch
+        }
+    }
+
+    /// ファイルが無いときのエンプティステート。
+    @ViewBuilder
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Spacer()
+            Image(systemName: "tray")
+                .font(.system(size: 44, weight: .semibold))
+                .foregroundColor(AppTheme.primary)
+                .frame(width: 96, height: 96)
+                .background(AppTheme.primarySoft)
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+            Text("ファイルがありません")
+                .font(.headline)
+            Text("ホームから読み込もう")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
     private func loadFiles() {
         // テキストファイルの読み込み
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "en"
@@ -313,6 +379,29 @@ struct FileItem: Identifiable {
     }
 }
 
+/// マイファイルのセグメントフィルタ。
+enum FileFilter: CaseIterable, Hashable {
+    case all, pdf, text, epub
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .all: return "すべて"
+        case .pdf: return "PDF"
+        case .text: return "テキスト"
+        case .epub: return "本"
+        }
+    }
+
+    func matches(_ type: FileItem.FileType) -> Bool {
+        switch self {
+        case .all: return true
+        case .pdf: return type == .pdf
+        case .text: return type == .text
+        case .epub: return type == .epub
+        }
+    }
+}
+
 struct SavedTextFile: Identifiable {
     let id: UUID
     let title: String
@@ -359,23 +448,15 @@ struct FileItemView: View {
         }
     }
 
-    private var fileIconColor: Color {
-        switch file.type {
-        case .text: return .blue
-        case .pdf: return .red
-        case .epub: return .brown
-        }
-    }
-
     var body: some View {
         HStack(spacing: 12) {
-            // ファイルアイコン
+            // ファイルアイコン（色はアクセント1色に統一）
             Image(systemName: fileIconName)
-                .font(.system(size: 28))
-                .foregroundColor(fileIconColor)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundColor(AppTheme.primary)
                 .frame(width: 48, height: 48)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
+                .background(AppTheme.primarySoft)
+                .cornerRadius(12)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(file.title)
