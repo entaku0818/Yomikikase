@@ -3,6 +3,90 @@
   "strings": {
     "": {},
     "-4:08": {},
+    "すべて": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Alle" } },
+        "en": { "stringUnit": { "state": "translated", "value": "All" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Todos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Tout" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Tutti" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "すべて" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "전체" } },
+        "th": { "stringUnit": { "state": "translated", "value": "ทั้งหมด" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Tümü" } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Tất cả" } }
+      }
+    },
+    "ファイルを検索": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Dateien suchen" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Search files" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Buscar archivos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Rechercher des fichiers" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Cerca file" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ファイルを検索" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "파일 검색" } },
+        "th": { "stringUnit": { "state": "translated", "value": "ค้นหาไฟล์" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Dosya ara" } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Tìm kiếm tệp" } }
+      }
+    },
+    "ファイルがありません": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Keine Dateien" } },
+        "en": { "stringUnit": { "state": "translated", "value": "No files" } },
+        "es": { "stringUnit": { "state": "translated", "value": "No hay archivos" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Aucun fichier" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Nessun file" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ファイルがありません" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "파일이 없습니다" } },
+        "th": { "stringUnit": { "state": "translated", "value": "ไม่มีไฟล์" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Dosya yok" } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Không có tệp" } }
+      }
+    },
+    "ホームから読み込もう": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Von der Startseite importieren" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Import from Home" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Importa desde Inicio" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Importez depuis l’accueil" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Importa dalla Home" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ホームから読み込もう" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "홈에서 불러오세요" } },
+        "th": { "stringUnit": { "state": "translated", "value": "นำเข้าจากหน้าแรก" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Ana Sayfa’dan içe aktarın" } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Nhập từ Trang chủ" } }
+      }
+    },
+    "Voice Narrator": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "en": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "es": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "it": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "ja": { "stringUnit": { "state": "translated", "value": "ナレーター" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "th": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Voice Narrator" } }
+      }
+    },
+    "読みたいものを、声で。": {
+      "localizations": {
+        "de": { "stringUnit": { "state": "translated", "value": "Lass dir vorlesen, was du lesen willst." } },
+        "en": { "stringUnit": { "state": "translated", "value": "Listen to anything you want to read." } },
+        "es": { "stringUnit": { "state": "translated", "value": "Escucha todo lo que quieras leer." } },
+        "fr": { "stringUnit": { "state": "translated", "value": "Écoutez tout ce que vous voulez lire." } },
+        "it": { "stringUnit": { "state": "translated", "value": "Ascolta tutto ciò che vuoi leggere." } },
+        "ja": { "stringUnit": { "state": "translated", "value": "読みたいものを、声で。" } },
+        "ko": { "stringUnit": { "state": "translated", "value": "읽고 싶은 것을 음성으로." } },
+        "th": { "stringUnit": { "state": "translated", "value": "ฟังทุกสิ่งที่คุณอยากอ่าน" } },
+        "tr": { "stringUnit": { "state": "translated", "value": "Okumak istediğin her şeyi dinle." } },
+        "vi": { "stringUnit": { "state": "translated", "value": "Nghe mọi thứ bạn muốn đọc." } }
+      }
+    },
     "・": {
       "extractionState": "stale",
       "localizations": {

@@ -59,6 +59,16 @@ struct HomeView: View {
             WithViewStore(store, observe: { $0 }) { viewStore in
                 ScrollView {
                     VStack(spacing: 20) {
+                        // サブタイトル（用途を一言）
+                        HStack {
+                            Text("読みたいものを、声で。")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 4)
+
                         // 機能ボタングリッド
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 16) {
                             
@@ -72,7 +82,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "doc.text.fill",
-                                    iconColor: .blue,
                                     title: "テキスト",
                                     isEnabled: true
                                 )
@@ -83,7 +92,6 @@ struct HomeView: View {
                             NavigationLink(destination: SimplePDFPickerView()) {
                                 createButtonContent(
                                     icon: "doc.richtext.fill",
-                                    iconColor: .red,
                                     title: "PDF",
                                     isEnabled: true
                                 )
@@ -100,7 +108,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "doc.plaintext.fill",
-                                    iconColor: .purple,
                                     title: "TXTファイル",
                                     isEnabled: true
                                 )
@@ -117,7 +124,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "externaldrive.fill",
-                                    iconColor: .green,
                                     title: "Gドライブ",
                                     isEnabled: true
                                 )
@@ -134,7 +140,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "books.vertical.fill",
-                                    iconColor: .brown,
                                     title: "本",
                                     isEnabled: true
                                 )
@@ -155,7 +160,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "camera.fill",
-                                    iconColor: .gray,
                                     title: "スキャン",
                                     isEnabled: true
                                 )
@@ -172,7 +176,6 @@ struct HomeView: View {
                             } label: {
                                 createButtonContent(
                                     icon: "link",
-                                    iconColor: .teal,
                                     title: "リンク",
                                     isEnabled: true
                                 )
@@ -196,20 +199,17 @@ struct HomeView: View {
                                 LazyVStack(spacing: 8) {
                                     ForEach(Array(viewStore.speechList.prefix(3))) { speech in
                                         HStack {
-                                            // fileTypeに応じてアイコンを切り替え
+                                            // fileTypeに応じてアイコンを切り替え（色はアクセント1色に統一）
                                             let iconName: String = speech.fileType == "scan" ? "camera.fill"
                                                 : speech.fileType == "epub" ? "books.vertical.fill"
                                                 : "doc.text.fill"
-                                            let iconColor: Color = speech.fileType == "scan" ? .gray
-                                                : speech.fileType == "epub" ? .brown
-                                                : .blue
 
                                             Image(systemName: iconName)
                                                 .font(.system(size: 20))
-                                                .foregroundColor(iconColor)
-                                                .frame(width: 32, height: 32)
-                                                .background(iconColor.opacity(0.1))
-                                                .cornerRadius(6)
+                                                .foregroundColor(AppTheme.primary)
+                                                .frame(width: 40, height: 40)
+                                                .background(AppTheme.primarySoft)
+                                                .cornerRadius(11)
                                             
                                             VStack(alignment: .leading, spacing: 4) {
                                                 Text(speech.title)
@@ -228,9 +228,12 @@ struct HomeView: View {
                                                 showingFileViewer = true
                                                 viewStore.send(.speechSelected(speech.text))
                                             } label: {
-                                                Image(systemName: "play.circle")
-                                                    .font(.system(size: 24))
-                                                    .foregroundColor(.blue)
+                                                Image(systemName: "play.fill")
+                                                    .font(.system(size: 16, weight: .semibold))
+                                                    .foregroundColor(AppTheme.onPrimary)
+                                                    .frame(width: 36, height: 36)
+                                                    .background(AppTheme.primary)
+                                                    .clipShape(Circle())
                                             }
                                         }
                                         .padding(.horizontal)
@@ -388,21 +391,22 @@ struct HomeView: View {
         }
     }
     
+    /// ホームのソースタイル。アイコンはすべてアクセント1色（地は primarySoft）に統一。
+    /// 詳細: DesignSystem/design-unification-spec.md §03
     @ViewBuilder
     private func createButtonContent(
         icon: String,
-        iconColor: Color,
         title: LocalizedStringKey,
         isEnabled: Bool
     ) -> some View {
         VStack(spacing: 12) {
             Image(systemName: icon)
-                .font(.system(size: 32))
-                .foregroundColor(isEnabled ? iconColor : Color.gray.opacity(0.5))
-                .frame(width: 50, height: 50)
-                .background((isEnabled ? iconColor : Color.gray).opacity(0.1))
-                .cornerRadius(12)
-            
+                .font(.system(size: 26, weight: .semibold))
+                .foregroundColor(isEnabled ? AppTheme.primary : Color.gray.opacity(0.5))
+                .frame(width: 52, height: 52)
+                .background((isEnabled ? AppTheme.primary : Color.gray).opacity(0.12))
+                .cornerRadius(15)
+
             Text(title)
                 .font(.system(size: 14, weight: .medium))
                 .foregroundColor(isEnabled ? .primary : .secondary)
@@ -415,106 +419,6 @@ struct HomeView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
         .opacity(isEnabled ? 1.0 : 0.6)
-    }
-    
-    @ViewBuilder
-    private func createButtonCard(
-        icon: String,
-        iconColor: Color,
-        title: LocalizedStringKey,
-        isEnabled: Bool,
-        action: @escaping () -> Void
-    ) -> some View {
-        Button(action: action) {
-            VStack(spacing: 12) {
-                Image(systemName: icon)
-                    .font(.system(size: 32))
-                    .foregroundColor(isEnabled ? iconColor : Color.gray.opacity(0.5))
-                    .frame(width: 50, height: 50)
-                    .background((isEnabled ? iconColor : Color.gray).opacity(0.1))
-                    .cornerRadius(12)
-                
-                Text(title)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundColor(isEnabled ? .primary : .secondary)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 100)
-            .background(isEnabled ? Color(.systemBackground) : Color(.systemGray6))
-            .cornerRadius(16)
-            .shadow(color: .black.opacity(isEnabled ? 0.05 : 0.02), radius: isEnabled ? 4 : 2, x: 0, y: isEnabled ? 2 : 1)
-            .opacity(isEnabled ? 1.0 : 0.6)
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct RecentItemView: View {
-    let title: String
-    let subtitle: String
-    let date: Date
-    let progress: Int
-    
-    private var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .none
-        return formatter
-    }
-    
-    var body: some View {
-        HStack {
-            // ファイルアイコン
-            Image(systemName: subtitle == "PDF" ? "doc.richtext.fill" : "doc.text.fill")
-                .font(.system(size: 24))
-                .foregroundColor(subtitle == "PDF" ? .red : .blue)
-                .frame(width: 40, height: 40)
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(8)
-            
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 16, weight: .medium))
-                    .lineLimit(1)
-                
-                HStack {
-                    Text("\(progress)%")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text("•")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text(dateFormatter.string(from: date))
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text("•")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                    
-                    Text(subtitle.lowercased())
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                }
-            }
-            
-            Spacer()
-            
-            Button(action: {}) {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 16))
-                    .foregroundColor(.secondary)
-            }
-        }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 16)
-        .background(Color(.systemBackground))
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
 }
 
