@@ -1,1 +1,1 @@
-Mejoras de rendimiento y estabilidad, además de correcciones de errores menores.
+¡Nuevo diseño! Hemos unificado toda la app con un tema índigo limpio, ordenado los iconos y los controles de reproducción, y añadido búsqueda, filtros y un estado vacío en Mis archivos.

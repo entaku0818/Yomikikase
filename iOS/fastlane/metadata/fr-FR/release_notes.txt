@@ -1,1 +1,1 @@
-Améliorations des performances et de la stabilité, ainsi que des corrections de bugs mineurs.
+Nouveau design ! Toute l'application est unifiée autour d'un thème indigo épuré, les icônes et les commandes de lecture ont été clarifiées, et la recherche, les filtres et un état vide ont été ajoutés à Mes fichiers.
