@@ -258,7 +258,7 @@ fun SpeechScreen(
                         modifier = Modifier.size(80.dp),
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
+                            containerColor = MaterialTheme.colorScheme.primary
                         )
                     ) {
                         Icon(
