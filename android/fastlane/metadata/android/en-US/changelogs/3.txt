@@ -1,0 +1,3 @@
+• Refreshed design with a unified indigo theme
+• Cleaner Read, History, PDF and Settings screens
+• Stability improvements

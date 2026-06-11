@@ -19,8 +19,8 @@ android {
         applicationId = "com.entaku.VoiceYourText"
         minSdk = 30
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 3
+        versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -49,6 +49,10 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    lint {
+        // 既存コードの指摘は baseline に凍結し、新規エラーのみ CI で落とす
+        baseline = file("lint-baseline.xml")
     }
 }
 
