@@ -1,0 +1,24 @@
+name: CI (Functions)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'functions/**'
+      - '.github/workflows/ci-functions.yml'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'functions/**'
+      - '.github/workflows/ci-functions.yml'
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Syntax check
+        run: node --check functions/index.js

@@ -20,9 +20,11 @@ GoogleService-Info.plist
 # Build artifacts
 iOS/build/
 
+.env
 fastlane/.env
 fastlane/report.xml
 iOS/fastlane/report.xml
+android/fastlane/report.xml
 
 # Local dev artifacts
 .playwright-mcp/
