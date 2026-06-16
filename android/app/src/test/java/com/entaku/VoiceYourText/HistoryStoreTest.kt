@@ -23,14 +23,9 @@ class HistoryStoreTest {
     @Mock
     private lateinit var mockPrefs: SharedPreferences
 
-    @Mock
-    private lateinit var mockEditor: SharedPreferences.Editor
-
     @Before
     fun setup() {
         `when`(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockPrefs)
-        `when`(mockPrefs.edit()).thenReturn(mockEditor)
-        `when`(mockEditor.putString(anyString(), any())).thenReturn(mockEditor)
     }
 
     @Test

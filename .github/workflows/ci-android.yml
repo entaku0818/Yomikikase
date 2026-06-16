@@ -32,10 +32,8 @@ jobs:
       - name: Build debug APK
         run: ./gradlew :app:assembleDebug
 
-      # TODO: HistoryStoreTest が UnnecessaryStubbingException で失敗中。
-      # テスト修正後に有効化する:
-      #   - name: Run unit tests
-      #     run: ./gradlew :app:testDebugUnitTest
+      - name: Run unit tests
+        run: ./gradlew :app:testDebugUnitTest
 
       - name: Run Android Lint
         run: ./gradlew :app:lintDebug
