@@ -172,6 +172,7 @@ opt_in_rules:
 # 対象のファイル・フォルダ
 included:
   - iOS/VoiceYourText
+  - iOS/LocalPackages/PaywallAnalytics
 
 # 対象外のファイル・フォルダ
 excluded:
