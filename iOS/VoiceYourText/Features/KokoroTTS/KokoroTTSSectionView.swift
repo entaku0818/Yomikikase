@@ -16,7 +16,7 @@ struct KokoroTTSSection: View {
             // ヘッダー行
             HStack(spacing: 10) {
                 Image(systemName: "waveform.badge.mic")
-                    .foregroundStyle(.purple)
+                    .foregroundStyle(.indigo)
                     .font(.title3)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack {
@@ -26,11 +26,11 @@ struct KokoroTTSSection: View {
                             .font(.caption2)
                             .padding(.horizontal, 5)
                             .padding(.vertical, 2)
-                            .background(Color.purple.opacity(0.15))
-                            .foregroundStyle(.purple)
+                            .background(Color.indigo.opacity(0.15))
+                            .foregroundStyle(.indigo)
                             .clipShape(Capsule())
                     }
-                    Text("ニューラルTTS・完全オンデバイス")
+                    Text("MLX・完全オンデバイス生成")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -38,7 +38,6 @@ struct KokoroTTSSection: View {
             }
             .padding(.vertical, 4)
 
-            // ダウンロード状態に応じたUI
             switch downloadStatus {
             case .notDownloaded:
                 downloadPromptRow
@@ -50,7 +49,7 @@ struct KokoroTTSSection: View {
                 errorRow(message: message)
             }
         } header: {
-            Text(isJapanese ? "Kokoro AI音声（日本語）" : "Kokoro AI音声（英語専用）")
+            Text(isJapanese ? "Kokoro AI音声（日本語）" : "Kokoro AI音声（英語）")
         }
         .task {
             for await status in await KokoroModelManager.shared.statusStream() {
@@ -62,8 +61,8 @@ struct KokoroTTSSection: View {
     // MARK: - Sub-rows
 
     private var downloadPromptRow: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("モデルをダウンロードすると高品質な英語音声が使えます（約600MB）")
+        VStack(alignment: .leading, spacing: 10) {
+            Text("モデルをダウンロードするとオンデバイスで高品質な音声が使えます（約600MB）")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Button {
@@ -73,7 +72,7 @@ struct KokoroTTSSection: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(.purple)
+            .tint(.indigo)
         }
         .padding(.vertical, 4)
     }
@@ -89,7 +88,7 @@ struct KokoroTTSSection: View {
                     .foregroundStyle(.secondary)
             }
             ProgressView(value: progress)
-                .tint(.purple)
+                .tint(.indigo)
             Button("キャンセル", role: .destructive) {
                 cancelDownload()
             }
@@ -99,113 +98,56 @@ struct KokoroTTSSection: View {
     }
 
     private var enabledRow: some View {
-        VStack(spacing: 12) {
-            Toggle(isOn: Binding(
-                get: { kokoroEnabled },
-                set: { onToggle($0) }
-            )) {
-                Text("Kokoro TTS を使用")
+        VStack(spacing: 14) {
+            Toggle(isOn: Binding(get: { kokoroEnabled }, set: { onToggle($0) })) {
+                Text("Kokoro AI音声を使用")
             }
-            .tint(.purple)
+            .tint(.indigo)
 
             if kokoroEnabled {
-                voicePickerRow
-                testPlayButton
+                voiceCardList
             }
 
             Button(role: .destructive) {
-                Task {
-                    try? await KokoroModelManager.shared.deleteModel()
-                }
+                Task { try? await KokoroModelManager.shared.deleteModel() }
             } label: {
-                Label("モデルを削除（600MB）", systemImage: "trash")
+                Label("モデルを削除（約600MB）", systemImage: "trash")
                     .font(.caption)
                     .foregroundStyle(.red)
             }
         }
     }
 
-    @State private var isTestPlaying = false
-    @State private var audioPlayer: AVAudioPlayer?
+    // MARK: - Voice card list
 
-    private var testPlayButton: some View {
-        Button {
-            guard !isTestPlaying else { return }
-            isTestPlaying = true
-            Task {
-                defer { isTestPlaying = false }
-                do {
-                    let defaultVoice: KokoroVoice = isJapanese ? .defaultJapanese : .default
-                    let voice = KokoroVoice(rawValue: kokoroVoice) ?? defaultVoice
-                    let testText = isJapanese
-                        ? "こんにちは！これはKokoro TTSのテストです。"
-                        : "Hello! This is Kokoro TTS running on your device."
-                    let data = try await KokoroTTSClient.liveValue.synthesize(testText, voice, 1.0)
-                    await MainActor.run {
-                        audioPlayer = try? AVAudioPlayer(data: data)
-                        audioPlayer?.play()
-                    }
-                } catch {
-                    print("Kokoro test error: \(error)")
-                }
-            }
-        } label: {
-            Label(
-                isTestPlaying ? "生成中…" : "テスト再生",
-                systemImage: isTestPlaying ? "waveform" : "play.circle"
-            )
-            .frame(maxWidth: .infinity)
-        }
-        .buttonStyle(.bordered)
-        .tint(.purple)
-        .disabled(isTestPlaying)
+    private var availableVoices: [KokoroVoice] {
+        KokoroVoice.allCases.filter { $0.isJapanese == isJapanese }
     }
 
-    private var voicePickerRow: some View {
-        let availableVoices = KokoroVoice.allCases.filter { $0.isJapanese == isJapanese }
-        return VStack(alignment: .leading, spacing: 6) {
-            Text("音声スタイル")
+    private var voiceCardList: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("声のキャラクター")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    ForEach(availableVoices) { voice in
-                        Button {
-                            onSelectVoice(voice.rawValue)
-                        } label: {
-                            Text(voice.displayName)
-                                .font(.caption)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(
-                                    kokoroVoice == voice.rawValue
-                                        ? Color.purple
-                                        : Color.purple.opacity(0.1)
-                                )
-                                .foregroundStyle(
-                                    kokoroVoice == voice.rawValue
-                                        ? Color.white
-                                        : Color.purple
-                                )
-                                .clipShape(Capsule())
-                        }
-                    }
-                }
-                .padding(.horizontal, 2)
+
+            ForEach(availableVoices) { voice in
+                VoiceCharacterCard(
+                    voice: voice,
+                    isSelected: kokoroVoice == voice.rawValue,
+                    onSelect: { onSelectVoice(voice.rawValue) }
+                )
             }
         }
     }
+
+    // MARK: - Error row
 
     private func errorRow(message: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Label(message, systemImage: "exclamationmark.circle")
                 .font(.caption)
                 .foregroundStyle(.red)
-            Button {
-                startDownload()
-            } label: {
-                Text("再試行")
-            }
+            Button { startDownload() } label: { Text("再試行") }
         }
     }
 
@@ -227,5 +169,104 @@ struct KokoroTTSSection: View {
         downloadTask?.cancel()
         downloadTask = nil
         Task { await MainActor.run { downloadStatus = .notDownloaded } }
+    }
+}
+
+// MARK: - Voice Character Card
+
+private struct VoiceCharacterCard: View {
+    let voice: KokoroVoice
+    let isSelected: Bool
+    let onSelect: () -> Void
+
+    @State private var isPlaying = false
+    @State private var audioPlayer: AVAudioPlayer?
+
+    var body: some View {
+        Button(action: onSelect) {
+            HStack(spacing: 12) {
+                // Gender icon
+                ZStack {
+                    Circle()
+                        .fill(isSelected ? Color.indigo : Color.indigo.opacity(0.1))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: voice.gender.systemImage)
+                        .font(.system(size: 18))
+                        .foregroundStyle(isSelected ? .white : .indigo)
+                }
+
+                // Name + persona + accent
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 6) {
+                        Text(voice.characterName)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+                        Text(voice.accent.label)
+                            .font(.caption2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color(.systemGray5))
+                            .clipShape(Capsule())
+                            .foregroundStyle(.secondary)
+                    }
+                    Text(voice.persona)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+
+                Spacer()
+
+                // Trial play button
+                Button {
+                    playPreview()
+                } label: {
+                    Image(systemName: isPlaying ? "waveform" : "play.circle")
+                        .font(.title3)
+                        .foregroundStyle(isPlaying ? Color.indigo : Color.secondary)
+                        .symbolEffect(.variableColor, isActive: isPlaying)
+                }
+                .buttonStyle(.plain)
+                .disabled(isPlaying)
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundStyle(.indigo)
+                        .font(.title3)
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(isSelected ? Color.indigo.opacity(0.07) : Color(.systemGray6))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(isSelected ? Color.indigo : Color.clear, lineWidth: 1.5)
+                    )
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func playPreview() {
+        guard !isPlaying else { return }
+        isPlaying = true
+        Task {
+            defer { isPlaying = false }
+            do {
+                let data = try await KokoroTTSClient.liveValue.synthesize(
+                    voice.sampleText,
+                    voice,
+                    1.0
+                )
+                await MainActor.run {
+                    audioPlayer = try? AVAudioPlayer(data: data)
+                    audioPlayer?.play()
+                }
+            } catch {
+                print("[KokoroVoiceCard] preview error: \(error)")
+            }
+        }
     }
 }

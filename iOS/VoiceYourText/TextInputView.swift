@@ -30,7 +30,7 @@ struct TextInputView: View {
     @State private var isLoadingVoices = false
     @State private var currentTimepoints: [TTSTimepoint] = []
     @State private var highlightTimer: Timer?
-    @State private var useCloudTTS: Bool = true // デフォルトはクラウドTTS
+    @State private var useCloudTTS: Bool = false // ローカルAI(Kokoro)をデフォルトに
     @State private var cloudTTSAvailable: Bool = false // クラウドTTS音声が利用可能か
     @State private var showingTextLimitAlert = false
     @State private var showingSubscription = false
@@ -118,7 +118,7 @@ struct TextInputView: View {
             text = initialText
             currentFileId = fileId
 
-            // 既存ファイルの場合、保存されたTTSモードを読み込む
+            // 既存ファイルの場合、保存されたTTSモードを読み込む（新規は false のまま）
             if let fileId = fileId {
                 let savedTTSMode = SpeechTextRepository.shared.fetchTTSMode(id: fileId)
                 useCloudTTS = savedTTSMode == "cloud"
@@ -247,8 +247,8 @@ struct TextInputView: View {
                             .foregroundColor(.secondary)
 
                         Picker("", selection: $useCloudTTS) {
-                            Text("高音質TTS").tag(true)
-                            Text("基本TTS").tag(false)
+                            Text("クラウドTTS").tag(true)
+                            Text("ローカルAI").tag(false)
                         }
                         .pickerStyle(.segmented)
                         .frame(maxWidth: 250)
@@ -259,7 +259,7 @@ struct TextInputView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     } else {
-                        Text("デバイスの基本音声で再生します（保存は不要です）")
+                        Text("オンデバイスAI音声で再生します（インターネット不要）")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
@@ -388,9 +388,16 @@ struct TextInputView: View {
             return
         }
 
-        // Use device TTS (with highlight support)
-        infoLog("[Highlight] Using device TTS (WITH highlight support)")
-        playWithDeviceTTS()
+        // Kokoro AI (local MLX) → fallback to device TTS
+        let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
+        let kokoroAvailable = KokoroTTSClient.liveValue.isAvailable()
+        if kokoroEnabled && kokoroAvailable {
+            infoLog("[Highlight] Using Kokoro AI TTS (local)")
+            playWithKokoroTTS()
+        } else {
+            infoLog("[Highlight] Using device TTS (kokoroEnabled:\(kokoroEnabled) available:\(kokoroAvailable))")
+            playWithDeviceTTS()
+        }
     }
 
     private func playDownloadedAudio(url: URL) {
@@ -482,6 +489,49 @@ struct TextInputView: View {
     private func stopHighlightTimer() {
         highlightTimer?.invalidate()
         highlightTimer = nil
+    }
+
+    private func playWithKokoroTTS() {
+        let language = UserDefaultsManager.shared.languageSetting ?? "ja"
+        let isJapanese = language.hasPrefix("ja")
+        let defaultVoice: KokoroVoice = isJapanese ? .defaultJapanese : .default
+        let voiceRaw = UserDefaultsManager.shared.kokoroVoice ?? defaultVoice.rawValue
+        let voice = KokoroVoice(rawValue: voiceRaw) ?? defaultVoice
+        // Kokoro speed 1.0 = normal; AVSpeechSynthesizer 0.5 = normal → multiply by 2
+        let speed = Float(max(0.5, min(2.0, UserDefaultsManager.shared.speechRate * 2.0)))
+
+        Task {
+            do {
+                let data = try await KokoroTTSClient.liveValue.synthesize(text, voice, speed)
+                await MainActor.run {
+                    do {
+                        audioPlayer?.stop()
+                        audioPlayer = try AVAudioPlayer(data: data)
+                        audioPlayer?.enableRate = true
+                        audioPlayer?.rate = max(0.5, min(2.0, UserDefaultsManager.shared.speechRate * 2.0))
+
+                        NotificationCenter.default.addObserver(
+                            forName: NSNotification.Name("AudioPlayerFinished"),
+                            object: nil,
+                            queue: .main
+                        ) { [weak audioPlayer] _ in
+                            guard audioPlayer != nil else { return }
+                            self.isSpeaking = false
+                            self.highlightedRange = nil
+                            self.store.send(.nowPlaying(.stopPlaying))
+                        }
+                        audioPlayer?.delegate = CloudTTSAudioDelegate.shared
+                        audioPlayer?.play()
+                    } catch {
+                        errorLog("[Kokoro] AVAudioPlayer init failed: \(error), falling back to device TTS")
+                        playWithDeviceTTS()
+                    }
+                }
+            } catch {
+                errorLog("[Kokoro] Synthesis failed: \(error), falling back to device TTS")
+                await MainActor.run { playWithDeviceTTS() }
+            }
+        }
     }
 
     private func playWithDeviceTTS() {

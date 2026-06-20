@@ -2,18 +2,40 @@ import Foundation
 import ComposableArchitecture
 import AVFoundation
 
+// MARK: - Voice character metadata
+
+enum VoiceGender {
+    case female, male
+    var label: String { self == .female ? "女性" : "男性" }
+    var systemImage: String { self == .female ? "figure.stand.dress" : "figure.stand" }
+}
+
+enum VoiceAccent {
+    case american, british, japanese
+    var label: String {
+        switch self {
+        case .american: return "🇺🇸 US英語"
+        case .british:  return "🇬🇧 UK英語"
+        case .japanese: return "🇯🇵 日本語"
+        }
+    }
+}
+
 // MARK: - Voice definitions
 
 enum KokoroVoice: String, CaseIterable, Identifiable {
-    // English
+    // English (US Female)
     case afHeart    = "af_heart"
     case afBella    = "af_bella"
     case afNicole   = "af_nicole"
     case afSarah    = "af_sarah"
+    // English (US Male)
     case amAdam     = "am_adam"
     case amMichael  = "am_michael"
+    // English (UK Female)
     case bfEmma     = "bf_emma"
     case bfIsabella = "bf_isabella"
+    // English (UK Male)
     case bmGeorge   = "bm_george"
     case bmLewis    = "bm_lewis"
     // Japanese
@@ -24,21 +46,70 @@ enum KokoroVoice: String, CaseIterable, Identifiable {
 
     var isJapanese: Bool { rawValue.hasPrefix("j") }
 
-    var displayName: String {
+    // MARK: Character properties
+
+    var characterName: String {
         switch self {
-        case .afHeart:    return "Heart (US)"
-        case .afBella:    return "Bella (US)"
-        case .afNicole:   return "Nicole (US)"
-        case .afSarah:    return "Sarah (US)"
-        case .amAdam:     return "Adam (US)"
-        case .amMichael:  return "Michael (US)"
-        case .bfEmma:     return "Emma (UK)"
-        case .bfIsabella: return "Isabella (UK)"
-        case .bmGeorge:   return "George (UK)"
-        case .bmLewis:    return "Lewis (UK)"
-        case .jfAlpha:    return "Alpha（女性）"
-        case .jmKumo:     return "Kumo（男性）"
+        case .afHeart:    return "Heart"
+        case .afBella:    return "Bella"
+        case .afNicole:   return "Nicole"
+        case .afSarah:    return "Sarah"
+        case .amAdam:     return "Adam"
+        case .amMichael:  return "Michael"
+        case .bfEmma:     return "Emma"
+        case .bfIsabella: return "Isabella"
+        case .bmGeorge:   return "George"
+        case .bmLewis:    return "Lewis"
+        case .jfAlpha:    return "凛"
+        case .jmKumo:     return "雲"
         }
+    }
+
+    var persona: String {
+        switch self {
+        case .afHeart:    return "温かみある声。親しみやすく日常会話向き"
+        case .afBella:    return "優雅で落ち着いた声。ナレーション向き"
+        case .afNicole:   return "知性的でハキハキした声。説明・講義向き"
+        case .afSarah:    return "元気で明るい声。アナウンス・エンタメ向き"
+        case .amAdam:     return "穏やかで誠実な声。語り・朗読向き"
+        case .amMichael:  return "力強い低音。ドキュメンタリー向き"
+        case .bfEmma:     return "品格ある英国アクセント。ビジネス向き"
+        case .bfIsabella: return "柔らかで優しい声。教育コンテンツ向き"
+        case .bmGeorge:   return "重厚で威厳ある声。フォーマル向き"
+        case .bmLewis:    return "若々しく活発。カジュアルコンテンツ向き"
+        case .jfAlpha:    return "落ち着いた知性的な声。あらゆる場面に"
+        case .jmKumo:     return "穏やかで誠実な声。語りかけるように"
+        }
+    }
+
+    var gender: VoiceGender {
+        switch self {
+        case .afHeart, .afBella, .afNicole, .afSarah,
+             .bfEmma, .bfIsabella, .jfAlpha:
+            return .female
+        case .amAdam, .amMichael, .bmGeorge, .bmLewis, .jmKumo:
+            return .male
+        }
+    }
+
+    var accent: VoiceAccent {
+        switch self {
+        case .afHeart, .afBella, .afNicole, .afSarah,
+             .amAdam, .amMichael:
+            return .american
+        case .bfEmma, .bfIsabella, .bmGeorge, .bmLewis:
+            return .british
+        case .jfAlpha, .jmKumo:
+            return .japanese
+        }
+    }
+
+    var displayName: String { characterName }
+
+    var sampleText: String {
+        isJapanese
+            ? "こんにちは。私の声はいかがですか？"
+            : "Hello! How does my voice sound to you?"
     }
 
     static var `default`: KokoroVoice { .afHeart }
