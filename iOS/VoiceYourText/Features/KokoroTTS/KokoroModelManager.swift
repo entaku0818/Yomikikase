@@ -116,10 +116,16 @@ actor KokoroModelManager {
     nonisolated static func checkDownloaded() -> Bool {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
             .appending(path: "KokoroTTS")
-        let modelPath = dir.appending(path: "kokoro-v1_0.safetensors").path
-        let voicesPath = dir.appending(path: "voices.npz").path
-        return FileManager.default.fileExists(atPath: modelPath)
-            && FileManager.default.fileExists(atPath: voicesPath)
+        let modelURL = dir.appending(path: "kokoro-v1_0.safetensors")
+        let voicesURL = dir.appending(path: "voices.npz")
+        guard FileManager.default.fileExists(atPath: modelURL.path),
+              FileManager.default.fileExists(atPath: voicesURL.path) else { return false }
+        // voices.npz が ZIP マジックバイト(PK\x03\x04)で始まるか検証
+        // GitHub LFS ポインタが保存された場合はテキストファイルになる
+        guard let handle = try? FileHandle(forReadingFrom: voicesURL),
+              let header = try? handle.read(upToCount: 4) else { return false }
+        try? handle.close()
+        return header.count >= 2 && header[0] == 0x50 && header[1] == 0x4B
     }
 
     func deleteModel() throws {

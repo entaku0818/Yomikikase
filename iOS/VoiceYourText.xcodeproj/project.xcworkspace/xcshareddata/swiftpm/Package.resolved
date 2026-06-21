@@ -1,5 +1,5 @@
 {
-  "originHash" : "b2e65a5c5ae4215aa21a2647aa8c6acd57dbbc40fbaf98d77d1d281436db3615",
+  "originHash" : "f75b31a09612ab3b9e641db5e6410d95cc93d0faf7205d063048e4ff47d6cc11",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -134,14 +134,6 @@
       "state" : {
         "revision" : "a0bc79961d7be727d258d33d5a6b2f1023270ba1",
         "version" : "1.22.5"
-      }
-    },
-    {
-      "identity" : "misakiswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/entaku0818/MisakiSwift",
-      "state" : {
-        "revision" : "768ccd2000e09d315654c386a2307badf5376438"
       }
     },
     {

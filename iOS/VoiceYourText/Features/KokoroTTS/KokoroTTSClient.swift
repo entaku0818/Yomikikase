@@ -144,8 +144,7 @@ enum KokoroError: LocalizedError {
 
 extension KokoroTTSClient: DependencyKey {
     static var liveValue: Self {
-        #if canImport(KokoroSwift)
-        return Self(
+        Self(
             isAvailable: {
                 KokoroModelManager.checkDownloaded()
             },
@@ -155,12 +154,6 @@ extension KokoroTTSClient: DependencyKey {
                 )
             }
         )
-        #else
-        return Self(
-            isAvailable: { false },
-            synthesize: { _, _, _ in throw KokoroError.packageNotInstalled }
-        )
-        #endif
     }
 }
 
@@ -173,8 +166,6 @@ extension DependencyValues {
 
 // MARK: - Kokoro Engine (モデルキャッシュ付き)
 
-#if canImport(KokoroSwift)
-import KokoroSwift
 import MLX
 import ZIPFoundation
 
@@ -347,4 +338,3 @@ actor KokoroEngine {
         return wav
     }
 }
-#endif

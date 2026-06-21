@@ -389,13 +389,14 @@ struct TextInputView: View {
         }
 
         // Kokoro AI (local MLX) → fallback to device TTS
-        let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
         let kokoroAvailable = KokoroTTSClient.liveValue.isAvailable()
-        if kokoroEnabled && kokoroAvailable {
-            infoLog("[Highlight] Using Kokoro AI TTS (local)")
+        let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
+        print("🔊 [TTS] useCloudTTS=\(useCloudTTS) kokoroAvailable=\(kokoroAvailable) kokoroEnabled=\(kokoroEnabled) textLen=\(text.count)")
+        if kokoroAvailable {
+            print("🤖 [TTS] → Kokoro AI (local MLX)")
             playWithKokoroTTS()
         } else {
-            infoLog("[Highlight] Using device TTS (kokoroEnabled:\(kokoroEnabled) available:\(kokoroAvailable))")
+            print("📢 [TTS] → Device TTS (AVSpeechSynthesizer) — model not downloaded")
             playWithDeviceTTS()
         }
     }
@@ -759,6 +760,7 @@ struct TextInputView: View {
             infoLog("[TTS] Using Basic TTS, skipping audio generation")
             cloudTTSAvailable = false
             isEditMode = false
+            speakWithHighlight()
         }
     }
 
