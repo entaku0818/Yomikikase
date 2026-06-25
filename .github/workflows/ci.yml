@@ -69,6 +69,6 @@ jobs:
             -scheme VoiceYourText \
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -clonedSourcePackagesDirPath SourcePackages \
-            -skipPackagePluginValidation \
+            -skipMacroValidation \
             -skip-testing:VoiceYourTextUITests \
             CODE_SIGNING_ALLOWED=NO
