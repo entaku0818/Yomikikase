@@ -42,10 +42,12 @@ jobs:
           EOF
           cp iOS/VoiceYourText/config/Debug.xcconfig iOS/VoiceYourText/config/Release.xcconfig
 
+      # SourcePackages を DerivedData 内に置くことで Crashlytics run スクリプトの
+      # ${BUILD_DIR%/Build/*}/SourcePackages パスと一致させる
       - name: Cache SPM packages
         uses: actions/cache@v4
         with:
-          path: iOS/SourcePackages
+          path: iOS/DerivedData/SourcePackages
           key: spm-${{ runner.os }}-${{ hashFiles('iOS/VoiceYourText.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}
           restore-keys: |
             spm-${{ runner.os }}-
@@ -68,6 +70,8 @@ jobs:
             -project VoiceYourText.xcodeproj \
             -scheme VoiceYourText \
             -destination "id=${{ steps.sim.outputs.udid }}" \
-            -clonedSourcePackagesDirPath SourcePackages \
+            -derivedDataPath DerivedData \
+            -clonedSourcePackagesDirPath DerivedData/SourcePackages \
+            -skipMacroValidation \
             -skip-testing:VoiceYourTextUITests \
             CODE_SIGNING_ALLOWED=NO
