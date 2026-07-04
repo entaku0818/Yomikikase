@@ -82,6 +82,103 @@ final class PDFReaderFeatureTests: XCTestCase {
         }
     }
 
+    func testSetStartCharacterIndex() async {
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(pdfText: "Hello World")
+        ) {
+            PDFReaderFeature()
+        }
+
+        await store.send(.setStartCharacterIndex(6)) {
+            $0.startCharacterIndex = 6
+        }
+    }
+
+    func testStartReadingFromNonZeroIndex() async {
+        var capturedUtteranceText: String?
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(
+                pdfText: "Hello World",
+                isReading: false,
+                startCharacterIndex: 6
+            )
+        ) {
+            PDFReaderFeature()
+        } withDependencies: { deps in
+            deps.speechSynthesizer = SpeechSynthesizerClient(
+                speak: { _ in true },
+                speakWithHighlight: { utterance, onHighlight, onFinish in
+                    capturedUtteranceText = utterance.speechString
+                    // utterance は "World"（suffix）なので range.location=0 を送る
+                    onHighlight(NSRange(location: 0, length: 5), utterance.speechString)
+                    onFinish()
+                    return true
+                },
+                speakWithAPI: { _, _ in true },
+                stopSpeaking: { true },
+                pauseSpeaking: { true },
+                continueSpeaking: { true },
+                isPaused: { false }
+            )
+            deps.userDefaults = UserDefaultsClient(
+                languageSetting: { "ja-JP" },
+                setLanguageSetting: { _ in },
+                selectedVoiceIdentifier: { nil },
+                setSelectedVoiceIdentifier: { _ in },
+                cloudTTSVoiceId: { nil },
+                setCloudTTSVoiceId: { _ in },
+                speechRate: { 0.5 },
+                setSpeechRate: { _ in },
+                speechPitch: { 1.0 },
+                setSpeechPitch: { _ in },
+                isPremiumUser: { false },
+                setIsPremiumUser: { _ in },
+                premiumPurchaseDate: { nil },
+                setPremiumPurchaseDate: { _ in },
+                kokoroEnabled: { false },
+                setKokoroEnabled: { _ in },
+                kokoroVoice: { nil },
+                setKokoroVoice: { _ in },
+                hasCompletedOnboarding: { true },
+                setHasCompletedOnboarding: { _ in },
+                speechCompletedCount: { 0 },
+                setSpeechCompletedCount: { _ in },
+                appLaunchCount: { 0 },
+                setAppLaunchCount: { _ in },
+                installDate: { nil },
+                setInstallDate: { _ in },
+                reviewRequestCount: { 0 },
+                setReviewRequestCount: { _ in },
+                lastReviewRequestDate: { nil },
+                setLastReviewRequestDate: { _ in },
+                hasAnsweredReviewPositively: { false },
+                setHasAnsweredReviewPositively: { _ in },
+                pendingJobId: { _ in nil },
+                setPendingJob: { _, _ in },
+                clearPendingJob: { _ in }
+            )
+        }
+
+        await store.send(.startReading) {
+            $0.isReading = true
+        }
+
+        // offset 6 が加算され NSRange(location:6, length:5) → "World" がハイライトされる
+        await store.receive(.highlightRange(NSRange(location: 6, length: 5))) {
+            $0.highlightedRange = NSRange(location: 6, length: 5)
+            $0.highlightedText = "World"
+        }
+
+        await store.receive(.speechFinished) {
+            $0.isReading = false
+            $0.highlightedRange = nil
+            $0.highlightedText = nil
+        }
+
+        XCTAssertEqual(capturedUtteranceText, "World")
+    }
+
     func testPDFLoadFailure() async {
         // テスト用の無効なURL
         let invalidURL = URL(fileURLWithPath: "/invalid/path.pdf")

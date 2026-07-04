@@ -31,6 +31,7 @@ struct PDFReaderFeature: Reducer {
         var useCloudTTS: Bool = false
         var isGeneratingAudio: Bool = false
         var cloudTTSVoiceId: String?
+        var startCharacterIndex: Int = 0
     }
 
     enum Action: Equatable {
@@ -47,6 +48,7 @@ struct PDFReaderFeature: Reducer {
         case cloudTTSGenerationStarted
         case cloudTTSGenerationCompleted
         case cloudTTSGenerationFailed(String)
+        case setStartCharacterIndex(Int)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
@@ -105,6 +107,9 @@ struct PDFReaderFeature: Reducer {
                 let useCloud = state.useCloudTTS
                 let voiceId = state.cloudTTSVoiceId ?? userDefaults.cloudTTSVoiceId()
                 let pdfText = state.pdfText
+                let safeStart = min(state.startCharacterIndex, pdfText.count)
+                let startStringIndex = pdfText.index(pdfText.startIndex, offsetBy: safeStart)
+                let utteranceText = String(pdfText[startStringIndex...])
 
                 if useCloud {
                     // Cloud TTS mode
@@ -112,32 +117,27 @@ struct PDFReaderFeature: Reducer {
                     return .run { send in
                         await send(.cloudTTSGenerationStarted)
                         do {
-                            // Generate audio via Cloud TTS API
-                            let response = try await audioAPI.generateAudio(pdfText, voiceId)
+                            let response = try await audioAPI.generateAudio(utteranceText, voiceId)
 
                             guard let audioURL = URL(string: response.audioUrl) else {
                                 await send(.cloudTTSGenerationFailed("Invalid audio URL"))
                                 return
                             }
 
-                            // Download audio file
                             let fileId = UUID().uuidString
                             let localURL = try await audioFileManager.downloadAudio(audioURL, fileId)
 
                             await send(.cloudTTSGenerationCompleted)
 
-                            // Play the audio
                             let audioSession = AVAudioSession.sharedInstance()
                             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
                             try audioSession.setActive(true)
 
-                            // Play using AVAudioPlayer
                             let audioPlayer = try AVAudioPlayer(contentsOf: localURL)
                             audioPlayer.play()
 
-                            // Wait for playback to finish
                             while audioPlayer.isPlaying {
-                                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 second
+                                try await Task.sleep(nanoseconds: 100_000_000)
                             }
 
                             await send(.speechFinished)
@@ -150,20 +150,18 @@ struct PDFReaderFeature: Reducer {
                     // Local TTS mode
                     state.isReading = true
 
-                    // ユーザー設定から音声設定を取得
                     let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
                     let rate = userDefaults.speechRate()
                     let pitch = userDefaults.speechPitch()
                     let volume: Float = 0.75
 
-                    let utterance = AVSpeechUtterance(string: pdfText)
+                    let utterance = AVSpeechUtterance(string: utteranceText)
                     utterance.voice = AVSpeechSynthesisVoice(language: language)
                     utterance.rate = rate
                     utterance.pitchMultiplier = pitch
                     utterance.volume = volume
 
                     return .run { send in
-                        // 音声セッションの設定
                         let audioSession = AVAudioSession.sharedInstance()
                         do {
                             try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
@@ -175,13 +173,13 @@ struct PDFReaderFeature: Reducer {
                         try await speechSynthesizer.speakWithHighlight(
                             utterance,
                             { range, speechString in
-                                // ハイライト更新
+                                // utterance は suffix なので safeStart 分オフセットして pdfText 上の位置に変換
+                                let offsetRange = NSRange(location: range.location + safeStart, length: range.length)
                                 Task { @MainActor in
-                                    await send(.highlightRange(range))
+                                    await send(.highlightRange(offsetRange))
                                 }
                             },
                             {
-                                // 読み上げ完了
                                 Task { @MainActor in
                                     await send(.speechFinished)
                                 }
@@ -249,6 +247,10 @@ struct PDFReaderFeature: Reducer {
                 state.isReading = false
                 logger.error("Cloud TTS generation failed: \(error)")
                 return .none
+
+            case let .setStartCharacterIndex(index):
+                state.startCharacterIndex = index
+                return .none
             }
         }
     }
@@ -312,7 +314,10 @@ struct PDFReaderView: View {
             if let pdfDocument = viewStore.pdfDocument {
                 PDFKitView(
                     document: pdfDocument,
-                    highlightedText: viewStore.highlightedText
+                    highlightedText: viewStore.highlightedText,
+                    onTapCharacterIndex: { index in
+                        viewStore.send(.setStartCharacterIndex(index))
+                    }
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
@@ -394,6 +399,11 @@ struct PDFReaderView: View {
 struct PDFKitView: UIViewRepresentable {
     let document: PDFDocument
     let highlightedText: String?
+    var onTapCharacterIndex: ((Int) -> Void)?
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(onTapCharacterIndex: onTapCharacterIndex)
+    }
 
     func makeUIView(context: Context) -> PDFView {
         let pdfView = PDFView()
@@ -401,28 +411,49 @@ struct PDFKitView: UIViewRepresentable {
         pdfView.autoScales = true
         pdfView.displayMode = .singlePageContinuous
         pdfView.displayDirection = .vertical
+
+        let tap = UITapGestureRecognizer(target: context.coordinator, action: #selector(Coordinator.handleTap(_:)))
+        tap.cancelsTouchesInView = false
+        pdfView.addGestureRecognizer(tap)
+        context.coordinator.pdfView = pdfView
+
         return pdfView
     }
 
     func updateUIView(_ pdfView: PDFView, context: Context) {
         pdfView.document = document
-        
-        // 既存のハイライトをクリア
+        context.coordinator.onTapCharacterIndex = onTapCharacterIndex
+
         pdfView.clearSelection()
-        
-        // 新しいハイライトを設定
+
         if let text = highlightedText, !text.isEmpty {
-            // PDFで該当テキストを検索
             let selections = document.findString(text, withOptions: [])
             if let selection = selections.first {
                 selection.color = UIColor.systemYellow
                 pdfView.setCurrentSelection(selection, animate: true)
-                
-                // ハイライト部分にスクロール
                 if let page = selection.pages.first {
                     pdfView.go(to: selection.bounds(for: page), on: page)
                 }
             }
+        }
+    }
+
+    class Coordinator: NSObject {
+        var onTapCharacterIndex: ((Int) -> Void)?
+        weak var pdfView: PDFView?
+
+        init(onTapCharacterIndex: ((Int) -> Void)?) {
+            self.onTapCharacterIndex = onTapCharacterIndex
+        }
+
+        @objc func handleTap(_ gesture: UITapGestureRecognizer) {
+            guard let pdfView else { return }
+            let location = gesture.location(in: pdfView)
+            guard let page = pdfView.page(for: location, nearest: true) else { return }
+            let pagePoint = pdfView.convert(location, to: page)
+            let index = page.characterIndex(at: pagePoint)
+            guard index != NSNotFound else { return }
+            onTapCharacterIndex?(index)
         }
     }
 }
