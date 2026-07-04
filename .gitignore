@@ -35,3 +35,8 @@ temp/
 
 # Claude Code runtime files
 .claude/scheduled_tasks.lock
+
+# Local agent/tool configs
+.agents/
+.codex/
+.launchpadrc
