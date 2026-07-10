@@ -31,6 +31,18 @@ android {
         buildConfigField("String", "BANNER_AD_UNIT_ID", "\"$bannerUnitId\"")
     }
 
+    val releaseKeystoreFile = file("voiceyourtext-release.jks")
+    if (releaseKeystoreFile.exists()) {
+        signingConfigs {
+            create("release") {
+                storeFile = releaseKeystoreFile
+                storePassword = localProperties.getProperty("keystore.store.password")
+                keyAlias = localProperties.getProperty("keystore.key.alias")
+                keyPassword = localProperties.getProperty("keystore.key.password")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -38,6 +50,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (releaseKeystoreFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {
