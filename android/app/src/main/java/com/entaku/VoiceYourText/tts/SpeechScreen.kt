@@ -44,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.entaku.VoiceYourText.file.FilePickerButton
+import com.entaku.VoiceYourText.file.SourceType
 import com.entaku.VoiceYourText.file.TextFileReader
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,7 +111,14 @@ fun SpeechScreen(
                     FilePickerButton(
                         onFilePicked = { uri ->
                             TextFileReader.read(context, uri)
-                                .onSuccess { inputText = it }
+                                .onSuccess { imported ->
+                                    inputText = imported.content
+                                    viewModel.saveImportedFile(
+                                        title = imported.fileName,
+                                        content = imported.content,
+                                        sourceType = SourceType.TXT_IMPORT
+                                    )
+                                }
                         }
                     )
                 }

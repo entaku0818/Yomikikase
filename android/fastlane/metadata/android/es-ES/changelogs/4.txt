@@ -1,0 +1,4 @@
+・La pestaña "Historial" ahora es "Mis archivos": busca tus textos guardados y filtra por tipo (texto / enlace)
+・Al abrir un archivo de texto (TXT) ahora se guarda automáticamente en Mis archivos
+・Nueva función "Enlace": introduce la URL de una página web para extraer y leer su texto
+・Mejoras de estabilidad
