@@ -15,9 +15,21 @@ import RevenueCat
 import GoogleSignIn
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    // ユニットテストのホストアプリとして起動された場合はtrue。
+    // Firebase/RevenueCatの実初期化は実ネットワーク呼び出しを伴い、
+    // テスト実行環境ではKeychainアクセス不可等で延々とリトライしハングするため回避する。
+    static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         infoLog("App launching...")
+
+        guard !Self.isRunningTests else {
+            infoLog("Running under XCTest - skipping Firebase/RevenueCat initialization")
+            return true
+        }
 
         // Firebase初期化
         infoLog("Configuring Firebase...")
@@ -151,7 +163,7 @@ struct VoiceYourTextApp: App {
         )
         .environmentObject(adConfig)
         .onAppear {
-            if !isPremiumChecked {
+            if !isPremiumChecked && !AppDelegate.isRunningTests {
                 isPremiumChecked = true
                 Task {
                     await PurchaseManager.shared.checkPremiumStatus()

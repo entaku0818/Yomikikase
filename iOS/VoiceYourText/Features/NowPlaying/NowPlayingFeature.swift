@@ -60,6 +60,13 @@ struct NowPlayingFeature {
 
     private enum CancelID { case remoteCommands, playback }
 
+    // ユニットテスト実行時は実AVAudioSessionを操作しない。
+    // シミュレータ上のテストホストアプリでは setActive(true) が
+    // オーディオハードウェア状態待ちで長時間ブロックすることがあるため。
+    private static var isRunningTests: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
     var body: some ReducerOf<Self> {
         Reduce { state, action in
             switch action {
@@ -109,9 +116,11 @@ struct NowPlayingFeature {
                     if useCloudTTS, let audioURL = cloudTTSAudioURL {
                         // Cloud TTS mode - play from local audio file
                         do {
-                            let audioSession = AVAudioSession.sharedInstance()
-                            try audioSession.setCategory(.playback, mode: .spokenAudio)
-                            try audioSession.setActive(true)
+                            if !Self.isRunningTests {
+                                let audioSession = AVAudioSession.sharedInstance()
+                                try audioSession.setCategory(.playback, mode: .spokenAudio)
+                                try audioSession.setActive(true)
+                            }
 
                             let player = try AVAudioPlayer(contentsOf: audioURL)
                             player.enableRate = true
@@ -144,12 +153,14 @@ struct NowPlayingFeature {
                             _ = await speechSynthesizer.continueSpeaking()
                         } else {
                             // 音声セッションの設定
-                            let audioSession = AVAudioSession.sharedInstance()
-                            do {
-                                try audioSession.setCategory(.playback, mode: .spokenAudio)
-                                try audioSession.setActive(true)
-                            } catch {
-                                errorLog("Failed to set audio session category: \(error)")
+                            if !Self.isRunningTests {
+                                let audioSession = AVAudioSession.sharedInstance()
+                                do {
+                                    try audioSession.setCategory(.playback, mode: .spokenAudio)
+                                    try audioSession.setActive(true)
+                                } catch {
+                                    errorLog("Failed to set audio session category: \(error)")
+                                }
                             }
 
                             // ユーザー設定から音声設定を取得
@@ -212,7 +223,9 @@ struct NowPlayingFeature {
                     .cancel(id: CancelID.playback),
                     .run { _ in
                         _ = await speechSynthesizer.stopSpeaking()
-                        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                        if !Self.isRunningTests {
+                            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                        }
                     }
                 )
 
@@ -232,7 +245,9 @@ struct NowPlayingFeature {
                     .cancel(id: CancelID.remoteCommands),
                     .cancel(id: CancelID.playback),
                     .run { _ in
-                        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                        if !Self.isRunningTests {
+                            try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+                        }
                     }
                 )
 
