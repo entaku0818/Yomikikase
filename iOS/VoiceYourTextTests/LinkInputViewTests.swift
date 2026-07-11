@@ -12,7 +12,7 @@ import Dependencies
 final class LinkInputViewTests: XCTestCase {
 
     // MARK: - URL バリデーションロジックの境界値テスト
-    // isValidURL = urlText.lowercased().hasPrefix("https://") && urlText.count > 12
+    // isValidURL = hasPrefix("https://") && count > 12 && スペースを含まない
 
     func test_urlValidation_emptyString_isInvalid() {
         XCTAssertFalse(isValidURL(""))
@@ -127,12 +127,12 @@ final class LinkInputViewTests: XCTestCase {
         }
     }
 
-    /// スペース入りURLは URL(string:) が nil を返す可能性がある
-    func test_urlWithSpaces_isInvalidByURLInit() {
+    /// スペース入りURLはisValidURLの時点で無効とする。
+    /// URL(string:) はOSバージョンによってスペースを自動エンコードし
+    /// nilを返さなくなることがあるため、OS挙動に依存せずisValidURL側で拒否する。
+    func test_urlWithSpaces_isInvalid() {
         let urlText = "https://example.com/path with spaces"
-        // isValidURL はパスするが URL(string:) は nil を返す
-        XCTAssertTrue(isValidURL(urlText))
-        XCTAssertNil(URL(string: urlText), "スペース入りURLは URL(string:) で nil になるべき")
+        XCTAssertFalse(isValidURL(urlText), "スペース入りURLは無効と判定されるべき")
     }
 
     // MARK: - WebPageFetchError: 全エラーに説明文がある
@@ -149,5 +149,7 @@ final class LinkInputViewTests: XCTestCase {
 // MARK: - Helper: isValidURL ロジックを複製（View の private プロパティのため）
 
 private func isValidURL(_ urlText: String) -> Bool {
-    urlText.lowercased().hasPrefix("https://") && urlText.count > 12
+    urlText.lowercased().hasPrefix("https://")
+        && urlText.count > 12
+        && !urlText.contains(where: \.isWhitespace)
 }

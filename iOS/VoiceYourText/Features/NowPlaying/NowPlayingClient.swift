@@ -72,7 +72,11 @@ extension NowPlayingClient: DependencyKey {
 }
 
 extension NowPlayingClient: TestDependencyKey {
-    static let testValue = Self()
+    static let testValue = Self(
+        updateNowPlayingInfo: { _, _ in },
+        clearNowPlayingInfo: {},
+        remoteCommandEvents: { .finished }
+    )
 }
 
 extension DependencyValues {

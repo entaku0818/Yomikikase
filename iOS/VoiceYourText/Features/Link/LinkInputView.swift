@@ -82,7 +82,9 @@ struct LinkInputView: View {
     }
 
     private var isValidURL: Bool {
-        urlText.lowercased().hasPrefix("https://") && urlText.count > 12
+        urlText.lowercased().hasPrefix("https://")
+            && urlText.count > 12
+            && !urlText.contains(where: \.isWhitespace)
     }
 
     private func fetchPage() {
