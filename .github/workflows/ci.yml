@@ -53,7 +53,9 @@ jobs:
             spm-${{ runner.os }}-
 
       # デバイス名は Xcode バージョンで変わるため UDID で動的に選択する
-      - name: Select iPhone simulator
+      # 事前にbootしておかないとxcodebuild testが起動待ちで無限にハングすることがあるため、
+      # ここでboot+bootstatusまで済ませる
+      - name: Select and boot iPhone simulator
         id: sim
         run: |
           UDID=$(xcrun simctl list devices available --json \
@@ -61,6 +63,8 @@ jobs:
           test -n "$UDID" && test "$UDID" != "null"
           echo "Selected simulator: $UDID"
           echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
 
       - name: Build and test on simulator
         working-directory: iOS
@@ -73,5 +77,6 @@ jobs:
             -derivedDataPath DerivedData \
             -clonedSourcePackagesDirPath DerivedData/SourcePackages \
             -skipMacroValidation \
+            -parallel-testing-enabled NO \
             -skip-testing:VoiceYourTextUITests \
             CODE_SIGNING_ALLOWED=NO
