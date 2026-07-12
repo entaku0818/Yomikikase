@@ -114,6 +114,46 @@ extension UserDefaultsClient: DependencyKey {
     }
 }
 
+extension UserDefaultsClient: TestDependencyKey {
+    static let testValue = Self(
+        languageSetting: { nil },
+        setLanguageSetting: { _ in },
+        selectedVoiceIdentifier: { nil },
+        setSelectedVoiceIdentifier: { _ in },
+        cloudTTSVoiceId: { nil },
+        setCloudTTSVoiceId: { _ in },
+        speechRate: { 0.5 },
+        setSpeechRate: { _ in },
+        speechPitch: { 1.0 },
+        setSpeechPitch: { _ in },
+        isPremiumUser: { false },
+        setIsPremiumUser: { _ in },
+        premiumPurchaseDate: { nil },
+        setPremiumPurchaseDate: { _ in },
+        kokoroEnabled: { false },
+        setKokoroEnabled: { _ in },
+        kokoroVoice: { nil },
+        setKokoroVoice: { _ in },
+        hasCompletedOnboarding: { false },
+        setHasCompletedOnboarding: { _ in },
+        speechCompletedCount: { 0 },
+        setSpeechCompletedCount: { _ in },
+        appLaunchCount: { 0 },
+        setAppLaunchCount: { _ in },
+        installDate: { nil },
+        setInstallDate: { _ in },
+        reviewRequestCount: { 0 },
+        setReviewRequestCount: { _ in },
+        lastReviewRequestDate: { nil },
+        setLastReviewRequestDate: { _ in },
+        hasAnsweredReviewPositively: { false },
+        setHasAnsweredReviewPositively: { _ in },
+        pendingJobId: { _ in nil },
+        setPendingJob: { _, _ in },
+        clearPendingJob: { _ in }
+    )
+}
+
 extension DependencyValues {
     var userDefaults: UserDefaultsClient {
         get { self[UserDefaultsClient.self] }
