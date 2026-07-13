@@ -207,6 +207,28 @@ final class ReviewRequestTests: XCTestCase {
         }
     }
 
+    func test_直近でレビュー事前確認済みの場合は5回ごとの条件を満たしても表示されないこと() async {
+        // 頻度制御(ReviewRequestConfig.minimumDaysBetweenPrompts)のテスト:
+        // 5回ごとの条件自体は満たしていても、直近で表示済みなら再表示しない
+        UserDefaultsManager.shared.reviewRequestCount = 1
+        UserDefaultsManager.shared.speechCompletedCount = 9  // 次で10回目
+        UserDefaultsManager.shared.hasAnsweredReviewPositively = false
+        UserDefaultsManager.shared.lastReviewRequestDate = Date()
+
+        let store = TestStore(initialState: Speeches.State(currentText: "テスト")) {
+            Speeches()
+        } withDependencies: {
+            $0.analytics = .testValue
+        }
+        store.exhaustivity = .off
+
+        await store.send(.speechFinished) { state in
+            XCTAssertNil(state.alert)
+        }
+
+        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
+    }
+
     func test_10回目読み上げ完了でもレビューが表示されること() async {
         UserDefaultsManager.shared.reviewRequestCount = 1
         UserDefaultsManager.shared.speechCompletedCount = 9  // 次で10回目
