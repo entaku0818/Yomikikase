@@ -28,10 +28,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
@@ -41,6 +44,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -91,28 +96,28 @@ class ScreenshotActivity : ComponentActivity() {
 
 // 言語別プロモキャプション（本文UIは日本語デモのまま＝従来踏襲、キャプションのみローカライズ）
 private val CAPTIONS: Map<String, List<String>> = mapOf(
-    "ja" to listOf("テキストを入力して\n即座に読み上げ", "読み上げた内容を\n履歴から再生", "PDFをそのまま\n音声で読み上げ", "速さ・言語を\n自由にカスタマイズ"),
-    "en" to listOf("Type text and\nread aloud instantly", "Replay anything\nfrom history", "Read PDFs aloud\nas they are", "Customize speed\n& language freely"),
-    "es" to listOf("Escribe y\nescucha al instante", "Reproduce desde\ntu historial", "Lee tus PDF\nen voz alta", "Ajusta velocidad\ne idioma"),
-    "fr" to listOf("Saisissez et\nécoutez aussitôt", "Réécoutez depuis\nl'historique", "Lisez vos PDF\nà voix haute", "Personnalisez vitesse\net langue"),
-    "ko" to listOf("텍스트를 입력하면\n바로 읽어줘요", "기록에서\n다시 재생", "PDF를 그대로\n음성으로 읽기", "속도·언어를\n자유롭게 설정"),
-    "zh" to listOf("输入文字\n即刻朗读", "从历史记录\n重新播放", "直接朗读\nPDF 文档", "自由调整\n语速和语言")
+    "ja" to listOf("テキストを入力して\n即座に読み上げ", "保存したファイルを\n検索してすぐ再生", "PDFをそのまま\n音声で読み上げ", "速さ・言語を\n自由にカスタマイズ"),
+    "en" to listOf("Type text and\nread aloud instantly", "Find and replay\nyour saved files", "Read PDFs aloud\nas they are", "Customize speed\n& language freely"),
+    "es" to listOf("Escribe y\nescucha al instante", "Busca y reproduce\ntus archivos guardados", "Lee tus PDF\nen voz alta", "Ajusta velocidad\ne idioma"),
+    "fr" to listOf("Saisissez et\nécoutez aussitôt", "Retrouvez et\nréécoutez vos fichiers", "Lisez vos PDF\nà voix haute", "Personnalisez vitesse\net langue"),
+    "ko" to listOf("텍스트를 입력하면\n바로 읽어줘요", "저장한 파일을\n검색해서 바로 재생", "PDF를 그대로\n음성으로 읽기", "속도·언어를\n자유롭게 설정"),
+    "zh" to listOf("输入文字\n即刻朗读", "搜索并播放\n已保存的文件", "直接朗读\nPDF 文档", "自由调整\n语速和语言")
 )
 
 // サブタイトルは主要2言語のみ（iOSと同じ方針）。他言語は null（見出しのみ）
 private val SUBTITLES: Map<String, List<String>> = mapOf(
-    "ja" to listOf("入力した文章を、その場で音声に", "聞いた文章は履歴から何度でも", "長いPDFも、まるごと音声で", "声・速度・言語を自分好みに"),
-    "en" to listOf("Turn typed text into speech", "Replay past texts anytime", "Whole PDFs, read aloud", "Voice, speed & language your way")
+    "ja" to listOf("入力した文章を、その場で音声に", "ファイル・リンクも一か所で管理", "長いPDFも、まるごと音声で", "声・速度・言語を自分好みに"),
+    "en" to listOf("Turn typed text into speech", "Manage files & links in one place", "Whole PDFs, read aloud", "Voice, speed & language your way")
 )
 
 // 下部ナビのラベル（PDFは共通）
 private val NAV_LABELS: Map<String, List<String>> = mapOf(
-    "ja" to listOf("読み上げ", "履歴", "PDF", "設定"),
-    "en" to listOf("Read", "History", "PDF", "Settings"),
-    "es" to listOf("Leer", "Historial", "PDF", "Ajustes"),
-    "fr" to listOf("Lire", "Historique", "PDF", "Réglages"),
-    "ko" to listOf("읽기", "기록", "PDF", "설정"),
-    "zh" to listOf("朗读", "历史", "PDF", "设置")
+    "ja" to listOf("読み上げ", "マイファイル", "PDF", "設定"),
+    "en" to listOf("Read", "My Files", "PDF", "Settings"),
+    "es" to listOf("Leer", "Mis archivos", "PDF", "Ajustes"),
+    "fr" to listOf("Lire", "Mes fichiers", "PDF", "Réglages"),
+    "ko" to listOf("읽기", "내 파일", "PDF", "설정"),
+    "zh" to listOf("朗读", "我的文件", "PDF", "设置")
 )
 
 // 画面内テキストも言語に合わせてローカライズ
@@ -124,7 +129,9 @@ private data class SsLoc(
     val pdfPageLabel: String, val pdfPercent: String, val pdfTitle: String, val pdfBody: List<String>, val pdfHighlight: String,
     val settings: String, val voiceSettings: String, val defaultLang: String,
     val readSpeed: String, val pitch: String, val pitchLow: String, val pitchHigh: String,
-    val appInfo: String, val version: String, val supportedLangs: String, val langCount: String
+    val appInfo: String, val version: String, val supportedLangs: String, val langCount: String,
+    val searchHint: String, val filterAll: String, val filterText: String, val filterLink: String,
+    val today: String, val myFiles: List<Pair<String, Boolean>> // (title, isLink)
 )
 
 private val LOC: Map<String, SsLoc> = mapOf(
@@ -135,7 +142,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "1 / 3 ページ", "33%", "第一章　雪国",
         listOf("国境の長いトンネルを抜けると雪国であった。夜の底が白くなった。", "向側の座席から娘が立って来て、島村の前のガラス窓を落した。", "「駅長さあん、駅長さあん。」", "暗の中でも声は澄んでいた。"),
         "国境の長いトンネルを抜けると雪国であった。",
-        "設定", "音声設定", "デフォルト言語", "読み上げ速度", "声の高さ", "低い", "高い", "アプリ情報", "バージョン", "対応言語", "7言語"
+        "設定", "音声設定", "デフォルト言語", "読み上げ速度", "声の高さ", "低い", "高い", "アプリ情報", "バージョン", "対応言語", "7言語",
+        "ファイルを検索", "すべて", "テキスト", "リンク", "今日",
+        listOf("国境の長いトンネルを抜けると雪国であった。" to false, "note.txt" to false, "Example Domain" to true, "吾輩は猫である。名前はまだない。" to false, "山路を登りながら、こう考えた。" to false)
     ),
     "en" to SsLoc(
         "Language", "English", "Speed", "Slow", "Normal 1.0", "Fast",
@@ -144,7 +153,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "Page 1 / 3", "33%", "Chapter 1",
         listOf("It was the best of times, it was the worst of times, it was the age of wisdom.", "It was the age of foolishness, it was the epoch of belief.", "It was the season of Light, it was the season of Darkness.", "It was the spring of hope, it was the winter of despair."),
         "It was the best of times, it was the worst of times,",
-        "Settings", "Voice settings", "Default language", "Reading speed", "Pitch", "Low", "High", "App info", "Version", "Languages", "7 languages"
+        "Settings", "Voice settings", "Default language", "Reading speed", "Pitch", "Low", "High", "App info", "Version", "Languages", "7 languages",
+        "Search files", "All", "Text", "Link", "Today",
+        listOf("It was the best of times, it was the worst of times." to false, "note.txt" to false, "Example Domain" to true, "Call me Ishmael." to false, "The quick brown fox jumps over the lazy dog." to false)
     ),
     "es" to SsLoc(
         "Idioma", "Español", "Velocidad", "Lenta", "Normal 1.0", "Rápida",
@@ -153,7 +164,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "Página 1 / 3", "33%", "Capítulo 1",
         listOf("En un lugar de la Mancha, de cuyo nombre no quiero acordarme,", "vivía no hace mucho tiempo un hidalgo de los de lanza en astillero.", "Frisaba la edad de nuestro hidalgo con los cincuenta años.", "Era de complexión recia, seco de carnes, enjuto de rostro."),
         "En un lugar de la Mancha, de cuyo nombre no quiero acordarme,",
-        "Ajustes", "Ajustes de voz", "Idioma predeterminado", "Velocidad de lectura", "Tono", "Bajo", "Alto", "Información", "Versión", "Idiomas", "7 idiomas"
+        "Ajustes", "Ajustes de voz", "Idioma predeterminado", "Velocidad de lectura", "Tono", "Bajo", "Alto", "Información", "Versión", "Idiomas", "7 idiomas",
+        "Buscar archivos", "Todo", "Texto", "Enlace", "Hoy",
+        listOf("En un lugar de la Mancha, de cuyo nombre no quiero acordarme." to false, "nota.txt" to false, "Example Domain" to true, "Cien años de soledad." to false, "El veloz murciélago hindú comía feliz." to false)
     ),
     "fr" to SsLoc(
         "Langue", "Français", "Vitesse", "Lent", "Normal 1.0", "Rapide",
@@ -162,7 +175,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "Page 1 / 3", "33%", "Chapitre 1",
         listOf("Longtemps, je me suis couché de bonne heure.", "Parfois, à peine ma bougie éteinte, mes yeux se fermaient si vite.", "que je n'avais pas le temps de me dire : « Je m'endors. »", "Et, une demi-heure après, la pensée me réveillait."),
         "Longtemps, je me suis couché de bonne heure.",
-        "Réglages", "Réglages vocaux", "Langue par défaut", "Vitesse de lecture", "Hauteur", "Grave", "Aigu", "À propos", "Version", "Langues", "7 langues"
+        "Réglages", "Réglages vocaux", "Langue par défaut", "Vitesse de lecture", "Hauteur", "Grave", "Aigu", "À propos", "Version", "Langues", "7 langues",
+        "Rechercher des fichiers", "Tout", "Texte", "Lien", "Aujourd'hui",
+        listOf("Longtemps, je me suis couché de bonne heure." to false, "note.txt" to false, "Example Domain" to true, "Aujourd'hui, le soleil brille sur la ville." to false, "Le vif renard brun saute par-dessus le chien." to false)
     ),
     "ko" to SsLoc(
         "언어", "한국어", "속도", "느림", "표준 1.0", "빠름",
@@ -171,7 +186,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "1 / 3 페이지", "33%", "제1장 설국",
         listOf("국경의 긴 터널을 빠져나오니 눈의 고장이었다. 밤의 밑이 하얘졌다.", "맞은편 좌석에서 처녀가 일어나 시마무라 앞의 유리창을 내렸다.", "「역장니임, 역장니임.」", "어둠 속에서도 목소리는 맑았다."),
         "국경의 긴 터널을 빠져나오니 눈의 고장이었다.",
-        "설정", "음성 설정", "기본 언어", "읽기 속도", "음 높이", "낮음", "높음", "앱 정보", "버전", "지원 언어", "7개 언어"
+        "설정", "음성 설정", "기본 언어", "읽기 속도", "음 높이", "낮음", "높음", "앱 정보", "버전", "지원 언어", "7개 언어",
+        "파일 검색", "전체", "텍스트", "링크", "오늘",
+        listOf("국경의 긴 터널을 빠져나오니 눈의 고장이었다." to false, "note.txt" to false, "Example Domain" to true, "나는 고양이로소이다. 이름은 아직 없다." to false, "오늘도 좋은 하루 되세요." to false)
     ),
     "zh" to SsLoc(
         "语言", "中文", "语速", "慢", "标准 1.0", "快",
@@ -180,7 +197,9 @@ private val LOC: Map<String, SsLoc> = mapOf(
         "1 / 3 页", "33%", "第一章 雪国",
         listOf("穿过县境长长的隧道，便是雪国。夜空下一片白茫茫。", "对面座位上的姑娘站起来，放下了岛村面前的玻璃窗。", "「站长——，站长——。」", "在黑暗中，声音依然清澈。"),
         "穿过县境长长的隧道，便是雪国。",
-        "设置", "语音设置", "默认语言", "朗读速度", "音调", "低", "高", "应用信息", "版本", "支持语言", "7 种语言"
+        "设置", "语音设置", "默认语言", "朗读速度", "音调", "低", "高", "应用信息", "版本", "支持语言", "7 种语言",
+        "搜索文件", "全部", "文本", "链接", "今天",
+        listOf("穿过县境长长的隧道，便是雪国。" to false, "note.txt" to false, "Example Domain" to true, "我是猫，还没有名字。" to false, "祝你拥有美好的一天。" to false)
     )
 )
 
@@ -196,7 +215,7 @@ private fun ScreenshotFlow(initialScreen: Int = 0, lang: String = "ja") {
     Box(modifier = Modifier.fillMaxSize()) {
         when (currentScreen) {
             0 -> ScreenshotPage(captions[0], subtitles?.get(0), 0, navLabels) { SpeechScreenMock(loc) }
-            1 -> ScreenshotPage(captions[1], subtitles?.get(1), 1, navLabels) { HistoryScreenMock(loc) }
+            1 -> ScreenshotPage(captions[1], subtitles?.get(1), 1, navLabels) { MyFilesScreenMock(loc) }
             2 -> ScreenshotPage(captions[2], subtitles?.get(2), 2, navLabels) { PdfScreenMock(loc) }
             3 -> ScreenshotPage(captions[3], subtitles?.get(3), 3, navLabels) { SettingsScreenMock(loc) }
         }
@@ -327,7 +346,7 @@ private fun MockBottomNav(selectedTab: Int, labels: List<String>) {
 
     val tabs = listOf(
         TabItem(Icons.Default.Mic, labels[0], 0),
-        TabItem(Icons.Default.History, labels[1], 1),
+        TabItem(Icons.Default.Folder, labels[1], 1),
         TabItem(Icons.Default.PictureAsPdf, labels[2], 2),
         TabItem(Icons.Default.Settings, labels[3], 3)
     )
@@ -522,51 +541,110 @@ private fun SpeechScreenMock(loc: SsLoc) {
 }
 
 // ---------------------------------------------------------------------------
-// Screen 2: History – demo list items
+// Screen 2: My Files – search + type filter + demo list items
 // ---------------------------------------------------------------------------
 
 @Composable
-private fun HistoryScreenMock(loc: SsLoc) {
-    val items = loc.history
-
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(items.size) { i ->
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                modifier = Modifier.fillMaxWidth()
+private fun MyFilesScreenMock(loc: SsLoc) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        // Search field mock
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    loc.searchHint,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Filter chips mock
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf(loc.filterAll, loc.filterText, loc.filterLink).forEachIndexed { idx, label ->
+                FilterChip(
+                    selected = idx == 0,
+                    onClick = {},
+                    label = { Text(label, fontSize = 13.sp) },
+                    colors = FilterChipDefaults.filterChipColors(
+                        selectedContainerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(4.dp))
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            items(loc.myFiles.size) { i ->
+                val (title, isLink) = loc.myFiles[i]
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = items[i],
-                        modifier = Modifier.weight(1f),
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Icon(
-                        Icons.Default.PlayArrow,
-                        contentDescription = "再生",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = "削除",
-                        tint = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = if (isLink) Icons.Default.Link else Icons.Default.Description,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 12.dp)
+                        ) {
+                            Text(
+                                text = title,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = loc.today,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Icon(
+                            Icons.Default.PlayArrow,
+                            contentDescription = "再生",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
             }
         }

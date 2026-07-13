@@ -1,0 +1,4 @@
+・Replaced the "History" tab with "My Files" — search your saved texts and filter by type (text / link)
+・Opening a text (TXT) file now automatically saves it to My Files
+・Added a "Link" import feature — enter a webpage URL to extract and read its text
+・Stability improvements

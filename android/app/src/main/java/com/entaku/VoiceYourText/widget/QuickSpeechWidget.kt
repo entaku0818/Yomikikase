@@ -8,7 +8,10 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.entaku.VoiceYourText.MainActivity
 import com.entaku.VoiceYourText.R
-import com.entaku.VoiceYourText.tts.HistoryStore
+import com.entaku.VoiceYourText.file.SavedFileRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class QuickSpeechWidget : AppWidgetProvider() {
 
@@ -18,25 +21,28 @@ class QuickSpeechWidget : AppWidgetProvider() {
         appWidgetIds: IntArray
     ) {
         appWidgetIds.forEach { widgetId ->
-            updateWidget(context, appWidgetManager, widgetId)
+            val pendingResult = goAsync()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    updateWidget(context, appWidgetManager, widgetId)
+                } finally {
+                    pendingResult.finish()
+                }
+            }
         }
     }
 
     companion object {
-        fun updateWidget(
+        suspend fun updateWidget(
             context: Context,
             appWidgetManager: AppWidgetManager,
             widgetId: Int
         ) {
             val views = RemoteViews(context.packageName, R.layout.widget_quick_speech)
 
-            // Show latest history item if available
-            val history = HistoryStore(context).getAll()
-            val label = if (history.isNotEmpty()) {
-                history.first().take(30)
-            } else {
-                context.getString(R.string.widget_tap_to_open)
-            }
+            // Show latest saved file if available
+            val latest = SavedFileRepository(context).getMostRecent()
+            val label = latest?.title?.take(30) ?: context.getString(R.string.widget_tap_to_open)
             views.setTextViewText(R.id.widget_label, label)
 
             // Tap to open main app

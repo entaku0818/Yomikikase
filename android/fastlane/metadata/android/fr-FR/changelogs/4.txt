@@ -1,0 +1,4 @@
+・L'onglet « Historique » devient « Mes fichiers » : recherchez vos textes enregistrés et filtrez par type (texte / lien)
+・L'ouverture d'un fichier texte (TXT) l'enregistre désormais automatiquement dans Mes fichiers
+・Nouvelle fonction « Lien » : saisissez l'URL d'une page web pour en extraire et lire le texte
+・Améliorations de stabilité

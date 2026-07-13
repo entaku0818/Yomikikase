@@ -4,7 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Settings
@@ -22,9 +22,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.entaku.VoiceYourText.ads.BannerAdView
+import com.entaku.VoiceYourText.file.MyFilesScreen
 import com.entaku.VoiceYourText.pdf.PdfViewerScreen
 import com.entaku.VoiceYourText.settings.SettingsScreen
-import com.entaku.VoiceYourText.tts.HistoryScreen
 import com.entaku.VoiceYourText.tts.SpeechScreen
 import com.entaku.VoiceYourText.tts.TtsViewModel
 
@@ -49,8 +49,8 @@ fun MainApp(initialSharedText: String? = null) {
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
-                    icon = { Icon(Icons.Default.History, contentDescription = "履歴") },
-                    label = { Text("履歴") }
+                    icon = { Icon(Icons.Default.Folder, contentDescription = "マイファイル") },
+                    label = { Text("マイファイル") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
@@ -75,9 +75,8 @@ fun MainApp(initialSharedText: String? = null) {
                 onTextConsumed = { pendingText = "" },
                 modifier = Modifier.padding(innerPadding)
             )
-            1 -> HistoryScreen(
-                viewModel = ttsViewModel,
-                onSelectText = { text ->
+            1 -> MyFilesScreen(
+                onOpenFile = { text ->
                     pendingText = text
                     selectedTab = 0
                 },

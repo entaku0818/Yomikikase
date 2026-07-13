@@ -10,9 +10,13 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.entaku.VoiceYourText.file.SavedFileRepository
+import com.entaku.VoiceYourText.file.SourceType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.Locale
 import java.util.UUID
 
@@ -54,11 +58,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
 
-    private val _history = MutableStateFlow<List<String>>(emptyList())
-    val history: StateFlow<List<String>> = _history.asStateFlow()
-
     private var tts: TextToSpeech? = null
-    private val historyStore = HistoryStore(application)
+    private val savedFileRepository = SavedFileRepository(application)
 
     /** BroadcastReceiver: receives TTS_STOP from TtsNotificationService stop button */
     private val stopReceiver = object : BroadcastReceiver() {
@@ -70,7 +71,6 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
-        _history.value = historyStore.getAll()
         initTts()
         registerStopReceiver()
     }
@@ -165,14 +165,16 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         applyLanguage(language)
     }
 
-    fun deleteHistory(text: String) {
-        historyStore.delete(text)
-        _history.value = historyStore.getAll()
+    private fun saveToHistory(text: String) {
+        viewModelScope.launch {
+            savedFileRepository.saveOrTouch(text, title = null, sourceType = SourceType.TYPED)
+        }
     }
 
-    private fun saveToHistory(text: String) {
-        historyStore.save(text)
-        _history.value = historyStore.getAll()
+    fun saveImportedFile(title: String, content: String, sourceType: SourceType) {
+        viewModelScope.launch {
+            savedFileRepository.saveOrTouch(content, title = title, sourceType = sourceType)
+        }
     }
 
     private fun applyLanguage(language: SpeechLanguage) {
