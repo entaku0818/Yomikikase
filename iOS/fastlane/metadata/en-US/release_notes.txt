@@ -1,1 +1,1 @@
-Fresh new design! We've unified the whole app around a clean indigo theme, tidied up the icons and playback controls, and added search, filters, and an empty state to My Files.
+Minor improvements and bug fixes.

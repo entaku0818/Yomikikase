@@ -1,1 +1,1 @@
-Novo visual! Unificamos todo o app com um tema índigo limpo, organizamos os ícones e os controles de reprodução e adicionamos busca, filtros e um estado vazio em Meus arquivos.
+Pequenas melhorias e correções de bugs.

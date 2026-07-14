@@ -1,1 +1,1 @@
-Frisches neues Design! Die ganze App wurde mit einem klaren Indigo-Thema vereinheitlicht, Symbole und Wiedergabesteuerung aufgeräumt sowie Suche, Filter und ein Leerzustand zu „Meine Dateien“ hinzugefügt.
+Kleinere Verbesserungen und Fehlerbehebungen.

@@ -1,1 +1,1 @@
-Nuovo design! Abbiamo unificato l'intera app con un tema indaco pulito, riordinato icone e controlli di riproduzione e aggiunto ricerca, filtri e uno stato vuoto in I miei file.
+Miglioramenti minori e correzioni di bug.

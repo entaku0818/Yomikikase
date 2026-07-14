@@ -1,1 +1,1 @@
-Yepyeni tasarım! Tüm uygulamayı sade bir çivit mavisi temayla birleştirdik, simgeleri ve oynatma kontrollerini düzenledik; Dosyalarım'a arama, filtreler ve boş durum ekranı ekledik.
+Küçük iyileştirmeler ve hata düzeltmeleri.

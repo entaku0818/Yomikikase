@@ -1,1 +1,1 @@
-Thiết kế mới! Chúng tôi đã thống nhất toàn bộ ứng dụng theo tông màu chàm gọn gàng, sắp xếp lại biểu tượng và điều khiển phát, đồng thời thêm tìm kiếm, bộ lọc và trạng thái trống vào Tệp của tôi.
+Các cải tiến nhỏ và sửa lỗi.
