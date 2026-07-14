@@ -13,6 +13,26 @@ import PDFKit
 @MainActor
 final class PDFReaderFeatureTests: XCTestCase {
 
+    override func setUp() {
+        super.setUp()
+        resetReviewDefaults()
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        resetReviewDefaults()
+    }
+
+    /// PDFReaderFeature.speechFinishedはUserDefaultsManager.sharedのレビュー関連カウンタを
+    /// SpeechView(Speeches)と共有するため、他テストの値が漏れ出さないようリセットする。
+    private func resetReviewDefaults() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: "ReviewRequestCount")
+        defaults.removeObject(forKey: "SpeechCompletedCount")
+        defaults.removeObject(forKey: "LastReviewRequestDate")
+        defaults.removeObject(forKey: "HasAnsweredReviewPositively")
+    }
+
     func testStartReading() async {
         // まず簡単なテストで確認
         let store = TestStore(
@@ -177,6 +197,50 @@ final class PDFReaderFeatureTests: XCTestCase {
         }
 
         XCTAssertEqual(capturedUtteranceText, "World")
+    }
+
+    // MARK: - レビュー事前確認（PDF読み上げ完了）
+
+    func test_PDF読み上げ5回目完了でレビュー事前確認が表示されること() async {
+        UserDefaultsManager.shared.reviewRequestCount = 0
+        UserDefaultsManager.shared.speechCompletedCount = 4  // 次で5回目
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(pdfText: "テスト", isReading: true)
+        ) {
+            PDFReaderFeature()
+        } withDependencies: {
+            $0.analytics = .testValue
+        }
+
+        await store.send(.speechFinished) { state in
+            state.isReading = false
+            state.alert = ReviewRequestPrompt.alertState(messageKey: "review.message.first")
+        }
+
+        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
+        XCTAssertNotNil(UserDefaultsManager.shared.lastReviewRequestDate)
+    }
+
+    func test_直近でレビュー事前確認済みの場合はPDF側5回目完了でも再表示されないこと() async {
+        UserDefaultsManager.shared.reviewRequestCount = 1
+        UserDefaultsManager.shared.speechCompletedCount = 4  // 次で5回目
+        UserDefaultsManager.shared.lastReviewRequestDate = Date()  // 直前に表示済み（頻度制御が効く）
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(pdfText: "テスト", isReading: true)
+        ) {
+            PDFReaderFeature()
+        } withDependencies: {
+            $0.analytics = .testValue
+        }
+
+        await store.send(.speechFinished) { state in
+            state.isReading = false
+            // 頻度制御(ReviewRequestConfig.minimumDaysBetweenPrompts)によりalertは表示されない
+        }
+
+        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
     }
 
     func testPDFLoadFailure() async {
