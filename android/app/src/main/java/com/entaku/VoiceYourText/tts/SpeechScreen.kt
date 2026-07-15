@@ -36,6 +36,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import com.entaku.VoiceYourText.file.FilePickerButton
 import com.entaku.VoiceYourText.file.SourceType
 import com.entaku.VoiceYourText.file.TextFileReader
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,6 +63,7 @@ fun SpeechScreen(
     val isInitialized by viewModel.isInitialized.collectAsState()
 
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     var inputText by remember { mutableStateOf("") }
     var showLanguageSheet by remember { mutableStateOf(false) }
 
@@ -110,15 +113,17 @@ fun SpeechScreen(
                 trailingIcon = {
                     FilePickerButton(
                         onFilePicked = { uri ->
-                            TextFileReader.read(context, uri)
-                                .onSuccess { imported ->
-                                    inputText = imported.content
-                                    viewModel.saveImportedFile(
-                                        title = imported.fileName,
-                                        content = imported.content,
-                                        sourceType = SourceType.TXT_IMPORT
-                                    )
-                                }
+                            coroutineScope.launch {
+                                TextFileReader.read(context, uri)
+                                    .onSuccess { imported ->
+                                        inputText = imported.content
+                                        viewModel.saveImportedFile(
+                                            title = imported.fileName,
+                                            content = imported.content,
+                                            sourceType = SourceType.TXT_IMPORT
+                                        )
+                                    }
+                            }
                         }
                     )
                 }
