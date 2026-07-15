@@ -41,6 +41,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -66,14 +68,17 @@ fun MyFilesScreen(
     var fileToDelete by remember { mutableStateOf<SavedFileEntity?>(null) }
     var showAddMenu by remember { mutableStateOf(false) }
     var showLinkImport by remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
 
     val txtPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
-            TextFileReader.read(context, it).onSuccess { imported ->
-                viewModel.saveImportedFile(imported.fileName, imported.content, SourceType.TXT_IMPORT)
-                onOpenFile(imported.content)
+            coroutineScope.launch {
+                TextFileReader.read(context, it).onSuccess { imported ->
+                    viewModel.saveImportedFile(imported.fileName, imported.content, SourceType.TXT_IMPORT)
+                    onOpenFile(imported.content)
+                }
             }
         }
     }
