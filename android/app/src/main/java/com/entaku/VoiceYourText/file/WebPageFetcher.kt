@@ -10,12 +10,12 @@ import java.util.concurrent.TimeUnit
 data class FetchedPage(val title: String, val text: String)
 
 object WebPageFetcher {
-    private val client = OkHttpClient.Builder()
+    private val defaultClient = OkHttpClient.Builder()
         .connectTimeout(15, TimeUnit.SECONDS)
         .readTimeout(15, TimeUnit.SECONDS)
         .build()
 
-    suspend fun fetchText(url: String): Result<FetchedPage> = withContext(Dispatchers.IO) {
+    suspend fun fetchText(url: String, client: OkHttpClient = defaultClient): Result<FetchedPage> = withContext(Dispatchers.IO) {
         runCatching {
             val request = Request.Builder()
                 .url(url)

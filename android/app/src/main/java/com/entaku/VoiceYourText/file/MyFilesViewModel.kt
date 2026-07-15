@@ -21,6 +21,15 @@ enum class MyFilesFilter {
     }
 }
 
+fun filterFiles(
+    files: List<SavedFileEntity>,
+    query: String,
+    filter: MyFilesFilter
+): List<SavedFileEntity> = files.filter { file ->
+    filter.matches(file.sourceType) &&
+        (query.isBlank() || file.title.contains(query, ignoreCase = true))
+}
+
 class MyFilesViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = SavedFileRepository(application)
 
@@ -35,10 +44,7 @@ class MyFilesViewModel(application: Application) : AndroidViewModel(application)
         _searchQuery,
         _filter
     ) { files, query, filter ->
-        files.filter { file ->
-            filter.matches(file.sourceType) &&
-                (query.isBlank() || file.title.contains(query, ignoreCase = true))
-        }
+        filterFiles(files, query, filter)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     fun setSearchQuery(query: String) {
