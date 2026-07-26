@@ -58,7 +58,7 @@ struct PDFPickerView: View {
             // 無料ユーザーの場合に登録制限の表示
             if !UserDefaultsManager.shared.isPremiumUser {
                 HStack {
-                    Text("無料版: \(viewStore.pdfFiles.count)/\(viewStore.maxFreePDFCount)ファイル")
+                    Text("無料版: \(FileLimitsManager.getCurrentTotalFileCount())/\(FileLimitsManager.maxFreeFileCount)ファイル")
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
@@ -113,7 +113,7 @@ struct PDFPickerView: View {
                 showingSubscription = true
             }
         } message: {
-            Text("無料版では最大\(viewStore.maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
+            Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
         }
         .sheet(isPresented: $showingSubscription) {
             SubscriptionView(source: "pdf_picker_limit")
