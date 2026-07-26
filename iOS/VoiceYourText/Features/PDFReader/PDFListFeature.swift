@@ -24,12 +24,10 @@ struct PDFListFeature: Reducer {
         var showingPremiumAlert = false // プレミアムアラート表示フラグ
         var isPremiumUser: Bool = false
 
-        // 最大登録可能なPDFファイル数 (無料版)
-        let maxFreePDFCount = 3
-
         // 無料ユーザーの場合に登録制限に達しているかチェック
+        // PDF・テキストファイル合計の制限（FileLimitsManagerと共通）を使用する
         var hasReachedFreeLimit: Bool {
-            !isPremiumUser && pdfFiles.count >= maxFreePDFCount
+            !isPremiumUser && FileLimitsManager.getCurrentTotalFileCount() >= FileLimitsManager.maxFreeFileCount
         }
     }
 
@@ -246,7 +244,7 @@ struct PDFListView: View {
                 // 無料ユーザーの場合に登録制限の表示
                 if !viewStore.isPremiumUser {
                     HStack {
-                        Text("無料版: \(viewStore.pdfFiles.count)/\(viewStore.maxFreePDFCount)ファイル")
+                        Text("無料版: \(FileLimitsManager.getCurrentTotalFileCount())/\(FileLimitsManager.maxFreeFileCount)ファイル")
                             .font(.caption)
                             .foregroundColor(.secondary)
                         
@@ -301,7 +299,7 @@ struct PDFListView: View {
                     showingSubscription = true
                 }
             } message: {
-                Text("無料版では最大\(viewStore.maxFreePDFCount)つまでのPDFファイルを登録できます。プレミアム版にアップグレードすると、無制限にPDFファイルを登録できます。")
+                Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
             }
             .sheet(isPresented: $showingSubscription) {
                 SubscriptionView(source: "pdf_list_limit")

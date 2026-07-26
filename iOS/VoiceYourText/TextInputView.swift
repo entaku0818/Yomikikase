@@ -691,15 +691,15 @@ struct TextInputView: View {
     }
 
     private func handleSaveButtonTap() {
-        // 文字数が多い場合は保存せず端末TTSで直接再生
+        // 非課金ユーザーの4000文字制限チェック
+        if !UserDefaultsManager.shared.isPremiumUser && text.count > 4_000 {
+            showingTextLimitAlert = true
+            return
+        }
+        // プレミアムユーザーの長文は保存せず端末TTSで直接再生
         if text.count > 4_000 {
             isEditMode = false
             speakWithHighlight()
-            return
-        }
-        // 非課金ユーザーの4000文字制限チェック
-        if !UserDefaultsManager.shared.isPremiumUser && text.count > 4000 {
-            showingTextLimitAlert = true
             return
         }
         // 高音質TTSを選択している場合は、音声選択画面を表示
