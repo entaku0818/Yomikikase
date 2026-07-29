@@ -392,11 +392,11 @@ struct TextInputView: View {
         let kokoroAvailable = KokoroTTSClient.liveValue.isAvailable()
         let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
         print("🔊 [TTS] useCloudTTS=\(useCloudTTS) kokoroAvailable=\(kokoroAvailable) kokoroEnabled=\(kokoroEnabled) textLen=\(text.count)")
-        if kokoroAvailable {
+        if kokoroAvailable && kokoroEnabled {
             print("🤖 [TTS] → Kokoro AI (local MLX)")
             playWithKokoroTTS()
         } else {
-            print("📢 [TTS] → Device TTS (AVSpeechSynthesizer) — model not downloaded")
+            print("📢 [TTS] → Device TTS (AVSpeechSynthesizer) — model not downloaded or disabled")
             playWithDeviceTTS()
         }
     }
