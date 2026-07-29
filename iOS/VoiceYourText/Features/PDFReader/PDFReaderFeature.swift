@@ -51,8 +51,24 @@ struct PDFReaderFeature: Reducer {
         case cloudTTSGenerationCompleted
         case cloudTTSGenerationFailed(String)
         case setStartCharacterIndex(Int)
+        case pageTapped(page: Int, characterIndex: Int)
         case alert(PresentationAction<ReviewPromptAction>)
         case feedbackDismissed
+    }
+
+    /// 指定ページのテキストを抽出し、フッター文言除去・トリムまで行う。
+    /// pdfLoaded(ページ0)とpageTapped(タップされたページ)の両方から共通で使う。
+    private static func extractCleanedText(from document: PDFDocument, pageIndex: Int) -> String? {
+        guard let page = document.page(at: pageIndex) else { return nil }
+        let mainSelection = PDFSelection(document: document)
+        let pageLength = page.numberOfCharacters
+        if let pageContent = page.selection(for: NSRange(location: 0, length: pageLength)) {
+            mainSelection.add(pageContent)
+        }
+        guard let extractedText = mainSelection.string else { return nil }
+        return extractedText
+            .replacingOccurrences(of: "Powered by TCPDF \\(www\\.tcpdf\\.org\\)\n*", with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
@@ -76,27 +92,10 @@ struct PDFReaderFeature: Reducer {
 
             case let .pdfLoaded(document):
                 state.pdfDocument = document
+                state.selectedPage = 0
 
-                // PDFSelectionを初期化
-                let mainSelection = PDFSelection(document: document)
-
-                // ページ全体を選択する（より確実な方法）
-                if let page = document.page(at: 0) {
-                    let pageLength = page.numberOfCharacters
-                    // ページの先頭から最後までを選択
-                    if let pageContent = page.selection(for: NSRange(location: 0, length: pageLength)) {
-                        mainSelection.add(pageContent)
-                    }
-                }
-
-                // 抽出したテキストを整形
-                if let extractedText = mainSelection.string {
-                    logger.log("extractedText \(extractedText)")
-                    // 不要な文字列を除去
-                    let cleanedText = extractedText
-                        .replacingOccurrences(of: "Powered by TCPDF \\(www\\.tcpdf\\.org\\)\n*", with: "", options: .regularExpression)
-                        .trimmingCharacters(in: .whitespacesAndNewlines)
-
+                if let cleanedText = Self.extractCleanedText(from: document, pageIndex: 0) {
+                    logger.log("extractedText \(cleanedText)")
                     return .send(.extractTextCompleted(cleanedText))
                 }
                 return .none
@@ -283,6 +282,18 @@ struct PDFReaderFeature: Reducer {
             case let .setStartCharacterIndex(index):
                 state.startCharacterIndex = index
                 return .none
+
+            case let .pageTapped(page, characterIndex):
+                // タップされたページ単位でテキストを再抽出し、そのページ内でのcharacterIndexを
+                // 正しい開始位置として使う（複数ページPDFで別ページをタップした際のズレを防ぐ）
+                guard let document = state.pdfDocument,
+                      let cleanedText = Self.extractCleanedText(from: document, pageIndex: page) else {
+                    return .none
+                }
+                state.selectedPage = page
+                state.pdfText = cleanedText
+                state.startCharacterIndex = min(max(characterIndex, 0), cleanedText.count)
+                return .none
             }
         }
         .ifLet(\.$alert, action: /Action.alert)
@@ -348,8 +359,8 @@ struct PDFReaderView: View {
                 PDFKitView(
                     document: pdfDocument,
                     highlightedText: viewStore.highlightedText,
-                    onTapCharacterIndex: { index in
-                        viewStore.send(.setStartCharacterIndex(index))
+                    onTapCharacterIndex: { page, index in
+                        viewStore.send(.pageTapped(page: page, characterIndex: index))
                     }
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -441,7 +452,7 @@ struct PDFReaderView: View {
 struct PDFKitView: UIViewRepresentable {
     let document: PDFDocument
     let highlightedText: String?
-    var onTapCharacterIndex: ((Int) -> Void)?
+    var onTapCharacterIndex: ((_ page: Int, _ characterIndex: Int) -> Void)?
 
     func makeCoordinator() -> Coordinator {
         Coordinator(onTapCharacterIndex: onTapCharacterIndex)
@@ -481,21 +492,22 @@ struct PDFKitView: UIViewRepresentable {
     }
 
     class Coordinator: NSObject {
-        var onTapCharacterIndex: ((Int) -> Void)?
+        var onTapCharacterIndex: ((_ page: Int, _ characterIndex: Int) -> Void)?
         weak var pdfView: PDFView?
 
-        init(onTapCharacterIndex: ((Int) -> Void)?) {
+        init(onTapCharacterIndex: ((_ page: Int, _ characterIndex: Int) -> Void)?) {
             self.onTapCharacterIndex = onTapCharacterIndex
         }
 
         @objc func handleTap(_ gesture: UITapGestureRecognizer) {
-            guard let pdfView else { return }
+            guard let pdfView, let document = pdfView.document else { return }
             let location = gesture.location(in: pdfView)
             guard let page = pdfView.page(for: location, nearest: true) else { return }
+            let pageIndex = document.index(for: page)
             let pagePoint = pdfView.convert(location, to: page)
             let index = page.characterIndex(at: pagePoint)
             guard index != NSNotFound else { return }
-            onTapCharacterIndex?(index)
+            onTapCharacterIndex?(pageIndex, index)
         }
     }
 }

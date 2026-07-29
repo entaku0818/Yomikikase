@@ -243,6 +243,81 @@ final class PDFReaderFeatureTests: XCTestCase {
         XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
     }
 
+    // MARK: - pageTapped（複数ページPDF）
+
+    /// テスト用の2ページPDFを生成する。各ページに一意なテキストを描画し、
+    /// pageTappedがページごとに正しいテキストへ切り替わることを検証できるようにする。
+    private static func makeTwoPagePDFDocument() -> PDFDocument {
+        let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)
+        let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
+        let data = renderer.pdfData { ctx in
+            ctx.beginPage()
+            "Page One Text".draw(at: CGPoint(x: 48, y: 60), withAttributes: [.font: UIFont.systemFont(ofSize: 20)])
+            ctx.beginPage()
+            "Page Two Text".draw(at: CGPoint(x: 48, y: 60), withAttributes: [.font: UIFont.systemFont(ofSize: 20)])
+        }
+        guard let document = PDFDocument(data: data) else {
+            fatalError("Failed to create test PDFDocument")
+        }
+        return document
+    }
+
+    func test_pageTapped_2ページ目をタップすると2ページ目のテキストが開始位置になること() async {
+        let document = Self.makeTwoPagePDFDocument()
+        XCTAssertEqual(document.pageCount, 2)
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State()
+        ) {
+            PDFReaderFeature()
+        }
+
+        await store.send(.pdfLoaded(document)) {
+            $0.pdfDocument = document
+            $0.selectedPage = 0
+        }
+        await store.receive(.extractTextCompleted("Page One Text")) {
+            $0.pdfText = "Page One Text"
+        }
+
+        // 2ページ目(index 1)をタップ → pdfTextが2ページ目のテキストに切り替わること
+        await store.send(.pageTapped(page: 1, characterIndex: 0)) {
+            $0.selectedPage = 1
+            $0.pdfText = "Page Two Text"
+            $0.startCharacterIndex = 0
+        }
+    }
+
+    func test_pageTapped_characterIndexがページ内テキスト長を超過している場合は末尾にクランプされること() async {
+        let document = Self.makeTwoPagePDFDocument()
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(pdfDocument: document)
+        ) {
+            PDFReaderFeature()
+        }
+
+        // "Page Two Text" は13文字。範囲外(NSNotFoundを模した巨大な値)を渡してもクラッシュせず末尾にクランプされること
+        await store.send(.pageTapped(page: 1, characterIndex: NSNotFound)) {
+            $0.selectedPage = 1
+            $0.pdfText = "Page Two Text"
+            $0.startCharacterIndex = "Page Two Text".count
+        }
+    }
+
+    func test_pageTapped_存在しないページ番号の場合は状態を変更しないこと() async {
+        let document = Self.makeTwoPagePDFDocument()
+
+        let store = TestStore(
+            initialState: PDFReaderFeature.State(pdfText: "既存テキスト", pdfDocument: document)
+        ) {
+            PDFReaderFeature()
+        }
+
+        // ページ数(2)を超えるページ番号 → document.page(at:)がnilを返すため何も変更しない
+        await store.send(.pageTapped(page: 99, characterIndex: 0))
+    }
+
     func testPDFLoadFailure() async {
         // テスト用の無効なURL
         let invalidURL = URL(fileURLWithPath: "/invalid/path.pdf")
