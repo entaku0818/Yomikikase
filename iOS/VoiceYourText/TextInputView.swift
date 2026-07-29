@@ -910,6 +910,8 @@ struct TextInputView: View {
             return "ja-JP"
         case "en", "en-us":
             return "en-US"
+        case "en-gb":
+            return "en-GB"
         case "de", "de-de":
             return "de-DE"
         case "es", "es-es":
