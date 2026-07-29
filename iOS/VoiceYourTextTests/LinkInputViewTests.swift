@@ -135,6 +135,37 @@ final class LinkInputViewTests: XCTestCase {
         XCTAssertFalse(isValidURL(urlText), "スペース入りURLは無効と判定されるべき")
     }
 
+    /// ゼロ幅スペース(U+200B)はisWhitespaceではfalseを返すため、
+    /// ホワイトリスト方式でなければすり抜けてしまう(issue #108)。
+    func test_urlWithZeroWidthSpace_isInvalid() {
+        let urlText = "https://example.com/\u{200B}path"
+        XCTAssertFalse(isValidURL(urlText), "ゼロ幅スペースを含むURLは無効と判定されるべき")
+    }
+
+    /// ゼロ幅接合子(U+200D)等のFormatカテゴリ文字も同様に無効とする。
+    func test_urlWithZeroWidthJoiner_isInvalid() {
+        let urlText = "https://example.com/\u{200D}path"
+        XCTAssertFalse(isValidURL(urlText), "ゼロ幅接合子を含むURLは無効と判定されるべき")
+    }
+
+    /// 制御文字(改行等)もホワイトリスト外として無効とする。
+    func test_urlWithControlCharacter_isInvalid() {
+        let urlText = "https://example.com/\npath"
+        XCTAssertFalse(isValidURL(urlText), "制御文字を含むURLは無効と判定されるべき")
+    }
+
+    /// 非ASCII文字(日本語等)を含む未エンコードURLはホワイトリスト外として無効とする。
+    func test_urlWithNonASCIICharacter_isInvalid() {
+        let urlText = "https://example.com/パス"
+        XCTAssertFalse(isValidURL(urlText), "非ASCII文字を含むURLは無効と判定されるべき")
+    }
+
+    /// RFC 3986のURI許可文字のみで構成されたURLは引き続き有効とする。
+    func test_urlWithAllowedURICharacters_isValid() {
+        let urlText = "https://example.com/path?a=1&b=2#frag"
+        XCTAssertTrue(isValidURL(urlText), "RFC 3986許可文字のみのURLは有効と判定されるべき")
+    }
+
     // MARK: - WebPageFetchError: 全エラーに説明文がある
 
     func test_allWebPageFetchErrors_haveLocalizedDescriptions() {
@@ -148,8 +179,12 @@ final class LinkInputViewTests: XCTestCase {
 
 // MARK: - Helper: isValidURL ロジックを複製（View の private プロパティのため）
 
+private let allowedURLCharacters = CharacterSet(
+    charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%"
+)
+
 private func isValidURL(_ urlText: String) -> Bool {
     urlText.lowercased().hasPrefix("https://")
         && urlText.count > 12
-        && !urlText.contains(where: \.isWhitespace)
+        && urlText.unicodeScalars.allSatisfy { allowedURLCharacters.contains($0) }
 }
