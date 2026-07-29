@@ -84,14 +84,20 @@ struct LinkInputView: View {
     /// RFC 3986のURI文字集合のみを許可するホワイトリスト。
     /// ゼロ幅スペース等のFormatカテゴリ文字はisWhitespaceでは検知できないため、
     /// 許可文字のホワイトリスト方式でOSのURLパーサー挙動に依存せず検証する。
-    private static let allowedURLCharacters = CharacterSet(
+    static let allowedURLCharacters = CharacterSet(
         charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%"
     )
 
-    private var isValidURL: Bool {
+    /// URL検証ロジック。View・テスト双方が同一実装を参照するため static として切り出す。
+    /// (以前はテスト側に複製されており、本番実装の変更を検知できなかった: issue #106)
+    static func isValidURL(_ urlText: String) -> Bool {
         urlText.lowercased().hasPrefix("https://")
             && urlText.count > 12
-            && urlText.unicodeScalars.allSatisfy { Self.allowedURLCharacters.contains($0) }
+            && urlText.unicodeScalars.allSatisfy { allowedURLCharacters.contains($0) }
+    }
+
+    private var isValidURL: Bool {
+        Self.isValidURL(urlText)
     }
 
     private func fetchPage() {

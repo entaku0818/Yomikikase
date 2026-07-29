@@ -177,14 +177,10 @@ final class LinkInputViewTests: XCTestCase {
     }
 }
 
-// MARK: - Helper: isValidURL ロジックを複製（View の private プロパティのため）
-
-private let allowedURLCharacters = CharacterSet(
-    charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~:/?#[]@!$&'()*+,;=%"
-)
+// MARK: - Helper: 本番実装 (LinkInputView.isValidURL) を直接参照
+// テスト側でロジックを複製すると本番コードの変更を検知できないため (issue #106)、
+// 本番の static func をそのまま呼び出す。
 
 private func isValidURL(_ urlText: String) -> Bool {
-    urlText.lowercased().hasPrefix("https://")
-        && urlText.count > 12
-        && urlText.unicodeScalars.allSatisfy { allowedURLCharacters.contains($0) }
+    LinkInputView.isValidURL(urlText)
 }
