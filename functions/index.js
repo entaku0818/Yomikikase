@@ -6,6 +6,11 @@ const https = require("https");
 initializeApp();
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
+const MESSAGE_MAX_LENGTH = 2000;
+
+function escapeSlackMrkdwn(text) {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 exports.submitFeedback = onRequest(
   { region: "asia-northeast1", cors: false },
@@ -22,6 +27,11 @@ exports.submitFeedback = onRequest(
       return;
     }
 
+    if (message.length > MESSAGE_MAX_LENGTH) {
+      res.status(400).json({ error: `message must be ${MESSAGE_MAX_LENGTH} characters or fewer` });
+      return;
+    }
+
     // Firestoreに保存
     const db = getFirestore();
     await db.collection("feedback").add({
@@ -32,7 +42,14 @@ exports.submitFeedback = onRequest(
       createdAt: FieldValue.serverTimestamp(),
     });
 
+    if (!SLACK_WEBHOOK_URL) {
+      console.warn("SLACK_WEBHOOK_URL is not set, skipping Slack notification");
+      res.status(200).json({ success: true });
+      return;
+    }
+
     // Slack通知
+    const escapedMessage = escapeSlackMrkdwn(message);
     await postToSlack({
       text: `:loudspeaker: *読み上げナレーター (VoiceYourText) フィードバックが届きました*`,
       blocks: [
@@ -42,7 +59,7 @@ exports.submitFeedback = onRequest(
         },
         {
           type: "section",
-          fields: [{ type: "mrkdwn", text: `*メッセージ:*\n${message}` }],
+          fields: [{ type: "mrkdwn", text: `*メッセージ:*\n${escapedMessage}` }],
         },
         {
           type: "section",
