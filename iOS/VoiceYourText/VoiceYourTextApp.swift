@@ -11,6 +11,7 @@ import UIKit
 import FirebaseCore
 import FirebaseAnalytics
 import FirebaseCrashlytics
+import FirebaseAppCheck
 import RevenueCat
 import GoogleSignIn
 
@@ -30,6 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             infoLog("Running under XCTest - skipping Firebase/RevenueCat initialization")
             return true
         }
+
+        // App Checkのプロバイダは FirebaseApp.configure() より前に設定する必要がある。
+        // Debugビルドはシミュレータ/実機ともApp Attestが使えないためDebugProviderを使う
+        // （Firebase ConsoleのApp Check > デバッグトークンに登録が必要）。
+        #if DEBUG
+        AppCheck.setAppCheckProviderFactory(AppCheckDebugProviderFactory())
+        #else
+        AppCheck.setAppCheckProviderFactory(VoiceYourTextAppCheckProviderFactory())
+        #endif
 
         // Firebase初期化
         infoLog("Configuring Firebase...")
