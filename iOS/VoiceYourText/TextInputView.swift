@@ -392,7 +392,7 @@ struct TextInputView: View {
         let kokoroAvailable = KokoroTTSClient.liveValue.isAvailable()
         let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
         print("🔊 [TTS] useCloudTTS=\(useCloudTTS) kokoroAvailable=\(kokoroAvailable) kokoroEnabled=\(kokoroEnabled) textLen=\(text.count)")
-        if kokoroAvailable && kokoroEnabled {
+        if KokoroPlaybackParams.shouldUseKokoro(available: kokoroAvailable, enabled: kokoroEnabled) {
             print("🤖 [TTS] → Kokoro AI (local MLX)")
             playWithKokoroTTS()
         } else {
@@ -493,13 +493,12 @@ struct TextInputView: View {
     }
 
     private func playWithKokoroTTS() {
-        let language = UserDefaultsManager.shared.languageSetting ?? "ja"
-        let isJapanese = language.hasPrefix("ja")
-        let defaultVoice: KokoroVoice = isJapanese ? .defaultJapanese : .default
-        let voiceRaw = UserDefaultsManager.shared.kokoroVoice ?? defaultVoice.rawValue
-        let voice = KokoroVoice(rawValue: voiceRaw) ?? defaultVoice
+        let voice = KokoroPlaybackParams.selectVoice(
+            languageCode: UserDefaultsManager.shared.languageSetting,
+            storedVoiceRaw: UserDefaultsManager.shared.kokoroVoice
+        )
         // Kokoro speed 1.0 = normal; AVSpeechSynthesizer 0.5 = normal → multiply by 2
-        let speed = Float(max(0.5, min(2.0, UserDefaultsManager.shared.speechRate * 2.0)))
+        let speed = KokoroPlaybackParams.kokoroSpeed(fromSpeechRate: UserDefaultsManager.shared.speechRate)
 
         Task {
             do {

@@ -200,9 +200,9 @@ actor KokoroEngine {
         }
 
         // keys are stored WITHOUT ".npy" (loadVoicesNPZ strips the extension)
-        guard let voiceEmbedding = voices?[voice.rawValue] else {
-            throw KokoroError.synthesisFailure("Voice '\(voice.rawValue)' not found in voices.npz")
-        }
+        let voiceEmbedding = try KokoroAudioUtil.voiceEmbedding(
+            from: voices ?? [:], voiceRawValue: voice.rawValue
+        )
 
         let language: Language = voice.isJapanese ? .ja : .enUS
 
@@ -213,7 +213,7 @@ actor KokoroEngine {
             speed: speed
         )
 
-        return try pcmToWAV(samples: samples, sampleRate: 24000)
+        return KokoroAudioUtil.pcmToWAV(samples: samples, sampleRate: 24000)
     }
 
     // MARK: - モデルロード（off-main / 二重ロード防止）
@@ -296,45 +296,11 @@ actor KokoroEngine {
 
         let headerBytes = data[10..<min(10 + headerLen, data.count)]
         let header = String(bytes: headerBytes, encoding: .utf8) ?? ""
-        let shape = parseNPYShape(from: header)
+        let shape = KokoroAudioUtil.parseNPYShape(from: header)
 
         let floats = data[dataStart...].withUnsafeBytes { ptr -> [Float] in
             Array(ptr.bindMemory(to: Float.self))
         }
         return shape.isEmpty ? MLXArray(floats) : MLXArray(floats, shape)
-    }
-
-    private func parseNPYShape(from header: String) -> [Int] {
-        guard let start = header.range(of: "'shape': ("),
-              let end = header.range(of: ")", range: start.upperBound..<header.endIndex)
-        else { return [] }
-        return String(header[start.upperBound..<end.lowerBound])
-            .split(separator: ",")
-            .compactMap { Int($0.trimmingCharacters(in: .whitespaces)) }
-    }
-
-    // [Float] (24kHz mono) → WAV Data
-    private func pcmToWAV(samples: [Float], sampleRate: Int) throws -> Data {
-        let channelCount: UInt16 = 1
-        let bitsPerSample: UInt16 = 16
-        let byteRate = UInt32(sampleRate) * UInt32(channelCount) * UInt32(bitsPerSample / 8)
-        let blockAlign = channelCount * (bitsPerSample / 8)
-        let pcmSamples = samples.map { s -> Int16 in
-            Int16(max(-1.0, min(1.0, s)) * Float(Int16.max))
-        }
-        let dataSize = UInt32(pcmSamples.count * 2)
-
-        var wav = Data()
-        func write<T: FixedWidthInteger>(_ v: T) {
-            withUnsafeBytes(of: v.littleEndian) { wav.append(contentsOf: $0) }
-        }
-        wav.append(contentsOf: "RIFF".utf8); write(UInt32(36 + dataSize))
-        wav.append(contentsOf: "WAVEfmt ".utf8); write(UInt32(16))
-        write(UInt16(1)); write(channelCount)
-        write(UInt32(sampleRate)); write(byteRate)
-        write(blockAlign); write(bitsPerSample)
-        wav.append(contentsOf: "data".utf8); write(dataSize)
-        for s in pcmSamples { write(s) }
-        return wav
     }
 }
