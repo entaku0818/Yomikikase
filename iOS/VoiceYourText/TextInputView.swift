@@ -23,6 +23,9 @@ struct TextInputView: View {
     @State private var pendingSave = false // 音声選択後に保存するフラグ
     @State private var audioGenerationError: String? = nil
     @State private var audioPlayer: AVAudioPlayer?
+    // AudioPlayerFinished observer のトークン。再生の度に addObserver が積み重ならないよう保持し、
+    // 再登録前・再生停止時に removeObserver する。
+    @State private var audioFinishObserver: NSObjectProtocol?
     @State private var currentFileId: UUID?
     @State private var availableVoices: [VoiceConfig] = []
     @State private var selectedVoice: VoiceConfig?
@@ -349,6 +352,7 @@ struct TextInputView: View {
 
         // 既存の再生を停止（isSpeaking は変えない）
         stopHighlightTimer()
+        removeAudioFinishObserver()
         audioPlayer?.stop()
         audioPlayer = nil
         highlightedRange = nil
@@ -407,16 +411,8 @@ struct TextInputView: View {
         audioPlayer = nil
 
         do {
-            audioPlayer = try AVAudioPlayer(contentsOf: url)
-
-            // 速度設定を適用
-            audioPlayer?.enableRate = true
-            // AVAudioPlayerのrateは0.5〜2.0（AVSpeechUtteranceは0.0〜1.0でデフォルト0.5）
-            // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
-            // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
-            let speechRate = UserDefaultsManager.shared.speechRate
-            let playbackRate = max(0.5, min(2.0, speechRate * 2.0))
-            audioPlayer?.rate = playbackRate
+            let player = try AVAudioPlayer(contentsOf: url)
+            audioPlayer = player
 
             // Load timepoints from JSON file if available
             let timepointsURL = url.deletingPathExtension().appendingPathExtension("json")
@@ -431,30 +427,56 @@ struct TextInputView: View {
                 }
             }
 
-            // Set up completion handler using NotificationCenter
-            NotificationCenter.default.addObserver(
-                forName: NSNotification.Name("AudioPlayerFinished"),
-                object: nil,
-                queue: .main
-            ) { [weak audioPlayer] _ in
-                guard audioPlayer != nil else { return }
-                self.stopHighlightTimer()
-                self.isSpeaking = false
-                self.highlightedRange = nil
-                self.store.send(.nowPlaying(.stopPlaying))
-            }
-            audioPlayer?.delegate = CloudTTSAudioDelegate.shared
-
             // Start highlight timer if we have timepoints
             if !currentTimepoints.isEmpty {
                 startHighlightTimer()
             }
 
-            audioPlayer?.play()
+            setupAndPlayAudioPlayer(player) {
+                self.stopHighlightTimer()
+                self.isSpeaking = false
+                self.highlightedRange = nil
+                self.store.send(.nowPlaying(.stopPlaying))
+            }
         } catch {
             errorLog("Failed to play downloaded audio: \(error)")
             // Fallback to device TTS
             playWithDeviceTTS()
+        }
+    }
+
+    /// AVAudioPlayer の共通セットアップと再生を行う。
+    /// enableRate/rate（再生速度）設定、AudioPlayerFinished observer の再登録（多重登録防止のため
+    /// 既存トークンを解放してから登録）、delegate 設定、play() を一元化する。
+    /// Cloud TTS（playDownloadedAudio）と Kokoro（playWithKokoroTTS）で重複していた処理の共通化。
+    private func setupAndPlayAudioPlayer(_ player: AVAudioPlayer, onFinish: @escaping () -> Void) {
+        // 速度設定を適用
+        // AVAudioPlayerのrateは0.5〜2.0（AVSpeechUtteranceは0.0〜1.0でデフォルト0.5）
+        // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
+        // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
+        player.enableRate = true
+        player.rate = KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: UserDefaultsManager.shared.speechRate)
+
+        // 既存の observer を解放してから再登録する（再生の度に積み重なるのを防ぐ）
+        removeAudioFinishObserver()
+        audioFinishObserver = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name("AudioPlayerFinished"),
+            object: nil,
+            queue: .main
+        ) { [weak player] _ in
+            guard player != nil else { return }
+            self.removeAudioFinishObserver()
+            onFinish()
+        }
+        player.delegate = CloudTTSAudioDelegate.shared
+        player.play()
+    }
+
+    /// 保持している AudioPlayerFinished observer を解放する。
+    private func removeAudioFinishObserver() {
+        if let observer = audioFinishObserver {
+            NotificationCenter.default.removeObserver(observer)
+            audioFinishObserver = nil
         }
     }
 
@@ -506,22 +528,13 @@ struct TextInputView: View {
                 await MainActor.run {
                     do {
                         audioPlayer?.stop()
-                        audioPlayer = try AVAudioPlayer(data: data)
-                        audioPlayer?.enableRate = true
-                        audioPlayer?.rate = max(0.5, min(2.0, UserDefaultsManager.shared.speechRate * 2.0))
-
-                        NotificationCenter.default.addObserver(
-                            forName: NSNotification.Name("AudioPlayerFinished"),
-                            object: nil,
-                            queue: .main
-                        ) { [weak audioPlayer] _ in
-                            guard audioPlayer != nil else { return }
+                        let player = try AVAudioPlayer(data: data)
+                        audioPlayer = player
+                        setupAndPlayAudioPlayer(player) {
                             self.isSpeaking = false
                             self.highlightedRange = nil
                             self.store.send(.nowPlaying(.stopPlaying))
                         }
-                        audioPlayer?.delegate = CloudTTSAudioDelegate.shared
-                        audioPlayer?.play()
                     } catch {
                         errorLog("[Kokoro] AVAudioPlayer init failed: \(error), falling back to device TTS")
                         playWithDeviceTTS()
@@ -681,6 +694,7 @@ struct TextInputView: View {
 
     private func stopSpeaking() {
         stopHighlightTimer()
+        removeAudioFinishObserver()
         audioPlayer?.stop()
         audioPlayer = nil
         isSpeaking = false

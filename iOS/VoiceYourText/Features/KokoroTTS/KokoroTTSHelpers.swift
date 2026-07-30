@@ -79,4 +79,11 @@ enum KokoroPlaybackParams {
     static func kokoroSpeed(fromSpeechRate speechRate: Float) -> Float {
         max(0.5, min(2.0, speechRate * 2.0))
     }
+
+    /// AVSpeechSynthesizer rate (0.5 = normal) → AVAudioPlayer rate (1.0 = normal),
+    /// clamped to AVAudioPlayer's supported [0.5, 2.0] range.
+    /// Cloud TTS / Kokoro の再生速度計算を一元化するための共通ヘルパー。
+    static func avPlaybackRate(fromSpeechRate speechRate: Float) -> Float {
+        max(0.5, min(2.0, speechRate * 2.0))
+    }
 }

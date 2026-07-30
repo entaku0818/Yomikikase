@@ -193,6 +193,25 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertEqual(KokoroPlaybackParams.kokoroSpeed(fromSpeechRate: 0.0), 0.5, accuracy: 0.0001)
     }
 
+    // MARK: - KokoroPlaybackParams.avPlaybackRate (AVAudioPlayer 再生速度・境界値)
+
+    func test_avPlaybackRate_normalRate_doublesTo1() {
+        // AVSpeech 0.5 (通常) → AVAudioPlayer 1.0
+        XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 0.5), 1.0, accuracy: 0.0001)
+    }
+
+    func test_avPlaybackRate_clampsUpperBoundTo2() {
+        // speechRate 1.0 → 2.0（上限）, さらに大きくても 2.0 でクランプ
+        XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 1.0), 2.0, accuracy: 0.0001)
+        XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 5.0), 2.0, accuracy: 0.0001)
+    }
+
+    func test_avPlaybackRate_clampsLowerBoundTo0_5() {
+        // speechRate 0.1 → 0.2 だが下限 0.5 でクランプ
+        XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 0.1), 0.5, accuracy: 0.0001)
+        XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 0.0), 0.5, accuracy: 0.0001)
+    }
+
     // MARK: - Helpers
 
     private func readUInt32LE(_ data: Data, at offset: Int) -> UInt32 {
