@@ -219,8 +219,14 @@ struct MyFilesView: View {
 
     /// 検索テキストとセグメントフィルタを適用したファイル一覧。
     private var filteredFiles: [FileItem] {
-        combinedFiles.filter { file in
-            let matchesFilter = selectedFilter.matches(file.type)
+        MyFilesView.filteredFiles(from: combinedFiles, filter: selectedFilter, searchText: searchText)
+    }
+
+    /// 検索テキストとセグメントフィルタ（AND条件）を適用する純粋関数。
+    /// フィルタ一致かつ、検索文字列が空または大文字小文字を無視してタイトルに含まれるものを返す。
+    static func filteredFiles(from files: [FileItem], filter: FileFilter, searchText: String) -> [FileItem] {
+        files.filter { file in
+            let matchesFilter = filter.matches(file.type)
             let matchesSearch = searchText.isEmpty
                 || file.title.localizedCaseInsensitiveContains(searchText)
             return matchesFilter && matchesSearch

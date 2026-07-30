@@ -86,106 +86,66 @@ final class MyFilesViewFilterTests: XCTestCase {
         XCTAssertTrue(FileFilter.allCases.contains(.epub))
     }
 
-    // MARK: - ソートロジック（combinedFiles - 日付降順）
+    // MARK: - MyFilesView.filteredFiles(from:filter:searchText:)（本番実装を直接検証）
 
-    func test_ソート_新しいファイルが先頭に来ること() {
-        let now = Date()
-        let older = now.addingTimeInterval(-3600)  // 1時間前
-
-        let newFile = FileItem(id: UUID(), title: "新しい", subtitle: "", date: now, type: .text)
-        let oldFile = FileItem(id: UUID(), title: "古い", subtitle: "", date: older, type: .text)
-
-        let files = [oldFile, newFile]
-        let sorted = files.sorted { $0.date > $1.date }
-
-        XCTAssertEqual(sorted.first?.title, "新しい")
-        XCTAssertEqual(sorted.last?.title, "古い")
+    private func makeFile(_ title: String, type: FileItem.FileType) -> FileItem {
+        FileItem(id: UUID(), title: title, subtitle: "", date: Date(timeIntervalSince1970: 0), type: type)
     }
 
-    func test_ソート_同じ日付のファイルは順序が保たれること() {
-        let now = Date()
-        let file1 = FileItem(id: UUID(), title: "A", subtitle: "", date: now, type: .text)
-        let file2 = FileItem(id: UUID(), title: "B", subtitle: "", date: now, type: .pdf)
-
-        let files = [file1, file2]
-        let sorted = files.sorted { $0.date > $1.date }
-
-        // 同じ日付なら元の順序が変わらないことを確認（安定ソート）
-        XCTAssertEqual(sorted.count, 2)
+    private var sampleFiles: [FileItem] {
+        [
+            makeFile("Apple Report", type: .pdf),
+            makeFile("banana note", type: .text),
+            makeFile("Cherry Book", type: .epub),
+            makeFile("apple pie recipe", type: .text)
+        ]
     }
 
-    func test_ソート_空配列はそのまま空であること() {
-        let files: [FileItem] = []
-        let sorted = files.sorted { $0.date > $1.date }
-        XCTAssertTrue(sorted.isEmpty)
+    func test_filteredFiles_allフィルタ検索空で全件返ること() {
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .all, searchText: "")
+        XCTAssertEqual(result.count, 4)
     }
 
-    // MARK: - スキャンJSONデコードフォールバックロジック
-
-    func test_JSONデコード_有効なJSON配列は正しくデコードされること() {
-        let imagePaths = ["/path/to/image1.jpg", "/path/to/image2.jpg"]
-        if let data = try? JSONEncoder().encode(imagePaths),
-           let jsonStr = String(data: data, encoding: .utf8),
-           let decodedData = jsonStr.data(using: .utf8),
-           let decoded = try? JSONDecoder().decode([String].self, from: decodedData) {
-            XCTAssertEqual(decoded, imagePaths)
-        } else {
-            XCTFail("有効なJSONのデコードに失敗")
-        }
+    func test_filteredFiles_pdfフィルタでpdfのみ返ること() {
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .pdf, searchText: "")
+        XCTAssertEqual(result.map { $0.title }, ["Apple Report"])
     }
 
-    func test_JSONデコード_不正なJSON文字列はデコードに失敗すること() {
-        let invalidJSON = "not-a-json"
-        let result = invalidJSON.data(using: .utf8).flatMap { data in
-            try? JSONDecoder().decode([String].self, from: data)
-        }
-        XCTAssertNil(result, "不正なJSONはnilになるはず（フォールバックへ）")
+    func test_filteredFiles_textフィルタでtextのみ返ること() {
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .text, searchText: "")
+        XCTAssertEqual(Set(result.map { $0.title }), ["banana note", "apple pie recipe"])
     }
 
-    func test_JSONデコード_空文字列はデコードに失敗すること() {
-        let emptyString = ""
-        let result = emptyString.data(using: .utf8).flatMap { data in
-            try? JSONDecoder().decode([String].self, from: data)
-        }
-        XCTAssertNil(result, "空文字列はnilになるはず（フォールバックへ）")
+    func test_filteredFiles_検索は大文字小文字を無視すること() {
+        // "apple" は "Apple Report" と "apple pie recipe" にマッチするはず
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .all, searchText: "APPLE")
+        XCTAssertEqual(Set(result.map { $0.title }), ["Apple Report", "apple pie recipe"])
     }
 
-    func test_JSONデコード_空配列JSONは正しくデコードされること() {
-        let emptyArrayJSON = "[]"
-        guard let data = emptyArrayJSON.data(using: .utf8),
-              let decoded = try? JSONDecoder().decode([String].self, from: data) else {
-            XCTFail("空配列JSONのデコードに失敗")
-            return
-        }
-        XCTAssertTrue(decoded.isEmpty, "空配列はデコードして空Arrayになるはず")
+    func test_filteredFiles_フィルタと検索はAND条件であること() {
+        // textフィルタ かつ "apple" → "apple pie recipe" のみ（"Apple Report" はpdfなので除外）
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .text, searchText: "apple")
+        XCTAssertEqual(result.map { $0.title }, ["apple pie recipe"])
     }
 
-    func test_JSONデコード_JSONオブジェクトは配列にデコードできないこと() {
-        // オブジェクト型JSON（{...}）を[String]にデコードしようとするとnil
-        let objectJSON = "{\"key\": \"value\"}"
-        let result = objectJSON.data(using: .utf8).flatMap { data in
-            try? JSONDecoder().decode([String].self, from: data)
-        }
-        XCTAssertNil(result, "オブジェクトJSONはnilになるはず（フォールバックへ）")
+    func test_filteredFiles_ANDのどちらか一方だけ満たしても除外されること() {
+        // pdfフィルタ かつ "banana" → 一致なし（bananaはtext、pdfのタイトルにbananaは無い）
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .pdf, searchText: "banana")
+        XCTAssertTrue(result.isEmpty)
     }
 
-    func test_JSONデコード_有効なパスリストをラウンドトリップできること() {
-        let originalPaths = ["/documents/scan/page1.png", "/documents/scan/page2.png"]
+    func test_filteredFiles_マッチしない検索文字列で空になること() {
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .all, searchText: "zzz")
+        XCTAssertTrue(result.isEmpty)
+    }
 
-        // エンコード
-        guard let encoded = try? JSONEncoder().encode(originalPaths),
-              let jsonString = String(data: encoded, encoding: .utf8) else {
-            XCTFail("エンコードに失敗")
-            return
-        }
+    func test_filteredFiles_検索空はフィルタのみ適用されること() {
+        let result = MyFilesView.filteredFiles(from: sampleFiles, filter: .epub, searchText: "")
+        XCTAssertEqual(result.map { $0.title }, ["Cherry Book"])
+    }
 
-        // デコード（FileViewerContainerと同じロジック）
-        guard let imagePathsData = jsonString.data(using: .utf8),
-              let decoded = try? JSONDecoder().decode([String].self, from: imagePathsData) else {
-            XCTFail("デコードに失敗")
-            return
-        }
-
-        XCTAssertEqual(decoded, originalPaths)
+    func test_filteredFiles_空入力は空を返すこと() {
+        let result = MyFilesView.filteredFiles(from: [], filter: .all, searchText: "apple")
+        XCTAssertTrue(result.isEmpty)
     }
 }

@@ -46,15 +46,35 @@ enum FileLimitsManager {
 
     /// 無料版のファイル制限に達しているかどうか
     static func hasReachedFreeLimit() -> Bool {
-        guard !UserDefaultsManager.shared.isPremiumUser else { return false }
-        return getCurrentTotalFileCount() >= maxFreeFileCount
+        hasReachedFreeLimit(totalFileCount: getCurrentTotalFileCount(),
+                            isPremiumUser: UserDefaultsManager.shared.isPremiumUser)
     }
 
     /// 残りの登録可能ファイル数
     static func remainingFileCount() -> Int {
-        if UserDefaultsManager.shared.isPremiumUser {
+        remainingFileCount(totalFileCount: getCurrentTotalFileCount(),
+                           isPremiumUser: UserDefaultsManager.shared.isPremiumUser)
+    }
+
+    // MARK: - 純粋ロジック（テスト可能）
+
+    /// 無料版のファイル制限に達しているかどうかを判定する純粋関数。
+    /// - Parameters:
+    ///   - totalFileCount: 現在の合計ファイル数
+    ///   - isPremiumUser: プレミアムユーザーかどうか
+    static func hasReachedFreeLimit(totalFileCount: Int, isPremiumUser: Bool) -> Bool {
+        guard !isPremiumUser else { return false }
+        return totalFileCount >= maxFreeFileCount
+    }
+
+    /// 残りの登録可能ファイル数を計算する純粋関数。
+    /// - Parameters:
+    ///   - totalFileCount: 現在の合計ファイル数
+    ///   - isPremiumUser: プレミアムユーザーかどうか
+    static func remainingFileCount(totalFileCount: Int, isPremiumUser: Bool) -> Int {
+        if isPremiumUser {
             return Int.max
         }
-        return max(0, maxFreeFileCount - getCurrentTotalFileCount())
+        return max(0, maxFreeFileCount - totalFileCount)
     }
 }
