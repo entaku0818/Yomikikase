@@ -180,6 +180,7 @@ actor KokoroEngine {
     // 進行中のロード Task をキャッシュして共有する。
     private var englishLoadTask: Task<KokoroTTS, Error>?
     private var japaneseLoadTask: Task<KokoroTTS, Error>?
+    private var voicesLoadTask: Task<[String: MLXArray], Error>?
 
     func synthesize(text: String, voice: KokoroVoice, speed: Float) async throws -> Data {
         guard KokoroModelManager.checkDownloaded(),
@@ -195,13 +196,11 @@ actor KokoroEngine {
         } else {
             tts = try await loadEnglishTTS(modelURL: modelURL)
         }
-        if voices == nil {
-            voices = try loadVoicesNPZ(url: voicesURL)
-        }
+        let loadedVoices = try await loadVoices(url: voicesURL)
 
         // keys are stored WITHOUT ".npy" (loadVoicesNPZ strips the extension)
         let voiceEmbedding = try KokoroAudioUtil.voiceEmbedding(
-            from: voices ?? [:], voiceRawValue: voice.rawValue
+            from: loadedVoices, voiceRawValue: voice.rawValue
         )
 
         let language: Language = voice.isJapanese ? .ja : .enUS
@@ -260,8 +259,29 @@ actor KokoroEngine {
         }
     }
 
+    // voices（NPZ）の初回ロード。英語/日本語の初回再生がほぼ同時に走っても
+    // loadVoicesNPZ（ZIP展開＋NPYパース）が二重実行されないよう、進行中の
+    // Task を englishLoadTask/japaneseLoadTask と同じパターンで共有する。
+    private func loadVoices(url: URL) async throws -> [String: MLXArray] {
+        if let voices = voices {
+            return voices
+        }
+        if let task = voicesLoadTask {
+            return try await task.value
+        }
+        let task = Task.detached(priority: .userInitiated) { [self] in
+            try self.loadVoicesNPZ(url: url)
+        }
+        voicesLoadTask = task
+        defer { voicesLoadTask = nil }
+        let loaded = try await task.value
+        voices = loaded
+        return loaded
+    }
+
     // NPZ（ZIP of NPY files）を読み込み MLXArray の辞書を返す
-    private func loadVoicesNPZ(url: URL) throws -> [String: MLXArray] {
+    // アクター状態に触れない純粋処理なので nonisolated（detached Task で off-actor 実行）
+    private nonisolated func loadVoicesNPZ(url: URL) throws -> [String: MLXArray] {
         guard let archive = Archive(url: url, accessMode: .read) else {
             throw KokoroError.synthesisFailure("Cannot open voices.npz")
         }
@@ -278,7 +298,7 @@ actor KokoroEngine {
     }
 
     // NPY バイナリ → MLXArray（Float32 のみ対応）
-    private func parseNPY(_ data: Data) -> MLXArray? {
+    private nonisolated func parseNPY(_ data: Data) -> MLXArray? {
         let magic: [UInt8] = [0x93, 0x4E, 0x55, 0x4D, 0x50, 0x59]
         guard data.count > 10, data.prefix(6) == Data(magic) else { return nil }
 
