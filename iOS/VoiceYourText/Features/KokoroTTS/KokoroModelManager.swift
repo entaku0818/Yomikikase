@@ -125,7 +125,17 @@ actor KokoroModelManager {
         guard let handle = try? FileHandle(forReadingFrom: voicesURL),
               let header = try? handle.read(upToCount: 4) else { return false }
         try? handle.close()
-        return header.count >= 2 && header[0] == 0x50 && header[1] == 0x4B
+        return isValidVoicesHeader(header)
+    }
+
+    /// voices.npz 先頭バイトが ZIP アーカイブ (PK\x03\x04) かどうかを判定する純粋関数。
+    /// GitHub LFS のポインタがそのまま保存された場合はテキスト (例: "version ...") に
+    /// なるため false を返す。モデルロードに依存せずユニットテストできるよう切り出している。
+    nonisolated static func isValidVoicesHeader(_ header: Data?) -> Bool {
+        guard let header, header.count >= 2 else {
+            return false
+        }
+        return header[header.startIndex] == 0x50 && header[header.startIndex + 1] == 0x4B
     }
 
     func deleteModel() throws {

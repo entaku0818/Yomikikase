@@ -212,6 +212,60 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertEqual(KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: 0.0), 0.5, accuracy: 0.0001)
     }
 
+    // MARK: - KokoroModelManager.isValidVoicesHeader (DL判定 / LFSポインタ検出)
+    // Issue #89: モデルDL完了後に isAvailable(=checkDownloaded) が true を返す根拠となる
+    // voices.npz の ZIP マジックバイト検証。GitHub LFS ポインタ誤保存時は false になる。
+
+    /// ZIP マジックバイト (PK\x03\x04) で始まれば有効
+    func test_isValidVoicesHeader_zipMagic_isValid() {
+        let header = Data([0x50, 0x4B, 0x03, 0x04])
+        XCTAssertTrue(KokoroModelManager.isValidVoicesHeader(header))
+    }
+
+    /// GitHub LFS ポインタ (テキスト "version ...") は無効
+    func test_isValidVoicesHeader_lfsPointerText_isInvalid() {
+        let header = Data("version https://git-lfs".utf8)
+        XCTAssertFalse(KokoroModelManager.isValidVoicesHeader(header))
+    }
+
+    /// 2バイト未満 / nil は無効
+    func test_isValidVoicesHeader_tooShortOrNil_isInvalid() {
+        XCTAssertFalse(KokoroModelManager.isValidVoicesHeader(Data([0x50])))
+        XCTAssertFalse(KokoroModelManager.isValidVoicesHeader(Data()))
+        XCTAssertFalse(KokoroModelManager.isValidVoicesHeader(nil))
+    }
+
+    /// PK 始まりでない 4バイト (例: NPY マジック) は無効
+    func test_isValidVoicesHeader_nonZipBytes_isInvalid() {
+        let header = Data([0x93, 0x4E, 0x55, 0x4D]) // NPY マジックの一部
+        XCTAssertFalse(KokoroModelManager.isValidVoicesHeader(header))
+    }
+
+    // MARK: - KokoroVoice 言語ルーティング (英語→enUS / 日本語→ja)
+    // Issue #89: synthesize() は voice.isJapanese で日本語/英語モデルロードと
+    // Language(.ja / .enUS) を分岐する。その分岐入力を検証する。
+
+    func test_kokoroVoice_englishVoices_routeToEnglish() {
+        for voice in [KokoroVoice.afHeart, .amAdam, .bfEmma, .bmLewis] {
+            XCTAssertFalse(voice.isJapanese, "\(voice.rawValue) は英語ルートであるべき")
+        }
+        XCTAssertEqual(KokoroVoice.afHeart.accent, .american)
+        XCTAssertEqual(KokoroVoice.bfEmma.accent, .british)
+    }
+
+    func test_kokoroVoice_japaneseVoices_routeToJapanese() {
+        XCTAssertTrue(KokoroVoice.jfAlpha.isJapanese)
+        XCTAssertTrue(KokoroVoice.jmKumo.isJapanese)
+        XCTAssertEqual(KokoroVoice.jfAlpha.accent, .japanese)
+        XCTAssertEqual(KokoroVoice.jmKumo.accent, .japanese)
+    }
+
+    /// 言語別デフォルト voice が正しい言語ルートに乗る
+    func test_kokoroVoice_defaults_matchLanguageRoute() {
+        XCTAssertFalse(KokoroVoice.default.isJapanese)          // .afHeart → 英語
+        XCTAssertTrue(KokoroVoice.defaultJapanese.isJapanese)   // .jfAlpha → 日本語
+    }
+
     // MARK: - Helpers
 
     private func readUInt32LE(_ data: Data, at offset: Int) -> UInt32 {
