@@ -73,6 +73,47 @@ enum KokoroAudioUtil {
     }
 }
 
+// MARK: - Bundled resource lookup (config.json / MisakiSwift lexicon & BART)
+//
+// KokoroSwift/MisakiSwift were inlined into the main app target, so their bundled
+// resources now live at the app-bundle root and are looked up via `Bundle.main`
+// (previously `Bundle.module`, Issue #87). Centralizing the resource *names* here
+// lets the lookup contract be regression-tested — a rename or a stray
+// `subdirectory:` that breaks `Bundle.main.url(forResource:)` fails the test —
+// without the ~600MB model or an on-device bundle.
+
+enum KokoroBundleResource {
+
+    /// KokoroTTS model config — `config.json` at the bundle root
+    /// (`KokoroConfig.loadConfig()`).
+    static let config = "config"
+
+    /// Gold-tier English pronunciation lexicon (`us_gold` / `gb_gold`).
+    static func gold(british: Bool) -> String { british ? "gb_gold" : "us_gold" }
+
+    /// Silver-tier English pronunciation lexicon (`us_silver` / `gb_silver`).
+    static func silver(british: Bool) -> String { british ? "gb_silver" : "us_silver" }
+
+    /// English fallback BART model config (`us_bart_config` / `gb_bart_config`).
+    static func bartConfig(british: Bool) -> String { british ? "gb_bart_config" : "us_bart_config" }
+
+    /// English fallback BART model weights (`us_bart` / `gb_bart`, `.safetensors`).
+    static func bartWeights(british: Bool) -> String { british ? "gb_bart" : "us_bart" }
+}
+
+enum MisakiLexicon {
+
+    /// Parse a gold/silver lexicon payload into a `[grapheme: phoneme]` dictionary.
+    /// Returns an empty dictionary when the data is missing or malformed, mirroring
+    /// `DataResourcesUtil`'s fail-safe fallback so a lookup miss never crashes.
+    static func parse(_ data: Data?) -> [String: Any] {
+        guard let data,
+              let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+        else { return [:] }
+        return json
+    }
+}
+
 // MARK: - Playback parameter selection (used by TextInputView)
 
 enum KokoroPlaybackParams {

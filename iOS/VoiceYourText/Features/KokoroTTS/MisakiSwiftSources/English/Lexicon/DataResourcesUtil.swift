@@ -4,26 +4,17 @@ final class DataResourcesUtil {
     private init() {}
     
     static func loadGold(british: Bool) -> [String: Any] {
-        let filename = british ? "gb_gold" : "us_gold"
-        
-      guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
+        loadLexicon(named: KokoroBundleResource.gold(british: british))
+    }
+
+    static func loadSilver(british: Bool) -> [String: Any] {
+        loadLexicon(named: KokoroBundleResource.silver(british: british))
+    }
+
+    private static func loadLexicon(named filename: String) -> [String: Any] {
+        guard let url = Bundle.main.url(forResource: filename, withExtension: "json") else {
             return [:]
         }
-      
-        return json
-    }
-    
-    static func loadSilver(british: Bool) -> [String: Any] {
-      let filename = british ? "gb_silver" : "us_silver"
-      
-      guard let url = Bundle.main.url(forResource: filename, withExtension: "json"),
-            let data = try? Data(contentsOf: url),
-            let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else {
-          return [:]
-      }
-            
-      return json
+        return MisakiLexicon.parse(try? Data(contentsOf: url))
     }
 }

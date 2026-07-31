@@ -73,9 +73,8 @@ final class EnglishFallbackNetwork {
   }
   
   private static func loadConfig(british: Bool) -> BARTConfig? {
-    let fileName = "\(british ? "gb" : "us")_bart_config"
-    
-    
+    let fileName = KokoroBundleResource.bartConfig(british: british)
+
     guard let url = Bundle.main.url(forResource: fileName, withExtension: "json"),
           let data = try? Data(contentsOf: url),
           let config = try? JSONDecoder().decode(BARTConfig.self, from: data) else {
@@ -85,7 +84,7 @@ final class EnglishFallbackNetwork {
   }
   
   private static func loadWeights(british: Bool) -> [String: MLXArray]? {
-    let fileName = "\(british ? "gb" : "us")_bart"
+    let fileName = KokoroBundleResource.bartWeights(british: british)
     guard let url = Bundle.main.url(forResource: fileName, withExtension: "safetensors"),
           let weights = try? MLX.loadArrays(url: url) else {
       return nil

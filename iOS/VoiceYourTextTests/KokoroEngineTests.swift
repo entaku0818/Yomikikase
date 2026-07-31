@@ -317,7 +317,113 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertEqual(KokoroVoice.allCases.count, 12)
     }
 
+    // MARK: - KokoroBundleResource (Issue #87: Bundle.main リソース名の固定)
+    //
+    // Bundle.module → Bundle.main への移行後、リソース名/localeマッピングがずれると
+    // Bundle.main.url(forResource:) が nil を返し loadConfig() の try! がクラッシュ、
+    // loadGold()/loadSilver() が空辞書を返す。名前をロックして退行を検出する。
+
+    func test_bundleResource_config_isConfig() {
+        XCTAssertEqual(KokoroBundleResource.config, "config")
+    }
+
+    func test_bundleResource_gold_matchesLocale() {
+        XCTAssertEqual(KokoroBundleResource.gold(british: false), "us_gold")
+        XCTAssertEqual(KokoroBundleResource.gold(british: true), "gb_gold")
+    }
+
+    func test_bundleResource_silver_matchesLocale() {
+        XCTAssertEqual(KokoroBundleResource.silver(british: false), "us_silver")
+        XCTAssertEqual(KokoroBundleResource.silver(british: true), "gb_silver")
+    }
+
+    func test_bundleResource_bartConfig_matchesLocale() {
+        XCTAssertEqual(KokoroBundleResource.bartConfig(british: false), "us_bart_config")
+        XCTAssertEqual(KokoroBundleResource.bartConfig(british: true), "gb_bart_config")
+    }
+
+    func test_bundleResource_bartWeights_matchesLocale() {
+        XCTAssertEqual(KokoroBundleResource.bartWeights(british: false), "us_bart")
+        XCTAssertEqual(KokoroBundleResource.bartWeights(british: true), "gb_bart")
+    }
+
+    // MARK: - MisakiLexicon.parse (loadGold/loadSilver の返り値契約)
+
+    /// 正常なJSON辞書 → 空でない [grapheme: phoneme]（期待結果: 空辞書でなく正常データ）
+    func test_misakiLexicon_validJSON_returnsNonEmpty() {
+        let dict = MisakiLexicon.parse(Data(#"{"'cause":"kˈʌz","hello":"həˈloʊ"}"#.utf8))
+        XCTAssertEqual(dict.count, 2)
+        XCTAssertEqual(dict["'cause"] as? String, "kˈʌz")
+    }
+
+    /// data が nil（リソース欠落相当） → 空辞書にフォールバックしクラッシュしない
+    func test_misakiLexicon_nilData_returnsEmpty() {
+        XCTAssertTrue(MisakiLexicon.parse(nil).isEmpty)
+    }
+
+    /// 壊れたJSON → 空辞書にフォールバック
+    func test_misakiLexicon_malformedJSON_returnsEmpty() {
+        XCTAssertTrue(MisakiLexicon.parse(Data("not json".utf8)).isEmpty)
+    }
+
+    /// トップレベルが辞書でない（配列） → 空辞書にフォールバック
+    func test_misakiLexicon_jsonArray_returnsEmpty() {
+        XCTAssertTrue(MisakiLexicon.parse(Data("[1,2,3]".utf8)).isEmpty)
+    }
+
+    // MARK: - KokoroConfig.decodeConfig (loadConfig の try! が config.json 形状でクラッシュしない)
+
+    /// バンドルされる config.json と同じ形状の JSON がクラッシュせずデコードできる
+    func test_decodeConfig_validConfigShape_decodesWithoutThrowing() throws {
+        let config = try KokoroConfig.decodeConfig(from: Self.configJSONFixture)
+        XCTAssertEqual(config.dimIn, 64)
+        XCTAssertEqual(config.nToken, 178)
+        XCTAssertEqual(config.istftNet.upsampleInitialChannel, 512)
+        XCTAssertEqual(config.plbert.hiddenSize, 768)
+    }
+
+    /// 必須フィールド欠落 → デコード失敗（try! なら fail-fast する挙動をドキュメント）
+    func test_decodeConfig_missingFields_throws() {
+        XCTAssertThrowsError(try KokoroConfig.decodeConfig(from: "{}"))
+    }
+
     // MARK: - Helpers
+
+    /// バンドルされる config.json（KokoroSwiftSources/config.json）と同じキー構造。
+    /// vocab は decode 検証には不要なので空にしてある。
+    private static let configJSONFixture = """
+    {
+      "istftnet": {
+        "upsample_kernel_sizes": [20, 12],
+        "upsample_rates": [10, 6],
+        "gen_istft_hop_size": 5,
+        "gen_istft_n_fft": 20,
+        "resblock_dilation_sizes": [[1, 3, 5], [1, 3, 5], [1, 3, 5]],
+        "resblock_kernel_sizes": [3, 7, 11],
+        "upsample_initial_channel": 512
+      },
+      "dim_in": 64,
+      "dropout": 0.2,
+      "hidden_dim": 512,
+      "max_conv_dim": 512,
+      "max_dur": 50,
+      "multispeaker": true,
+      "n_layer": 3,
+      "n_mels": 80,
+      "n_token": 178,
+      "style_dim": 128,
+      "text_encoder_kernel_size": 5,
+      "plbert": {
+        "hidden_size": 768,
+        "num_attention_heads": 12,
+        "intermediate_size": 2048,
+        "max_position_embeddings": 512,
+        "num_hidden_layers": 12,
+        "dropout": 0.1
+      },
+      "vocab": {}
+    }
+    """
 
     private func readUInt32LE(_ data: Data, at offset: Int) -> UInt32 {
         let base = data.startIndex + offset
