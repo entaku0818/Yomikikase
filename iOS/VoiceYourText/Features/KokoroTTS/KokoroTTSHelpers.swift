@@ -54,6 +54,23 @@ enum KokoroAudioUtil {
         }
         return embedding
     }
+
+    /// NPZ（ZIP）エントリのパスから voice キーを取り出す。`.npy` で終わるエントリのみ
+    /// 対象で、拡張子を除いた名前を返す（例: "af_heart.npy" → "af_heart"）。
+    /// それ以外（ディレクトリ等）は nil。`KokoroEngine.loadVoicesNPZ` の
+    /// エントリ→キー変換を、モデルロードに依存せずテストできるよう切り出したもの。
+    static func npzEntryVoiceKey(fromPath path: String) -> String? {
+        guard path.hasSuffix(".npy") else { return nil }
+        return String(path.dropLast(4))
+    }
+
+    /// voices.npz から読み込めたキー集合に、期待する全 voice が含まれるか検証する。
+    /// 欠けている `KokoroVoice` を宣言順で返す（空なら全 12 ボイス揃っている）。
+    /// Issue #88: iOS 27 Beta で ZIPFoundation が全 12 ボイスを復元できることの
+    /// 検証項目を、実機ダウンロードなしにチェックできるよう純粋関数化したもの。
+    static func missingVoices(loadedKeys: Set<String>) -> [KokoroVoice] {
+        KokoroVoice.allCases.filter { !loadedKeys.contains($0.rawValue) }
+    }
 }
 
 // MARK: - Playback parameter selection (used by TextInputView)

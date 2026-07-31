@@ -286,8 +286,8 @@ actor KokoroEngine {
             throw KokoroError.synthesisFailure("Cannot open voices.npz")
         }
         var result: [String: MLXArray] = [:]
-        for entry in archive where entry.path.hasSuffix(".npy") {
-            let key = String(entry.path.dropLast(4))
+        for entry in archive {
+            guard let key = KokoroAudioUtil.npzEntryVoiceKey(fromPath: entry.path) else { continue }
             var data = Data()
             _ = try archive.extract(entry) { chunk in data.append(chunk) }
             if let array = parseNPY(data) {

@@ -266,6 +266,57 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertTrue(KokoroVoice.defaultJapanese.isJapanese)   // .jfAlpha → 日本語
     }
 
+    // MARK: - npzEntryVoiceKey (NPZ エントリパス → voice キー変換)
+    // Issue #88: loadVoicesNPZ の「.npy エントリのみ拾い拡張子を除いてキー化する」
+    // ロジックを検証。ZIP 内に混在する非 .npy エントリを取りこぼさず除外できること。
+
+    func test_npzEntryVoiceKey_npySuffix_stripsExtension() {
+        XCTAssertEqual(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "af_heart.npy"), "af_heart")
+        XCTAssertEqual(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "jf_alpha.npy"), "jf_alpha")
+    }
+
+    func test_npzEntryVoiceKey_nonNpyEntry_returnsNil() {
+        XCTAssertNil(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "af_heart"))
+        XCTAssertNil(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "voices/"))
+        XCTAssertNil(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "README.txt"))
+    }
+
+    // MARK: - missingVoices (全12ボイス復元チェック)
+    // Issue #88: iOS 27 Beta で ZIPFoundation が全 12 voice キーを復元できることの
+    // 検証。実機DL(約600MB)なしに「欠けたボイスを検出できる」ことをユニットで担保する。
+
+    /// 期待する 12 voice が全て揃っていれば欠損なし
+    func test_missingVoices_allPresent_isEmpty() {
+        let loaded = Set(KokoroVoice.allCases.map(\.rawValue))
+        XCTAssertTrue(KokoroAudioUtil.missingVoices(loadedKeys: loaded).isEmpty)
+    }
+
+    /// 一部が欠けていればその voice を検出する
+    func test_missingVoices_someMissing_reportsThem() {
+        var loaded = Set(KokoroVoice.allCases.map(\.rawValue))
+        loaded.remove(KokoroVoice.jmKumo.rawValue)
+        loaded.remove(KokoroVoice.bfEmma.rawValue)
+        let missing = Set(KokoroAudioUtil.missingVoices(loadedKeys: loaded).map(\.rawValue))
+        XCTAssertEqual(missing, ["jm_kumo", "bf_emma"])
+    }
+
+    /// 空のキー集合なら全 12 ボイスが欠損として返る
+    func test_missingVoices_emptyKeys_reportsAll12() {
+        let missing = KokoroAudioUtil.missingVoices(loadedKeys: [])
+        XCTAssertEqual(missing.count, 12)
+    }
+
+    /// enum の raw value が Issue #88 記載の 12 キーと一致する（enum ドリフト検出）
+    func test_kokoroVoice_allCases_matchExpected12Keys() {
+        let expected: Set<String> = [
+            "af_heart", "af_bella", "af_nicole", "af_sarah",
+            "am_adam", "am_michael", "bf_emma", "bf_isabella",
+            "bm_george", "bm_lewis", "jf_alpha", "jm_kumo",
+        ]
+        XCTAssertEqual(Set(KokoroVoice.allCases.map(\.rawValue)), expected)
+        XCTAssertEqual(KokoroVoice.allCases.count, 12)
+    }
+
     // MARK: - Helpers
 
     private func readUInt32LE(_ data: Data, at offset: Int) -> UInt32 {
