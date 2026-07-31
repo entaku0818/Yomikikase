@@ -118,6 +118,13 @@ exports.submitFeedback = onRequest(
 
 function postToSlack(body) {
   return new Promise((resolve, reject) => {
+    // SLACK_WEBHOOK_URL未設定時のガード。呼び出し側でもガードしているが、
+    // new URL(undefined)によるTypeErrorで関数全体が失敗するのを防ぐため二重に防御する。
+    if (!SLACK_WEBHOOK_URL) {
+      console.warn("SLACK_WEBHOOK_URL is not set, skipping Slack notification");
+      resolve();
+      return;
+    }
     const payload = JSON.stringify(body);
     const url = new URL(SLACK_WEBHOOK_URL);
     const options = {
