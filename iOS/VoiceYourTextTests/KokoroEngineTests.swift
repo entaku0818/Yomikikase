@@ -387,6 +387,87 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertThrowsError(try KokoroConfig.decodeConfig(from: "{}"))
     }
 
+    // MARK: - KokoroLinkageGuard (Issue #86: iOS 27 Beta dyld クラッシュ再発ガード)
+    //
+    // KokoroSwift/MisakiSwift のインライン化(commit 2bc7e5d)を維持するための回帰検証。
+    // `import KokoroSwift` / `import MisakiSwift`（削除済み dynamic framework 参照）や
+    // `Bundle.module`（インライン化コードには非合成）が再混入するとクラッシュが再発するため、
+    // 純粋関数 forbiddenLinkage(in:) がそれらを検出できることを固定する。
+
+    /// 実際の本番 import（Foundation/AVFoundation 等）だけのソースは禁止パターンなし
+    func test_linkageGuard_cleanSource_reportsNothing() {
+        let source = """
+        import Foundation
+        import AVFoundation
+        let bundle = Bundle.main
+        """
+        XCTAssertEqual(KokoroLinkageGuard.forbiddenLinkage(in: source), [])
+    }
+
+    /// `import KokoroSwift` を検出（削除済み framework の再要求 → dyld クラッシュ）
+    func test_linkageGuard_importKokoroSwift_isDetected() {
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: "import KokoroSwift"),
+            ["import KokoroSwift"]
+        )
+    }
+
+    /// `import MisakiSwift` を検出（`Library not loaded: @rpath/MisakiSwift.framework` の原因）
+    func test_linkageGuard_importMisakiSwift_isDetected() {
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: "@_implementationOnly import MisakiSwift"),
+            ["import MisakiSwift"]
+        )
+    }
+
+    /// サブモジュール import（`import KokoroSwift.Foo`）も framework を要求するので検出
+    func test_linkageGuard_submoduleImport_isDetected() {
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: "import KokoroSwift.TTSEngine"),
+            ["import KokoroSwift"]
+        )
+    }
+
+    /// `Bundle.module` を検出（インライン化コードでは合成されずクラッシュ, Issue #87）
+    func test_linkageGuard_bundleModule_isDetected() {
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: "let url = Bundle.module.url(forResource: \"config\")"),
+            ["Bundle.module"]
+        )
+    }
+
+    /// 行コメント内で禁止パターンに言及していても誤検出しない
+    func test_linkageGuard_commentedOutPattern_isIgnored() {
+        let source = """
+        // かつては import KokoroSwift していた（Issue #86 でインライン化）
+        // Bundle.module から Bundle.main へ移行済み（Issue #87）
+        import Foundation
+        """
+        XCTAssertEqual(KokoroLinkageGuard.forbiddenLinkage(in: source), [])
+    }
+
+    /// `import` を含む識別子（`importKokoroSwiftHelper`）は誤検出しない
+    func test_linkageGuard_identifierContainingImport_isNotDetected() {
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: "let importKokoroSwiftFlag = true"),
+            []
+        )
+    }
+
+    /// 複数行にまたがる複数の禁止パターンを出現順にすべて報告
+    func test_linkageGuard_multiplePatterns_reportsAllInOrder() {
+        let source = """
+        import KokoroSwift
+        import Foundation
+        import MisakiSwift
+        let url = Bundle.module.url(forResource: "us_gold")
+        """
+        XCTAssertEqual(
+            KokoroLinkageGuard.forbiddenLinkage(in: source),
+            ["import KokoroSwift", "import MisakiSwift", "Bundle.module"]
+        )
+    }
+
     // MARK: - Helpers
 
     /// バンドルされる config.json（KokoroSwiftSources/config.json）と同じキー構造。

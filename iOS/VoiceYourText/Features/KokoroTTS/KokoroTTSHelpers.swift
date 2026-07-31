@@ -145,3 +145,53 @@ enum KokoroPlaybackParams {
         max(0.5, min(2.0, speechRate * 2.0))
     }
 }
+
+// MARK: - Linkage regression guard (Issue #86: iOS 27 Beta dyld クラッシュ修正の維持)
+//
+// KokoroSwift / MisakiSwift は commit 2bc7e5d でメインターゲットにインライン化され、
+// dynamic framework の埋め込みは完全に除去された（iOS 27 Beta で dyld の
+// `xpc_create_from_plist_with_string_cache` を通じてクラッシュしていたため）。
+//
+// 以下のパターンがソースに再混入するとクラッシュが再発する:
+//   - `import KokoroSwift` / `import MisakiSwift`
+//       → 削除済みの dynamic framework を dyld がロードしようとして
+//         `Library not loaded: @rpath/MisakiSwift.framework/MisakiSwift` で起動時クラッシュ
+//   - `Bundle.module`
+//       → インライン化コードには SPM の `Bundle.module` が合成されないため参照するとクラッシュ
+//         （Bundle.main への移行は Issue #87）
+//
+// 実機（iOS 27 Beta）でしか観測できないクラッシュそのものは自動化できないが、
+// 「再発を招くソースパターンが混入していないか」は純粋関数として回帰検証できる。
+enum KokoroLinkageGuard {
+
+    /// import すると削除済み dynamic framework を要求してしまうモジュール名。
+    static let forbiddenImportedModules = ["KokoroSwift", "MisakiSwift"]
+
+    /// インライン化コードでは合成されず、参照するとクラッシュするバンドルアクセサ。
+    static let forbiddenBundleAccessor = "Bundle.module"
+
+    /// Swift ソース文字列を走査し、Issue #86 のクラッシュを再発させる禁止パターンを
+    /// 出現順（重複あり）で返す。行コメント（`//` 以降）は無視するので、ドキュメント中で
+    /// パターンに言及していても誤検出しない。空配列なら禁止パターンなし。
+    static func forbiddenLinkage(in source: String) -> [String] {
+        var found: [String] = []
+        for rawLine in source.split(separator: "\n", omittingEmptySubsequences: false) {
+            // 行コメントを取り除いてコード部分だけを対象にする。
+            let code = String(rawLine.split(separator: "//", maxSplits: 1, omittingEmptySubsequences: false).first ?? "")
+
+            for module in forbiddenImportedModules {
+                // `import KokoroSwift` / `@_implementationOnly import KokoroSwift` /
+                // `import KokoroSwift.SubModule` は検出するが、`importKokoroSwift`（空白なし）は対象外。
+                let pattern = #"(?:^|\W)import\s+"# + NSRegularExpression.escapedPattern(for: module) + #"(?:\b|$)"#
+                if code.range(of: pattern, options: .regularExpression) != nil {
+                    found.append("import \(module)")
+                }
+            }
+
+            if code.contains(forbiddenBundleAccessor) {
+                found.append(forbiddenBundleAccessor)
+            }
+        }
+        return found
+    }
+}
