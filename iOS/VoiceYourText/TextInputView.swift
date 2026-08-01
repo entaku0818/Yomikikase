@@ -883,73 +883,13 @@ struct TextInputView: View {
 
 
     private func mapLanguageToVoiceId(_ languageCode: String) -> String {
-        // Map language code to Cloud Run TTS voice ID
-        switch languageCode.lowercased() {
-        case "ja", "ja-jp":
-            return "ja-jp-female-a"
-        case "en", "en-us", "en-gb":
-            return "en-us-female-a"
-        case "de", "de-de":
-            return "de-de-female-a"
-        case "es", "es-es":
-            return "es-es-female-a"
-        case "fr", "fr-fr":
-            return "fr-fr-female-a"
-        case "it", "it-it":
-            return "it-it-female-a"
-        case "ko", "ko-kr":
-            return "ko-kr-female-a"
-        case "tr", "tr-tr":
-            return "tr-tr-female-a"
-        case "vi", "vi-vn":
-            return "vi-vn-female-a"
-        case "th", "th-th":
-            return "th-th-female-a"
-        case "zh", "zh-cn", "zh-hans":
-            return "zh-cn-female-a"
-        case "pt", "pt-br", "pt-pt":
-            return "pt-br-female-a"
-        case "ru", "ru-ru":
-            return "ru-ru-female-a"
-        default:
-            return "ja-jp-female-a"
-        }
+        // Map language code to Cloud Run TTS voice ID（純粋ロジックは LanguageVoiceMapper に集約）
+        LanguageVoiceMapper.voiceId(for: languageCode)
     }
 
     private func mapLanguageToLocale(_ languageCode: String) -> String {
-        // Map short language code to full locale for Cloud TTS API
-        switch languageCode.lowercased() {
-        case "ja", "ja-jp":
-            return "ja-JP"
-        case "en", "en-us":
-            return "en-US"
-        case "en-gb":
-            return "en-GB"
-        case "de", "de-de":
-            return "de-DE"
-        case "es", "es-es":
-            return "es-ES"
-        case "fr", "fr-fr":
-            return "fr-FR"
-        case "it", "it-it":
-            return "it-IT"
-        case "ko", "ko-kr":
-            return "ko-KR"
-        case "tr", "tr-tr":
-            return "tr-TR"
-        case "vi", "vi-vn":
-            return "vi-VN"
-        case "th", "th-th":
-            return "th-TH"
-        case "zh", "zh-cn", "zh-hans":
-            return "cmn-CN"
-        case "pt", "pt-br", "pt-pt":
-            return "pt-BR"
-        case "ru", "ru-ru":
-            return "ru-RU"
-        default:
-            return "ja-JP"
-        }
+        // Map short language code to full locale for Cloud TTS API（純粋ロジックは LanguageVoiceMapper に集約）
+        LanguageVoiceMapper.locale(for: languageCode)
     }
 
     private func loadAvailableVoices() {

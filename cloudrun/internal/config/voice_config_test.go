@@ -24,6 +24,42 @@ func TestGetVoiceByID(t *testing.T) {
 			wantName: "あかり",
 		},
 		{
+			name:     "existing Chinese female voice",
+			voiceID:  "zh-cn-female-a",
+			wantNil:  false,
+			wantName: "晓雨",
+		},
+		{
+			name:     "existing Chinese male voice",
+			voiceID:  "zh-cn-male-b",
+			wantNil:  false,
+			wantName: "云扬",
+		},
+		{
+			name:     "existing Portuguese female voice",
+			voiceID:  "pt-br-female-a",
+			wantNil:  false,
+			wantName: "Ana",
+		},
+		{
+			name:     "existing Portuguese male voice",
+			voiceID:  "pt-br-male-b",
+			wantNil:  false,
+			wantName: "Lucas",
+		},
+		{
+			name:     "existing Russian female voice",
+			voiceID:  "ru-ru-female-a",
+			wantNil:  false,
+			wantName: "Анна",
+		},
+		{
+			name:     "existing Russian male voice",
+			voiceID:  "ru-ru-male-b",
+			wantNil:  false,
+			wantName: "Дмитрий",
+		},
+		{
 			name:    "non-existing voice",
 			voiceID: "non-existing-voice",
 			wantNil: true,
@@ -70,6 +106,28 @@ func TestGetVoicesByLanguage(t *testing.T) {
 			wantMinCount: 1,
 		},
 		{
+			// 中国語のGoogle Cloud TTS言語コードは cmn-CN（zh-CN ではない）
+			name:         "Chinese voices use cmn-CN language code",
+			language:     "cmn-CN",
+			wantMinCount: 2,
+		},
+		{
+			name:         "Portuguese (Brazil) voices",
+			language:     "pt-BR",
+			wantMinCount: 2,
+		},
+		{
+			name:         "Russian voices",
+			language:     "ru-RU",
+			wantMinCount: 2,
+		},
+		{
+			// zh-CN は誤った言語コード（正しくは cmn-CN）なので該当0件であるべき
+			name:         "zh-CN is not a valid language code (must be cmn-CN)",
+			language:     "zh-CN",
+			wantMinCount: 0,
+		},
+		{
 			name:         "non-existing language",
 			language:     "xx-XX",
 			wantMinCount: 0,
@@ -88,6 +146,49 @@ func TestGetVoicesByLanguage(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// TestNewLanguageVoicesConfig は追加言語(zh/pt/ru)の音声IDと言語コードの整合性を厳密に検証する。
+// IDのtypoや、zh→cmn-CN(zh-CNではない)のようなGoogle Cloud TTS言語コードの取り違えを検知する。
+func TestNewLanguageVoicesConfig(t *testing.T) {
+	tests := []struct {
+		voiceID      string
+		wantLanguage string
+	}{
+		// 中国語(簡体字): Google Cloud TTS の言語コードは cmn-CN（zh-CN ではない）
+		{voiceID: "zh-cn-female-a", wantLanguage: "cmn-CN"},
+		{voiceID: "zh-cn-male-b", wantLanguage: "cmn-CN"},
+		// ポルトガル語(ブラジル)
+		{voiceID: "pt-br-female-a", wantLanguage: "pt-BR"},
+		{voiceID: "pt-br-male-b", wantLanguage: "pt-BR"},
+		// ロシア語
+		{voiceID: "ru-ru-female-a", wantLanguage: "ru-RU"},
+		{voiceID: "ru-ru-male-b", wantLanguage: "ru-RU"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.voiceID, func(t *testing.T) {
+			v := GetVoiceByID(tt.voiceID)
+			if v == nil {
+				t.Fatalf("GetVoiceByID(%q) = nil, want voice (ID typo?)", tt.voiceID)
+			}
+			if v.Language != tt.wantLanguage {
+				t.Errorf("voice %q Language = %q, want %q", tt.voiceID, v.Language, tt.wantLanguage)
+			}
+		})
+	}
+
+	// zh-CN は誤った言語コード。該当音声が存在しないこと（正しくは cmn-CN）。
+	if got := GetVoicesByLanguage("zh-CN"); len(got) != 0 {
+		t.Errorf("GetVoicesByLanguage(\"zh-CN\") = %d voices, want 0 (Chinese must use cmn-CN)", len(got))
+	}
+
+	// cmn-CN / pt-BR / ru-RU はそれぞれ2音声(female/male)登録されていること。
+	for _, lang := range []string{"cmn-CN", "pt-BR", "ru-RU"} {
+		if got := GetVoicesByLanguage(lang); len(got) != 2 {
+			t.Errorf("GetVoicesByLanguage(%q) = %d voices, want 2", lang, len(got))
+		}
 	}
 }
 
