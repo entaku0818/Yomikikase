@@ -12,6 +12,9 @@ import Foundation
 struct MyFilesView: View {
     @State private var textFiles: [SavedTextFile] = []
     @State private var pdfFiles: [SavedPDFFile] = []
+    /// テキスト/PDFをマージ・ソート済みの一覧。searchText/selectedFilterに依存しないため
+    /// loadFiles()時に1度だけ構築し、描画やキーストロークごとの再map/sort/UserDefaults走査を避ける。
+    @State private var combinedFiles: [FileItem] = []
     @State private var searchText = ""
     @State private var selectedFilter: FileFilter = .all
     @State private var showingDeleteAlert = false
@@ -25,7 +28,9 @@ struct MyFilesView: View {
     @Dependency(\.audioFileManager) var audioFileManager
     
     var body: some View {
-        NavigationStack {
+        // 検索・フィルタ適用後の一覧は1度だけ計算し、isEmpty判定とForEachで使い回す（二重計算を排除）。
+        let files = filteredFiles
+        return NavigationStack {
             VStack(spacing: 0) {
 
                 // 検索フィールド
@@ -61,60 +66,10 @@ struct MyFilesView: View {
                 .padding(.vertical, 10)
 
                 // ファイルリスト / 空状態
-                if filteredFiles.isEmpty {
+                if files.isEmpty {
                     emptyState
                 } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(filteredFiles) { file in
-                            if file.type == .text {
-                                Button {
-                                    if let textFile = textFiles.first(where: { $0.id == file.id }) {
-                                        selectedTextFile = textFile
-                                    }
-                                } label: {
-                                    FileItemView(file: file, onDelete: {
-                                        fileToDelete = file
-                                        showingDeleteAlert = true
-                                    })
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            } else if file.type == .epub {
-                                Button {
-                                    if let textFile = textFiles.first(where: { $0.id == file.id }) {
-                                        selectedTextFile = textFile
-                                    }
-                                } label: {
-                                    FileItemView(file: file, onDelete: {
-                                        fileToDelete = file
-                                        showingDeleteAlert = true
-                                    })
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            } else if file.type == .pdf {
-                                Button {
-                                    if let pdfFile = pdfFiles.first(where: { $0.id == file.id }) {
-                                        selectedPDFFile = pdfFile
-                                    }
-                                } label: {
-                                    FileItemView(file: file, onDelete: {
-                                        fileToDelete = file
-                                        showingDeleteAlert = true
-                                    })
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            } else {
-                                FileItemView(file: file, onDelete: nil)
-                            }
-                        }
-                    }
-                    .padding(.horizontal)
-
-                    Spacer(minLength: 100)
-                }
-                .refreshable {
-                    loadFiles()
-                }
+                    fileList(files)
                 }
 
                 // 広告バナー（最下部）
@@ -187,9 +142,67 @@ struct MyFilesView: View {
         }
     }
 
-    private var combinedFiles: [FileItem] {
+    /// ファイル一覧（検索・フィルタ適用後）を表示するスクロールリスト。
+    private func fileList(_ files: [FileItem]) -> some View {
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(files) { file in
+                    if file.type == .text {
+                        Button {
+                            if let textFile = textFiles.first(where: { $0.id == file.id }) {
+                                selectedTextFile = textFile
+                            }
+                        } label: {
+                            FileItemView(file: file, onDelete: {
+                                fileToDelete = file
+                                showingDeleteAlert = true
+                            })
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else if file.type == .epub {
+                        Button {
+                            if let textFile = textFiles.first(where: { $0.id == file.id }) {
+                                selectedTextFile = textFile
+                            }
+                        } label: {
+                            FileItemView(file: file, onDelete: {
+                                fileToDelete = file
+                                showingDeleteAlert = true
+                            })
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else if file.type == .pdf {
+                        Button {
+                            if let pdfFile = pdfFiles.first(where: { $0.id == file.id }) {
+                                selectedPDFFile = pdfFile
+                            }
+                        } label: {
+                            FileItemView(file: file, onDelete: {
+                                fileToDelete = file
+                                showingDeleteAlert = true
+                            })
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    } else {
+                        FileItemView(file: file, onDelete: nil)
+                    }
+                }
+            }
+            .padding(.horizontal)
+
+            Spacer(minLength: 100)
+        }
+        .refreshable {
+            loadFiles()
+        }
+    }
+
+    /// テキスト/PDFファイルをFileItemへ変換し、日付降順でマージした一覧を構築する。
+    /// `UserDefaultsManager.pendingJobId(for:)` をファイル件数分呼ぶため、描画ごとではなく
+    /// loadFiles()時に1度だけ呼び出して結果を`combinedFiles`へ保持する。
+    private func buildCombinedFiles() -> [FileItem] {
         var files: [FileItem] = []
-        
+
         // テキストファイルを追加
         files.append(contentsOf: textFiles.map { textFile in
             let fileType: FileItem.FileType = textFile.fileType == "epub" ? .epub : .text
@@ -202,7 +215,7 @@ struct MyFilesView: View {
                 isProcessing: UserDefaultsManager.shared.pendingJobId(for: textFile.id) != nil
             )
         })
-        
+
         // PDFファイルを追加
         files.append(contentsOf: pdfFiles.map { pdfFile in
             FileItem(
@@ -213,11 +226,11 @@ struct MyFilesView: View {
                 type: .pdf
             )
         })
-        
+
         return files.sorted { $0.date > $1.date }
     }
 
-    /// 検索テキストとセグメントフィルタを適用したファイル一覧。
+    /// 検索テキストとセグメントフィルタを、保持済みの`combinedFiles`へ適用したファイル一覧。
     private var filteredFiles: [FileItem] {
         MyFilesView.filteredFiles(from: combinedFiles, filter: selectedFilter, searchText: searchText)
     }
@@ -273,6 +286,9 @@ struct MyFilesView: View {
 
         // PDFファイルの読み込み
         loadPDFFiles()
+
+        // マージ・ソート済み一覧を1度だけ構築して保持する
+        combinedFiles = buildCombinedFiles()
 
         // pending ジョブがあればサーバーの状態を確認して自動解除
         checkPendingJobs()
@@ -356,6 +372,7 @@ struct MyFilesView: View {
         SpeechTextRepository.shared.delete(id: fileId)
         // ローカルリストから削除
         textFiles.removeAll { $0.id == fileId }
+        combinedFiles.removeAll { $0.id == fileId }
     }
     
     private func deletePDFFile(_ fileId: UUID) {
@@ -366,6 +383,7 @@ struct MyFilesView: View {
             try FileManager.default.removeItem(at: pdfFile.url)
             // ローカルリストから削除
             pdfFiles.removeAll { $0.id == fileId }
+            combinedFiles.removeAll { $0.id == fileId }
         } catch {
             errorLog("Error deleting PDF file: \(error.localizedDescription)")
         }
