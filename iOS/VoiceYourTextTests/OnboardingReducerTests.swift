@@ -6,6 +6,27 @@ import PDFKit
 @MainActor
 final class OnboardingReducerTests: XCTestCase {
 
+    // MARK: - Step view analytics
+
+    func test_stepViewAppeared_logsEventWithStep() async {
+        var loggedEvent: String?
+        var loggedParams: [String: Any]?
+        let store = TestStore(initialState: OnboardingReducer.State()) {
+            OnboardingReducer()
+        } withDependencies: {
+            $0.analytics.logEvent = { name, params in
+                loggedEvent = name
+                loggedParams = params
+            }
+            $0.analytics.setUserProperty = { _, _ in }
+        }
+
+        await store.send(.view(.stepViewAppeared(1)))
+
+        XCTAssertEqual(loggedEvent, "onboarding_step_view")
+        XCTAssertEqual(loggedParams?["step"] as? Int, 1)
+    }
+
     // MARK: - Step progression
 
     func test_nextTapped_incrementsStep() async {
