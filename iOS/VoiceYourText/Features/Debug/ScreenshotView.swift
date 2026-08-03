@@ -443,6 +443,37 @@ struct MyFilesContent: View {
     }
 }
 
+// MARK: - スライダーの見た目だけを描画するモック
+/// SwiftUI の `Slider` は UIKit の `UISlider` をラップしているため、ImageRenderer では
+/// 「Unable to render flattened version of PlatformViewRepresentableAdaptor<SystemSlider>」
+/// となり黄色のプレースホルダで出力される。App Store スクショ用に純SwiftUIで描き直す。
+struct MockSlider: View {
+    let value: Double   // 0.0...1.0
+
+    var body: some View {
+        GeometryReader { geo in
+            let knob: CGFloat = 20
+            let travel = max(geo.size.width - knob, 0)
+            ZStack(alignment: .leading) {
+                Capsule()
+                    .fill(Color.secondary.opacity(0.25))
+                    .frame(height: 4)
+                Capsule()
+                    .fill(ShotTheme.accent)
+                    .frame(width: knob / 2 + travel * value, height: 4)
+                Circle()
+                    .fill(.white)
+                    .frame(width: knob, height: knob)
+                    .shadow(color: .black.opacity(0.2), radius: 2, y: 1)
+                    .offset(x: travel * value)
+            }
+            .frame(height: knob)
+            .frame(maxHeight: .infinity)
+        }
+        .frame(height: 20)
+    }
+}
+
 // MARK: - 設定画面コンテンツ
 struct SettingsContent: View {
     var body: some View {
@@ -480,8 +511,7 @@ struct SettingsContent: View {
                             HStack {
                                 Image(systemName: "tortoise.fill")
                                     .foregroundColor(.secondary)
-                                Slider(value: .constant(0.5))
-                                    .tint(ShotTheme.accent)
+                                MockSlider(value: 0.5)
                                 Image(systemName: "hare.fill")
                                     .foregroundColor(.secondary)
                             }
@@ -509,8 +539,7 @@ struct SettingsContent: View {
                             HStack {
                                 Image(systemName: "speaker.wave.1.fill")
                                     .foregroundColor(.secondary)
-                                Slider(value: .constant(0.33))
-                                    .tint(ShotTheme.accent)
+                                MockSlider(value: 0.33)
                                 Image(systemName: "speaker.wave.3.fill")
                                     .foregroundColor(.secondary)
                             }
@@ -874,42 +903,55 @@ struct AppStoreScreenshotWithFrame<Content: View>: View {
     var subtitle: String? = nil
     @ViewBuilder let content: () -> Content
 
+    // ヘッダーと端末モックアップの高さを暗黙レイアウトに任せると、
+    // (a) キャプションが3行に折返して端末画像に重なる
+    // (b) 高さが足りず subtitle が黙って消える
+    // が locale ごとに起きて気づかないまま出荷される。高さを明示計算して固定する（#125）
+    private let headerHeight: CGFloat = 210
+    private let bottomPadding: CGFloat = 24
+    private let sidePadding: CGFloat = 28
+
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 8) {
-                Text(caption)
-                    .font(.system(size: 44, weight: .bold, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.black)
-                    .lineSpacing(4)
-                    .minimumScaleFactor(0.7)
-                    .frame(maxWidth: .infinity)
+        GeometryReader { geo in
+            let phoneH = max(geo.size.height - headerHeight - bottomPadding, 0)
+            let phoneW = min(geo.size.width - sidePadding * 2, phoneH * 9.0 / 19.5)
 
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.system(size: 16, weight: .regular, design: .rounded))
+            VStack(spacing: 0) {
+                VStack(spacing: 8) {
+                    Text(caption)
+                        .font(.system(size: 44, weight: .bold, design: .rounded))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.secondary)
-                        .lineSpacing(3)
-                        .minimumScaleFactor(0.85)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.6)
                         .frame(maxWidth: .infinity)
+
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(.system(size: 16, weight: .regular, design: .rounded))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.secondary)
+                            .lineSpacing(3)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
+                .padding(.horizontal, 36)
+                .frame(width: geo.size.width, height: headerHeight)
+
+                PhoneMockupView {
+                    content()
+                }
+                .frame(width: phoneW, height: phoneH)
+                // MockScreenWithTopTab の .ignoresSafeArea(edges: .top) が枠外に
+                // はみ出してヘッダーの subtitle を塗り潰すため必ずクリップする（#125）
+                .clipped()
+                .frame(width: geo.size.width, alignment: .center)
             }
-            .padding(.horizontal, 36)
-            .padding(.top, 36)
-            .padding(.bottom, 20)
-
-            Spacer(minLength: 0)
-
-            PhoneMockupView {
-                content()
-            }
-            .aspectRatio(9.0 / 19.5, contentMode: .fit)
-            .padding(.horizontal, 28)
-
-            Spacer(minLength: 24)
+            .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(ShotTheme.canvas)
     }
 }
@@ -961,42 +1003,50 @@ struct iPadScreenshotWithFrame<Content: View>: View {
     var subtitle: String? = nil
     @ViewBuilder let content: () -> Content
 
+    // 高さを明示計算して固定する理由は AppStoreScreenshotWithFrame と同じ（#125）
+    private let headerHeight: CGFloat = 170
+    private let bottomPadding: CGFloat = 32
+    private let sidePadding: CGFloat = 44
+
     var body: some View {
-        VStack(spacing: 0) {
-            VStack(spacing: 10) {
-                Text(caption)
-                    .font(.system(size: 46, weight: .bold, design: .rounded))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.black)
-                    .lineSpacing(4)
-                    .minimumScaleFactor(0.7)
-                    .frame(maxWidth: .infinity)
+        GeometryReader { geo in
+            let tabletH = max(geo.size.height - headerHeight - bottomPadding, 0)
+            let tabletW = min(geo.size.width - sidePadding * 2, tabletH * 2048.0 / 2732.0)
 
-                if let subtitle {
-                    Text(subtitle)
-                        .font(.system(size: 18, weight: .regular, design: .rounded))
+            VStack(spacing: 0) {
+                VStack(spacing: 10) {
+                    Text(caption)
+                        .font(.system(size: 46, weight: .bold, design: .rounded))
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.secondary)
-                        .lineSpacing(3)
-                        .minimumScaleFactor(0.85)
+                        .foregroundColor(.black)
+                        .lineSpacing(4)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.6)
                         .frame(maxWidth: .infinity)
+
+                    if let subtitle {
+                        Text(subtitle)
+                            .font(.system(size: 18, weight: .regular, design: .rounded))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.secondary)
+                            .lineSpacing(3)
+                            .lineLimit(2)
+                            .minimumScaleFactor(0.8)
+                            .frame(maxWidth: .infinity)
+                    }
                 }
+                .padding(.horizontal, 48)
+                .frame(width: geo.size.width, height: headerHeight)
+
+                TabletMockupView {
+                    content()
+                }
+                .frame(width: tabletW, height: tabletH)
+                .clipped()   // 同上（#125）
+                .frame(width: geo.size.width, alignment: .center)
             }
-            .padding(.horizontal, 48)
-            .padding(.top, 48)
-            .padding(.bottom, 24)
-
-            Spacer(minLength: 0)
-
-            TabletMockupView {
-                content()
-            }
-            .aspectRatio(2048.0 / 2732.0, contentMode: .fit)
-            .padding(.horizontal, 44)
-
-            Spacer(minLength: 32)
+            .frame(width: geo.size.width, height: geo.size.height, alignment: .top)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(ShotTheme.canvas)
     }
 }

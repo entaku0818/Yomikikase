@@ -7,10 +7,19 @@ import SwiftUI
 //   - iPhone 6.7": {lang}_NN_*.png      (692×1500)
 //   - iPad 12.9" : {lang}_NN_*_ipad.png (2048×2732)
 // 刷新案デザイン（インディゴ統一）の4画面構成・全枚共通:
-//   01 = ホーム（インポート元グリッド + 最近のファイル）
-//   02 = マルチ対応（PDF読み上げ）
-//   03 = ハイライト（読み上げ中の文を追従表示）
-//   04 = 続きから（マイファイル: 検索・フィルタ・進捗）
+//   01 = ホーム（インポート元グリッド + 最近のファイル）／訴求: 「読み上げアプリ」であることを検索結果で即判別させる
+//   02 = マルチ対応（PDF読み上げ）／訴求: 入れるだけ・変換不要
+//   03 = ハイライト（読み上げ中の文を追従表示）／訴求: 読んでいる場所が分かる
+//   04 = 音声設定（速度・高さ・声）／訴求: アカウント登録不要・オフライン動作・端末内生成
+//        ※ 04 は 2026-08-03 の競合調査（#125）でマイファイル「続きから」から差し替え。
+//           競合(Speechify ¥22,000/年・Voicepaper AI)は全てクラウド前提のため、
+//           端末内生成が最も言うべき差分と判断。
+//        ※ コピーで書かないこと（実装と乖離するため）:
+//           - 「AI音声」: kokoroEnabled のデフォルトは false なので、既定の音声は
+//             AVSpeechSynthesizer。Kokoro は設定でONにしてモデルDLした人のみ
+//           - 「端末内だけ」: クラウドTTS（Cloud Run）へ切り替えるオプションがある
+//           - 「広告なし」: AdMob を表示しており、広告非表示はプレミアム限定
+//           - 価格の数字: 国別に異なるため画像には入れない
 
 @available(iOS 16.0, *)
 final class ScreenshotGeneratorTests: XCTestCase {
@@ -89,61 +98,61 @@ final class ScreenshotGeneratorTests: XCTestCase {
     @MainActor
     private func specs() -> [Spec] {
         func home(_ title: String) -> AnyView { AnyView(MockScreenWithTopTab(title: title) { HomeContent() }) }
-        func myfiles(_ title: String) -> AnyView { AnyView(MockScreenWithTopTab(title: title) { MyFilesContent() }) }
         let multi = { AnyView(PDFReadingContent()) }
         let highlight = { AnyView(HighlightReadingContent()) }
+        let voice = { AnyView(SettingsContent()) }
 
         return [
             // JA
-            Spec(name: "ja_01_home",      locale: "ja", caption: "読む手間を、\n声に。",        subtitle: "テキスト・PDF・本・Web・スキャン",      content: home("ナレーター")),
-            Spec(name: "ja_02_multi",     locale: "ja", caption: "PDFも、本も、\nWebも。",      subtitle: "どんな文章も、そのまま読み上げ",        content: multi()),
-            Spec(name: "ja_03_highlight", locale: "ja", caption: "今読んでいる文を、\nハイライト", subtitle: "目と耳で、もっと聴きやすい",            content: highlight()),
-            Spec(name: "ja_04_myfiles",   locale: "ja", caption: "保存して、\nいつでも続きから",   subtitle: "進捗も、声の設定も記憶",              content: myfiles("マイファイル")),
+            Spec(name: "ja_01_home",      locale: "ja", caption: "PDFも本も、\nぜんぶ読み上げ",   subtitle: "7つのソースに対応した読み上げアプリ",       content: home("ナレーター")),
+            Spec(name: "ja_02_multi",     locale: "ja", caption: "入れるだけで、\nそのまま朗読",   subtitle: "PDF・EPUB・Web。変換もコピペも不要",      content: multi()),
+            Spec(name: "ja_03_highlight", locale: "ja", caption: "読んでいる場所が\nひと目でわかる", subtitle: "ハイライト＋自動スクロールで目と耳を同時に",   content: highlight()),
+            Spec(name: "ja_04_voice",     locale: "ja", caption: "登録なし、\nオフラインでもOK", subtitle: "音声は端末の中で生成。速度も声も自由に調整",   content: voice()),
             // EN
-            Spec(name: "en_01_home",      locale: "en", caption: "Let your voice\ndo the reading",    subtitle: "Text, PDF, books, web & scans",       content: home("Narrator")),
-            Spec(name: "en_02_multi",     locale: "en", caption: "PDF, books &\nthe web — all read",  subtitle: "Any text, read aloud as is",          content: multi()),
-            Spec(name: "en_03_highlight", locale: "en", caption: "Highlights the\nline being read",   subtitle: "Easier to follow by eye and ear",     content: highlight()),
-            Spec(name: "en_04_myfiles",   locale: "en", caption: "Save & pick up\nwhere you left off", subtitle: "Remembers progress & voice settings", content: myfiles("My Files")),
+            Spec(name: "en_01_home",      locale: "en", caption: "Read PDFs, books\n& the web aloud", subtitle: "A text-to-speech app with 7 sources",       content: home("Narrator")),
+            Spec(name: "en_02_multi",     locale: "en", caption: "Just drop it in —\nit reads aloud", subtitle: "PDF, EPUB, web. No converting or copy-paste", content: multi()),
+            Spec(name: "en_03_highlight", locale: "en", caption: "See exactly where\nit's reading",   subtitle: "Highlight + auto-scroll: follow by eye and ear", content: highlight()),
+            Spec(name: "en_04_voice",     locale: "en", caption: "No account,\nworks offline",         subtitle: "Voices made on your device. Tune speed & pitch", content: voice()),
             // DE
-            Spec(name: "de_01_home",      locale: "de", caption: "Lesen leicht\ngemacht",               subtitle: nil, content: home("Narrator")),
-            Spec(name: "de_02_multi",     locale: "de", caption: "PDF, Web und\neBooks unterstützt",    subtitle: nil, content: multi()),
-            Spec(name: "de_03_highlight", locale: "de", caption: "Echtzeit-\nHervorhebung",             subtitle: nil, content: highlight()),
-            Spec(name: "de_04_myfiles",   locale: "de", caption: "Speichern &\nJederzeit weiterlesen",  subtitle: nil, content: myfiles("Meine Dateien")),
+            Spec(name: "de_01_home",      locale: "de", caption: "PDFs, Bücher\n& Web vorlesen",     subtitle: nil, content: home("Narrator")),
+            Spec(name: "de_02_multi",     locale: "de", caption: "Einfach einfügen —\nes liest vor", subtitle: nil, content: multi()),
+            Spec(name: "de_03_highlight", locale: "de", caption: "Immer sehen,\nwo gelesen wird",    subtitle: nil, content: highlight()),
+            Spec(name: "de_04_voice",     locale: "de", caption: "Kein Konto,\noffline nutzbar",      subtitle: nil, content: voice()),
             // ES
-            Spec(name: "es_01_home",      locale: "es", caption: "Deja que la voz\nlea por ti",  subtitle: nil, content: home("Narrator")),
-            Spec(name: "es_02_multi",     locale: "es", caption: "PDF, web\ny eBooks",           subtitle: nil, content: multi()),
-            Spec(name: "es_03_highlight", locale: "es", caption: "Subrayado\nen tiempo real",    subtitle: nil, content: highlight()),
-            Spec(name: "es_04_myfiles",   locale: "es", caption: "Guarda y\ncontinúa siempre",   subtitle: nil, content: myfiles("Mis archivos")),
+            Spec(name: "es_01_home",      locale: "es", caption: "Lee en voz alta\nPDF, libros y web", subtitle: nil, content: home("Narrator")),
+            Spec(name: "es_02_multi",     locale: "es", caption: "Solo añádelo\ny lo lee",             subtitle: nil, content: multi()),
+            Spec(name: "es_03_highlight", locale: "es", caption: "Ve siempre por\ndónde va leyendo",   subtitle: nil, content: highlight()),
+            Spec(name: "es_04_voice",     locale: "es", caption: "Sin cuenta,\nfunciona sin conexión", subtitle: nil, content: voice()),
             // FR
-            Spec(name: "fr_01_home",      locale: "fr", caption: "Laissez la voix\nfaire la lecture",   subtitle: nil, content: home("Narrator")),
-            Spec(name: "fr_02_multi",     locale: "fr", caption: "PDF, Web et\ne-books pris en charge", subtitle: nil, content: multi()),
-            Spec(name: "fr_03_highlight", locale: "fr", caption: "Surlignage\nen temps réel",           subtitle: nil, content: highlight()),
-            Spec(name: "fr_04_myfiles",   locale: "fr", caption: "Enregistrez &\nreprenez à tout moment", subtitle: nil, content: myfiles("Mes fichiers")),
+            Spec(name: "fr_01_home",      locale: "fr", caption: "Lit à voix haute\nPDF, livres, web", subtitle: nil, content: home("Narrator")),
+            Spec(name: "fr_02_multi",     locale: "fr", caption: "Ajoutez-le,\nil le lit",             subtitle: nil, content: multi()),
+            Spec(name: "fr_03_highlight", locale: "fr", caption: "Voyez toujours\noù il en est",       subtitle: nil, content: highlight()),
+            Spec(name: "fr_04_voice",     locale: "fr", caption: "Sans compte,\nfonctionne hors ligne", subtitle: nil, content: voice()),
             // IT
-            Spec(name: "it_01_home",      locale: "it", caption: "Lascia che la voce\nlegga per te", subtitle: nil, content: home("Narrator")),
-            Spec(name: "it_02_multi",     locale: "it", caption: "PDF, Web ed\ne-book supportati",   subtitle: nil, content: multi()),
-            Spec(name: "it_03_highlight", locale: "it", caption: "Evidenziazione\nin tempo reale",   subtitle: nil, content: highlight()),
-            Spec(name: "it_04_myfiles",   locale: "it", caption: "Salva e\ncontinua sempre",         subtitle: nil, content: myfiles("I miei file")),
+            Spec(name: "it_01_home",      locale: "it", caption: "Legge ad alta voce\nPDF, libri e web", subtitle: nil, content: home("Narrator")),
+            Spec(name: "it_02_multi",     locale: "it", caption: "Aggiungilo\ne lo legge",               subtitle: nil, content: multi()),
+            Spec(name: "it_03_highlight", locale: "it", caption: "Vedi sempre\ndove sta leggendo",       subtitle: nil, content: highlight()),
+            Spec(name: "it_04_voice",     locale: "it", caption: "Nessun account,\nfunziona offline",      subtitle: nil, content: voice()),
             // KO
-            Spec(name: "ko_01_home",      locale: "ko", caption: "읽는 수고를\n목소리에 맡겨요",   subtitle: nil, content: home("Narrator")),
-            Spec(name: "ko_02_multi",     locale: "ko", caption: "PDF・웹・\n전자책 지원",          subtitle: nil, content: multi()),
-            Spec(name: "ko_03_highlight", locale: "ko", caption: "실시간 하이라이트로\n듣기 편해요", subtitle: nil, content: highlight()),
-            Spec(name: "ko_04_myfiles",   locale: "ko", caption: "저장하고\n언제든지 이어서",       subtitle: nil, content: myfiles("내 파일")),
+            Spec(name: "ko_01_home",      locale: "ko", caption: "PDF·책·웹을\n모두 읽어줘요",     subtitle: nil, content: home("Narrator")),
+            Spec(name: "ko_02_multi",     locale: "ko", caption: "넣기만 하면\n그대로 읽어줘요",   subtitle: nil, content: multi()),
+            Spec(name: "ko_03_highlight", locale: "ko", caption: "지금 읽는 곳이\n한눈에 보여요",   subtitle: nil, content: highlight()),
+            Spec(name: "ko_04_voice",     locale: "ko", caption: "가입 없이,\n오프라인에서도",     subtitle: nil, content: voice()),
             // TH
-            Spec(name: "th_01_home",      locale: "th", caption: "ปล่อยให้เสียง\nอ่านแทนคุณ",   subtitle: nil, content: home("Narrator")),
-            Spec(name: "th_02_multi",     locale: "th", caption: "รองรับ PDF\nเว็บ และ eBook",   subtitle: nil, content: multi()),
-            Spec(name: "th_03_highlight", locale: "th", caption: "ไฮไลต์\nแบบเรียลไทม์",        subtitle: nil, content: highlight()),
-            Spec(name: "th_04_myfiles",   locale: "th", caption: "บันทึกแล้ว\nต่อได้ทุกเมื่อ",  subtitle: nil, content: myfiles("ไฟล์ของฉัน")),
+            Spec(name: "th_01_home",      locale: "th", caption: "อ่านออกเสียง\nPDF หนังสือ เว็บ", subtitle: nil, content: home("Narrator")),
+            Spec(name: "th_02_multi",     locale: "th", caption: "แค่ใส่เข้ามา\nก็อ่านให้ฟัง",     subtitle: nil, content: multi()),
+            Spec(name: "th_03_highlight", locale: "th", caption: "เห็นชัดว่า\nกำลังอ่านที่ไหน",    subtitle: nil, content: highlight()),
+            Spec(name: "th_04_voice",     locale: "th", caption: "ไม่ต้องสมัคร\nใช้ออฟไลน์ได้",     subtitle: nil, content: voice()),
             // TR
-            Spec(name: "tr_01_home",      locale: "tr", caption: "Okuma zahmetini\nsese bırakın",  subtitle: nil, content: home("Narrator")),
-            Spec(name: "tr_02_multi",     locale: "tr", caption: "PDF, Web ve\ne-Kitap desteği",   subtitle: nil, content: multi()),
-            Spec(name: "tr_03_highlight", locale: "tr", caption: "Gerçek zamanlı\nvurgu",          subtitle: nil, content: highlight()),
-            Spec(name: "tr_04_myfiles",   locale: "tr", caption: "Kaydet &\nistediğinde devam et", subtitle: nil, content: myfiles("Dosyalarım")),
+            Spec(name: "tr_01_home",      locale: "tr", caption: "PDF, kitap ve web\nsesli okunur",     subtitle: nil, content: home("Narrator")),
+            Spec(name: "tr_02_multi",     locale: "tr", caption: "Sadece ekleyin,\nokumaya başlar",      subtitle: nil, content: multi()),
+            Spec(name: "tr_03_highlight", locale: "tr", caption: "Nerede okuduğunu\nher zaman görün",    subtitle: nil, content: highlight()),
+            Spec(name: "tr_04_voice",     locale: "tr", caption: "Hesap gerekmez,\nçevrimdışı çalışır",   subtitle: nil, content: voice()),
             // VI
-            Spec(name: "vi_01_home",      locale: "vi", caption: "Để giọng nói\nđọc cho bạn",     subtitle: nil, content: home("Narrator")),
-            Spec(name: "vi_02_multi",     locale: "vi", caption: "Hỗ trợ PDF\nWeb & eBook",        subtitle: nil, content: multi()),
-            Spec(name: "vi_03_highlight", locale: "vi", caption: "Tô sáng\ntheo thời gian thực",   subtitle: nil, content: highlight()),
-            Spec(name: "vi_04_myfiles",   locale: "vi", caption: "Lưu &\ntiếp tục bất cứ lúc nào", subtitle: nil, content: myfiles("Tệp của tôi")),
+            Spec(name: "vi_01_home",      locale: "vi", caption: "Đọc to PDF,\nsách và web",         subtitle: nil, content: home("Narrator")),
+            Spec(name: "vi_02_multi",     locale: "vi", caption: "Chỉ cần thêm vào,\nnó sẽ đọc",     subtitle: nil, content: multi()),
+            Spec(name: "vi_03_highlight", locale: "vi", caption: "Luôn thấy đang\nđọc tới đâu",      subtitle: nil, content: highlight()),
+            Spec(name: "vi_04_voice",     locale: "vi", caption: "Không cần tài khoản,\ndùng offline",  subtitle: nil, content: voice()),
         ]
     }
 }
