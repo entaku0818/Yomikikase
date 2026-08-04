@@ -1,1 +1,10 @@
-Kleinere Verbesserungen und Fehlerbehebungen.
+Fehlerbehebungen
+- Tippen zum Vorlesen startete in mehrseitigen PDFs an der falschen Stelle
+- Englisch (UK) wurde mit japanischer Stimme vorgelesen
+- Die Einstellung der KI-Stimme (Kokoro) wurde bei der Wiedergabe ignoriert
+- Ungültige URLs kamen beim Import eines Links durch
+- Die App fror beim Öffnen großer Textdateien ein
+
+Verbesserungen
+- Schnellere Anzeige der Dateiliste
+- Speicherwachstum bei langer Wiedergabe behoben

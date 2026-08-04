@@ -1,1 +1,10 @@
-Miglioramenti minori e correzioni di bug.
+Correzioni
+- Il tocco per leggere partiva dal punto sbagliato nei PDF di più pagine
+- L'inglese (Regno Unito) veniva letto con voce giapponese
+- L'impostazione della voce IA (Kokoro) non veniva applicata alla riproduzione
+- URL non valide passavano durante l'importazione di un link
+- L'app si bloccava all'apertura di file di testo grandi
+
+Miglioramenti
+- Elenco file più veloce
+- Risolto l'aumento di memoria nelle riproduzioni lunghe

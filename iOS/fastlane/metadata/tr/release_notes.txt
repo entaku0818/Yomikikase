@@ -1,1 +1,10 @@
-Küçük iyileştirmeler ve hata düzeltmeleri.
+Hata düzeltmeleri
+- Çok sayfalı PDF'lerde dokunarak okuma yanlış yerden başlıyordu
+- İngilizce (BK) seçiliyken Japonca sesle okunuyordu
+- Yapay zekâ sesi (Kokoro) ayarı oynatmaya uygulanmıyordu
+- Bağlantı içe aktarılırken geçersiz URL'ler geçebiliyordu
+- Büyük metin dosyaları açılırken uygulama donuyordu
+
+İyileştirmeler
+- Dosya listesi daha hızlı
+- Uzun oynatmalarda bellek artışı giderildi

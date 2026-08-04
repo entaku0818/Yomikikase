@@ -1,1 +1,10 @@
-Minor improvements and bug fixes.
+Bug fixes
+- Fixed tap-to-read starting from the wrong place in multi-page PDFs
+- Fixed English (UK) being read with a Japanese voice
+- Fixed the AI voice (Kokoro) setting not being applied to playback
+- Fixed invalid URLs slipping through when importing a link
+- Fixed the app freezing when opening large text files
+
+Improvements
+- Faster My Files list
+- Fixed memory growth during long playback sessions

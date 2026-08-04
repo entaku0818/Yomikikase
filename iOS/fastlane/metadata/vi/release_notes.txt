@@ -1,1 +1,10 @@
-Các cải tiến nhỏ và sửa lỗi.
+Sửa lỗi
+- Chạm để đọc bắt đầu sai vị trí trong PDF nhiều trang
+- Tiếng Anh (Anh) bị đọc bằng giọng tiếng Nhật
+- Cài đặt giọng AI (Kokoro) không được áp dụng khi phát
+- URL không hợp lệ lọt qua khi nhập liên kết
+- Ứng dụng bị treo khi mở tệp văn bản lớn
+
+Cải tiến
+- Danh sách tệp hiển thị nhanh hơn
+- Khắc phục tình trạng bộ nhớ tăng dần khi phát lâu
