@@ -10,14 +10,24 @@
 //   - pendingJob（辞書型 PendingTTSJobs）の set / get / clear と UUID 独立性
 //   - testValue のデフォルト値
 //
-//  注意: liveValue は UserDefaults.standard を直接参照するため、テスト対象キーを
-//  setUp / tearDown で必ずクリアしてテスト間の汚染を防ぐ。
+//  注意: UserDefaults.standard は使わない。テストホストのアプリが同じ standard に
+//  書き込むうえ、検索ドメインに残った値は removeObject では消えず
+//  test_live_defaults_whenUnset が常に落ちていた（#127）。
+//  ここでは専用スイートを UserDefaultsClient.live(store:) に渡して完全に隔離する。
+//  本番の liveValue は live(store: .standard) のままで挙動は変わらない。
 
 import XCTest
 import ComposableArchitecture
 @testable import VoiceYourText
 
 final class UserDefaultsClientTests: XCTestCase {
+
+    /// このテスト専用の UserDefaults スイート（standard から隔離する）
+    private static let suiteName = "com.entaku.VoiceYourText.tests.UserDefaultsClientTests"
+    private var suite: UserDefaults!
+
+    /// テスト対象のクライアント。専用スイートを保存先にした live 実装。
+    private var client: UserDefaultsClient { UserDefaultsClient.live(store: suite) }
 
     private static let keys = [
         "LanguageSetting", "SelectedVoiceIdentifier", "CloudTTSVoiceId",
@@ -31,24 +41,26 @@ final class UserDefaultsClientTests: XCTestCase {
     ]
 
     private func clearKeys() {
-        let d = UserDefaults.standard
-        for key in Self.keys { d.removeObject(forKey: key) }
+        suite.removePersistentDomain(forName: Self.suiteName)
+        for key in Self.keys { suite.removeObject(forKey: key) }
     }
 
     override func setUp() {
         super.setUp()
+        suite = UserDefaults(suiteName: Self.suiteName)
+        XCTAssertNotNil(suite, "テスト用スイートを作成できなかった")
         clearKeys()
     }
 
     override func tearDown() {
         clearKeys()
+        suite = nil
         super.tearDown()
     }
 
     // MARK: - デフォルト値（キー未設定）
 
     func test_live_defaults_whenUnset() {
-        let client = UserDefaultsClient.liveValue
         XCTAssertNil(client.languageSetting())
         XCTAssertNil(client.selectedVoiceIdentifier())
         XCTAssertNil(client.cloudTTSVoiceId())
@@ -70,7 +82,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - String ラウンドトリップ
 
     func test_live_stringRoundTrips() {
-        let client = UserDefaultsClient.liveValue
         client.setLanguageSetting("ja")
         client.setSelectedVoiceIdentifier("com.apple.voice.x")
         client.setCloudTTSVoiceId("ja-JP-Wavenet-A")
@@ -85,7 +96,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - Float ラウンドトリップ（デフォルト分岐外の値）
 
     func test_live_floatRoundTrips() {
-        let client = UserDefaultsClient.liveValue
         client.setSpeechRate(0.75)
         client.setSpeechPitch(1.5)
         XCTAssertEqual(client.speechRate(), 0.75, accuracy: 0.0001)
@@ -95,7 +105,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - Bool ラウンドトリップ
 
     func test_live_boolRoundTrips() {
-        let client = UserDefaultsClient.liveValue
         client.setKokoroEnabled(true)
         client.setHasCompletedOnboarding(true)
         client.setHasAnsweredReviewPositively(true)
@@ -107,7 +116,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - Int ラウンドトリップ
 
     func test_live_intRoundTrips() {
-        let client = UserDefaultsClient.liveValue
         client.setSpeechCompletedCount(3)
         client.setAppLaunchCount(10)
         client.setReviewRequestCount(2)
@@ -119,7 +127,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - Date ラウンドトリップ
 
     func test_live_dateRoundTrips() {
-        let client = UserDefaultsClient.liveValue
         let date = Date(timeIntervalSince1970: 1_700_000_000)
         client.setPremiumPurchaseDate(date)
         client.setInstallDate(date)
@@ -142,7 +149,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - PremiumStatusDidChange 通知
 
     func test_setIsPremiumUser_persistsAndPostsNotification() {
-        let client = UserDefaultsClient.liveValue
         let expectation = expectation(
             forNotification: Notification.Name("PremiumStatusDidChange"),
             object: nil
@@ -159,7 +165,6 @@ final class UserDefaultsClientTests: XCTestCase {
     // MARK: - pendingJob（辞書型管理）
 
     func test_pendingJob_setGetClear() {
-        let client = UserDefaultsClient.liveValue
         let uuid = UUID()
 
         XCTAssertNil(client.pendingJobId(uuid))
@@ -172,7 +177,6 @@ final class UserDefaultsClientTests: XCTestCase {
     }
 
     func test_pendingJob_multipleUUIDsAreIndependent() {
-        let client = UserDefaultsClient.liveValue
         let a = UUID()
         let b = UUID()
 

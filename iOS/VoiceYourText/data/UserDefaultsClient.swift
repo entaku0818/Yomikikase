@@ -54,8 +54,13 @@ struct UserDefaultsClient: Sendable {
 }
 
 extension UserDefaultsClient: DependencyKey {
-    static var liveValue: Self {
-        let d = UserDefaults.standard
+    static var liveValue: Self { live(store: .standard) }
+
+    /// 保存先を差し替えられる live 実装。
+    /// 本番は `liveValue`（= UserDefaults.standard）。テストは専用スイートを渡して
+    /// `UserDefaults.standard` の状態（テストホストのアプリが書き込むもの・
+    /// 検索ドメインに残る値）から切り離す。挙動は store 以外まったく同じ。
+    static func live(store d: UserDefaults) -> Self {
         return Self(
             languageSetting: { d.string(forKey: "LanguageSetting") },
             setLanguageSetting: { d.set($0, forKey: "LanguageSetting") },
