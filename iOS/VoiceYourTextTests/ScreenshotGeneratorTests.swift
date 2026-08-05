@@ -85,7 +85,7 @@ final class ScreenshotGeneratorTests: XCTestCase {
             let view = wrap(spec).frame(width: size.width, height: size.height)
             let renderer = ImageRenderer(content: view)
             renderer.scale = scale
-            guard let uiImage = renderer.uiImage, let data = uiImage.pngData() else {
+            guard let uiImage = renderer.uiImage, let data = opaquePNGData(uiImage) else {
                 errors.append("Failed to render: \(spec.name)\(suffix)")
                 continue
             }
@@ -93,8 +93,55 @@ final class ScreenshotGeneratorTests: XCTestCase {
             do { try data.write(to: url) } catch { errors.append("Failed to write \(spec.name)\(suffix): \(error)") }
         }
         if !errors.isEmpty { XCTFail("Errors: \(errors.joined(separator: "\n"))") }
+        assertNoAlphaChannel(suffix: suffix)
         let generated = (try? FileManager.default.contentsOfDirectory(atPath: outputDir.path))?.count ?? 0
         print("✅ Generated screenshots (suffix='\(suffix)') → total now \(generated) files in \(outputDir.path)")
+    }
+
+    // MARK: - アルファチャンネルなしの PNG データ化
+    // App Store Connect はスクリーンショットに透過を許さず、透過付きで上げると
+    // assetDeliveryState=FAILED / IMAGE_ALPHA_NOT_ALLOWED になる。fastlane 側は
+    // アップロード自体は成功扱いで進むため、失敗は ASC のアセット状態を見るまで気づけない。
+    // ImageRenderer.uiImage.pngData() は RGBA(color type 6) を出すので、
+    // 不透明コンテキストへ描き直してから PNG エンコードする。
+    private func opaquePNGData(_ image: UIImage) -> Data? {
+        guard let cgImage = image.cgImage else { return nil }
+        let rect = CGRect(x: 0, y: 0, width: cgImage.width, height: cgImage.height)
+        guard let context = CGContext(
+            data: nil,
+            width: cgImage.width,
+            height: cgImage.height,
+            bitsPerComponent: 8,
+            bytesPerRow: 0,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+        ) else { return nil }
+        context.setFillColor(UIColor.white.cgColor)
+        context.fill(rect)
+        context.draw(cgImage, in: rect)
+        guard let flattened = context.makeImage() else { return nil }
+        return UIImage(cgImage: flattened).pngData()
+    }
+
+    // 生成物の PNG ヘッダ(IHDR)を直接読み、color type がアルファなし(0/2)であることを検証する。
+    // ここで落としておかないと、ASC へ上げるまで透過混入に気づけない。
+    private func assertNoAlphaChannel(suffix: String) {
+        let files = (try? FileManager.default.contentsOfDirectory(at: outputDir, includingPropertiesForKeys: nil)) ?? []
+        let targets = files.filter { $0.pathExtension == "png" }
+            .filter { suffix.isEmpty ? !$0.lastPathComponent.contains("_ipad") : $0.lastPathComponent.contains("_ipad") }
+        XCTAssertFalse(targets.isEmpty, "No PNG generated for suffix='\(suffix)'")
+        for url in targets {
+            guard let handle = try? FileHandle(forReadingFrom: url),
+                  let header = try? handle.read(upToCount: 26), header.count == 26 else {
+                XCTFail("Cannot read PNG header: \(url.lastPathComponent)")
+                continue
+            }
+            try? handle.close()
+            // PNG: 8byte signature + 4byte length + "IHDR" + width(4) + height(4) + bitDepth(1) + colorType(1)
+            let colorType = header[25]
+            XCTAssertTrue(colorType == 0 || colorType == 2,
+                          "\(url.lastPathComponent): PNG color type \(colorType) にアルファが含まれる（ASC は IMAGE_ALPHA_NOT_ALLOWED で弾く）")
+        }
     }
 
     // MARK: - 全画面定義（iPhone/iPad 共通）
