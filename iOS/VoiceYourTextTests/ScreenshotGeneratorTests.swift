@@ -4,7 +4,7 @@ import SwiftUI
 
 // iOS 16+ ImageRenderer を使って App Store スクリーンショットを自動生成するテスト
 // 実行後 /tmp/vyt_screenshots/ 以下に PNG が生成される
-//   - iPhone 6.7": {lang}_NN_*.png      (692×1500)
+//   - iPhone 6.7": {lang}_NN_*.png      (1290×2796)
 //   - iPad 12.9" : {lang}_NN_*_ipad.png (2048×2732)
 // 刷新案デザイン（インディゴ統一）の4画面構成・全枚共通:
 //   01 = ホーム（インポート元グリッド + 最近のファイル）／訴求: 「読み上げアプリ」であることを検索結果で即判別させる
@@ -42,7 +42,10 @@ final class ScreenshotGeneratorTests: XCTestCase {
         let content: AnyView    // iPhone/iPad で共通のアプリ画面（フレームなし）
     }
 
-    // MARK: - iPhone 6.7" 生成（430×932 @1.609 ≈ 692×1500）
+    // MARK: - iPhone 6.7" 生成（430×932 @3.0 = 1290×2796）
+    // scale は 3.0 固定。App Store の 6.7" 受付サイズは 1290×2796 のみで、
+    // これ以外（過去に 1.609 → 692×1500 で出していた）は deliver の検証で
+    // 「Invalid screen size」となり全ロケール分のアップロードが丸ごとキャンセルされる。
     @MainActor
     func testGenerateAllScreenshots() throws {
         try render(
@@ -53,7 +56,7 @@ final class ScreenshotGeneratorTests: XCTestCase {
                 )
             },
             size: CGSize(width: 430, height: 932),
-            scale: 1.609,
+            scale: 3.0,
             suffix: ""
         )
     }
