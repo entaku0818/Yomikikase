@@ -65,8 +65,15 @@ DesignSystem/
         ├── デザイン統一 仕様書.html
         ├── ナレーター デザイン統一案.html
         ├── ナレーター スクショ刷新案.html
-        └── ナレーター アイコン刷新案.html
+        ├── ナレーター アイコン刷新案.html
+        ├── ナレーター スクショ改訂案 v2.dc.html   # スクショ v2（6画面 × 10ロケール）
+        └── support.js                             # 上記 .dc.html の実行ランタイム
 ```
+
+`ナレーター スクショ改訂案 v2.dc.html` は claude.ai/design のキャンバス形式（`.dc.html`）で、
+同ディレクトリの `support.js` と `window.React` を前提に描画する。単体でブラウザで開いても
+描画されないので、閲覧は claude.ai/design 側で行う。実装は
+`iOS/VoiceYourText/Features/Debug/ScreenshotViewV2.swift`（`Shot(s:index:isPad:)`）が対応する。
 
 ## 6. 運用ルール
 
