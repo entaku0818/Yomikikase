@@ -169,6 +169,27 @@ extension DependencyValues {
 import MLX
 import ZIPFoundation
 
+// NPY (.npy) バイナリフォーマットのヘッダ・オフセット定数。
+// parseNPY のマジックナンバーを名前付きに置き換えたもの（仕様: numpy format v1/v2）。
+private enum NPYFormat {
+    /// `\x93NUMPY` ファイルシグネチャ。
+    static let magic: [UInt8] = [0x93, 0x4E, 0x55, 0x4D, 0x50, 0x59]
+    /// 先頭でマッチさせるシグネチャのバイト数。
+    static let magicLength = 6
+    /// 有効なファイルとみなす最小バイト数（magic + version + 2byte ヘッダ長）。
+    static let minLength = 10
+    /// メジャーバージョンバイトのオフセット。
+    static let majorVersionOffset = 6
+    /// リトルエンディアンのヘッダ長フィールドの先頭オフセット。
+    static let headerLenOffset = 8
+    /// v1.x（ヘッダ長 2byte）のヘッダ本文（ASCII dict）開始オフセット。
+    static let headerStartV1 = 10
+    /// v2.0+（ヘッダ長 4byte）のヘッダ本文開始オフセット。
+    static let headerStartV2 = 12
+    /// 2byte ヘッダ長フィールドを使うメジャーバージョン。
+    static let majorVersion1: UInt8 = 1
+}
+
 actor KokoroEngine {
     static let shared = KokoroEngine()
 
@@ -299,22 +320,24 @@ actor KokoroEngine {
 
     // NPY バイナリ → MLXArray（Float32 のみ対応）
     private nonisolated func parseNPY(_ data: Data) -> MLXArray? {
-        let magic: [UInt8] = [0x93, 0x4E, 0x55, 0x4D, 0x50, 0x59]
-        guard data.count > 10, data.prefix(6) == Data(magic) else { return nil }
+        guard data.count > NPYFormat.minLength,
+              data.prefix(NPYFormat.magicLength) == Data(NPYFormat.magic) else { return nil }
 
-        let majorVer = data[6]
+        let majorVer = data[NPYFormat.majorVersionOffset]
+        let lenOffset = NPYFormat.headerLenOffset
         let headerLen: Int
         let dataStart: Int
-        if majorVer == 1 {
-            headerLen = Int(data[8]) | (Int(data[9]) << 8)
-            dataStart = 10 + headerLen
+        if majorVer == NPYFormat.majorVersion1 {
+            headerLen = Int(data[lenOffset]) | (Int(data[lenOffset + 1]) << 8)
+            dataStart = NPYFormat.headerStartV1 + headerLen
         } else {
-            headerLen = Int(data[8]) | (Int(data[9]) << 8) | (Int(data[10]) << 16) | (Int(data[11]) << 24)
-            dataStart = 12 + headerLen
+            headerLen = Int(data[lenOffset]) | (Int(data[lenOffset + 1]) << 8)
+                | (Int(data[lenOffset + 2]) << 16) | (Int(data[lenOffset + 3]) << 24)
+            dataStart = NPYFormat.headerStartV2 + headerLen
         }
         guard dataStart <= data.count else { return nil }
 
-        let headerBytes = data[10..<min(10 + headerLen, data.count)]
+        let headerBytes = data[NPYFormat.headerStartV1..<min(NPYFormat.headerStartV1 + headerLen, data.count)]
         let header = String(bytes: headerBytes, encoding: .utf8) ?? ""
         let shape = KokoroAudioUtil.parseNPYShape(from: header)
 

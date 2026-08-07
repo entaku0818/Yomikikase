@@ -9,25 +9,42 @@ import Foundation
 
 enum KokoroAudioUtil {
 
+    /// Named constants for the 16-bit little-endian PCM WAV container written by `pcmToWAV`,
+    /// replacing the previously inline byte-layout magic numbers.
+    private enum WAVFormat {
+        /// `fmt ` audio format tag for uncompressed Linear PCM.
+        static let pcmFormatTag: UInt16 = 1
+        /// Mono output (single channel).
+        static let channelCount: UInt16 = 1
+        static let bitsPerSample: UInt16 = 16
+        static var bytesPerSample: UInt16 { bitsPerSample / 8 }
+        /// Body size of the PCM `fmt ` chunk (16 bytes for Linear PCM).
+        static let fmtChunkSize: UInt32 = 16
+        /// Bytes in the RIFF header preceding the `data` payload, excluding the leading
+        /// `"RIFF"` tag and its 4-byte size field (used for the RIFF chunk size).
+        static let riffHeaderOverhead: UInt32 = 36
+    }
+
     /// `[Float]` (mono PCM, expected range -1.0...1.0) → 16-bit little-endian WAV `Data`.
     /// Samples are clamped to [-1.0, 1.0] before quantization to Int16.
     static func pcmToWAV(samples: [Float], sampleRate: Int) -> Data {
-        let channelCount: UInt16 = 1
-        let bitsPerSample: UInt16 = 16
-        let byteRate = UInt32(sampleRate) * UInt32(channelCount) * UInt32(bitsPerSample / 8)
-        let blockAlign = channelCount * (bitsPerSample / 8)
+        let channelCount = WAVFormat.channelCount
+        let bitsPerSample = WAVFormat.bitsPerSample
+        let bytesPerSample = WAVFormat.bytesPerSample
+        let byteRate = UInt32(sampleRate) * UInt32(channelCount) * UInt32(bytesPerSample)
+        let blockAlign = channelCount * bytesPerSample
         let pcmSamples = samples.map { s -> Int16 in
             Int16(max(-1.0, min(1.0, s)) * Float(Int16.max))
         }
-        let dataSize = UInt32(pcmSamples.count * 2)
+        let dataSize = UInt32(pcmSamples.count * Int(bytesPerSample))
 
         var wav = Data()
         func write<T: FixedWidthInteger>(_ v: T) {
             withUnsafeBytes(of: v.littleEndian) { wav.append(contentsOf: $0) }
         }
-        wav.append(contentsOf: "RIFF".utf8); write(UInt32(36 + dataSize))
-        wav.append(contentsOf: "WAVEfmt ".utf8); write(UInt32(16))
-        write(UInt16(1)); write(channelCount)
+        wav.append(contentsOf: "RIFF".utf8); write(WAVFormat.riffHeaderOverhead + dataSize)
+        wav.append(contentsOf: "WAVEfmt ".utf8); write(WAVFormat.fmtChunkSize)
+        write(WAVFormat.pcmFormatTag); write(channelCount)
         write(UInt32(sampleRate)); write(byteRate)
         write(blockAlign); write(bitsPerSample)
         wav.append(contentsOf: "data".utf8); write(dataSize)

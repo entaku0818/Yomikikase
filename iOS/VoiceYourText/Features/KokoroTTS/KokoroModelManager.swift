@@ -10,8 +10,19 @@ enum KokoroDownloadStatus: Equatable, Sendable {
 actor KokoroModelManager {
     static let shared = KokoroModelManager()
 
-    private let modelFileName = "kokoro-v1_0.safetensors"
-    private let voicesFileName = "voices.npz"
+    static let modelFileName = "kokoro-v1_0.safetensors"
+    static let voicesFileName = "voices.npz"
+
+    /// モデル/ボイスファイルを保存する Application Support 配下のディレクトリ。
+    /// static（checkDownloaded）とインスタンス（download 等）双方が同じパス解決を
+    /// 共有できるよう一元化している。
+    static func storageDirectory() -> URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+            .appending(path: "KokoroTTS")
+    }
+
+    /// モデル本体ダウンロード時のチャンクバッファサイズ（4 MB）。
+    private let downloadBufferSize = 4 * 1_048_576
 
     // GitHub LFS media CDN（raw URLはLFSポインタを返すためmedia.githubusercontent.comを使用）
     private let modelURL = URL(string: "https://media.githubusercontent.com/media/mlalma/KokoroTestApp/main/Resources/kokoro-v1_0.safetensors")!
@@ -40,19 +51,19 @@ actor KokoroModelManager {
             updateStatus(.downloaded)
             return
         }
-        let dir = storageDirectory()
+        let dir = Self.storageDirectory()
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
 
         // voices.npz は軽いので先にダウンロード
-        if !FileManager.default.fileExists(atPath: dir.appending(path: voicesFileName).path) {
+        if !FileManager.default.fileExists(atPath: dir.appending(path: Self.voicesFileName).path) {
             let (voicesData, _) = try await session.data(from: voicesURL)
-            try voicesData.write(to: dir.appending(path: voicesFileName))
+            try voicesData.write(to: dir.appending(path: Self.voicesFileName))
         }
 
         // モデル本体（~600MB）をチャンク単位でダウンロード
         updateStatus(.downloading(progress: 0))
-        let dest = dir.appending(path: modelFileName)
-        let tempDest = dir.appending(path: modelFileName + ".tmp")
+        let dest = dir.appending(path: Self.modelFileName)
+        let tempDest = dir.appending(path: Self.modelFileName + ".tmp")
         // 失敗時に中途半端なファイルが残らないよう一時ファイルに書いてから移動
         try? FileManager.default.removeItem(at: tempDest)
         FileManager.default.createFile(atPath: tempDest.path, contents: nil)
@@ -63,11 +74,11 @@ actor KokoroModelManager {
                 .flatMap { Int64($0) } ?? 0
 
             var downloaded: Int64 = 0
-            var buffer = Data(capacity: 4 * 1_048_576)  // 4MB バッファ
+            var buffer = Data(capacity: downloadBufferSize)
             for try await byte in asyncBytes {
                 try Task.checkCancellation()
                 buffer.append(byte)
-                if buffer.count >= 4 * 1_048_576 {
+                if buffer.count >= downloadBufferSize {
                     handle.write(buffer)
                     downloaded += Int64(buffer.count)
                     buffer.removeAll(keepingCapacity: true)
@@ -100,12 +111,12 @@ actor KokoroModelManager {
     }()
 
     func modelFileURL() -> URL? {
-        let url = storageDirectory().appending(path: modelFileName)
+        let url = Self.storageDirectory().appending(path: Self.modelFileName)
         return FileManager.default.fileExists(atPath: url.path) ? url : nil
     }
 
     func voicesFileURL() -> URL? {
-        let url = storageDirectory().appending(path: voicesFileName)
+        let url = Self.storageDirectory().appending(path: Self.voicesFileName)
         return FileManager.default.fileExists(atPath: url.path) ? url : nil
     }
 
@@ -114,10 +125,9 @@ actor KokoroModelManager {
     }
 
     nonisolated static func checkDownloaded() -> Bool {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appending(path: "KokoroTTS")
-        let modelURL = dir.appending(path: "kokoro-v1_0.safetensors")
-        let voicesURL = dir.appending(path: "voices.npz")
+        let dir = storageDirectory()
+        let modelURL = dir.appending(path: modelFileName)
+        let voicesURL = dir.appending(path: voicesFileName)
         guard FileManager.default.fileExists(atPath: modelURL.path),
               FileManager.default.fileExists(atPath: voicesURL.path) else { return false }
         // voices.npz が ZIP マジックバイト(PK\x03\x04)で始まるか検証
@@ -139,8 +149,8 @@ actor KokoroModelManager {
     }
 
     func deleteModel() throws {
-        let dir = storageDirectory()
-        for name in [modelFileName, voicesFileName] {
+        let dir = Self.storageDirectory()
+        for name in [Self.modelFileName, Self.voicesFileName] {
             let path = dir.appending(path: name).path
             if FileManager.default.fileExists(atPath: path) {
                 try FileManager.default.removeItem(atPath: path)
@@ -150,11 +160,6 @@ actor KokoroModelManager {
     }
 
     // MARK: - Private
-
-    private func storageDirectory() -> URL {
-        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appending(path: "KokoroTTS")
-    }
 
     private func updateStatus(_ newStatus: KokoroDownloadStatus) {
         status = newStatus
