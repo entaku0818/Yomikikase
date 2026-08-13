@@ -168,7 +168,8 @@ final class NowPlayingFeatureTests: XCTestCase {
                     return false
                 },
                 continueSpeaking: { true },
-                isPaused: { false }
+                isPaused: { false },
+                fadeOutAndStop: { _ in true }
             )
         }
 
@@ -225,7 +226,8 @@ final class NowPlayingFeatureTests: XCTestCase {
                 },
                 pauseSpeaking: { false },
                 continueSpeaking: { true },
-                isPaused: { false }
+                isPaused: { false },
+                fadeOutAndStop: { _ in true }
             )
         }
         store.exhaustivity = .off

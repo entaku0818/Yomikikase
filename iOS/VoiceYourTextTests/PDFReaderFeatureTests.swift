@@ -81,7 +81,8 @@ final class PDFReaderFeatureTests: XCTestCase {
             },
             pauseSpeaking: { return true },
             continueSpeaking: { return true },
-            isPaused: { return false }
+            isPaused: { return false },
+            fadeOutAndStop: { _ in return true }
         )
     }
 
@@ -139,7 +140,8 @@ final class PDFReaderFeatureTests: XCTestCase {
                 stopSpeaking: { true },
                 pauseSpeaking: { true },
                 continueSpeaking: { true },
-                isPaused: { false }
+                isPaused: { false },
+                fadeOutAndStop: { _ in true }
             )
             deps.userDefaults = UserDefaultsClient(
                 languageSetting: { "ja-JP" },

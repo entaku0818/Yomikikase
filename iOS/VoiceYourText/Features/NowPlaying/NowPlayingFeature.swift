@@ -38,6 +38,8 @@ struct NowPlayingFeature {
         var useCloudTTS: Bool = false
         var cloudTTSAudioURL: URL? = nil
         var isGeneratingAudio: Bool = false
+        /// 作動中のスリープタイマー。nil なら未設定。
+        var sleepTimer: SleepTimerState?
     }
 
     enum Action: Equatable {
@@ -52,13 +54,24 @@ struct NowPlayingFeature {
         case setCloudTTSMode(Bool)
         case observeRemoteCommands
         case remoteCommandReceived(RemoteCommandEvent)
+        /// スリープタイマーを設定する。nil で解除。
+        case setSleepTimer(SleepTimerOption?)
+        /// カウントダウンの1秒経過。
+        case sleepTimerTicked
+        /// スリープタイマー作動（フェードアウトして停止する）。
+        case sleepTimerFired
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.nowPlayingClient) var nowPlayingClient
     @Dependency(\.userDefaults) var userDefaults
+    @Dependency(\.continuousClock) var clock
 
-    private enum CancelID { case remoteCommands, playback }
+    // NowPlayingFeature+SleepTimer.swift からも参照するため private にしない
+    enum CancelID { case remoteCommands, playback, sleepTimer }
+
+    /// スリープタイマー作動時にフェードアウトへかける秒数。
+    static let sleepTimerFadeOutSeconds: Double = 3
 
     // ユニットテスト実行時は実AVAudioSessionを操作しない。
     // シミュレータ上のテストホストアプリでは setActive(true) が
@@ -127,6 +140,17 @@ struct NowPlayingFeature {
                             let speechRate = userDefaults.speechRate()
                             player.rate = max(0.5, min(2.0, speechRate * 2.0))
                             player.play()
+
+                            // このプレイヤーは SpeechSynthesizerClient の管理外なので、
+                            // スリープタイマー作動時のフェードは通知で受けて自前でかける。
+                            let fadeObserver = Task {
+                                for await _ in NotificationCenter.default.notifications(
+                                    named: .sleepTimerFadeOut
+                                ) {
+                                    player.setVolume(0, fadeDuration: Self.sleepTimerFadeOutSeconds)
+                                }
+                            }
+                            defer { fadeObserver.cancel() }
 
                             try await withTaskCancellationHandler {
                                 while player.isPlaying {
@@ -217,10 +241,12 @@ struct NowPlayingFeature {
                 state.source = nil
                 state.useCloudTTS = false
                 state.cloudTTSAudioURL = nil
+                state.sleepTimer = nil
                 nowPlayingClient.clearNowPlayingInfo()
                 return .merge(
                     .cancel(id: CancelID.remoteCommands),
                     .cancel(id: CancelID.playback),
+                    .cancel(id: CancelID.sleepTimer),
                     .run { _ in
                         _ = await speechSynthesizer.stopSpeaking()
                         if !Self.isRunningTests {
@@ -240,10 +266,14 @@ struct NowPlayingFeature {
             case .speechFinished:
                 state.isPlaying = false
                 state.progress = 1.0
+                // 「この章の終わりで停止」は読み終えた時点で役目を終える。
+                // 時間指定のタイマーも再生が終わればカウントダウンを続ける意味がない。
+                state.sleepTimer = nil
                 nowPlayingClient.clearNowPlayingInfo()
                 return .merge(
                     .cancel(id: CancelID.remoteCommands),
                     .cancel(id: CancelID.playback),
+                    .cancel(id: CancelID.sleepTimer),
                     .run { _ in
                         if !Self.isRunningTests {
                             try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
@@ -273,6 +303,16 @@ struct NowPlayingFeature {
                     }
                 )
                 .cancellable(id: CancelID.remoteCommands, cancelInFlight: true)
+
+            // スリープタイマー（#121）の処理は NowPlayingFeature+SleepTimer.swift
+            case let .setSleepTimer(option):
+                return reduceSetSleepTimer(&state, option: option)
+
+            case .sleepTimerTicked:
+                return reduceSleepTimerTicked(&state)
+
+            case .sleepTimerFired:
+                return reduceSleepTimerFired(&state)
 
             case .remoteCommandReceived(let event):
                 switch event {

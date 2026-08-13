@@ -28,28 +28,19 @@ struct MiniPlayerView: View {
 
                 Spacer()
 
+                // スリープタイマー（残り時間の表示 & 設定メニュー）
+                SleepTimerMenu(sleepTimer: viewStore.sleepTimer) {
+                    viewStore.send(.setSleepTimer($0))
+                }
+
                 // 再生/一時停止ボタン
-                Button {
-                    if viewStore.isPlaying {
-                        viewStore.send(.stopPlaying)
-                    } else {
-                        viewStore.send(.resumePlaying)
-                    }
-                } label: {
-                    Image(systemName: viewStore.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 20))
-                        .foregroundColor(AppTheme.primary)
-                        .frame(width: 44, height: 44)
+                PlayPauseButton(isPlaying: viewStore.isPlaying) {
+                    viewStore.send(viewStore.isPlaying ? .stopPlaying : .resumePlaying)
                 }
 
                 // 閉じるボタン
-                Button {
+                CloseButton {
                     viewStore.send(.dismiss)
-                } label: {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.secondary)
-                        .frame(width: 44, height: 44)
                 }
             }
             .padding(.horizontal, 16)
@@ -64,6 +55,72 @@ struct MiniPlayerView: View {
                 viewStore.send(.navigateToSource)
             }
         }
+    }
+}
+
+private struct PlayPauseButton: View {
+    let isPlaying: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                .font(.system(size: 20))
+                .foregroundColor(AppTheme.primary)
+                .frame(width: 44, height: 44)
+        }
+    }
+}
+
+private struct CloseButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: "xmark")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundColor(.secondary)
+                .frame(width: 44, height: 44)
+        }
+    }
+}
+
+/// スリープタイマーの残り時間表示と設定メニュー。
+private struct SleepTimerMenu: View {
+    let sleepTimer: SleepTimerState?
+    let onSelect: (SleepTimerOption?) -> Void
+
+    var body: some View {
+        Menu {
+            ForEach(SleepTimerOption.presets) { option in
+                Button {
+                    onSelect(option)
+                } label: {
+                    Text(option.title)
+                }
+            }
+            if sleepTimer != nil {
+                Divider()
+                Button(role: .destructive) {
+                    onSelect(nil)
+                } label: {
+                    Text("タイマーを解除")
+                }
+            }
+        } label: {
+            HStack(spacing: 4) {
+                Image(systemName: sleepTimer == nil ? "moon" : "moon.fill")
+                    .font(.system(size: 16))
+                if let sleepTimer {
+                    Text(sleepTimer.displayText)
+                        .font(.system(size: 13, weight: .medium))
+                        .monospacedDigit()
+                }
+            }
+            .foregroundColor(sleepTimer == nil ? .secondary : AppTheme.primary)
+            .frame(minHeight: 44)
+        }
+        .accessibilityLabel(Text("スリープタイマー"))
     }
 }
 

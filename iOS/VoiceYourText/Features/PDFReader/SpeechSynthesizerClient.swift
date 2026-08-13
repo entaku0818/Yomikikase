@@ -21,6 +21,9 @@ struct SpeechSynthesizerClient {
     var pauseSpeaking: @Sendable () async -> Bool = { false }
     var continueSpeaking: @Sendable () async -> Bool = { false }
     var isPaused: @Sendable () async -> Bool = { false }
+    /// 指定秒数でフェードアウトしてから停止する（スリープタイマー作動時）。
+    /// 引数はフェードにかける秒数。
+    var fadeOutAndStop: @Sendable (Double) async -> Bool = { _ in false }
 }
 
 extension SpeechSynthesizerClient: DependencyKey {
@@ -115,7 +118,8 @@ extension SpeechSynthesizerClient: DependencyKey {
             stopSpeaking: { await speechSynthesizer.stop() },
             pauseSpeaking: { await speechSynthesizer.pause() },
             continueSpeaking: { await speechSynthesizer.continueSpeaking() },
-            isPaused: { await speechSynthesizer.isPaused() }
+            isPaused: { await speechSynthesizer.isPaused() },
+            fadeOutAndStop: { seconds in await speechSynthesizer.fadeOutAndStop(seconds: seconds) }
         )
     }
 }
@@ -134,7 +138,8 @@ extension SpeechSynthesizerClient: TestDependencyKey {
         stopSpeaking: { true },
         pauseSpeaking: { true },
         continueSpeaking: { true },
-        isPaused: { false }
+        isPaused: { false },
+        fadeOutAndStop: { _ in true }
     )
 }
 
@@ -176,6 +181,30 @@ private actor SpeechSynthesizer {
 
     func isPaused() -> Bool {
         return self.synthesizer?.isPaused ?? false
+    }
+
+    /// フェードアウトしてから停止する。スリープタイマー作動時に音がぶつ切りにならないようにする。
+    func fadeOutAndStop(seconds: Double) async -> Bool {
+        let duration = max(0, seconds)
+
+        if let player = audioPlayer, player.isPlaying {
+            // AVAudioPlayer（Kokoro TTS / クラウドTTSの音声ファイル）は音量を落とせる。
+            player.setVolume(0, fadeDuration: duration)
+            try? await Task.sleep(nanoseconds: UInt64(duration * 1_000_000_000))
+            return stop()
+        }
+
+        if let synthesizer = self.synthesizer, synthesizer.isSpeaking {
+            // AVSpeechSynthesizer は発話中の音量を変更できないため、音量フェードの代わりに
+            // 単語の切れ目まで読ませてから止める（文の途中でぶつ切りにしない）。
+            // delegate を先に外すのは、この停止で didCancel → onFinish が呼ばれ
+            // 呼び出し側が「読み上げ完了」と誤認するのを防ぐため。
+            synthesizer.delegate = nil
+            synthesizer.stopSpeaking(at: .word)
+            try? await Task.sleep(nanoseconds: 500_000_000)
+        }
+
+        return stop()
     }
 
     var audioPlayer: AVAudioPlayer?
