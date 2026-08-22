@@ -45,6 +45,11 @@ struct HomeView: View {
     @State private var googleDriveExtractedText = ""
     @State private var showingGoogleDriveTextView = false
 
+    // 青空文庫
+    @State private var showingAozoraLibrary = false
+    @State private var aozoraText = ""
+    @State private var showingAozoraTextView = false
+
     struct ScannedDocument: Identifiable {
         let id = UUID()
         let text: String
@@ -181,6 +186,23 @@ struct HomeView: View {
                                 )
                             }
                             .buttonStyle(PlainButtonStyle())
+
+                            // 青空文庫の名作（有効）
+                            Button {
+                                analytics.logEvent("aozora_button_tapped", ["screen": "home"])
+                                if FileLimitsManager.hasReachedFreeLimit() {
+                                    showingPremiumAlert = true
+                                } else {
+                                    showingAozoraLibrary = true
+                                }
+                            } label: {
+                                createButtonContent(
+                                    icon: "text.book.closed.fill",
+                                    title: "名作",
+                                    isEnabled: true
+                                )
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
                         .padding(.horizontal)
                         .padding(.top)
@@ -202,6 +224,7 @@ struct HomeView: View {
                                             // fileTypeに応じてアイコンを切り替え（色はアクセント1色に統一）
                                             let iconName: String = speech.fileType == "scan" ? "camera.fill"
                                                 : speech.fileType == "epub" ? "books.vertical.fill"
+                                                : speech.fileType == "aozora" ? "text.book.closed.fill"
                                                 : "doc.text.fill"
 
                                             Image(systemName: iconName)
@@ -384,6 +407,16 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showingGoogleDriveTextView) {
                 TextInputView(store: store, initialText: googleDriveExtractedText, fileId: nil)
+            }
+            // 青空文庫
+            .sheet(isPresented: $showingAozoraLibrary) {
+                AozoraLibraryView { text in
+                    aozoraText = text
+                    showingAozoraTextView = true
+                }
+            }
+            .navigationDestination(isPresented: $showingAozoraTextView) {
+                TextInputView(store: store, initialText: aozoraText, fileId: nil, fileType: "aozora")
             }
             .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
                 isPremium = UserDefaultsManager.shared.isPremiumUser
