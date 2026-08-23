@@ -1,10 +1,4 @@
-Corrections
-- La lecture au toucher démarrait au mauvais endroit dans les PDF de plusieurs pages
-- L'anglais (Royaume-Uni) était lu avec une voix japonaise
-- Le réglage de la voix IA (Kokoro) n'était pas appliqué à la lecture
-- Des URL invalides passaient lors de l'import d'un lien
-- L'app se figeait à l'ouverture de gros fichiers texte
-
-Améliorations
-- Liste de fichiers plus rapide
-- Correction de la hausse de mémoire lors des longues lectures
+Nouveautés
+- Téléchargez des classiques de la littérature japonaise depuis Aozora Bunko et écoutez-les immédiatement. Appuyez sur « Classiques » sur l'écran d'accueil pour choisir parmi 40 œuvres du domaine public de Soseki Natsume, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa et d'autres
+- Les lectures ruby et les notes sont supprimées automatiquement pour une lecture naturelle
+- Nouvelle minuterie de mise en veille : arrêt après 5 à 60 minutes ou à la fin du chapitre, avec un fondu progressif

@@ -1,10 +1,4 @@
-Bug fixes
-- Fixed tap-to-read starting from the wrong place in multi-page PDFs
-- Fixed English (UK) being read with a Japanese voice
-- Fixed the AI voice (Kokoro) setting not being applied to playback
-- Fixed invalid URLs slipping through when importing a link
-- Fixed the app freezing when opening large text files
-
-Improvements
-- Faster My Files list
-- Fixed memory growth during long playback sessions
+New features
+- Download Japanese literary classics from Aozora Bunko and listen to them right away. Tap "Classics" on the Home screen to pick from 40 public-domain works by Soseki Natsume, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa and more
+- Ruby readings and editorial notes are stripped automatically, so the text is read aloud the way it is meant to sound
+- Added a sleep timer. Stop after 5-60 minutes or at the end of the chapter, with a gentle fade-out
