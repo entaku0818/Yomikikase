@@ -8,8 +8,6 @@ struct UserDefaultsClient: Sendable {
     var setLanguageSetting: @Sendable (String?) -> Void
     var selectedVoiceIdentifier: @Sendable () -> String? = { nil }
     var setSelectedVoiceIdentifier: @Sendable (String?) -> Void
-    var cloudTTSVoiceId: @Sendable () -> String? = { nil }
-    var setCloudTTSVoiceId: @Sendable (String?) -> Void
 
     // 音声パラメータ
     var speechRate: @Sendable () -> Float = { 0.5 }
@@ -46,11 +44,6 @@ struct UserDefaultsClient: Sendable {
     var setLastReviewRequestDate: @Sendable (Date?) -> Void
     var hasAnsweredReviewPositively: @Sendable () -> Bool = { false }
     var setHasAnsweredReviewPositively: @Sendable (Bool) -> Void
-
-    // TTS ジョブ
-    var pendingJobId: @Sendable (UUID) -> String? = { _ in nil }
-    var setPendingJob: @Sendable (UUID, String) -> Void
-    var clearPendingJob: @Sendable (UUID) -> Void
 }
 
 extension UserDefaultsClient: DependencyKey {
@@ -66,8 +59,7 @@ extension UserDefaultsClient: DependencyKey {
             setLanguageSetting: { d.set($0, forKey: "LanguageSetting") },
             selectedVoiceIdentifier: { d.string(forKey: "SelectedVoiceIdentifier") },
             setSelectedVoiceIdentifier: { d.set($0, forKey: "SelectedVoiceIdentifier") },
-            cloudTTSVoiceId: { d.string(forKey: "CloudTTSVoiceId") },
-            setCloudTTSVoiceId: { d.set($0, forKey: "CloudTTSVoiceId") },
+
             speechRate: { let v = d.float(forKey: "SpeechRate"); return v == 0 ? 0.5 : v },
             setSpeechRate: { d.set($0, forKey: "SpeechRate") },
             speechPitch: { let v = d.float(forKey: "SpeechPitch"); return v == 0 ? 1.0 : v },
@@ -101,20 +93,7 @@ extension UserDefaultsClient: DependencyKey {
             lastReviewRequestDate: { d.object(forKey: "LastReviewRequestDate") as? Date },
             setLastReviewRequestDate: { d.set($0, forKey: "LastReviewRequestDate") },
             hasAnsweredReviewPositively: { d.bool(forKey: "HasAnsweredReviewPositively") },
-            setHasAnsweredReviewPositively: { d.set($0, forKey: "HasAnsweredReviewPositively") },
-            pendingJobId: { uuid in
-                (d.dictionary(forKey: "PendingTTSJobs") as? [String: String])?[uuid.uuidString]
-            },
-            setPendingJob: { uuid, jobId in
-                var jobs = (d.dictionary(forKey: "PendingTTSJobs") as? [String: String]) ?? [:]
-                jobs[uuid.uuidString] = jobId
-                d.set(jobs, forKey: "PendingTTSJobs")
-            },
-            clearPendingJob: { uuid in
-                var jobs = (d.dictionary(forKey: "PendingTTSJobs") as? [String: String]) ?? [:]
-                jobs.removeValue(forKey: uuid.uuidString)
-                d.set(jobs, forKey: "PendingTTSJobs")
-            }
+            setHasAnsweredReviewPositively: { d.set($0, forKey: "HasAnsweredReviewPositively") }
         )
     }
 }
@@ -125,8 +104,7 @@ extension UserDefaultsClient: TestDependencyKey {
         setLanguageSetting: { _ in },
         selectedVoiceIdentifier: { nil },
         setSelectedVoiceIdentifier: { _ in },
-        cloudTTSVoiceId: { nil },
-        setCloudTTSVoiceId: { _ in },
+
         speechRate: { 0.5 },
         setSpeechRate: { _ in },
         speechPitch: { 1.0 },
@@ -152,10 +130,7 @@ extension UserDefaultsClient: TestDependencyKey {
         lastReviewRequestDate: { nil },
         setLastReviewRequestDate: { _ in },
         hasAnsweredReviewPositively: { false },
-        setHasAnsweredReviewPositively: { _ in },
-        pendingJobId: { _ in nil },
-        setPendingJob: { _, _ in },
-        clearPendingJob: { _ in }
+        setHasAnsweredReviewPositively: { _ in }
     )
 }
 

@@ -78,16 +78,6 @@ class UserDefaultsManager {
         set { defaults.set(newValue, forKey: "UsesPersonalVoice") }
     }
 
-    // Cloud TTS音声設定
-    var cloudTTSVoiceId: String? {
-        get {
-            defaults.string(forKey: "CloudTTSVoiceId")
-        }
-        set {
-            defaults.set(newValue, forKey: "CloudTTSVoiceId")
-        }
-    }
-
     // 音声の速度設定
     var speechRate: Float {
         get {
@@ -161,28 +151,6 @@ class UserDefaultsManager {
     var hasAnsweredReviewPositively: Bool {
         get { defaults.bool(forKey: "HasAnsweredReviewPositively") }
         set { defaults.set(newValue, forKey: "HasAnsweredReviewPositively") }
-    }
-
-    // 処理中のTTSジョブ管理（fileId.uuidString → jobId）
-    var pendingJobs: [String: String] {
-        get { defaults.dictionary(forKey: "PendingTTSJobs") as? [String: String] ?? [:] }
-        set { defaults.set(newValue, forKey: "PendingTTSJobs") }
-    }
-
-    func setPendingJob(fileId: UUID, jobId: String) {
-        var jobs = pendingJobs
-        jobs[fileId.uuidString] = jobId
-        pendingJobs = jobs
-    }
-
-    func clearPendingJob(fileId: UUID) {
-        var jobs = pendingJobs
-        jobs.removeValue(forKey: fileId.uuidString)
-        pendingJobs = jobs
-    }
-
-    func pendingJobId(for fileId: UUID) -> String? {
-        pendingJobs[fileId.uuidString]
     }
 
     // Kokoro TTS

@@ -16,7 +16,6 @@ import ComposableArchitecture
 struct SpeechSynthesizerClient {
     var speak: @Sendable (AVSpeechUtterance) async throws -> Bool
     var speakWithHighlight: @Sendable (AVSpeechUtterance, @escaping @Sendable (NSRange, String) -> Void, @escaping @Sendable () -> Void) async throws -> Bool
-    var speakWithAPI: @Sendable (String, String?) async throws -> Bool
     var stopSpeaking: @Sendable () async -> Bool = { false }
     var pauseSpeaking: @Sendable () async -> Bool = { false }
     var continueSpeaking: @Sendable () async -> Bool = { false }
@@ -30,8 +29,6 @@ extension SpeechSynthesizerClient: DependencyKey {
     static var liveValue: Self {
         let speechSynthesizer = SpeechSynthesizer()
         @Dependency(\.userDictionary) var userDictionary
-        @Dependency(\.audioAPI) var audioAPI
-        @Dependency(\.audioFileManager) var audioFileManager
         @Dependency(\.kokoroTTS) var kokoroTTS
 
         return Self(
@@ -93,28 +90,6 @@ extension SpeechSynthesizerClient: DependencyKey {
                     onFinish: onFinish
                 )
             },
-            speakWithAPI: { text, voiceId in
-                do {
-                    // Generate audio via Cloud TTS API
-                    let response = try await audioAPI.generateAudio(text, voiceId)
-
-                    // Download and play the audio
-                    guard let audioURL = URL(string: response.audioUrl) else {
-                        errorLog("Invalid audio URL: \(response.audioUrl)")
-                        return false
-                    }
-
-                    // Download audio file to local storage
-                    let fileId = UUID().uuidString
-                    let localURL = try await audioFileManager.downloadAudio(audioURL, fileId)
-
-                    // Play the audio
-                    return try await speechSynthesizer.playAudioFromURL(localURL.absoluteString)
-                } catch {
-                    errorLog("speakWithAPI failed: \(error)")
-                    return false
-                }
-            },
             stopSpeaking: { await speechSynthesizer.stop() },
             pauseSpeaking: { await speechSynthesizer.pause() },
             continueSpeaking: { await speechSynthesizer.continueSpeaking() },
@@ -175,7 +150,6 @@ extension SpeechSynthesizerClient: TestDependencyKey {
             onFinish()
             return true
         },
-        speakWithAPI: { _, _ in true },
         stopSpeaking: { true },
         pauseSpeaking: { true },
         continueSpeaking: { true },
@@ -260,27 +234,6 @@ private actor SpeechSynthesizer {
                     continuation.resume(returning: success)
                 }
                 player.play()
-            } catch {
-                continuation.resume(returning: false)
-            }
-        }
-    }
-
-    func playAudioFromURL(_ urlString: String) async throws -> Bool {
-        guard let url = URL(string: urlString) else {
-            throw AudioAPIError.invalidURL
-        }
-        
-        let (data, _) = try await URLSession.shared.data(from: url)
-        
-        return await withCheckedContinuation { continuation in
-            do {
-                let audioPlayer = try AVAudioPlayer(data: data)
-                self.audioPlayer = audioPlayer
-                audioPlayer.delegate = AudioPlayerDelegate { success in
-                    continuation.resume(returning: success)
-                }
-                audioPlayer.play()
             } catch {
                 continuation.resume(returning: false)
             }

@@ -7,7 +7,6 @@
 //   - liveValue: キー未設定時のデフォルト値（speechRate=0.5 / speechPitch=1.0 / 各種 nil・0・false）
 //   - liveValue: set/get のラウンドトリップ（String / Bool / Float / Int / Date）
 //   - setIsPremiumUser の PremiumStatusDidChange 通知発行
-//   - pendingJob（辞書型 PendingTTSJobs）の set / get / clear と UUID 独立性
 //   - testValue のデフォルト値
 //
 //  注意: UserDefaults.standard は使わない。テストホストのアプリが同じ standard に
@@ -30,14 +29,13 @@ final class UserDefaultsClientTests: XCTestCase {
     private var client: UserDefaultsClient { UserDefaultsClient.live(store: suite) }
 
     private static let keys = [
-        "LanguageSetting", "SelectedVoiceIdentifier", "CloudTTSVoiceId",
+        "LanguageSetting", "SelectedVoiceIdentifier",
         "SpeechRate", "SpeechPitch",
         "IsPremiumUser", "PremiumPurchaseDate",
         "KokoroEnabled", "KokoroVoice",
         "HasCompletedOnboarding",
         "SpeechCompletedCount", "AppLaunchCount", "InstallDate",
-        "ReviewRequestCount", "LastReviewRequestDate", "HasAnsweredReviewPositively",
-        "PendingTTSJobs"
+        "ReviewRequestCount", "LastReviewRequestDate", "HasAnsweredReviewPositively"
     ]
 
     private func clearKeys() {
@@ -63,7 +61,6 @@ final class UserDefaultsClientTests: XCTestCase {
     func test_live_defaults_whenUnset() {
         XCTAssertNil(client.languageSetting())
         XCTAssertNil(client.selectedVoiceIdentifier())
-        XCTAssertNil(client.cloudTTSVoiceId())
         XCTAssertEqual(client.speechRate(), 0.5, accuracy: 0.0001)
         XCTAssertEqual(client.speechPitch(), 1.0, accuracy: 0.0001)
         XCTAssertFalse(client.isPremiumUser())
@@ -84,12 +81,10 @@ final class UserDefaultsClientTests: XCTestCase {
     func test_live_stringRoundTrips() {
         client.setLanguageSetting("ja")
         client.setSelectedVoiceIdentifier("com.apple.voice.x")
-        client.setCloudTTSVoiceId("ja-JP-Wavenet-A")
         client.setKokoroVoice("jf_alpha")
 
         XCTAssertEqual(client.languageSetting(), "ja")
         XCTAssertEqual(client.selectedVoiceIdentifier(), "com.apple.voice.x")
-        XCTAssertEqual(client.cloudTTSVoiceId(), "ja-JP-Wavenet-A")
         XCTAssertEqual(client.kokoroVoice(), "jf_alpha")
     }
 
@@ -162,36 +157,6 @@ final class UserDefaultsClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    // MARK: - pendingJob（辞書型管理）
-
-    func test_pendingJob_setGetClear() {
-        let uuid = UUID()
-
-        XCTAssertNil(client.pendingJobId(uuid))
-
-        client.setPendingJob(uuid, "job-123")
-        XCTAssertEqual(client.pendingJobId(uuid), "job-123")
-
-        client.clearPendingJob(uuid)
-        XCTAssertNil(client.pendingJobId(uuid))
-    }
-
-    func test_pendingJob_multipleUUIDsAreIndependent() {
-        let a = UUID()
-        let b = UUID()
-
-        client.setPendingJob(a, "job-a")
-        client.setPendingJob(b, "job-b")
-
-        XCTAssertEqual(client.pendingJobId(a), "job-a")
-        XCTAssertEqual(client.pendingJobId(b), "job-b")
-
-        // 片方をクリアしても他方は残る
-        client.clearPendingJob(a)
-        XCTAssertNil(client.pendingJobId(a))
-        XCTAssertEqual(client.pendingJobId(b), "job-b")
-    }
-
     // MARK: - testValue のデフォルト
 
     func test_testValue_defaults() {
@@ -204,6 +169,5 @@ final class UserDefaultsClientTests: XCTestCase {
         XCTAssertFalse(client.hasCompletedOnboarding())
         XCTAssertEqual(client.speechCompletedCount(), 0)
         XCTAssertEqual(client.appLaunchCount(), 0)
-        XCTAssertNil(client.pendingJobId(UUID()))
     }
 }

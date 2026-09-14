@@ -32,6 +32,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
 
+        // 撤去済みクラウドTTSの残骸（完了しようのないジョブID・クラウド音声の選択）を捨てる
+        CloudTTSCleanup.run()
+
         // App Checkのプロバイダは FirebaseApp.configure() より前に設定する必要がある。
         // Debugビルドはシミュレータ/実機ともApp Attestが使えないためDebugProviderを使う
         // （Firebase ConsoleのApp Check > デバッグトークンに登録が必要）。

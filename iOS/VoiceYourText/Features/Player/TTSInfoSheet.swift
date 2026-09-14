@@ -9,11 +9,10 @@ import SwiftUI
 
 struct TTSInfoSheet: View {
     @Environment(\.dismiss) private var dismiss
-    let useCloudTTS: Bool
-    let cloudTTSAvailable: Bool
+    /// 撤去前のクラウドTTSで生成され、端末に残っている音声ファイルで再生するかどうか。
+    let hasGeneratedAudio: Bool
     let speechRate: Float
     let speechPitch: Float
-    let selectedVoice: VoiceConfig?
 
     /// 端末TTSで実際に使われる音声の品質状態。
     private var deviceVoiceStatus: VoiceQualityStatus { .current() }
@@ -23,81 +22,48 @@ struct TTSInfoSheet: View {
             List {
                 Section("再生方式") {
                     HStack {
-                        Image(systemName: useCloudTTS ? "cloud.fill" : "speaker.wave.2.fill")
+                        Image(systemName: hasGeneratedAudio ? "waveform" : "speaker.wave.2.fill")
                             .font(.title2)
                             .foregroundColor(.blue)
                             .frame(width: 40)
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(useCloudTTS ? "高音質TTS" : "基本TTS")
+                            Text(hasGeneratedAudio ? "保存済み音声" : "端末TTS")
                                 .font(.headline)
-                            Text(useCloudTTS ? "高品質な音声で再生" : "デバイスの標準音声で再生")
+                            Text(hasGeneratedAudio
+                                 ? "以前に生成した音声ファイルで再生"
+                                 : "デバイスの音声で再生")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
 
                         Spacer()
-
-                        if useCloudTTS && cloudTTSAvailable {
-                            Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.green)
-                        }
                     }
                 }
 
                 // 端末TTSで読むときだけ、高品質音声の状態と誘導を出す。
                 // 設定画面まで行かないと気づけなかったダウンロード導線を再生画面からも辿れるようにする。
-                if !useCloudTTS {
+                if !hasGeneratedAudio {
                     Section("読み上げ音声") {
                         HighQualityVoicePrompt(status: deviceVoiceStatus)
                     }
                 }
 
-                if useCloudTTS {
-                    Section("音声情報") {
-                        if let voice = selectedVoice {
-                            HStack {
-                                Text("音声")
-                                Spacer()
-                                Text(voice.name)
-                                    .foregroundColor(.secondary)
-                            }
-
-                            HStack {
-                                Text("言語")
-                                Spacer()
-                                Text(voice.language)
-                                    .foregroundColor(.secondary)
-                            }
-                        } else {
-                            HStack {
-                                Text("音声")
-                                Spacer()
-                                Text("デフォルト")
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                    }
-                }
-
                 Section {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("TTS方式について")
+                        Text("読み上げについて")
                             .font(.subheadline)
                             .fontWeight(.semibold)
 
-                        Text("高音質TTS: 高品質な音声で再生できますが、保存時に音声生成が必要です。")
+                        Text("端末TTS: デバイスの音声で、インターネットに接続せず即座に再生します。")
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        Text("基本TTS: デバイスの標準音声で即座に再生できます。保存は不要です。")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-
-                        Text("※ TTS方式を変更するには、編集画面から再保存してください。")
-                            .font(.caption)
-                            .foregroundColor(.orange)
-                            .padding(.top, 4)
+                        if hasGeneratedAudio {
+                            Text("保存済み音声: 以前に生成した音声ファイルをそのまま再生します。編集して保存し直すと端末TTSに切り替わります。")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
@@ -114,28 +80,18 @@ struct TTSInfoSheet: View {
     }
 }
 
-#Preview {
+#Preview("保存済み音声") {
     TTSInfoSheet(
-        useCloudTTS: true,
-        cloudTTSAvailable: true,
+        hasGeneratedAudio: true,
         speechRate: 0.5,
-        speechPitch: 1.0,
-        selectedVoice: VoiceConfig(
-            id: "ja-jp-female-a",
-            name: "日本語（女性）",
-            language: "日本語",
-            gender: "female",
-            description: "日本語の女性音声"
-        )
+        speechPitch: 1.0
     )
 }
 
-#Preview("Basic TTS") {
+#Preview("端末TTS") {
     TTSInfoSheet(
-        useCloudTTS: false,
-        cloudTTSAvailable: false,
+        hasGeneratedAudio: false,
         speechRate: 0.75,
-        speechPitch: 1.2,
-        selectedVoice: nil as VoiceConfig?
+        speechPitch: 1.2
     )
 }

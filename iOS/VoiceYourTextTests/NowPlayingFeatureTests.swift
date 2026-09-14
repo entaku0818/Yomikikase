@@ -50,8 +50,6 @@ final class NowPlayingFeatureTests: XCTestCase {
             state.currentText = "テストテキスト"
             state.source = source
             state.progress = 0.0
-            state.useCloudTTS = false
-            state.cloudTTSAudioURL = nil
         }
     }
 
@@ -66,51 +64,6 @@ final class NowPlayingFeatureTests: XCTestCase {
 
         await store.send(.startPlaying(title: "Title", text: "Text", source: .speech(id: UUID()))) { state in
             state.progress = 0.0
-        }
-    }
-
-    func test_startPlayingでCloudTTSモードがリセットされる() async {
-        let initialState = NowPlayingFeature.State(
-            useCloudTTS: true,
-            cloudTTSAudioURL: URL(fileURLWithPath: "/tmp/audio.m4a")
-        )
-        let store = TestStore(initialState: initialState) {
-            NowPlayingFeature()
-        } withDependencies: {
-            $0.speechSynthesizer = .testValue
-            $0.nowPlayingClient = .testValue
-        }
-        store.exhaustivity = .off
-
-        await store.send(.startPlaying(title: "Title", text: "Text", source: .speech(id: UUID()))) { state in
-            state.useCloudTTS = false
-            state.cloudTTSAudioURL = nil
-        }
-    }
-
-    // MARK: - startPlayingWithCloudTTS
-
-    func test_startPlayingWithCloudTTSでCloudTTSモードになる() async {
-        let store = TestStore(initialState: NowPlayingFeature.State()) {
-            NowPlayingFeature()
-        } withDependencies: {
-            $0.speechSynthesizer = .testValue
-            $0.nowPlayingClient = .testValue
-        }
-        store.exhaustivity = .off
-
-        let source = PlaybackSource.textInput(fileId: nil, text: "テスト")
-        let audioURL = URL(fileURLWithPath: "/tmp/audio.m4a")
-        await store.send(.startPlayingWithCloudTTS(
-            title: "タイトル", text: "テキスト", source: source, audioURL: audioURL
-        )) { state in
-            state.isPlaying = true
-            state.currentTitle = "タイトル"
-            state.currentText = "テキスト"
-            state.source = source
-            state.progress = 0.0
-            state.useCloudTTS = true
-            state.cloudTTSAudioURL = audioURL
         }
     }
 
@@ -161,7 +114,6 @@ final class NowPlayingFeatureTests: XCTestCase {
             $0.speechSynthesizer = SpeechSynthesizerClient(
                 speak: { _ in true },
                 speakWithHighlight: { _, _, _ in true },
-                speakWithAPI: { _, _ in true },
                 stopSpeaking: { true },
                 pauseSpeaking: {
                     pauseSpeakingCalled = true
@@ -219,7 +171,6 @@ final class NowPlayingFeatureTests: XCTestCase {
             $0.speechSynthesizer = SpeechSynthesizerClient(
                 speak: { _ in true },
                 speakWithHighlight: { _, _, _ in true },
-                speakWithAPI: { _, _ in true },
                 stopSpeaking: {
                     stopSpeakingCalled = true
                     return true
@@ -251,9 +202,7 @@ final class NowPlayingFeatureTests: XCTestCase {
             currentTitle: "タイトル",
             currentText: "テキスト",
             progress: 0.5,
-            source: .speech(id: UUID()),
-            useCloudTTS: true,
-            cloudTTSAudioURL: URL(fileURLWithPath: "/tmp/audio.m4a")
+            source: .speech(id: UUID())
         )
         let store = TestStore(initialState: initialState) {
             NowPlayingFeature()
@@ -269,8 +218,6 @@ final class NowPlayingFeatureTests: XCTestCase {
             state.currentText = ""
             state.progress = 0.0
             state.source = nil
-            state.useCloudTTS = false
-            state.cloudTTSAudioURL = nil
         }
     }
 
@@ -343,34 +290,6 @@ final class NowPlayingFeatureTests: XCTestCase {
         }
         await store.send(.updateProgress(1.0)) { state in
             state.progress = 1.0
-        }
-    }
-
-    // MARK: - setCloudTTSMode
-
-    func test_setCloudTTSModeでCloudTTSが有効になる() async {
-        let store = TestStore(initialState: NowPlayingFeature.State()) {
-            NowPlayingFeature()
-        } withDependencies: {
-            $0.speechSynthesizer = .testValue
-            $0.nowPlayingClient = .testValue
-        }
-
-        await store.send(.setCloudTTSMode(true)) { state in
-            state.useCloudTTS = true
-        }
-    }
-
-    func test_setCloudTTSModeでCloudTTSが無効になる() async {
-        let store = TestStore(initialState: NowPlayingFeature.State(useCloudTTS: true)) {
-            NowPlayingFeature()
-        } withDependencies: {
-            $0.speechSynthesizer = .testValue
-            $0.nowPlayingClient = .testValue
-        }
-
-        await store.send(.setCloudTTSMode(false)) { state in
-            state.useCloudTTS = false
         }
     }
 

@@ -8,8 +8,10 @@
 import Foundation
 import ComposableArchitecture
 
+/// 端末に保存済みの音声ファイルを扱う。
+/// クラウドTTS撤去後は新規ダウンロードを行わないため、撤去前に生成された
+/// 既存ユーザーの音声資産を再生・削除・容量管理するためだけに使う。
 struct AudioFileManager {
-    var downloadAudio: @Sendable (URL, String) async throws -> URL
     var getLocalAudioPath: @Sendable (String) -> URL?
     var deleteAudio: @Sendable (String) throws -> Void
     var audioExists: @Sendable (String) -> Bool
@@ -32,39 +34,6 @@ extension AudioFileManager: DependencyKey {
         }
 
         return Self(
-            downloadAudio: { remoteURL, identifier in
-                // Download audio file from remote URL
-                let (tempURL, response) = try await URLSession.shared.download(from: remoteURL)
-
-                guard let httpResponse = response as? HTTPURLResponse,
-                      httpResponse.statusCode == 200 else {
-                    throw AudioFileError.downloadFailed
-                }
-
-                // Determine file extension from URL path (ignoring query parameters)
-                // For signed URLs like "https://storage.googleapis.com/.../file.wav?X-Goog-..."
-                var urlComponents = URLComponents(url: remoteURL, resolvingAgainstBaseURL: false)
-                urlComponents?.query = nil  // Remove query parameters
-                let cleanPath = urlComponents?.path ?? remoteURL.path
-                let pathExtension = (cleanPath as NSString).pathExtension
-                let fileExtension = pathExtension.isEmpty ? "wav" : pathExtension
-
-                infoLog("AudioFileManager: Downloading audio for \(identifier), extension: \(fileExtension)")
-
-                let localFileName = "\(identifier).\(fileExtension)"
-                let localURL = audioDirectory.appendingPathComponent(localFileName)
-
-                // Remove existing file if any
-                if fileManager.fileExists(atPath: localURL.path) {
-                    try? fileManager.removeItem(at: localURL)
-                }
-
-                // Move downloaded file to permanent location
-                try fileManager.moveItem(at: tempURL, to: localURL)
-
-                infoLog("AudioFileManager: Saved audio to \(localURL.path)")
-                return localURL
-            },
             getLocalAudioPath: { identifier in
                 // Look for audio file with any common extension
                 let extensions = ["wav", "mp3", "m4a", "aac"]
@@ -176,9 +145,6 @@ extension AudioFileManager: DependencyKey {
     }
 
     static let testValue = Self(
-        downloadAudio: { _, identifier in
-            URL(fileURLWithPath: "/tmp/test_\(identifier).wav")
-        },
         getLocalAudioPath: { _ in nil },
         deleteAudio: { _ in },
         audioExists: { _ in false },
@@ -195,19 +161,3 @@ extension DependencyValues {
     }
 }
 
-enum AudioFileError: Error, LocalizedError {
-    case downloadFailed
-    case fileNotFound
-    case saveFailed
-
-    var errorDescription: String? {
-        switch self {
-        case .downloadFailed:
-            return "Failed to download audio file"
-        case .fileNotFound:
-            return "Audio file not found"
-        case .saveFailed:
-            return "Failed to save audio file"
-        }
-    }
-}

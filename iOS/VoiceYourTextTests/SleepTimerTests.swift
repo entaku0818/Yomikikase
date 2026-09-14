@@ -187,7 +187,6 @@ final class SleepTimerFeatureTests: XCTestCase {
             $0.speechSynthesizer = SpeechSynthesizerClient(
                 speak: { _ in true },
                 speakWithHighlight: { _, _, _ in true },
-                speakWithAPI: { _, _ in true },
                 stopSpeaking: { true },
                 pauseSpeaking: { true },
                 continueSpeaking: { true },

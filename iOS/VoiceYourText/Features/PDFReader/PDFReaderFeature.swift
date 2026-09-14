@@ -29,9 +29,6 @@ struct PDFReaderFeature: Reducer {
         var currentPDFURL: URL?
         var highlightedRange: NSRange? = nil
         var highlightedText: String? = nil  // ハイライトするテキスト
-        var useCloudTTS: Bool = false
-        var isGeneratingAudio: Bool = false
-        var cloudTTSVoiceId: String?
         var startCharacterIndex: Int = 0
         var isFeedbackPresented: Bool = false
     }
@@ -45,11 +42,6 @@ struct PDFReaderFeature: Reducer {
         case extractTextCompleted(String)
         case highlightRange(NSRange?)
         case speechFinished
-        case toggleCloudTTS
-        case setCloudTTSVoice(String?)
-        case cloudTTSGenerationStarted
-        case cloudTTSGenerationCompleted
-        case cloudTTSGenerationFailed(String)
         case setStartCharacterIndex(Int)
         case pageTapped(page: Int, characterIndex: Int)
         case alert(PresentationAction<ReviewPromptAction>)
@@ -72,8 +64,6 @@ struct PDFReaderFeature: Reducer {
     }
 
     @Dependency(\.speechSynthesizer) var speechSynthesizer
-    @Dependency(\.audioAPI) var audioAPI
-    @Dependency(\.audioFileManager) var audioFileManager
     @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.analytics) var analytics
 
@@ -108,85 +98,45 @@ struct PDFReaderFeature: Reducer {
                 guard !state.isReading else { return .none }
                 guard !state.pdfText.isEmpty else { return .none }
 
-                let useCloud = state.useCloudTTS
-                let voiceId = state.cloudTTSVoiceId ?? userDefaults.cloudTTSVoiceId()
                 let pdfText = state.pdfText
                 let safeStart = min(state.startCharacterIndex, pdfText.count)
                 let startStringIndex = pdfText.index(pdfText.startIndex, offsetBy: safeStart)
                 let utteranceText = String(pdfText[startStringIndex...])
 
-                if useCloud {
-                    // Cloud TTS mode
-                    state.isGeneratingAudio = true
-                    return .run { send in
-                        await send(.cloudTTSGenerationStarted)
-                        do {
-                            let response = try await audioAPI.generateAudio(utteranceText, voiceId)
+                state.isReading = true
 
-                            guard let audioURL = URL(string: response.audioUrl) else {
-                                await send(.cloudTTSGenerationFailed("Invalid audio URL"))
-                                return
-                            }
+                let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
+                let rate = userDefaults.speechRate()
+                let pitch = userDefaults.speechPitch()
 
-                            let fileId = UUID().uuidString
-                            let localURL = try await audioFileManager.downloadAudio(audioURL, fileId)
+                let utterance = AVSpeechUtterance(string: utteranceText)
+                // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う
+                VoiceResolver.configure(utterance, languageCode: language, rate: rate, pitch: pitch)
 
-                            await send(.cloudTTSGenerationCompleted)
-
-                            let audioSession = AVAudioSession.sharedInstance()
-                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-                            try audioSession.setActive(true)
-
-                            let audioPlayer = try AVAudioPlayer(contentsOf: localURL)
-                            audioPlayer.play()
-
-                            while audioPlayer.isPlaying {
-                                try await Task.sleep(nanoseconds: 100_000_000)
-                            }
-
-                            await send(.speechFinished)
-                        } catch {
-                            logger.error("Cloud TTS failed: \(error)")
-                            await send(.cloudTTSGenerationFailed(error.localizedDescription))
-                        }
+                return .run { send in
+                    let audioSession = AVAudioSession.sharedInstance()
+                    do {
+                        try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
+                        try audioSession.setActive(true)
+                    } catch {
+                        logger.error("Failed to set audio session category: \(error)")
                     }
-                } else {
-                    // Local TTS mode
-                    state.isReading = true
 
-                    let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
-                    let rate = userDefaults.speechRate()
-                    let pitch = userDefaults.speechPitch()
-
-                    let utterance = AVSpeechUtterance(string: utteranceText)
-                    // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う
-                    VoiceResolver.configure(utterance, languageCode: language, rate: rate, pitch: pitch)
-
-                    return .run { send in
-                        let audioSession = AVAudioSession.sharedInstance()
-                        do {
-                            try audioSession.setCategory(.playback, mode: .default, options: [.mixWithOthers, .duckOthers])
-                            try audioSession.setActive(true)
-                        } catch {
-                            logger.error("Failed to set audio session category: \(error)")
-                        }
-
-                        try await speechSynthesizer.speakWithHighlight(
-                            utterance,
-                            { range, speechString in
-                                // utterance は suffix なので safeStart 分オフセットして pdfText 上の位置に変換
-                                let offsetRange = NSRange(location: range.location + safeStart, length: range.length)
-                                Task { @MainActor in
-                                    await send(.highlightRange(offsetRange))
-                                }
-                            },
-                            {
-                                Task { @MainActor in
-                                    await send(.speechFinished)
-                                }
+                    try await speechSynthesizer.speakWithHighlight(
+                        utterance,
+                        { range, speechString in
+                            // utterance は suffix なので safeStart 分オフセットして pdfText 上の位置に変換
+                            let offsetRange = NSRange(location: range.location + safeStart, length: range.length)
+                            Task { @MainActor in
+                                await send(.highlightRange(offsetRange))
                             }
-                        )
-                    }
+                        },
+                        {
+                            Task { @MainActor in
+                                await send(.speechFinished)
+                            }
+                        }
+                    )
                 }
 
             case .stopReading:
@@ -250,32 +200,6 @@ struct PDFReaderFeature: Reducer {
                 state.isReading = isPlaying
                 return .none
 
-            case .toggleCloudTTS:
-                state.useCloudTTS.toggle()
-                return .none
-
-            case .setCloudTTSVoice(let voiceId):
-                state.cloudTTSVoiceId = voiceId
-                if let voiceId = voiceId {
-                    userDefaults.setCloudTTSVoiceId(voiceId)
-                }
-                return .none
-
-            case .cloudTTSGenerationStarted:
-                state.isGeneratingAudio = true
-                state.isReading = true
-                return .none
-
-            case .cloudTTSGenerationCompleted:
-                state.isGeneratingAudio = false
-                return .none
-
-            case .cloudTTSGenerationFailed(let error):
-                state.isGeneratingAudio = false
-                state.isReading = false
-                logger.error("Cloud TTS generation failed: \(error)")
-                return .none
-
             case let .setStartCharacterIndex(index):
                 state.startCharacterIndex = index
                 return .none
@@ -327,24 +251,6 @@ struct PDFReaderView: View {
                 .padding(.leading, 8)
 
                 Spacer()
-
-                // Cloud TTS toggle
-                Button(action: {
-                    viewStore.send(.toggleCloudTTS)
-                }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: viewStore.useCloudTTS ? "cloud.fill" : "cloud")
-                            .font(.system(size: 16))
-                        Text(viewStore.useCloudTTS ? "Cloud" : "Local")
-                            .font(.caption)
-                    }
-                    .foregroundColor(viewStore.useCloudTTS ? .blue : .secondary)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(viewStore.useCloudTTS ? Color.blue.opacity(0.1) : Color.clear)
-                    .cornerRadius(8)
-                }
-                .padding(.trailing, 8)
             }
             .frame(height: 56)
             .background(Color(UIColor.systemBackground))
@@ -374,41 +280,31 @@ struct PDFReaderView: View {
             }
 
             // プレイヤーコントロール
-            if viewStore.isGeneratingAudio {
-                HStack {
-                    ProgressView()
-                        .padding(.trailing, 8)
-                    Text("音声を生成中...")
-                        .foregroundColor(.secondary)
-                }
-                .frame(height: 80)
-            } else {
-                PlayerControlView(
-                    isSpeaking: viewStore.isReading,
-                    isTextEmpty: viewStore.pdfText.isEmpty,
-                    speechRate: UserDefaultsManager.shared.speechRate,
-                    onPlay: {
-                        viewStore.send(.startReading)
-                        // nowPlayingを更新（ミニプレイヤー用）
-                        if let parentStore = parentStore, let url = viewStore.currentPDFURL {
-                            let title = url.lastPathComponent
-                            parentStore.send(.nowPlaying(.startPlaying(
-                                title: title,
-                                text: viewStore.pdfText,
-                                source: .pdf(id: UUID(), url: url)
-                            )))
-                        }
-                    },
-                    onStop: {
-                        viewStore.send(.stopReading)
-                        parentStore?.send(.nowPlaying(.stopPlaying))
-                    },
-                    onSpeedTap: {
-                        showingSpeedPicker = true
-                    },
-                    onTTSInfoTap: nil
-                )
-            }
+            PlayerControlView(
+                isSpeaking: viewStore.isReading,
+                isTextEmpty: viewStore.pdfText.isEmpty,
+                speechRate: UserDefaultsManager.shared.speechRate,
+                onPlay: {
+                    viewStore.send(.startReading)
+                    // nowPlayingを更新（ミニプレイヤー用）
+                    if let parentStore = parentStore, let url = viewStore.currentPDFURL {
+                        let title = url.lastPathComponent
+                        parentStore.send(.nowPlaying(.startPlaying(
+                            title: title,
+                            text: viewStore.pdfText,
+                            source: .pdf(id: UUID(), url: url)
+                        )))
+                    }
+                },
+                onStop: {
+                    viewStore.send(.stopReading)
+                    parentStore?.send(.nowPlaying(.stopPlaying))
+                },
+                onSpeedTap: {
+                    showingSpeedPicker = true
+                },
+                onTTSInfoTap: nil
+            )
         }
         .background(Color(UIColor.systemBackground))
         .onAppear {

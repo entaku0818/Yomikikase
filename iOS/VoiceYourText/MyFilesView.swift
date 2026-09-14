@@ -24,9 +24,6 @@ struct MyFilesView: View {
     @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
     let store: StoreOf<Speeches>
 
-    @Dependency(\.audioAPI) var audioAPI
-    @Dependency(\.audioFileManager) var audioFileManager
-    
     var body: some View {
         // 検索・フィルタ適用後の一覧は1度だけ計算し、isEmpty判定とForEachで使い回す（二重計算を排除）。
         let files = filteredFiles
@@ -97,9 +94,6 @@ struct MyFilesView: View {
             loadFiles()
             // 7日以上前の削除済みアイテムをクリーンアップ
             SpeechTextRepository.shared.cleanupOldDeletedItems()
-        }
-        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("TTSJobCompleted"))) { _ in
-            loadFiles()
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
             isPremium = UserDefaultsManager.shared.isPremiumUser
@@ -198,8 +192,7 @@ struct MyFilesView: View {
     }
 
     /// テキスト/PDFファイルをFileItemへ変換し、日付降順でマージした一覧を構築する。
-    /// `UserDefaultsManager.pendingJobId(for:)` をファイル件数分呼ぶため、描画ごとではなく
-    /// loadFiles()時に1度だけ呼び出して結果を`combinedFiles`へ保持する。
+    /// 描画ごとの再map/sortを避けるため、loadFiles()時に1度だけ呼び出して結果を`combinedFiles`へ保持する。
     private func buildCombinedFiles() -> [FileItem] {
         var files: [FileItem] = []
 
@@ -211,8 +204,7 @@ struct MyFilesView: View {
                 title: textFile.title,
                 subtitle: textFile.fileType,
                 date: textFile.updatedAt,
-                type: fileType,
-                isProcessing: UserDefaultsManager.shared.pendingJobId(for: textFile.id) != nil
+                type: fileType
             )
         })
 
@@ -289,44 +281,8 @@ struct MyFilesView: View {
 
         // マージ・ソート済み一覧を1度だけ構築して保持する
         combinedFiles = buildCombinedFiles()
-
-        // pending ジョブがあればサーバーの状態を確認して自動解除
-        checkPendingJobs()
     }
 
-    private func checkPendingJobs() {
-        let pendingFiles = textFiles.filter {
-            UserDefaultsManager.shared.pendingJobId(for: $0.id) != nil
-        }
-        for file in pendingFiles {
-            guard let jobId = UserDefaultsManager.shared.pendingJobId(for: file.id) else { continue }
-            Task {
-                do {
-                    let status = try await audioAPI.getJobStatus(jobId)
-                    guard status.status == "completed" || status.status == "failed" else { return }
-
-                    if status.status == "completed",
-                       let audioUrlString = status.audioUrl,
-                       let audioURL = URL(string: audioUrlString) {
-                        let localURL = try await audioFileManager.downloadAudio(audioURL, file.id.uuidString)
-                        if let timepoints = status.timepoints, !timepoints.isEmpty {
-                            let timepointsURL = localURL.deletingPathExtension().appendingPathExtension("json")
-                            let data = try JSONEncoder().encode(timepoints)
-                            try data.write(to: timepointsURL)
-                        }
-                    }
-
-                    await MainActor.run {
-                        UserDefaultsManager.shared.clearPendingJob(fileId: file.id)
-                        loadFiles()
-                    }
-                } catch {
-                    // ネットワーク失敗時はスピナーを残す（次回 onAppear で再試行）
-                }
-            }
-        }
-    }
-    
     private func loadPDFFiles() {
         guard let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return
@@ -396,7 +352,6 @@ struct FileItem: Identifiable {
     let subtitle: String
     let date: Date
     let type: FileType
-    var isProcessing: Bool = false
 
     enum FileType {
         case text, pdf, epub
@@ -504,11 +459,7 @@ struct FileItemView: View {
 
             Spacer()
 
-            if file.isProcessing {
-                ProgressView()
-                    .scaleEffect(0.85)
-                    .frame(width: 32, height: 32)
-            } else if let onDelete = onDelete {
+            if let onDelete = onDelete {
                 Menu {
                     Button(role: .destructive, action: onDelete) {
                         Label("削除", systemImage: "trash")

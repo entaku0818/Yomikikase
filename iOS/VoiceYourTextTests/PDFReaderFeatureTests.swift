@@ -71,10 +71,6 @@ final class PDFReaderFeatureTests: XCTestCase {
                 print("🧪 testSynthesizer.speakWithHighlight完了")
                 return true
             },
-            speakWithAPI: { _, _ in
-                print("🧪 testSynthesizer.speakWithAPI呼び出し")
-                return true
-            },
             stopSpeaking: {
                 print("🧪 testSynthesizer.stopSpeaking呼び出し")
                 return true
@@ -136,7 +132,6 @@ final class PDFReaderFeatureTests: XCTestCase {
                     onFinish()
                     return true
                 },
-                speakWithAPI: { _, _ in true },
                 stopSpeaking: { true },
                 pauseSpeaking: { true },
                 continueSpeaking: { true },
@@ -148,8 +143,6 @@ final class PDFReaderFeatureTests: XCTestCase {
                 setLanguageSetting: { _ in },
                 selectedVoiceIdentifier: { nil },
                 setSelectedVoiceIdentifier: { _ in },
-                cloudTTSVoiceId: { nil },
-                setCloudTTSVoiceId: { _ in },
                 speechRate: { 0.5 },
                 setSpeechRate: { _ in },
                 speechPitch: { 1.0 },
@@ -175,10 +168,7 @@ final class PDFReaderFeatureTests: XCTestCase {
                 lastReviewRequestDate: { nil },
                 setLastReviewRequestDate: { _ in },
                 hasAnsweredReviewPositively: { false },
-                setHasAnsweredReviewPositively: { _ in },
-                pendingJobId: { _ in nil },
-                setPendingJob: { _, _ in },
-                clearPendingJob: { _ in }
+                setHasAnsweredReviewPositively: { _ in }
             )
         }
 
