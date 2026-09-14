@@ -111,6 +111,8 @@ struct SettingsReducer {
             case .view(.setVoiceIdentifier(let identifier)):
                 state.selectedVoiceIdentifier = identifier
                 userDefaults.setSelectedVoiceIdentifier(identifier)
+                // パーソナルボイスを選んだら記録し、次回起動時に認可を取り直せるようにする
+                PersonalVoiceAccess.rememberSelection(identifier: identifier)
                 return .none
 
             case .view(.previewVoice(let text)):

@@ -157,13 +157,10 @@ struct PDFReaderFeature: Reducer {
                     let language = userDefaults.languageSetting() ?? AVSpeechSynthesisVoice.currentLanguageCode()
                     let rate = userDefaults.speechRate()
                     let pitch = userDefaults.speechPitch()
-                    let volume: Float = 0.75
 
                     let utterance = AVSpeechUtterance(string: utteranceText)
-                    utterance.voice = AVSpeechSynthesisVoice(language: language)
-                    utterance.rate = rate
-                    utterance.pitchMultiplier = pitch
-                    utterance.volume = volume
+                    // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う
+                    VoiceResolver.configure(utterance, languageCode: language, rate: rate, pitch: pitch)
 
                     return .run { send in
                         let audioSession = AVAudioSession.sharedInstance()

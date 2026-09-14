@@ -71,6 +71,13 @@ class UserDefaultsManager {
         }
     }
 
+    /// パーソナルボイスを選んだことがあるか。
+    /// true のときだけ起動時に認可を取り直し、再生経路からパーソナルボイスを使えるようにする。
+    var usesPersonalVoice: Bool {
+        get { defaults.bool(forKey: "UsesPersonalVoice") }
+        set { defaults.set(newValue, forKey: "UsesPersonalVoice") }
+    }
+
     // Cloud TTS音声設定
     var cloudTTSVoiceId: String? {
         get {

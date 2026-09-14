@@ -24,33 +24,19 @@ struct VoiceSettingView: View {
             .sorted { $0.quality.rawValue > $1.quality.rawValue }
     }
 
-    private var hasEnhancedVoice: Bool {
-        availableVoices.contains { $0.quality != .default }
+    /// 高品質音声の状態（使用中 / 未選択 / 未ダウンロード）。
+    /// 音声を選び直したら再判定できるよう selectedVoiceIdentifier を入力にする。
+    private var voiceQualityStatus: VoiceQualityStatus {
+        VoiceQualityStatus.current(
+            languageCode: selectedLanguageCode,
+            selectedIdentifier: store.selectedVoiceIdentifier
+        )
     }
 
     var body: some View {
         Form {
-            if !hasEnhancedVoice {
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: "arrow.down.circle.fill")
-                                .foregroundColor(.blue)
-                            Text("高品質音声を使用できます")
-                                .font(.headline)
-                        }
-                        Text("設定 > アクセシビリティ > 読み上げコンテンツ > 声 から高品質音声をダウンロードすると、より自然な読み上げになります。")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Button("設定を開く") {
-                            if let url = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.open(url)
-                            }
-                        }
-                        .font(.callout)
-                    }
-                    .padding(.vertical, 4)
-                }
+            Section {
+                HighQualityVoicePrompt(status: voiceQualityStatus)
             }
 
             Section(header: Text("利用可能な音声")) {
@@ -68,14 +54,13 @@ struct VoiceSettingView: View {
                 }
             }
 
-            if #available(iOS 17.0, *), selectedLanguageCode.starts(with: "en") {
-                PersonalVoiceSection(
-                    selectedVoiceIdentifier: store.selectedVoiceIdentifier,
-                    speechRate: store.speechRate,
-                    speechPitch: store.speechPitch,
-                    onSelect: { send(.setVoiceIdentifier($0)) }
-                )
-            }
+            PersonalVoiceSection(
+                languageCode: selectedLanguageCode,
+                selectedVoiceIdentifier: store.selectedVoiceIdentifier,
+                speechRate: store.speechRate,
+                speechPitch: store.speechPitch,
+                onSelect: { send(.setVoiceIdentifier($0)) }
+            )
 
             if selectedLanguageCode.starts(with: "en") || selectedLanguageCode.starts(with: "ja") {
                 KokoroTTSSection(
@@ -122,10 +107,12 @@ struct VoiceSettingView: View {
     }
 }
 
-// MARK: - Personal Voice Section (iOS 17+)
+// MARK: - Personal Voice Section
 
-@available(iOS 17.0, *)
+/// パーソナルボイスの認可・選択。
+/// 選択された identifier は通常の再生経路（VoiceResolver）からも使われる。
 private struct PersonalVoiceSection: View {
+    let languageCode: String
     let selectedVoiceIdentifier: String?
     let speechRate: Float
     let speechPitch: Float
@@ -133,9 +120,16 @@ private struct PersonalVoiceSection: View {
 
     @State private var authStatus: AVSpeechSynthesizer.PersonalVoiceAuthorizationStatus = .notDetermined
 
+    /// 現在の読み上げ言語と一致するパーソナルボイスだけを出す。
+    /// 日本語の文章を英語のパーソナルボイスで読ませても実用にならないため。
     private var personalVoices: [AVSpeechSynthesisVoice] {
-        AVSpeechSynthesisVoice.speechVoices()
-            .filter { $0.voiceTraits.contains(.isPersonalVoice) }
+        PersonalVoiceAccess.availableVoices()
+            .filter { VoiceResolver.languagesMatch($0.language, languageCode) }
+    }
+
+    /// 言語が一致しないパーソナルボイスしか無い場合の件数（説明文に使う）。
+    private var otherLanguageVoiceCount: Int {
+        PersonalVoiceAccess.availableVoices().count - personalVoices.count
     }
 
     var body: some View {
@@ -143,9 +137,7 @@ private struct PersonalVoiceSection: View {
             switch authStatus {
             case .notDetermined:
                 Button("パーソナルボイスを使用する") {
-                    AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
-                        DispatchQueue.main.async { authStatus = status }
-                    }
+                    PersonalVoiceAccess.request { authStatus = $0 }
                 }
             case .denied:
                 Label("設定でアクセスを許可してください", systemImage: "xmark.circle")
@@ -158,9 +150,15 @@ private struct PersonalVoiceSection: View {
             case .authorized:
                 if personalVoices.isEmpty {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("パーソナルボイスが作成されていません")
-                            .foregroundColor(.secondary)
-                            .font(.caption)
+                        if otherLanguageVoiceCount > 0 {
+                            Text("現在の読み上げ言語に対応したパーソナルボイスがありません")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        } else {
+                            Text("パーソナルボイスが作成されていません")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
                         Text("設定 > アクセシビリティ > パーソナルボイス で作成できます（現在は英語のみ対応）")
                             .foregroundColor(.secondary)
                             .font(.caption)
@@ -177,6 +175,9 @@ private struct PersonalVoiceSection: View {
                             }
                         )
                     }
+                    Text("選んだパーソナルボイスは、アプリ内の読み上げでもそのまま使われます。")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
             @unknown default:
                 EmptyView()
@@ -189,7 +190,8 @@ private struct PersonalVoiceSection: View {
 
     private func previewVoice(_ voice: AVSpeechSynthesisVoice) {
         let synthesizer = AVSpeechSynthesizer()
-        let utterance = AVSpeechUtterance(string: "Hello, this is a test.")
+        let sample = languageCode.hasPrefix("ja") ? "こんにちは、これはテストです。" : "Hello, this is a test."
+        let utterance = AVSpeechUtterance(string: sample)
         utterance.voice = voice
         utterance.rate = speechRate
         utterance.pitchMultiplier = speechPitch
@@ -228,27 +230,21 @@ private struct VoiceSettingRow: View {
         }
     }
 
+    /// 音質バッジ。ラベルは VoiceResolver 側の定義と共有する。
     @ViewBuilder
     private var qualityBadge: some View {
-        switch voice.quality {
-        case .enhanced:
-            Text("高品質")
+        if let label = voice.quality.displayLabel {
+            Text(label)
                 .font(.caption2)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
-                .background(Color.blue.opacity(0.15))
-                .foregroundColor(.blue)
+                .background(badgeColor.opacity(0.15))
+                .foregroundColor(badgeColor)
                 .cornerRadius(4)
-        case .premium:
-            Text("プレミアム")
-                .font(.caption2)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 2)
-                .background(Color.purple.opacity(0.15))
-                .foregroundColor(.purple)
-                .cornerRadius(4)
-        default:
-            EmptyView()
         }
+    }
+
+    private var badgeColor: Color {
+        voice.quality == .premium ? .purple : .blue
     }
 }

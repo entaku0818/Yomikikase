@@ -15,6 +15,9 @@ struct TTSInfoSheet: View {
     let speechPitch: Float
     let selectedVoice: VoiceConfig?
 
+    /// 端末TTSで実際に使われる音声の品質状態。
+    private var deviceVoiceStatus: VoiceQualityStatus { .current() }
+
     var body: some View {
         NavigationStack {
             List {
@@ -39,6 +42,14 @@ struct TTSInfoSheet: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
                         }
+                    }
+                }
+
+                // 端末TTSで読むときだけ、高品質音声の状態と誘導を出す。
+                // 設定画面まで行かないと気づけなかったダウンロード導線を再生画面からも辿れるようにする。
+                if !useCloudTTS {
+                    Section("読み上げ音声") {
+                        HighQualityVoicePrompt(status: deviceVoiceStatus)
                     }
                 }
 

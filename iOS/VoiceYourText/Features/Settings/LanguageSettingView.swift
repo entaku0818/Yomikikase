@@ -188,6 +188,13 @@ struct LanguageSettingView: View {
                             Text("デバッグログ")
                         }
                     }
+                    NavigationLink(destination: VoiceDumpView()) {
+                        HStack {
+                            Image(systemName: "waveform.and.person.filled")
+                                .foregroundColor(.blue)
+                            Text("音声ダンプ")
+                        }
+                    }
                     Button {
                         showScreenshotView = true
                     } label: {

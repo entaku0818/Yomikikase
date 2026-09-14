@@ -178,6 +178,9 @@ struct VoiceYourTextApp: App {
                 Task {
                     await PurchaseManager.shared.checkPremiumStatus()
                 }
+                // パーソナルボイスを選んだことがあるユーザーだけ認可を取り直す。
+                // これをしないと speechVoices() に現れず、再生時に既定音声へ落ちる。
+                PersonalVoiceAccess.requestIfNeeded()
             }
         }
         .fullScreenCover(isPresented: $showOnboarding) {

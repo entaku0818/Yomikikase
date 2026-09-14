@@ -230,11 +230,15 @@ struct ScannedDocumentView: View {
 
         let utterance = AVSpeechUtterance(string: editableText)
 
-        // 言語設定を取得
+        // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う。
+        // この画面は速度・ピッチだけ独自の固定値を使う。
         let languageCode = UserDefaultsManager.shared.languageSetting ?? "ja"
-        utterance.voice = AVSpeechSynthesisVoice(language: languageCode)
-        utterance.rate = AVSpeechUtteranceDefaultSpeechRate * 0.75
-        utterance.pitchMultiplier = 1.0
+        VoiceResolver.configure(
+            utterance,
+            languageCode: languageCode,
+            rate: AVSpeechUtteranceDefaultSpeechRate * 0.75,
+            pitch: 1.0
+        )
 
         // テキストを選択（ハイライト風）
         store.send(.speechSelected(editableText))

@@ -61,35 +61,35 @@ extension SpeechSynthesizerClient: DependencyKey {
                     }
                 }
 
-                // ユーザー辞書の読み方を適用
-                let text = utterance.speechString
-                let words = text.components(separatedBy: .whitespacesAndNewlines)
-                var modifiedText = text
-                
-                for word in words {
-                    if let reading = userDictionary.getReading(word) {
-                        modifiedText = modifiedText.replacingOccurrences(of: word, with: reading)
-                    }
-                }
-                
-                // 新しいAVSpeechUtteranceを作成
-                let modifiedUtterance = AVSpeechUtterance(string: modifiedText)
-                modifiedUtterance.rate = utterance.rate
-                modifiedUtterance.pitchMultiplier = utterance.pitchMultiplier
-                modifiedUtterance.volume = utterance.volume
-                modifiedUtterance.voice = utterance.voice
-                
-                return try await speechSynthesizer.speak(utterance: modifiedUtterance)
+                // ユーザー辞書の読み方と日本語向けの読み前処理を適用
+                let prepared = SpeechTextPreprocessor.prepare(
+                    utterance.speechString,
+                    languageCode: Self.languageCode(for: utterance),
+                    readings: userDictionary.entries().map { (word: $0.word, reading: $0.reading) }
+                )
+
+                return try await speechSynthesizer.speak(
+                    utterance: Self.rebuild(utterance, with: prepared.spoken)
+                )
             },
             speakWithHighlight: { utterance, onHighlight, onFinish in
-                // ハイライト機能では元のテキストを保持する必要があるため、
-                // ユーザー辞書の適用は行わずに元のテキストで音声合成を実行
+                // ユーザー辞書・前処理を適用したうえで読み上げ、ハイライト範囲は
+                // PreparedSpeechText の対応表で「元のテキスト上の範囲」へ逆引きして返す。
+                // これにより、辞書を適用してもハイライトがずれない。
+                let originalText = utterance.speechString
+                let plan = Self.highlightPlan(
+                    for: utterance,
+                    languageCode: Self.languageCode(for: utterance),
+                    readings: userDictionary.entries().map { (word: $0.word, reading: $0.reading) }
+                )
+
                 return try await speechSynthesizer.speakWithHighlight(
-                    utterance: utterance, 
+                    utterance: plan.utterance,
                     onHighlight: { range, _ in
-                        // 元のテキストに対する範囲を送信
-                        onHighlight(range, utterance.speechString)
-                    }, 
+                        // 常に「元のテキスト」と、それに対する範囲を呼び出し側へ渡す
+                        guard let mapped = plan.prepared.originalRange(forSpoken: range) else { return }
+                        onHighlight(mapped, originalText)
+                    },
                     onFinish: onFinish
                 )
             },
@@ -121,6 +121,47 @@ extension SpeechSynthesizerClient: DependencyKey {
             isPaused: { await speechSynthesizer.isPaused() },
             fadeOutAndStop: { seconds in await speechSynthesizer.fadeOutAndStop(seconds: seconds) }
         )
+    }
+}
+
+extension SpeechSynthesizerClient {
+
+    /// 前処理に使う言語コードを決める。
+    /// 解決済みの音声が持つ言語を最優先し、無ければユーザーの言語設定を使う。
+    static func languageCode(for utterance: AVSpeechUtterance) -> String? {
+        utterance.voice?.language ?? UserDefaultsManager.shared.languageSetting
+    }
+
+    /// speakWithHighlight が実際に読み上げる utterance と、ハイライト逆引き表を組み立てる。
+    ///
+    /// 副作用が無いので、ユーザー辞書がメイン再生経路で効いているかを
+    /// そのままユニットテストできる（liveValue と同じ関数をテストが呼ぶ）。
+    static func highlightPlan(
+        for utterance: AVSpeechUtterance,
+        languageCode: String?,
+        readings: [(word: String, reading: String)]
+    ) -> (utterance: AVSpeechUtterance, prepared: PreparedSpeechText) {
+        let prepared = SpeechTextPreprocessor.prepare(
+            utterance.speechString,
+            languageCode: languageCode,
+            readings: readings
+        )
+        // 変換が起きていなければ元の utterance をそのまま使う
+        let spoken = prepared.isIdentity ? utterance : rebuild(utterance, with: prepared.spoken)
+        return (spoken, prepared)
+    }
+
+    /// 読み上げ文字列だけを差し替えた utterance を作る。
+    /// 音声・速度・ピッチ・音量・前後の無音はそのまま引き継ぐ。
+    static func rebuild(_ utterance: AVSpeechUtterance, with text: String) -> AVSpeechUtterance {
+        let rebuilt = AVSpeechUtterance(string: text)
+        rebuilt.voice = utterance.voice
+        rebuilt.rate = utterance.rate
+        rebuilt.pitchMultiplier = utterance.pitchMultiplier
+        rebuilt.volume = utterance.volume
+        rebuilt.preUtteranceDelay = utterance.preUtteranceDelay
+        rebuilt.postUtteranceDelay = utterance.postUtteranceDelay
+        return rebuilt
     }
 }
 

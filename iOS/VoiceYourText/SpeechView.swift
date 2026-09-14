@@ -305,18 +305,8 @@ struct SpeechView: View {
          }
         let speechUtterance = AVSpeechUtterance(string: text)
 
-        // 保存された言語設定を取得
-        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-
-        // 保存されたレートとピッチを取得し、デフォルト値を設定
-        let rate = UserDefaultsManager.shared.speechRate
-        let pitch = UserDefaultsManager.shared.speechPitch
-        let volume: Float = 0.75 // 音量は固定
-
-        speechUtterance.rate = rate
-        speechUtterance.pitchMultiplier = pitch
-        speechUtterance.volume = volume
+        // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）・速度・ピッチを適用
+        VoiceResolver.configure(speechUtterance)
 
         Task {
             try? await speechSynthesizer.speak(speechUtterance)
@@ -345,18 +335,8 @@ struct SpeechView: View {
 
         let speechUtterance = AVSpeechUtterance(string: text)
 
-        // 保存された言語設定を取得
-        let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
-        speechUtterance.voice = AVSpeechSynthesisVoice(language: language)
-
-        // 保存されたレートとピッチを取得し、デフォルト値を設定
-        let rate = UserDefaultsManager.shared.speechRate
-        let pitch = UserDefaultsManager.shared.speechPitch
-        let volume: Float = 0.75 // 音量は固定
-
-        speechUtterance.rate = rate
-        speechUtterance.pitchMultiplier = pitch
-        speechUtterance.volume = volume
+        // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）・速度・ピッチを適用
+        VoiceResolver.configure(speechUtterance)
 
         viewStore.send(.startSpeaking)
         // ミニプレイヤー用にnowPlayingも更新
@@ -421,21 +401,6 @@ struct SpeechView: View {
                 errorLog("API speech failed: \(error)")
                 DispatchQueue.main.async {
                     viewStore.send(.stopSpeaking)
-                }
-            }
-        }
-    }
-
-    func speechMyVoice(text: String) {
-        if #available(iOS 17.0, *) {
-            AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status in
-                if status == .authorized {
-                    let personalVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.voiceTraits.contains(.isPersonalVoice) }
-                    let myUtterance = AVSpeechUtterance(string: text)
-                    myUtterance.voice = personalVoices.first
-                    Task {
-                        try? await speechSynthesizer.speak(myUtterance)
-                    }
                 }
             }
         }

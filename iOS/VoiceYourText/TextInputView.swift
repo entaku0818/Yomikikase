@@ -552,7 +552,6 @@ struct TextInputView: View {
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         let rate = UserDefaultsManager.shared.speechRate
         let pitch = UserDefaultsManager.shared.speechPitch
-        let volume: Float = 0.75
         infoLog("[Highlight] language: \(language), rate: \(rate), pitch: \(pitch)")
 
         // AVSpeechSynthesizer は長いテキストをサイレントに失敗するため、チャンクに分割して読み上げる
@@ -568,10 +567,8 @@ struct TextInputView: View {
                     }
                     infoLog("[Highlight] Speaking chunk \(index + 1)/\(chunks.count), offset=\(chunk.offset)")
                     let utterance = AVSpeechUtterance(string: chunk.text)
-                    utterance.voice = AVSpeechSynthesisVoice(language: language)
-                    utterance.rate = rate
-                    utterance.pitchMultiplier = pitch
-                    utterance.volume = volume
+                    // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う
+                    VoiceResolver.configure(utterance, languageCode: language, rate: rate, pitch: pitch)
 
                     try await speechSynthesizer.speakWithHighlight(
                         utterance,
