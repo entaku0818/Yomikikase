@@ -36,6 +36,15 @@ if [ ! -f "${CONFIG_DIR}/Release.xcconfig" ]; then
     echo "ERROR: ADMOB_BANNER_ID が設定されていません。Xcode Cloud の環境変数を確認してください。" >&2
     exit 1
   fi
+  # Googleのテスト用パブリッシャーIDが本番ビルドに混入するのを防ぐ。
+  # （テストIDで本番バイナリを焼くと広告収益がゼロになる）
+  case "${ADMOB_PROD}" in
+    ca-app-pub-3940256099942544*)
+      echo "ERROR: ADMOB_BANNER_ID が Google のテスト用ID (${ADMOB_PROD}) です。" >&2
+      echo "       Xcode Cloud の環境変数 ADMOB_BANNER_ID に本番の広告ユニットIDを設定してください。" >&2
+      exit 1
+      ;;
+  esac
 
   cat > "${CONFIG_DIR}/Release.xcconfig" << EOF
 REVENUECAT_API_KEY = ${REVENUECAT_KEY}

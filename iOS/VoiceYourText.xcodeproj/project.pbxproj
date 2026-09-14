@@ -152,6 +152,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 614F56F52B11B82000E21FE9 /* Build configuration list for PBXNativeTarget "VoiceYourText" */;
 			buildPhases = (
+				61AD0B0E2F7A000100AD0B0E /* Validate AdMob Ad Unit IDs */,
 				614F56CD2B11B81F00E21FE9 /* Sources */,
 				614F56CE2B11B81F00E21FE9 /* Frameworks */,
 				614F56CF2B11B81F00E21FE9 /* Resources */,
@@ -314,6 +315,27 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		61AD0B0E2F7A000100AD0B0E /* Validate AdMob Ad Unit IDs */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/scripts/validate_admob_ids.sh",
+				"$(SRCROOT)/$(INFOPLIST_FILE)",
+			);
+			name = "Validate AdMob Ad Unit IDs";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/scripts/validate_admob_ids.sh\"\n";
+		};
 		61A1B2102DB8000100000001 /* Upload Crashlytics dSYMs */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
