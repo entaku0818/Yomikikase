@@ -1,4 +1,4 @@
-Yenilikler
-- Japon edebiyatının klasiklerini Aozora Bunko'dan uygulama içinde indirip hemen dinleyin. Ana ekrandaki "Klasikler" bölümünden Natsume Soseki, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa ve daha fazlasına ait, telif hakkı süresi dolmuş 40 eseri seçebilirsiniz
-- Okunuş yardımları ve editör notları otomatik olarak kaldırılır, böylece metin doğal biçimde okunur
-- Uyku zamanlayıcısı eklendi. 5-60 dakika sonra ya da bölüm sonunda, sesi yavaşça kısarak durur
+İyileştirmeler
+- Ayarlar'da seçtiğiniz ses artık sesli okumada gerçekten kullanılıyor. Şimdiye kadar uygulama dilin varsayılan sesine geri dönüyordu
+- Yüksek kaliteli seslerin (Enhanced/Premium) indirilmesine dair yönlendirme daha anlaşılır hale getirildi
+- Sesli okuma artık tamamen cihazda çalışıyor. Bağlantı olmadan da çalışır ve sesin oluşturulmasını beklemek gerekmez

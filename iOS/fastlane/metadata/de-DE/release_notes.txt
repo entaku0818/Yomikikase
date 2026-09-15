@@ -1,4 +1,4 @@
-Neue Funktionen
-- Laden Sie japanische Klassiker aus der Aozora Bunko direkt in der App herunter und hören Sie sie an. Über "Klassiker" auf dem Startbildschirm stehen 40 gemeinfreie Werke von Soseki Natsume, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa und weiteren zur Auswahl
-- Lesehilfen und Anmerkungen werden automatisch entfernt, damit der Text natürlich vorgelesen wird
-- Neuer Sleeptimer: Stopp nach 5-60 Minuten oder am Kapitelende, mit sanftem Ausblenden
+Verbesserungen
+- Die in den Einstellungen gewählte Stimme wird nun auch tatsächlich zum Vorlesen verwendet. Bisher griff die App auf die Standardstimme der Sprache zurück
+- Klarere Hinweise zum Herunterladen hochwertiger Stimmen (Enhanced/Premium)
+- Das Vorlesen läuft jetzt vollständig auf dem Gerät. Es funktioniert ohne Internetverbindung, und es entfällt die Wartezeit für die Audioerzeugung

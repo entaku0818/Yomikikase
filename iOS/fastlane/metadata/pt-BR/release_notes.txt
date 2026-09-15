@@ -1,4 +1,4 @@
-Novidades
-- Baixe clássicos da literatura japonesa do Aozora Bunko e ouça na hora. Toque em "Clássicos" na tela inicial para escolher entre 40 obras de domínio público de Soseki Natsume, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa e outros
-- As leituras ruby e as notas são removidas automaticamente, deixando a leitura natural
-- Novo timer de desligamento: pare após 5 a 60 minutos ou no fim do capítulo, com fade-out suave
+Melhorias
+- A voz escolhida nos Ajustes agora é realmente usada na leitura. Até agora o app recorria à voz padrão do idioma
+- Orientações mais claras para baixar vozes de alta qualidade (Enhanced/Premium)
+- A leitura agora acontece totalmente no dispositivo. Funciona sem conexão e não há mais espera pela geração do áudio

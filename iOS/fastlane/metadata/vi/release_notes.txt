@@ -1,4 +1,4 @@
-Tính năng mới
-- Tải các tác phẩm kinh điển của văn học Nhật Bản từ Aozora Bunko ngay trong ứng dụng và nghe liền. Chạm "Kinh điển" ở màn hình chính để chọn trong 40 tác phẩm đã hết hạn bản quyền của Natsume Soseki, Ryunosuke Akutagawa, Osamu Dazai, Kenji Miyazawa và nhiều tác giả khác
-- Phiên âm ruby và chú thích được lược bỏ tự động nên văn bản được đọc tự nhiên
-- Thêm hẹn giờ ngủ: dừng sau 5-60 phút hoặc khi hết chương, âm lượng nhỏ dần rồi tắt
+Cải tiến
+- Giọng đọc bạn chọn trong Cài đặt giờ đây được dùng thật sự khi đọc. Trước đây ứng dụng dùng giọng mặc định của ngôn ngữ
+- Hướng dẫn tải giọng chất lượng cao (Enhanced/Premium) rõ ràng hơn
+- Việc đọc giờ diễn ra hoàn toàn trên thiết bị. Hoạt động không cần mạng và không còn phải chờ tạo âm thanh
