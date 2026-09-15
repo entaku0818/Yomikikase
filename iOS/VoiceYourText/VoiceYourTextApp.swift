@@ -13,6 +13,7 @@ import FirebaseAnalytics
 import FirebaseCrashlytics
 import FirebaseAppCheck
 import RevenueCat
+import GoogleMobileAds
 import GoogleSignIn
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -72,6 +73,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let isPremium = UserDefaultsManager.shared.isPremiumUser
         Analytics.setUserProperty(isPremium ? "true" : "false", forName: "is_premium")
 
+        // Google Mobile Ads SDK の明示初期化。
+        // App Open広告は初期化完了前にロード要求しても取得できないため、
+        // 起動直後に開始しておき AppOpenAdManager 側で完了を待つ。
+        infoLog("Starting Google Mobile Ads SDK...")
+        AdMobInitializer.shared.start()
+
         infoLog("App launch completed")
         return true
     }
@@ -112,31 +119,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 class AdConfig: ObservableObject {
     static let shared = AdConfig()
     let bannerAdUnitID: String
+    let appOpenAdUnitID: String
 
     private init() {
-        self.bannerAdUnitID = AdConfig.getAdUnitID()
+        self.bannerAdUnitID = AdConfig.getAdUnitID(key: "ADMOB_BANNER_ID", label: "banner")
+        self.appOpenAdUnitID = AdConfig.getAdUnitID(key: "ADMOB_APP_OPEN_ID", label: "app open")
     }
 
     // 広告ユニットIDを取得するメソッド
     // 優先順位: 1. 環境変数 → 2. Info.plist
-    private static func getAdUnitID() -> String {
+    // Releaseビルドで本番IDが入っていることは、ビルドフェーズ
+    // "Validate AdMob Ad Unit IDs"（scripts/validate_admob_ids.sh）が保証している。
+    private static func getAdUnitID(key: String, label: String) -> String {
 
         // 1. 環境変数から取得（優先）
-        if let envAdUnitID = ProcessInfo.processInfo.environment["ADMOB_BANNER_ID"],
+        if let envAdUnitID = ProcessInfo.processInfo.environment[key],
            !envAdUnitID.isEmpty {
-            debugLog("Using AdMob banner ID from environment variable")
+            debugLog("Using AdMob \(label) ID from environment variable")
             return envAdUnitID
         }
 
         // 2. Info.plistから取得（フォールバック）
-        if let adUnitID = Bundle.main.infoDictionary?["ADMOB_BANNER_ID"] as? String,
+        if let adUnitID = Bundle.main.infoDictionary?[key] as? String,
            !adUnitID.isEmpty {
-            debugLog("Using AdMob banner ID from Info.plist")
+            debugLog("Using AdMob \(label) ID from Info.plist")
             return adUnitID
         }
 
         // 広告ユニットIDが見つからない場合はエラーメッセージを表示して終了
-        assertionFailure("AdMob banner ID not found. Please set it in Info.plist or environment variable.")
+        assertionFailure("AdMob \(label) ID not found. Please set \(key) in Info.plist or environment variable.")
         return ""
     }
 }
@@ -185,6 +196,12 @@ struct VoiceYourTextApp: App {
                 // これをしないと speechVoices() に現れず、再生時に既定音声へ落ちる。
                 PersonalVoiceAccess.requestIfNeeded()
             }
+        }
+        .task {
+            // App Open広告（起動時の全画面広告）。
+            // オンボーディング表示中は被せない。表示回でなければロード要求も行わない。
+            guard !showOnboarding else { return }
+            await AppOpenAdManager.shared.showAdOnColdStartIfEligible()
         }
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingSheetContainer(onComplete: { showOnboarding = false })

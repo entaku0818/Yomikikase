@@ -21,11 +21,11 @@ set -u
 TEST_PUBLISHER_ID="ca-app-pub-3940256099942544"
 
 # Releaseで必須のキー（未設定・空もエラー）
-REQUIRED_KEYS="ADMOB_BANNER_ID"
+REQUIRED_KEYS="ADMOB_BANNER_ID ADMOB_APP_OPEN_ID"
 
 # 存在すれば検証するキー（未設定は許容。app_open / rewarded を追加したら
 # 自動的にこのガードの対象になる）
-OPTIONAL_KEYS="ADMOB_APP_OPEN_ID ADMOB_INTERSTITIAL_ID ADMOB_REWARDED_ID"
+OPTIONAL_KEYS="ADMOB_INTERSTITIAL_ID ADMOB_REWARDED_ID"
 
 RELEASE_XCCONFIG_PATH="iOS/VoiceYourText/config/Release.xcconfig"
 CI_SCRIPT_PATH="iOS/ci_scripts/ci_post_clone.sh"

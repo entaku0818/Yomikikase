@@ -41,6 +41,19 @@ class UserDefaultsManager {
         }
     }
 
+    // App Open広告の起動カウント
+    // 他機能のカウンタと共有しない専用キー。
+    // （別アプリで起動カウンタと録音カウンタが同じキーを共有していて、
+    //   広告の表示機会が消えるうえ課金訴求まで誤爆した事故があったため）
+    var appOpenAdLaunchCount: Int {
+        get {
+            defaults.object(forKey: "AppOpenAdLaunchCount") as? Int ?? 0
+        }
+        set {
+            defaults.set(newValue, forKey: "AppOpenAdLaunchCount")
+        }
+    }
+
     // 読み上げ完了カウント
     var speechCompletedCount: Int {
         get {
