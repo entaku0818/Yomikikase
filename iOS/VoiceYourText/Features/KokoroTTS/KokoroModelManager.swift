@@ -24,9 +24,17 @@ actor KokoroModelManager {
     /// モデル本体ダウンロード時のチャンクバッファサイズ（4 MB）。
     private let downloadBufferSize = 4 * 1_048_576
 
-    // GitHub LFS media CDN（raw URLはLFSポインタを返すためmedia.githubusercontent.comを使用）
+    // モデル本体は第三者リポジトリの GitHub LFS media CDN
+    // （raw URL は LFS ポインタを返すため media.githubusercontent.com を使う）
     private let modelURL = URL(string: "https://media.githubusercontent.com/media/mlalma/KokoroTestApp/main/Resources/kokoro-v1_0.safetensors")!
-    private let voicesURL = URL(string: "https://media.githubusercontent.com/media/mlalma/KokoroTestApp/main/Resources/voices.npz")!
+
+    // ボイス埋め込みは自前ホスト（Firebase Hosting）。理由は2つ:
+    //   1. 従来の media.githubusercontent.com の voices.npz は LFS 管理から外れて 404 になった
+    //   2. その中身は英語28音声のみで、アプリが公開している jf_alpha / jm_kumo が
+    //      1つも入っておらず、日本語 Kokoro が実行時に必ず失敗していた
+    // 中身を変えるときは v2 を作り、古いクライアントが見る v1 は消さないこと。
+    // 再生成は scripts/build_kokoro_voices.py。
+    private let voicesURL = URL(string: "https://voiceyourtext.web.app/kokoro/voices-v1.npz")!
 
     private(set) var status: KokoroDownloadStatus = .notDownloaded
     private var statusContinuations: [UUID: AsyncStream<KokoroDownloadStatus>.Continuation] = [:]
@@ -54,9 +62,20 @@ actor KokoroModelManager {
         let dir = Self.storageDirectory()
         try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
 
-        // voices.npz は軽いので先にダウンロード
+        // voices.npz は軽いので先にダウンロード。
+        // ここで HTTP ステータスと ZIP マジックバイトを検証してから書き込む。
+        // 検証しないと、404 の本文（HTMLやカラ）をそのまま voices.npz として保存したうえ
+        // 約300MBのモデル本体を最後まで落としてしまい、しかも checkDownloaded() が
+        // false を返すので「DL済みなのに Kokoro が使えない」状態になる。
         if !FileManager.default.fileExists(atPath: dir.appending(path: Self.voicesFileName).path) {
-            let (voicesData, _) = try await session.data(from: voicesURL)
+            let (voicesData, voicesResponse) = try await session.data(from: voicesURL)
+            let statusCode = (voicesResponse as? HTTPURLResponse)?.statusCode ?? 0
+            guard statusCode == 200 else {
+                throw KokoroError.synthesisFailure("ボイスファイルの取得に失敗しました (HTTP \(statusCode))")
+            }
+            guard Self.isValidVoicesHeader(voicesData.prefix(4)) else {
+                throw KokoroError.synthesisFailure("ボイスファイルが壊れています")
+            }
             try voicesData.write(to: dir.appending(path: Self.voicesFileName))
         }
 

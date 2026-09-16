@@ -82,8 +82,8 @@ enum KokoroAudioUtil {
     }
 
     /// voices.npz から読み込めたキー集合に、期待する全 voice が含まれるか検証する。
-    /// 欠けている `KokoroVoice` を宣言順で返す（空なら全 12 ボイス揃っている）。
-    /// Issue #88: iOS 27 Beta で ZIPFoundation が全 12 ボイスを復元できることの
+    /// 欠けている `KokoroVoice` を宣言順で返す（空なら全ボイス揃っている）。
+    /// Issue #88: iOS 27 Beta で ZIPFoundation が全ボイスを復元できることの
     /// 検証項目を、実機ダウンロードなしにチェックできるよう純粋関数化したもの。
     static func missingVoices(loadedKeys: Set<String>) -> [KokoroVoice] {
         KokoroVoice.allCases.filter { !loadedKeys.contains($0.rawValue) }

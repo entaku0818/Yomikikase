@@ -40,3 +40,6 @@ temp/
 .agents/
 .codex/
 .launchpadrc
+
+# Firebase Hosting のデプロイキャッシュ（ローカル生成物）
+LP/.firebase/

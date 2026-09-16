@@ -208,6 +208,15 @@ private struct VoiceCharacterCard: View {
                             .background(Color(.systemGray5))
                             .clipShape(Capsule())
                             .foregroundStyle(.secondary)
+                        // 公式VOICES.mdのグレード。学習データ量に開きがあるので、
+                        // 聴き比べる前の目安として出す。
+                        Text(voice.grade)
+                            .font(.caption2.weight(.semibold))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color(.systemGray5))
+                            .clipShape(Capsule())
+                            .foregroundStyle(.secondary)
                     }
                     Text(voice.persona)
                         .font(.caption)

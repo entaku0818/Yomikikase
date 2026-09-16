@@ -23,23 +23,44 @@ enum VoiceAccent {
 
 // MARK: - Voice definitions
 
+/// アプリが公開する Kokoro のボイス。
+///
+/// 公式 VOICES.md のグレード C- 以上を公開する。D 以下（af_jessica / am_santa 等）は
+/// 学習データが数分しかなく実用に耐えないため意図的に載せていない。
+/// 例外は `amAdam`(F+) と `bmLewis`(D+) で、これは以前から出荷していて
+/// すでに選んでいるユーザーがいるため残している。
+///
+/// raw value は voices.npz のキーと一致していなければならない
+/// （`KokoroAudioUtil.voiceEmbedding` が raw value で引く）。
+/// npz の再生成は `scripts/build_kokoro_voices.py`。
 enum KokoroVoice: String, CaseIterable, Identifiable {
     // English (US Female)
     case afHeart    = "af_heart"
     case afBella    = "af_bella"
     case afNicole   = "af_nicole"
+    case afAoede    = "af_aoede"
+    case afKore     = "af_kore"
     case afSarah    = "af_sarah"
+    case afAlloy    = "af_alloy"
+    case afNova     = "af_nova"
+    case afSky      = "af_sky"
     // English (US Male)
-    case amAdam     = "am_adam"
+    case amFenrir   = "am_fenrir"
     case amMichael  = "am_michael"
+    case amPuck     = "am_puck"
+    case amAdam     = "am_adam"
     // English (UK Female)
     case bfEmma     = "bf_emma"
     case bfIsabella = "bf_isabella"
     // English (UK Male)
+    case bmFable    = "bm_fable"
     case bmGeorge   = "bm_george"
     case bmLewis    = "bm_lewis"
-    // Japanese
+    // Japanese（Kokoro-82M が持つ日本語音声はこの5つで全部）
     case jfAlpha    = "jf_alpha"
+    case jfGongitsune = "jf_gongitsune"
+    case jfTebukuro = "jf_tebukuro"
+    case jfNezumi   = "jf_nezumi"
     case jmKumo     = "jm_kumo"
 
     var id: String { rawValue }
@@ -53,15 +74,58 @@ enum KokoroVoice: String, CaseIterable, Identifiable {
         case .afHeart:    return "Heart"
         case .afBella:    return "Bella"
         case .afNicole:   return "Nicole"
+        case .afAoede:    return "Aoede"
+        case .afKore:     return "Kore"
         case .afSarah:    return "Sarah"
-        case .amAdam:     return "Adam"
+        case .afAlloy:    return "Alloy"
+        case .afNova:     return "Nova"
+        case .afSky:      return "Sky"
+        case .amFenrir:   return "Fenrir"
         case .amMichael:  return "Michael"
+        case .amPuck:     return "Puck"
+        case .amAdam:     return "Adam"
         case .bfEmma:     return "Emma"
         case .bfIsabella: return "Isabella"
+        case .bmFable:    return "Fable"
         case .bmGeorge:   return "George"
         case .bmLewis:    return "Lewis"
-        case .jfAlpha:    return "凛"
-        case .jmKumo:     return "雲"
+        // 日本語は既存の 凛 / 雲 に合わせて一字名で統一する。
+        // 由来: gongitsune=ごん狐→狐、tebukuro=手袋を買いに（雪の童話）→雪、nezumi→芽
+        case .jfAlpha:       return "凛"
+        case .jfGongitsune:  return "狐"
+        case .jfTebukuro:    return "雪"
+        case .jfNezumi:      return "芽"
+        case .jmKumo:        return "雲"
+        }
+    }
+
+    /// 公式 VOICES.md の総合グレード。選ぶときの目安として UI に出す。
+    /// 日本語は学習データ自体が 1〜10時間しかなく、最高でも C+ である点に注意。
+    var grade: String {
+        switch self {
+        case .afHeart:    return "A"
+        case .afBella:    return "A-"
+        case .afNicole:   return "B-"
+        case .bfEmma:     return "B-"
+        case .afAoede:    return "C+"
+        case .afKore:     return "C+"
+        case .afSarah:    return "C+"
+        case .amFenrir:   return "C+"
+        case .amMichael:  return "C+"
+        case .amPuck:     return "C+"
+        case .jfAlpha:    return "C+"
+        case .afAlloy:    return "C"
+        case .afNova:     return "C"
+        case .bfIsabella: return "C"
+        case .bmFable:    return "C"
+        case .bmGeorge:   return "C"
+        case .jfGongitsune: return "C"
+        case .jfTebukuro: return "C"
+        case .afSky:      return "C-"
+        case .jfNezumi:   return "C-"
+        case .jmKumo:     return "C-"
+        case .bmLewis:    return "D+"
+        case .amAdam:     return "F+"
         }
     }
 
@@ -70,36 +134,51 @@ enum KokoroVoice: String, CaseIterable, Identifiable {
         case .afHeart:    return "温かみある声。親しみやすく日常会話向き"
         case .afBella:    return "優雅で落ち着いた声。ナレーション向き"
         case .afNicole:   return "知性的でハキハキした声。説明・講義向き"
+        case .afAoede:    return "澄んだ伸びやかな声。朗読・詩に"
+        case .afKore:     return "凛とした落ち着いた声。解説向き"
         case .afSarah:    return "元気で明るい声。アナウンス・エンタメ向き"
-        case .amAdam:     return "穏やかで誠実な声。語り・朗読向き"
+        case .afAlloy:    return "中性的で癖のない声。長文でも聴き疲れしにくい"
+        case .afNova:     return "軽やかで現代的な声。カジュアルな読み上げに"
+        case .afSky:      return "やわらかく囁くような声。就寝前の読み上げに"
+        case .amFenrir:   return "深みのある落ち着いた声。物語の語りに"
         case .amMichael:  return "力強い低音。ドキュメンタリー向き"
+        case .amPuck:     return "軽快で表情豊かな声。会話文の多い文章に"
+        case .amAdam:     return "穏やかで誠実な声。語り・朗読向き"
         case .bfEmma:     return "品格ある英国アクセント。ビジネス向き"
         case .bfIsabella: return "柔らかで優しい声。教育コンテンツ向き"
+        case .bmFable:    return "物語を語る調子の声。童話・小説に"
         case .bmGeorge:   return "重厚で威厳ある声。フォーマル向き"
         case .bmLewis:    return "若々しく活発。カジュアルコンテンツ向き"
-        case .jfAlpha:    return "落ち着いた知性的な声。あらゆる場面に"
-        case .jmKumo:     return "穏やかで誠実な声。語りかけるように"
+        case .jfAlpha:      return "落ち着いた知性的な声。あらゆる場面に"
+        case .jfGongitsune: return "昔話を語るような声。物語・童話の朗読に"
+        case .jfTebukuro:   return "やわらかく親しみやすい声。read-aloud全般に"
+        case .jfNezumi:     return "軽やかで小さめの声。短い文章に"
+        case .jmKumo:       return "穏やかで誠実な声。語りかけるように"
         }
     }
 
     var gender: VoiceGender {
         switch self {
-        case .afHeart, .afBella, .afNicole, .afSarah,
-             .bfEmma, .bfIsabella, .jfAlpha:
+        case .afHeart, .afBella, .afNicole, .afAoede, .afKore, .afSarah,
+             .afAlloy, .afNova, .afSky,
+             .bfEmma, .bfIsabella,
+             .jfAlpha, .jfGongitsune, .jfTebukuro, .jfNezumi:
             return .female
-        case .amAdam, .amMichael, .bmGeorge, .bmLewis, .jmKumo:
+        case .amFenrir, .amMichael, .amPuck, .amAdam,
+             .bmFable, .bmGeorge, .bmLewis, .jmKumo:
             return .male
         }
     }
 
     var accent: VoiceAccent {
         switch self {
-        case .afHeart, .afBella, .afNicole, .afSarah,
-             .amAdam, .amMichael:
+        case .afHeart, .afBella, .afNicole, .afAoede, .afKore, .afSarah,
+             .afAlloy, .afNova, .afSky,
+             .amFenrir, .amMichael, .amPuck, .amAdam:
             return .american
-        case .bfEmma, .bfIsabella, .bmGeorge, .bmLewis:
+        case .bfEmma, .bfIsabella, .bmFable, .bmGeorge, .bmLewis:
             return .british
-        case .jfAlpha, .jmKumo:
+        case .jfAlpha, .jfGongitsune, .jfTebukuro, .jfNezumi, .jmKumo:
             return .japanese
         }
     }

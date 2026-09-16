@@ -281,11 +281,11 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertNil(KokoroAudioUtil.npzEntryVoiceKey(fromPath: "README.txt"))
     }
 
-    // MARK: - missingVoices (全12ボイス復元チェック)
-    // Issue #88: iOS 27 Beta で ZIPFoundation が全 12 voice キーを復元できることの
+    // MARK: - missingVoices (全ボイス復元チェック)
+    // Issue #88: iOS 27 Beta で ZIPFoundation が全 voice キーを復元できることの
     // 検証。実機DL(約600MB)なしに「欠けたボイスを検出できる」ことをユニットで担保する。
 
-    /// 期待する 12 voice が全て揃っていれば欠損なし
+    /// 期待する voice が全て揃っていれば欠損なし
     func test_missingVoices_allPresent_isEmpty() {
         let loaded = Set(KokoroVoice.allCases.map(\.rawValue))
         XCTAssertTrue(KokoroAudioUtil.missingVoices(loadedKeys: loaded).isEmpty)
@@ -300,21 +300,57 @@ final class KokoroEngineTests: XCTestCase {
         XCTAssertEqual(missing, ["jm_kumo", "bf_emma"])
     }
 
-    /// 空のキー集合なら全 12 ボイスが欠損として返る
-    func test_missingVoices_emptyKeys_reportsAll12() {
+    /// 空のキー集合なら全ボイスが欠損として返る
+    func test_missingVoices_emptyKeys_reportsAll() {
         let missing = KokoroAudioUtil.missingVoices(loadedKeys: [])
-        XCTAssertEqual(missing.count, 12)
+        XCTAssertEqual(missing.count, KokoroVoice.allCases.count)
     }
 
-    /// enum の raw value が Issue #88 記載の 12 キーと一致する（enum ドリフト検出）
-    func test_kokoroVoice_allCases_matchExpected12Keys() {
+    /// enum の raw value が、自前ホストしている voices-v1.npz のキーと一致する
+    /// （enum ドリフト検出）。npz に無い raw value を足すと、実行時に
+    /// `voiceEmbedding` が throw して端末TTSへサイレントフォールバックするため、
+    /// ここで必ず落とす。npz の再生成は scripts/build_kokoro_voices.py。
+    func test_kokoroVoice_allCases_matchHostedVoicesNPZ() {
         let expected: Set<String> = [
-            "af_heart", "af_bella", "af_nicole", "af_sarah",
-            "am_adam", "am_michael", "bf_emma", "bf_isabella",
-            "bm_george", "bm_lewis", "jf_alpha", "jm_kumo",
+            // English (US Female)
+            "af_heart", "af_bella", "af_nicole", "af_aoede", "af_kore",
+            "af_sarah", "af_alloy", "af_nova", "af_sky",
+            // English (US Male)
+            "am_fenrir", "am_michael", "am_puck", "am_adam",
+            // English (UK)
+            "bf_emma", "bf_isabella", "bm_fable", "bm_george", "bm_lewis",
+            // Japanese
+            "jf_alpha", "jf_gongitsune", "jf_tebukuro", "jf_nezumi", "jm_kumo",
         ]
         XCTAssertEqual(Set(KokoroVoice.allCases.map(\.rawValue)), expected)
-        XCTAssertEqual(KokoroVoice.allCases.count, 12)
+        XCTAssertEqual(KokoroVoice.allCases.count, 23)
+    }
+
+    /// Kokoro-82M が持つ日本語音声5つが全て公開されている。
+    /// 以前は jf_alpha / jm_kumo の2つしか出しておらず、しかもそれらは
+    /// 当時配布していた npz（英語28音声のみ）に存在せず実行時に必ず失敗していた。
+    func test_kokoroVoice_japanese_hasAllFiveVoices() {
+        let japanese = KokoroVoice.allCases.filter(\.isJapanese).map(\.rawValue)
+        XCTAssertEqual(
+            Set(japanese),
+            ["jf_alpha", "jf_gongitsune", "jf_tebukuro", "jf_nezumi", "jm_kumo"]
+        )
+    }
+
+    /// 全ボイスが表示用メタデータを持つ（switch の網羅漏れではなく空文字の検出）
+    func test_kokoroVoice_allCases_haveDisplayMetadata() {
+        for voice in KokoroVoice.allCases {
+            XCTAssertFalse(voice.characterName.isEmpty, "\(voice.rawValue) の名前が空")
+            XCTAssertFalse(voice.persona.isEmpty, "\(voice.rawValue) の説明が空")
+            XCTAssertFalse(voice.grade.isEmpty, "\(voice.rawValue) のグレードが空")
+        }
+    }
+
+    /// 日本語ボイスの accent は .japanese（言語フィルタは isJapanese に依存するため）
+    func test_kokoroVoice_japaneseVoices_haveJapaneseAccent() {
+        for voice in KokoroVoice.allCases where voice.isJapanese {
+            XCTAssertEqual(voice.accent, .japanese, "\(voice.rawValue)")
+        }
     }
 
     // MARK: - KokoroBundleResource (Issue #87: Bundle.main リソース名の固定)
