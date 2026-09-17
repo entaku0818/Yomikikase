@@ -135,14 +135,23 @@ enum SpeechTextPreprocessor {
             }
         }
 
-        // 優先度 1: 日本語のときだけ働くルール
-        if VoiceResolver.primarySubtag(
+        let isJapanese = VoiceResolver.primarySubtag(
             VoiceResolver.normalizedTarget(languageCode: languageCode, fallback: "")
-        ) == "ja" {
+        ) == "ja"
+
+        // 優先度 1: 日本語のときだけ働くルール
+        if isJapanese {
             for rule in japaneseRules {
                 for range in regexRanges(pattern: rule.pattern, in: nsText) {
                     candidates.append((range, rule.replacement, 1))
                 }
+            }
+        }
+
+        // 優先度 2: 改行の整形（全言語）。語の読み替えとは重ならないので最後に見る。
+        for rule in newlineRules(japanese: isJapanese) {
+            for range in regexRanges(pattern: rule.pattern, in: nsText) {
+                candidates.append((range, rule.replacement, 2))
             }
         }
 
@@ -299,7 +308,41 @@ enum SpeechTextPreprocessor {
         return rules
     }()
 
+    /// 改行まわりの整形ルール。
+    ///
+    /// PDF や EPUB から取り出したテキストは紙面の行幅で機械的に折り返されているため、
+    /// 文の途中に改行が入る。`AVSpeechSynthesizer` は改行で間を置くので、そのまま読むと
+    /// 一文が毎行ぶつ切りになり、抑揚も行ごとに切れて不自然になる。
+    /// 「文が続いている」と確実に言える改行だけを詰める。
+    ///
+    /// 誤爆を避けるため、前後の文字種を厳しく見て以下は**触らない**:
+    ///   - 空行（＝段落の区切り）。前後どちらかが改行なら一致しない
+    ///   - 句点・感嘆符・閉じ括弧で終わる行（＝文が終わっている）
+    ///   - 次の行が箇条書きや番号で始まる場合（後続の文字種の条件から外れる）
+    static func newlineRules(japanese: Bool) -> [Rule] {
+        var rules: [Rule] = []
+
+        // 英語のハイフネーション解除。行末の "-" で割られた語を繋ぐ。
+        // 例: "narra-\ntor" → "narrator"
+        rules.append(Rule(pattern: "(?<=[A-Za-z])-\\n(?=[a-z])", replacement: ""))
+
+        if japanese {
+            // 前後とも日本語の本文文字のときだけ詰める。区切り文字を入れない。
+            // 例: "読み上げ\nナレーター" → "読み上げナレーター"
+            // ASCII が絡む改行は単語がくっつく恐れがあるので対象外。
+            let jaBody = "ぁ-んァ-ヴー一-龥々〆ヵヶ、「『（【〔［"
+            let jaTail = "ぁ-んァ-ヴー一-龥々〆ヵヶ、"
+            rules.append(Rule(pattern: "(?<=[\(jaTail)])\\n(?=[\(jaBody)])", replacement: ""))
+        } else {
+            // 英語は半角スペースで繋ぐ。小文字またはカンマで終わり、小文字で始まる行のみ。
+            rules.append(Rule(pattern: "(?<=[a-z,])\\n(?=[a-z])", replacement: " "))
+        }
+
+        return rules
+    }
+
     // MARK: - 検索ユーティリティ
+
 
     /// 単純な文字列一致の全出現位置。
     private static func ranges(of needle: String, in haystack: NSString) -> [NSRange] {

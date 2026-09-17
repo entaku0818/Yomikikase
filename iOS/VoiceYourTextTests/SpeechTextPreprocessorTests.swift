@@ -154,4 +154,85 @@ final class SpeechTextPreprocessorTests: XCTestCase {
             expectedSpoken += segment.spoken.length
         }
     }
+
+    // MARK: - 改行の整形（韻律）
+    //
+    // PDF/EPUB は紙面の行幅で機械的に折り返されるため文の途中に改行が入り、
+    // AVSpeechSynthesizer がそこで間を置いて一文がぶつ切りになる。
+    // 「文が続いている」と確実に言える改行だけを詰め、段落の区切りは残す。
+
+    func test_日本語の文中改行は詰める() {
+        XCTAssertEqual(spoken("読み上げ\nナレーター"), "読み上げナレーター")
+    }
+
+    func test_句点で終わる行の改行は残す() {
+        XCTAssertEqual(spoken("これは一文目です。\n次の文です。"), "これは一文目です。\n次の文です。")
+    }
+
+    func test_空行は段落区切りとして残す() {
+        XCTAssertEqual(spoken("前の段落\n\n次の段落"), "前の段落\n\n次の段落")
+    }
+
+    func test_閉じ括弧で終わる行の改行は残す() {
+        XCTAssertEqual(spoken("彼は「そうだ」\nと言った"), "彼は「そうだ」\nと言った")
+    }
+
+    func test_次の行が箇条書きなら詰めない() {
+        XCTAssertEqual(spoken("次のとおり\n・ひとつめ"), "次のとおり\n・ひとつめ")
+        XCTAssertEqual(spoken("次のとおり\n1. ひとつめ"), "次のとおり\n1. ひとつめ")
+    }
+
+    func test_読点で終わる行は詰める() {
+        XCTAssertEqual(spoken("まず準備をして、\n次に実行する"), "まず準備をして、次に実行する")
+    }
+
+    func test_英語の文中改行は半角スペースで繋ぐ() {
+        XCTAssertEqual(spoken("hello\nworld", language: "en"), "hello world")
+    }
+
+    func test_英語のハイフネーションを解除する() {
+        XCTAssertEqual(spoken("narra-\ntor", language: "en"), "narrator")
+        XCTAssertEqual(spoken("ナレー-\nション", language: "ja"), "ナレー-\nション")
+    }
+
+    func test_英語のピリオドで終わる行は繋がない() {
+        XCTAssertEqual(spoken("First line.\nSecond line", language: "en"), "First line.\nSecond line")
+    }
+
+    func test_改行を詰めてもハイライト範囲は元テキストを指す() {
+        let original = "読み上げ\nナレーター"
+        let nsOriginal = original as NSString
+        let prepared = SpeechTextPreprocessor.prepare(original, languageCode: "ja")
+        XCTAssertEqual(prepared.spoken, "読み上げナレーター")
+
+        // 改行より前も位置はずれない（境界に接するので削除した改行を含んで返る）
+        let head = prepared.originalRange(forSpoken: NSRange(location: 0, length: 4))
+        XCTAssertNotNil(head)
+        XCTAssertEqual(head!.location, 0)
+        XCTAssertEqual(
+            nsOriginal.substring(with: head!).replacingOccurrences(of: "\n", with: ""),
+            "読み上げ"
+        )
+
+        // spoken の "ナレーター"(location 4) は、元テキストでは改行をまたいだ location 5。
+        // 詰めた改行は「置換された区間」なので、その境界に接する範囲を引くと
+        // 改行ごと含めて返る（PreparedSpeechText の仕様。置換元の語全体を返す）。
+        // 見たいのは「位置がずれていないこと」なので、改行を除いて比較する。
+        let mapped = prepared.originalRange(forSpoken: NSRange(location: 4, length: 5))
+        XCTAssertNotNil(mapped)
+        XCTAssertEqual(
+            nsOriginal.substring(with: mapped!).replacingOccurrences(of: "\n", with: ""),
+            "ナレーター"
+        )
+        XCTAssertEqual(mapped!.location + mapped!.length, nsOriginal.length)
+    }
+
+    func test_改行整形は辞書の読み替えと共存する() {
+        let prepared = SpeechTextPreprocessor.prepare(
+            "設定から\n東京を選ぶ",
+            languageCode: "ja",
+            readings: [(word: "東京", reading: "とうきょう")]
+        )
+        XCTAssertEqual(prepared.spoken, "設定からとうきょうを選ぶ")
+    }
 }
