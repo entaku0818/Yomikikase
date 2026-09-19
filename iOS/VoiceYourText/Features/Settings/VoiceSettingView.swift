@@ -7,13 +7,20 @@ struct VoiceSettingView: View {
     @Bindable var store: StoreOf<SettingsReducer>
     @State private var showError = false
     @State private var errorMessage = ""
+    @Environment(\.scenePhase) private var scenePhase
+    /// 設定アプリから戻ったときに音声一覧を引き直すためのトークン。
+    /// `availableVoices` は `AVSpeechSynthesisVoice.speechVoices()` を読む computed property だが、
+    /// 高品質音声をダウンロードして戻ってきても SwiftUI 側の状態は何も変わらないため再描画されず、
+    /// 「落としてきたのに一覧に出てこない」ように見えてしまう。復帰時にこれを変えて再評価させる。
+    @State private var voiceListRefreshToken = 0
 
     private var selectedLanguageCode: String {
         UserDefaultsManager.shared.languageSetting ?? "ja"
     }
 
     private var availableVoices: [AVSpeechSynthesisVoice] {
-        AVSpeechSynthesisVoice.speechVoices()
+        _ = voiceListRefreshToken // 復帰時に再評価させるための依存
+        return AVSpeechSynthesisVoice.speechVoices()
             .filter { $0.language.starts(with: selectedLanguageCode) }
             .filter {
                 if #available(iOS 17.0, *) {
@@ -27,7 +34,8 @@ struct VoiceSettingView: View {
     /// 高品質音声の状態（使用中 / 未選択 / 未ダウンロード）。
     /// 音声を選び直したら再判定できるよう selectedVoiceIdentifier を入力にする。
     private var voiceQualityStatus: VoiceQualityStatus {
-        VoiceQualityStatus.current(
+        _ = voiceListRefreshToken // 復帰時に再判定させるための依存
+        return VoiceQualityStatus.current(
             languageCode: selectedLanguageCode,
             selectedIdentifier: store.selectedVoiceIdentifier
         )
@@ -36,7 +44,10 @@ struct VoiceSettingView: View {
     var body: some View {
         Form {
             Section {
-                HighQualityVoicePrompt(status: voiceQualityStatus)
+                HighQualityVoicePrompt(
+                    status: voiceQualityStatus,
+                    languageCode: selectedLanguageCode
+                )
             }
 
             Section(header: Text("利用可能な音声")) {
@@ -75,6 +86,12 @@ struct VoiceSettingView: View {
         .onAppear {
             if UserDefaultsManager.shared.languageSetting == nil {
                 UserDefaultsManager.shared.languageSetting = "ja"
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            // 設定アプリで高品質音声を落として戻ってきたケースを拾う
+            if newPhase == .active {
+                voiceListRefreshToken += 1
             }
         }
         .alert("エラー", isPresented: $showError) {

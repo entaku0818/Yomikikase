@@ -48,6 +48,8 @@ enum VoiceQualityStatus: Equatable {
 /// 高品質音声の状態表示と誘導カード。
 struct HighQualityVoicePrompt: View {
     let status: VoiceQualityStatus
+    /// 案内文を読み上げ言語に合わせるために使う（声の一覧で選ぶ言語名・代表的な音声名）。
+    var languageCode: String? = UserDefaultsManager.shared.languageSetting
     /// 「音声を選ぶ」導線。設定画面内では nil（すでに一覧がその場にあるため）。
     var onSelectVoice: (() -> Void)?
 
@@ -87,34 +89,69 @@ struct HighQualityVoicePrompt: View {
             .padding(.vertical, 4)
 
         case .notDownloaded:
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
                     Image(systemName: "arrow.down.circle.fill")
                         .foregroundColor(.blue)
-                    Text("高品質音声を使用できます")
+                    Text("\(HighQualityVoiceGuide.languageName(languageCode))の高品質音声を追加できます")
                         .font(.headline)
                 }
-                Text("設定 > アクセシビリティ > 読み上げコンテンツ > 声 から高品質音声をダウンロードすると、より自然な読み上げになります。")
+
+                Text(HighQualityVoiceGuide.benefit)
                     .font(.caption)
                     .foregroundColor(.secondary)
-                Button("設定を開く") {
+
+                // 4階層たどる必要があるので、1文にまとめず番号付きで出す。
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(Array(steps.enumerated()), id: \.offset) { index, step in
+                        HStack(alignment: .firstTextBaseline, spacing: 8) {
+                            Text("\(index + 1).")
+                                .font(.caption.monospacedDigit())
+                                .foregroundColor(.secondary)
+                            Text(step)
+                                .font(.caption)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+
+                Button("「設定」アプリを開く") {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         UIApplication.shared.open(url)
                     }
                 }
                 .font(.callout)
+
+                Text(HighQualityVoiceGuide.openSettingsCaveat)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.vertical, 4)
         }
     }
+
+    private var steps: [String] {
+        HighQualityVoiceGuide.steps(languageCode: languageCode)
+    }
 }
 
-#Preview("未ダウンロード") {
-    Form { HighQualityVoicePrompt(status: .notDownloaded) }
+#Preview("未ダウンロード(日本語)") {
+    Form { HighQualityVoicePrompt(status: .notDownloaded, languageCode: "ja") }
+}
+
+#Preview("未ダウンロード(英語)") {
+    Form { HighQualityVoicePrompt(status: .notDownloaded, languageCode: "en") }
 }
 
 #Preview("未選択") {
-    Form { HighQualityVoicePrompt(status: .highQualityAvailableButUnused, onSelectVoice: {}) }
+    Form {
+        HighQualityVoicePrompt(
+            status: .highQualityAvailableButUnused,
+            languageCode: "ja",
+            onSelectVoice: {}
+        )
+    }
 }
 
 #Preview("使用中") {
