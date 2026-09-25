@@ -27,7 +27,7 @@ jobs:
       # 他リポジトリの runner とシミュレータを取り合わないよう、このリポジトリ専用のものを使う
       SIMULATOR_NAME: CI-VoiceYourText
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Set up paths
         # checkout の git clean で消えないよう、リポジトリ外（このリポジトリ専用の作業ディレクトリ）に置く
@@ -53,8 +53,17 @@ jobs:
 
       - name: Upload xcresult
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: TestResults-${{ github.run_id }}
           path: ${{ runner.workspace }}/TestResults.xcresult
           if-no-files-found: ignore
+
+      - name: Clean up
+        # self-hosted runner のディスクを圧迫しないよう、ジョブごとの DerivedData と xcresult を消す（xcresult の upload より後）。
+        # SPM のパッケージキャッシュ（~/Library/Caches/org.swift.swiftpm）は全リポジトリ共有なので消さない。
+        # 専用シミュレータは次回再利用するため削除せず shutdown だけする。
+        if: always()
+        run: |
+          rm -rf "${RUNNER_WORKSPACE}/DerivedData" "${RUNNER_WORKSPACE}/TestResults.xcresult"
+          xcrun simctl shutdown "$SIMULATOR_NAME" 2>/dev/null || true
