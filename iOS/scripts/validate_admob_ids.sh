@@ -28,7 +28,6 @@ REQUIRED_KEYS="ADMOB_BANNER_ID ADMOB_APP_OPEN_ID"
 OPTIONAL_KEYS="ADMOB_INTERSTITIAL_ID ADMOB_REWARDED_ID"
 
 RELEASE_XCCONFIG_PATH="iOS/VoiceYourText/config/Release.xcconfig"
-CI_SCRIPT_PATH="iOS/ci_scripts/ci_post_clone.sh"
 
 # 検出した問題を蓄積する
 problems=""
@@ -123,11 +122,7 @@ ${problems}
      （.gitignore 対象。無ければ ${RELEASE_XCCONFIG_PATH}.sample をコピーして作成）
      例: ADMOB_BANNER_ID = ca-app-pub-3484697221349891/XXXXXXXXXX
 
-  2) Xcode Cloud:
-     ビルドワークフローの環境変数に同名のキー（例: ADMOB_BANNER_ID）を設定する。
-     ${CI_SCRIPT_PATH} が環境変数から Release.xcconfig を生成します。
-
-  3) GADApplicationIdentifier の場合:
+  2) GADApplicationIdentifier の場合:
      iOS/VoiceYourText/Info.plist の GADApplicationIdentifier を本番のAdMobアプリID
      （ca-app-pub-3484697221349891~7968499014）に戻してください。
 

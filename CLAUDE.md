@@ -30,6 +30,15 @@ swift test
   - `SettingsReducerTests.swift` - Settings and language configuration tests
   - `YomikikaseTests.swift` - Core app functionality tests
 
+### CI (GitHub Actions)
+- `.github/workflows/ios-ci.yml` — iOS の build / unit test。entaku の Mac に登録した **self-hosted runner**（labels: `self-hosted, macOS, xcode27`）で実行する
+  - **GitHub-hosted の `macos-*` ランナーは課金されるため禁止**。iOS のジョブは self-hosted（ios-ci.yml）のみ可
+  - フォークからの PR では実行しない（job の `if:` で制限）
+  - コマンドは `iOS/scripts/ci_ios.sh {config|build|test}` に集約。ローカルでも同じコマンドで再現できる
+  - Debug 構成のみ。`Debug.xcconfig` が無ければダミー値で生成する（Release 用の秘密情報は CI で扱わない）
+- `.github/workflows/ci.yml` — SwiftLint（ubuntu コンテナ、リポジトリルートから実行）
+- Xcode Cloud は使っていない（2026-09 に撤去）
+
 ### Deployment (Fastlane)
 ```bash
 # Navigate to iOS directory

@@ -1,0 +1,60 @@
+name: iOS CI (self-hosted)
+
+# iOS の build / unit test は entaku の Mac に登録した self-hosted runner で回す。
+# GitHub-hosted の macos-* ランナーは課金されるため使わないこと（self-hosted のみ可）。
+# 実行コマンドは iOS/scripts/ci_ios.sh にまとめてあり、ローカルでも同じコマンドで再現できる。
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    # public リポジトリなので、フォークからの PR では self-hosted runner で実行しない
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [ self-hosted, macOS, xcode27 ]
+    timeout-minutes: 60
+    env:
+      # 他リポジトリの runner とシミュレータを取り合わないよう、このリポジトリ専用のものを使う
+      SIMULATOR_NAME: CI-VoiceYourText
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up paths
+        # checkout の git clean で消えないよう、リポジトリ外（このリポジトリ専用の作業ディレクトリ）に置く
+        run: |
+          echo "DERIVED_DATA_PATH=${RUNNER_WORKSPACE}/DerivedData" >> "$GITHUB_ENV"
+          echo "RESULT_BUNDLE_PATH=${RUNNER_WORKSPACE}/TestResults.xcresult" >> "$GITHUB_ENV"
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Generate Debug.xcconfig (dummy values)
+        run: iOS/scripts/ci_ios.sh config
+
+      - name: Build
+        run: iOS/scripts/ci_ios.sh build
+
+      - name: Unit tests
+        run: iOS/scripts/ci_ios.sh test
+
+      - name: PaywallAnalytics package tests
+        working-directory: iOS/LocalPackages/PaywallAnalytics
+        run: swift test
+
+      - name: Upload xcresult
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: TestResults-${{ github.run_id }}
+          path: ${{ runner.workspace }}/TestResults.xcresult
+          if-no-files-found: ignore
