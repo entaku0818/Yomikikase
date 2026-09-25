@@ -66,6 +66,7 @@ struct PDFReaderFeature: Reducer {
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.userDefaults) var userDefaults
     @Dependency(\.analytics) var analytics
+    @Dependency(\.voiceResolver) var voiceResolver
 
     var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -111,7 +112,7 @@ struct PDFReaderFeature: Reducer {
 
                 let utterance = AVSpeechUtterance(string: utteranceText)
                 // 設定で選ばれた音声（Enhanced/Premium/パーソナルボイス）を優先して使う
-                VoiceResolver.configure(utterance, languageCode: language, rate: rate, pitch: pitch)
+                voiceResolver.configure(utterance, language, rate, pitch)
 
                 return .run { send in
                     let audioSession = AVAudioSession.sharedInstance()

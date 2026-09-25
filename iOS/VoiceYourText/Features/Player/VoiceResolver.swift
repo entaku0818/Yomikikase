@@ -119,6 +119,16 @@ enum VoiceResolver {
         volume: Float = defaultVolume
     ) {
         utterance.voice = voice(languageCode: languageCode)
+        applyParameters(utterance, rate: rate, pitch: pitch, volume: volume)
+    }
+
+    /// 音声以外（速度・ピッチ・音量・文間の間）を適用する。
+    static func applyParameters(
+        _ utterance: AVSpeechUtterance,
+        rate: Float,
+        pitch: Float,
+        volume: Float = defaultVolume
+    ) {
         utterance.rate = rate
         utterance.pitchMultiplier = pitch
         utterance.volume = volume
