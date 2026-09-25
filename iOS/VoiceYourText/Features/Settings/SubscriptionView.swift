@@ -96,9 +96,9 @@ struct SubscriptionView: View {
             }
             .padding(.bottom, 4)
 
-            FeatureRow(icon: "hand.thumbsup.fill", title: "広告なしで快適に聴ける", description: "読み上げ中に広告バナーが表示されず、集中して聴き続けられます")
-            FeatureRow(icon: "doc.fill", title: "ファイル無制限登録", description: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）")
-            FeatureRow(icon: "doc.text.fill", title: "長文テキスト無制限", description: "4,000文字を超える長い文章も最後まで読み上げられます")
+            FeatureRow(icon: "hand.thumbsup.fill", title: String(localized: "広告なしで快適に聴ける"), description: String(localized: "読み上げ中に広告バナーが表示されず、集中して聴き続けられます"))
+            FeatureRow(icon: "doc.fill", title: String(localized: "ファイル無制限登録"), description: String(localized: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）"))
+            FeatureRow(icon: "doc.text.fill", title: String(localized: "長文テキスト無制限"), description: String(localized: "4,000文字を超える長い文章も最後まで読み上げられます"))
         }
         .padding()
         .background(Color(.secondarySystemBackground))
@@ -223,18 +223,22 @@ struct FeatureRow: View {
 
 // MARK: - 年額プランカード（おすすめ・メイン表示）
 struct AnnualPlanCard: View {
-    let monthlyPlan: (name: String, price: String, trialDays: Int?)?
-    let annualPlan: (name: String, price: String, trialDays: Int?)?
+    let monthlyPlan: SubscriptionPlanInfo?
+    let annualPlan: SubscriptionPlanInfo?
     let isLoading: Bool
     let isProcessing: Bool
     let onPurchase: () -> Void
+
+    private var presentation: SubscriptionPlanPresentation {
+        SubscriptionPlanPresentation(plan: annualPlan, fallbackPeriod: .annual)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
             // おすすめバッジ
             HStack {
                 Spacer()
-                if let days = annualPlan?.trialDays {
+                if let days = presentation.trialTerms?.days {
                     Text("\(days)日間無料・約38%お得")
                         .font(.caption)
                         .fontWeight(.bold)
@@ -278,6 +282,12 @@ struct AnnualPlanCard: View {
                                 .font(.title)
                                 .fontWeight(.bold)
                         }
+                        if let terms = presentation.trialTerms {
+                            Text(terms.headline)
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(AppTheme.primary)
+                        }
                         if let monthly = monthlyPlan?.price {
                             Text("月額換算 \(monthly)/月 より割安")
                                 .font(.caption)
@@ -293,7 +303,7 @@ struct AnnualPlanCard: View {
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text(annualPlan?.trialDays != nil ? "7日間無料で試す" : "年額プランで購入する")
+                            Text(presentation.callToAction == .startFreeTrial ? "無料で試す" : "年額プランで購入する")
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                                 .frame(maxWidth: .infinity)
@@ -305,6 +315,10 @@ struct AnnualPlanCard: View {
                 }
                 .disabled(isLoading || isProcessing)
                 .padding(.top, 4)
+
+                if !isLoading, let terms = presentation.trialTerms {
+                    TrialRenewalNotice(terms: terms)
+                }
             }
             .padding()
             .background(Color(.secondarySystemBackground))
@@ -320,10 +334,14 @@ struct AnnualPlanCard: View {
 
 // MARK: - 月額プランカード（セカンダリ表示）
 struct MonthlyPlanCard: View {
-    let plan: (name: String, price: String, trialDays: Int?)?
+    let plan: SubscriptionPlanInfo?
     let isLoading: Bool
     let isProcessing: Bool
     let onPurchase: () -> Void
+
+    private var presentation: SubscriptionPlanPresentation {
+        SubscriptionPlanPresentation(plan: plan, fallbackPeriod: .monthly)
+    }
 
     var body: some View {
         VStack(spacing: 10) {
@@ -347,9 +365,10 @@ struct MonthlyPlanCard: View {
                         .font(.title2)
                         .fontWeight(.semibold)
                 }
-                if let days = plan?.trialDays {
-                    Text("\(days)日間無料トライアル付き")
+                if let terms = presentation.trialTerms {
+                    Text(terms.headline)
                         .font(.caption)
+                        .fontWeight(.semibold)
                         .foregroundColor(AppTheme.primary)
                 }
             }
@@ -361,7 +380,7 @@ struct MonthlyPlanCard: View {
                             .progressViewStyle(CircularProgressViewStyle(tint: AppTheme.primary))
                             .frame(maxWidth: .infinity)
                     } else {
-                        Text(plan?.trialDays != nil ? "7日間無料で試す" : "月額プランで購入する")
+                        Text(presentation.callToAction == .startFreeTrial ? "無料で試す" : "月額プランで購入する")
                             .fontWeight(.medium)
                             .foregroundColor(AppTheme.secondaryForeground)
                             .frame(maxWidth: .infinity)
@@ -376,9 +395,26 @@ struct MonthlyPlanCard: View {
                 )
             }
             .disabled(isLoading || isProcessing)
+
+            if !isLoading, let terms = presentation.trialTerms {
+                TrialRenewalNotice(terms: terms)
+            }
         }
         .padding()
         .opacity(isLoading ? 0.7 : 1)
+    }
+}
+
+// MARK: - トライアル終了後の自動課金の注意書き（ガイドライン3.1.2）
+struct TrialRenewalNotice: View {
+    let terms: SubscriptionPlanPresentation.TrialTerms
+
+    var body: some View {
+        Text(terms.renewalNotice)
+            .font(.caption2)
+            .foregroundColor(.secondary)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
@@ -394,8 +430,8 @@ struct SubscriptionOptionCard: View {
 }
 
 class SubscriptionViewModel: ObservableObject {
-    @Published var monthlyPlan: (name: String, price: String, trialDays: Int?)?
-    @Published var annualPlan: (name: String, price: String, trialDays: Int?)?
+    @Published var monthlyPlan: SubscriptionPlanInfo?
+    @Published var annualPlan: SubscriptionPlanInfo?
     @Published var isProcessing: Bool = false
     @Dependency(\.analytics) private var analytics
 
@@ -416,7 +452,13 @@ class SubscriptionViewModel: ObservableObject {
             do {
                 let plan = try await PurchaseManager.shared.fetchProPlan()
                 await MainActor.run {
-                    self.monthlyPlan = (name: plan.name, price: plan.price, trialDays: nil)
+                    self.monthlyPlan = SubscriptionPlanInfo(
+                        name: plan.name,
+                        price: plan.price,
+                        period: .monthly,
+                        trialDays: nil,
+                        isTrialEligible: false
+                    )
                 }
             } catch {
                 errorLog("Failed to fetch subscription plan: \(error)")
@@ -440,10 +482,10 @@ class SubscriptionViewModel: ObservableObject {
                     "plan_type": planTypeString,
                     "source": "subscription_view"
                 ])
-                return (true, "購入完了", "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。")
+                return (true, String(localized: "購入完了"), String(localized: "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。"))
             } else {
                 analytics.logEvent("subscription_purchase_cancelled", nil)
-                return (false, "購入キャンセル", "購入がキャンセルされました。")
+                return (false, String(localized: "購入キャンセル"), String(localized: "購入がキャンセルされました。"))
             }
         } catch {
             analytics.logEvent("subscription_purchase_failed", [
@@ -462,18 +504,18 @@ class SubscriptionViewModel: ObservableObject {
             let success = try await PurchaseManager.shared.restorePurchases()
             if success {
                 analytics.logEvent("subscription_restore_success", nil)
-                return (true, "復元完了", "購入履歴の復元が完了しました。")
+                return (true, String(localized: "復元完了"), String(localized: "購入履歴の復元が完了しました。"))
             } else {
                 analytics.logEvent("subscription_restore_failed", [
                     "reason": "no_purchases_found"
                 ])
-                return (false, "復元失敗", "復元可能な購入履歴が見つかりませんでした。")
+                return (false, String(localized: "復元失敗"), String(localized: "復元可能な購入履歴が見つかりませんでした。"))
             }
         } catch {
             analytics.logEvent("subscription_restore_failed", [
                 "error": error.localizedDescription
             ])
-            return (false, "復元失敗", "購入履歴を復元できませんでした。後ほど再度お試しください。")
+            return (false, String(localized: "復元失敗"), String(localized: "購入履歴を復元できませんでした。後ほど再度お試しください。"))
         }
     }
     
@@ -493,14 +535,14 @@ class SubscriptionViewModel: ObservableObject {
         if let purchaseError = error as? PurchaseManager.PurchaseError {
             switch purchaseError {
             case .productNotFound:
-                return (false, "商品が見つかりません", "サブスクリプション商品が見つかりませんでした。後ほど再度お試しください。")
+                return (false, String(localized: "商品が見つかりません"), String(localized: "サブスクリプション商品が見つかりませんでした。後ほど再度お試しください。"))
             case .purchaseFailed:
-                return (false, "購入失敗", "購入処理を完了できませんでした。後ほど再度お試しください。")
+                return (false, String(localized: "購入失敗"), String(localized: "購入処理を完了できませんでした。後ほど再度お試しください。"))
             case .noEntitlements:
-                return (false, "購入履歴なし", "復元できる購入履歴が見つかりませんでした。")
+                return (false, String(localized: "購入履歴なし"), String(localized: "復元できる購入履歴が見つかりませんでした。"))
             }
         }
-        return (false, "エラー", "予期せぬエラーが発生しました: \(error.localizedDescription)")
+        return (false, String(localized: "エラー"), String(localized: "予期せぬエラーが発生しました: \(error.localizedDescription)"))
     }
 }
 

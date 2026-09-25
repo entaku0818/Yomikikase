@@ -4,7 +4,7 @@ import FirebaseAnalytics
 import os.log
 protocol PurchaseManagerProtocol {
     func fetchProPlan() async throws -> (name: String, price: String)
-    func fetchAllPlans() async throws -> (monthly: (name: String, price: String, trialDays: Int?)?, annual: (name: String, price: String, trialDays: Int?)?)
+    func fetchAllPlans() async throws -> (monthly: SubscriptionPlanInfo?, annual: SubscriptionPlanInfo?)
     func purchasePro() async throws -> Bool
     func purchasePro(planType: PurchaseManager.PlanType) async throws -> Bool
     func restorePurchases() async throws -> Bool
@@ -67,7 +67,7 @@ class PurchaseManager: PurchaseManagerProtocol {
                 price: package.localizedPriceString)
     }
 
-    func fetchAllPlans() async throws -> (monthly: (name: String, price: String, trialDays: Int?)?, annual: (name: String, price: String, trialDays: Int?)?) {
+    func fetchAllPlans() async throws -> (monthly: SubscriptionPlanInfo?, annual: SubscriptionPlanInfo?) {
         os_log("=== Fetch All Plans Start ===", log: logger, type: .debug)
         let offerings = try await Purchases.shared.offerings()
 
@@ -79,21 +79,35 @@ class PurchaseManager: PurchaseManagerProtocol {
         let monthlyPackage = offering.availablePackages.first(where: { $0.identifier == Package.pro })
         let annualPackage = offering.availablePackages.first(where: { $0.identifier == Package.annual })
 
-        let monthly = monthlyPackage.map {
-            (name: $0.storeProduct.localizedTitle,
-             price: $0.localizedPriceString,
-             trialDays: trialDays(from: $0))
-        }
-        let annual = annualPackage.map {
-            (name: $0.storeProduct.localizedTitle,
-             price: $0.localizedPriceString,
-             trialDays: trialDays(from: $0))
-        }
+        // 導入オファー（無料トライアル）の適格判定。判定できない（.unknown 等）ときはトライアルを訴求しない
+        let productIdentifiers = [monthlyPackage, annualPackage].compactMap { $0?.storeProduct.productIdentifier }
+        let eligibility = await Purchases.shared.checkTrialOrIntroDiscountEligibility(productIdentifiers: productIdentifiers)
+
+        let monthly = monthlyPackage.map { planInfo(from: $0, period: .monthly, eligibility: eligibility) }
+        let annual = annualPackage.map { planInfo(from: $0, period: .annual, eligibility: eligibility) }
 
         os_log("Fetched plans - monthly: %{public}@, annual: %{public}@",
                log: logger, type: .debug,
                monthly?.price ?? "nil", annual?.price ?? "nil")
         return (monthly: monthly, annual: annual)
+    }
+
+    private func planInfo(
+        from package: RevenueCat.Package,
+        period: SubscriptionPlanInfo.BillingPeriod,
+        eligibility: [String: IntroEligibility]
+    ) -> SubscriptionPlanInfo {
+        let productIdentifier = package.storeProduct.productIdentifier
+        let isEligible = eligibility[productIdentifier]?.status == .eligible
+        os_log("Intro eligibility - %{public}@: %{public}@", log: logger, type: .debug,
+               productIdentifier, isEligible ? "eligible" : "not eligible")
+        return SubscriptionPlanInfo(
+            name: package.storeProduct.localizedTitle,
+            price: package.localizedPriceString,
+            period: period,
+            trialDays: trialDays(from: package),
+            isTrialEligible: isEligible
+        )
     }
 
     private func trialDays(from package: RevenueCat.Package) -> Int? {
