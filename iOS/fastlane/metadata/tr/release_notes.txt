@@ -1,4 +1,5 @@
+Yeni
+- Premium artık 7 günlük ücretsiz deneme ile geliyor. Uygunsanız deneme süresince tüm Premium özellikleri ücretsiz deneyebilirsiniz
+
 İyileştirmeler
-- Ayarlar'da seçtiğiniz ses artık sesli okumada gerçekten kullanılıyor. Şimdiye kadar uygulama dilin varsayılan sesine geri dönüyordu
-- Yüksek kaliteli seslerin (Enhanced/Premium) indirilmesine dair yönlendirme daha anlaşılır hale getirildi
-- Sesli okuma artık tamamen cihazda çalışıyor. Bağlantı olmadan da çalışır ve sesin oluşturulmasını beklemek gerekmez
+- Premium ekranı artık desteklenen tüm dillere çevrildi

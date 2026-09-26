@@ -1,4 +1,5 @@
+Novidades
+- O Premium agora tem um teste gratuito de 7 dias. Se você for elegível, pode experimentar todos os recursos Premium de graça durante o teste
+
 Melhorias
-- A voz escolhida nos Ajustes agora é realmente usada na leitura. Até agora o app recorria à voz padrão do idioma
-- Orientações mais claras para baixar vozes de alta qualidade (Enhanced/Premium)
-- A leitura agora acontece totalmente no dispositivo. Funciona sem conexão e não há mais espera pela geração do áudio
+- A tela Premium agora está traduzida em todos os idiomas compatíveis

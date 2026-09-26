@@ -1,4 +1,5 @@
+Neu
+- Premium gibt es jetzt mit einer 7-tägigen kostenlosen Testphase. Wenn du berechtigt bist, kannst du alle Premium-Funktionen in dieser Zeit kostenlos testen
+
 Verbesserungen
-- Die in den Einstellungen gewählte Stimme wird nun auch tatsächlich zum Vorlesen verwendet. Bisher griff die App auf die Standardstimme der Sprache zurück
-- Klarere Hinweise zum Herunterladen hochwertiger Stimmen (Enhanced/Premium)
-- Das Vorlesen läuft jetzt vollständig auf dem Gerät. Es funktioniert ohne Internetverbindung, und es entfällt die Wartezeit für die Audioerzeugung
+- Der Premium-Bildschirm ist jetzt in allen unterstützten Sprachen verfügbar

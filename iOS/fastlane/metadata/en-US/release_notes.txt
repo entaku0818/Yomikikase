@@ -1,4 +1,5 @@
+New
+- Premium now comes with a 7-day free trial. If you're eligible, you can try every Premium feature free during the trial
+
 Improvements
-- The voice you pick in Settings is now actually used when reading aloud. Until now the app fell back to the default voice for the language
-- Clearer guidance for downloading high-quality voices (Enhanced/Premium)
-- Reading now runs entirely on your device. It works without a network connection, and there is no more waiting for audio to be generated
+- The Premium screen is now translated into all supported languages

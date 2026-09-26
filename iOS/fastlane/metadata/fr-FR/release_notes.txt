@@ -1,4 +1,5 @@
+Nouveautés
+- Premium propose désormais un essai gratuit de 7 jours. Si vous y avez droit, vous pouvez essayer gratuitement toutes les fonctionnalités Premium pendant l’essai
+
 Améliorations
-- La voix choisie dans les réglages est désormais réellement utilisée pour la lecture. Jusqu'ici, l'app utilisait la voix par défaut de la langue
-- Instructions plus claires pour télécharger les voix de haute qualité (Enhanced/Premium)
-- La lecture s'effectue maintenant entièrement sur l'appareil. Elle fonctionne sans connexion et il n'y a plus d'attente pour la génération audio
+- L’écran Premium est maintenant traduit dans toutes les langues prises en charge

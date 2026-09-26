@@ -1,4 +1,5 @@
-Cải tiến
-- Giọng đọc bạn chọn trong Cài đặt giờ đây được dùng thật sự khi đọc. Trước đây ứng dụng dùng giọng mặc định của ngôn ngữ
-- Hướng dẫn tải giọng chất lượng cao (Enhanced/Premium) rõ ràng hơn
-- Việc đọc giờ diễn ra hoàn toàn trên thiết bị. Hoạt động không cần mạng và không còn phải chờ tạo âm thanh
+Mới
+- Gói Premium giờ có 7 ngày dùng thử miễn phí. Nếu đủ điều kiện, bạn có thể dùng thử miễn phí mọi tính năng Premium trong thời gian này
+
+Cải thiện
+- Màn hình Premium đã được dịch sang tất cả các ngôn ngữ được hỗ trợ
