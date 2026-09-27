@@ -65,6 +65,13 @@ spec:
               port: 8080
         - name: engine
           image: asia-northeast1-docker.pkg.dev/voiceyourtext/dockerhub/voicevox/voicevox_engine:cpu-0.25.2
+          # ユーザー辞書などを書き換える API は使わないので無効にする
+          # 公式イメージの CMD（gosu user ...）に --disable_mutable_api を足したもの
+          args: ["gosu", "user", "/opt/voicevox_engine/run", "--host", "0.0.0.0", "--disable_mutable_api"]
+          env:
+            # 未指定だとエンジンが割り当て vCPU を使い切らない
+            - name: VV_CPU_NUM_THREADS
+              value: "4"
           resources:
             limits:
               cpu: "4"
