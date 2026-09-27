@@ -13,6 +13,9 @@ struct VoiceSettingView: View {
     /// 高品質音声をダウンロードして戻ってきても SwiftUI 側の状態は何も変わらないため再描画されず、
     /// 「落としてきたのに一覧に出てこない」ように見えてしまう。復帰時にこれを変えて再評価させる。
     @State private var voiceListRefreshToken = 0
+    @State private var voicevoxStore = Store(initialState: VoicevoxSettingsFeature.State()) {
+        VoicevoxSettingsFeature()
+    }
 
     private var selectedLanguageCode: String {
         UserDefaultsManager.shared.languageSetting ?? "ja"
@@ -72,6 +75,10 @@ struct VoiceSettingView: View {
                 speechPitch: store.speechPitch,
                 onSelect: { send(.setVoiceIdentifier($0)) }
             )
+
+            if VoicevoxCatalog.isAvailable(languageCode: selectedLanguageCode) {
+                VoicevoxSection(store: voicevoxStore)
+            }
 
             if selectedLanguageCode.starts(with: "en") || selectedLanguageCode.starts(with: "ja") {
                 KokoroTTSSection(

@@ -33,6 +33,13 @@ struct TextInputView: View {
     @FocusState private var isTextEditorFocused: Bool
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.audioFileManager) var audioFileManager
+    @Dependency(\.voicevoxPlayer) var voicevoxPlayer
+    @Dependency(\.voicevoxSettings) var voicevoxSettings
+    /// キャラ音声（VOICEVOX）の再生を受け取るタスク。停止時にキャンセルする
+    @State private var voicevoxTask: Task<Void, Never>?
+    /// 月の上限に達したときの案内。resumeAt から先を端末の音声で続けられる
+    @State private var voicevoxQuotaStop: VoicevoxQuotaStop?
+    @State private var showingVoicevoxPaywall = false
 
     let initialText: String
     let fileId: UUID?
@@ -163,6 +170,30 @@ struct TextInputView: View {
         .sheet(isPresented: $showingSubscription) {
             SubscriptionView(source: "text_char_limit")
         }
+        .alert(
+            "今月のキャラ音声の上限に達しました",
+            isPresented: Binding(get: { voicevoxQuotaStop != nil }, set: { if !$0 { voicevoxQuotaStop = nil } }),
+            presenting: voicevoxQuotaStop
+        ) { stop in
+            if !stop.usage.isPremium {
+                Button("プレミアムを見る") {
+                    showingVoicevoxPaywall = true
+                }
+            }
+            Button("端末の音声で続ける") {
+                continueWithDeviceTTS(fromUTF16Offset: stop.resumeAt)
+            }
+            Button("やめる", role: .cancel) {}
+        } message: { stop in
+            if stop.usage.isPremium {
+                Text("\(stop.usage.resetAt.formatted(.dateTime.month().day()))にリセットされます。続きは端末の音声で読み上げられます。")
+            } else {
+                Text("無料プランのキャラ音声は月\(stop.usage.limit.formatted())字までです。プレミアムなら月20万字まで使えます。")
+            }
+        }
+        .sheet(isPresented: $showingVoicevoxPaywall) {
+            SubscriptionView(source: "voicevox_quota")
+        }
     }
 
     // MARK: - 編集モード
@@ -274,6 +305,8 @@ struct TextInputView: View {
         isSpeaking = true
 
         // 既存の再生を停止（isSpeaking は変えない）
+        voicevoxTask?.cancel()
+        voicevoxTask = nil
         removeAudioFinishObserver()
         audioPlayer?.stop()
         audioPlayer = nil
@@ -299,6 +332,14 @@ struct TextInputView: View {
            let audioPath = audioFileManager.getLocalAudioPath(currentFileId.uuidString) {
             infoLog("[Highlight] Playing previously generated audio: \(audioPath.path)")
             playGeneratedAudio(url: audioPath)
+            return
+        }
+
+        // キャラ音声（VOICEVOX）を選んでいれば最優先。日本語の文章だけ
+        if voicevoxSettings.isEnabled(),
+           VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
+            infoLog("[TTS] → VOICEVOX")
+            playWithVoicevox()
             return
         }
 
@@ -406,15 +447,62 @@ struct TextInputView: View {
         }
     }
 
-    private func playWithDeviceTTS() {
+    private func playWithVoicevox() {
+        let speakerId = voicevoxSettings.speakerId()
+        // VOICEVOX の speedScale 1.0 = 通常。Kokoro と同じ換算（speechRate 0.5 = 通常）
+        let speed = KokoroPlaybackParams.kokoroSpeed(fromSpeechRate: UserDefaultsManager.shared.speechRate)
+        let text = text
+        voicevoxTask?.cancel()
+        voicevoxTask = Task { @MainActor in
+            for await event in await voicevoxPlayer.play(text, speakerId, Double(speed)) {
+                guard isSpeaking else { return }
+                switch event {
+                case let .sentence(range):
+                    highlightedRange = range
+                case .finished:
+                    finishSpeaking()
+                case let .quotaExceeded(usage, resumeAt):
+                    finishSpeaking()
+                    voicevoxQuotaStop = VoicevoxQuotaStop(usage: usage, resumeAt: resumeAt)
+                case let .failed(resumeAt):
+                    // 通信できない等。止まった文から端末の音声で読み続ける
+                    warningLog("[VOICEVOX] failed, continuing with device TTS from \(resumeAt)")
+                    playWithDeviceTTS(fromUTF16Offset: resumeAt)
+                }
+            }
+        }
+    }
+
+    /// 上限の案内から「端末の音声で続ける」を選んだとき
+    private func continueWithDeviceTTS(fromUTF16Offset offset: Int) {
+        guard !isSpeaking else { return }
+        isSpeaking = true
+        let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
+        store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput(fileId: fileId, text: text))))
+        playWithDeviceTTS(fromUTF16Offset: offset)
+    }
+
+    private func finishSpeaking() {
+        isSpeaking = false
+        highlightedRange = nil
+        store.send(.nowPlaying(.stopPlaying))
+    }
+
+    /// fromUTF16Offset は元の文章の中の位置。キャラ音声が途中で止まったとき、その続きから読むのに使う
+    private func playWithDeviceTTS(fromUTF16Offset startOffset: Int = 0) {
         infoLog("[Highlight] playWithDeviceTTS called")
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         let rate = UserDefaultsManager.shared.speechRate
         let pitch = UserDefaultsManager.shared.speechPitch
         infoLog("[Highlight] language: \(language), rate: \(rate), pitch: \(pitch)")
 
+        // 途中から読むときは、その位置より前を読まない。ハイライト位置は元の文章に合わせてずらす
+        let startIndex = String.Index(utf16Offset: min(max(startOffset, 0), text.utf16.count), in: text)
+        let baseOffset = text.distance(from: text.startIndex, to: startIndex)
+        let remainingText = String(text[startIndex...])
+
         // AVSpeechSynthesizer は長いテキストをサイレントに失敗するため、チャンクに分割して読み上げる
-        let chunks = splitIntoChunks(text, maxLength: 4000)
+        let chunks = splitIntoChunks(remainingText, maxLength: 4000).map { (text: $0.text, offset: $0.offset + baseOffset) }
         infoLog("[Highlight] Text split into \(chunks.count) chunks (total \(text.count) chars)")
 
         Task {
@@ -498,6 +586,9 @@ struct TextInputView: View {
     }
 
     private func stopSpeaking() {
+        // 受け取り側をキャンセルすると、その再生だけが止まる（VoicevoxPlayerClient）
+        voicevoxTask?.cancel()
+        voicevoxTask = nil
         removeAudioFinishObserver()
         audioPlayer?.stop()
         audioPlayer = nil
@@ -598,4 +689,12 @@ class LocalAudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
         initialText: "これはサンプルテキストです。読み上げのテストを行います。",
         fileId: UUID()
     )
+}
+
+
+/// キャラ音声が月の上限で止まったときの状態
+struct VoicevoxQuotaStop: Equatable {
+    let usage: VoicevoxUsage
+    /// 元の文章の中の UTF-16 位置。ここから先はまだ読んでいない
+    let resumeAt: Int
 }

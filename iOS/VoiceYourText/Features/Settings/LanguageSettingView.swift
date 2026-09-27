@@ -169,6 +169,13 @@ struct LanguageSettingView: View {
                             Text("お問い合わせ・フィードバック")
                         }
                     }
+                    NavigationLink(destination: CreditsView()) {
+                        HStack {
+                            Image(systemName: "person.wave.2.fill")
+                                .foregroundColor(AppTheme.primary)
+                            Text("クレジット")
+                        }
+                    }
                 }
 
                 Button(action: {

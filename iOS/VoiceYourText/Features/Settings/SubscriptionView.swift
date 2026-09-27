@@ -96,6 +96,7 @@ struct SubscriptionView: View {
             }
             .padding(.bottom, 4)
 
+            FeatureRow(icon: "person.wave.2.fill", title: String(localized: "キャラ音声を月20万字まで"), description: String(localized: "ずんだもんなどのキャラクターの声で読み上げられます（無料版は月5,000字まで）"))
             FeatureRow(icon: "hand.thumbsup.fill", title: String(localized: "広告なしで快適に聴ける"), description: String(localized: "読み上げ中に広告バナーが表示されず、集中して聴き続けられます"))
             FeatureRow(icon: "doc.fill", title: String(localized: "ファイル無制限登録"), description: String(localized: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）"))
             FeatureRow(icon: "doc.text.fill", title: String(localized: "長文テキスト無制限"), description: String(localized: "4,000文字を超える長い文章も最後まで読み上げられます"))
