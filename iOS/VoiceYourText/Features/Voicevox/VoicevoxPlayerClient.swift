@@ -18,10 +18,16 @@ extension VoicevoxPlayerClient: DependencyKey {
         output: AVAudioPlayerOutput()
     )
 
+    /// 再生中のイベントの流し先。次の再生が始まったら終わらせ、受け取り側が「再生中」のまま残らないようにする
+    @MainActor
+    private static var currentContinuation: AsyncStream<VoicevoxSpeechPlayer.Event>.Continuation?
+
     static let liveValue = Self(
         play: { text, speakerId, speedScale in
             await MainActor.run {
                 AsyncStream { continuation in
+                    currentContinuation?.finish()
+                    currentContinuation = continuation
                     player.play(text: text, speakerId: speakerId, speedScale: speedScale) { event in
                         continuation.yield(event)
                         switch event {
@@ -43,7 +49,11 @@ extension VoicevoxPlayerClient: DependencyKey {
             }
         },
         stop: {
-            await MainActor.run { player.stop() }
+            await MainActor.run {
+                player.stop()
+                currentContinuation?.finish()
+                currentContinuation = nil
+            }
         }
     )
 

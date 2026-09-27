@@ -40,13 +40,50 @@ final class VoicevoxSettingsFeatureTests: XCTestCase {
         let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
             VoicevoxSettingsFeature()
         } withDependencies: {
-            $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
+            $0.voicevoxSettings = settings(enabled: true, speakerId: 14, saved: saved)
             $0.voicevox.quota = { throw VoicevoxError.appCheckUnavailable }
         }
-        await store.send(.view(.onAppear))
+        await store.send(.view(.onAppear)) {
+            $0.isEnabled = true
+        }
         await store.receive(\.usageFailed) {
             $0.isUsageUnavailable = true
         }
+    }
+
+    func testOnAppearWhileOffDoesNotWakeServer() async {
+        let saved = LockIsolated<[String]>([])
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
+            VoicevoxSettingsFeature()
+        } withDependencies: {
+            $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
+            // quota は未実装のまま（呼ばれたらテストが落ちる）
+        }
+        await store.send(.view(.onAppear))
+    }
+
+    func testPickingVoiceWhileOffTurnsCharacterVoiceOn() async {
+        let saved = LockIsolated<[String]>([])
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
+            VoicevoxSettingsFeature()
+        } withDependencies: {
+            $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
+            $0.voicevox.quota = { self.freeUsage }
+            $0.voicevoxPlayer.stop = {}
+            $0.voicevoxPlayer.play = { _, _, _ in AsyncStream { $0.yield(.finished); $0.finish() } }
+        }
+        await store.send(.view(.voiceTapped(11))) {
+            $0.isEnabled = true
+            $0.selectedSpeakerId = 11
+            $0.previewingSpeakerId = 11
+        }
+        await store.receive(\.previewFinished) {
+            $0.previewingSpeakerId = nil
+        }
+        await store.receive(\.usageLoaded) {
+            $0.usage = self.freeUsage
+        }
+        XCTAssertEqual(saved.value, ["enabled=true", "speaker=11"])
     }
 
     func testTurningOnSavesAndLogs() async {

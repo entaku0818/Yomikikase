@@ -35,12 +35,15 @@ struct TextInputView: View {
     @Dependency(\.audioFileManager) var audioFileManager
     @Dependency(\.voicevoxPlayer) var voicevoxPlayer
     @Dependency(\.voicevoxSettings) var voicevoxSettings
-    @Dependency(\.voicevox) var voicevox
     /// キャラ音声（VOICEVOX）の再生を受け取るタスク。停止時にキャンセルする
     @State private var voicevoxTask: Task<Void, Never>?
     /// 月の上限に達したときの案内。resumeAt から先を端末の音声で続けられる
     @State private var voicevoxQuotaStop: VoicevoxQuotaStop?
     @State private var showingVoicevoxPaywall = false
+    @State private var showingVoicePicker = false
+    @State private var voicevoxStore = Store(initialState: VoicevoxSettingsFeature.State()) {
+        VoicevoxSettingsFeature()
+    }
 
     let initialText: String
     let fileId: UUID?
@@ -118,11 +121,10 @@ struct TextInputView: View {
             // 既存ファイルに旧クラウドTTSの音声ファイルが残っていれば、それを再生に使う
             checkGeneratedAudio()
 
-            // キャラ音声のサーバーは使われていないと0台になり、起動に十数秒かかる。
-            // 画面を開いた時点で起こしておき、再生ボタンを押すまでに起動を済ませる
-            if voicevoxSettings.isEnabled(),
-               VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
-                Task { _ = try? await voicevox.voices() }
+            // 今の声を表示する。キャラ音声がオンなら残り文字数も取りに行き、
+            // 使われていないと0台で起動に十数秒かかるサーバーを、再生ボタンを押す前に起こしておく
+            if VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
+                voicevoxStore.send(.view(.onAppear))
             }
 
             // 既存ファイルを開いた場合はプレイヤーモードで開始
@@ -202,6 +204,14 @@ struct TextInputView: View {
         .sheet(isPresented: $showingVoicevoxPaywall) {
             SubscriptionView(source: "voicevox_quota")
         }
+        .sheet(isPresented: $showingVoicePicker, onDismiss: {
+            // 試聴が残っていたら止める
+            Task { await voicevoxPlayer.stop() }
+        }) {
+            VoicePickerSheet(store: voicevoxStore)
+                .presentationDetents([.medium, .large])
+                .onAppear { voicevoxStore.send(.view(.onAppear)) }
+        }
     }
 
     // MARK: - 編集モード
@@ -264,6 +274,16 @@ struct TextInputView: View {
             if !UserDefaultsManager.shared.isPremiumUser {
                 AdmobBannerView()
                     .frame(height: 50)
+            }
+
+            // 今の声。押すと端末の音声とキャラ音声から選べる（キャラ音声は日本語だけ）
+            if VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
+                VoicePickerRow(store: voicevoxStore) {
+                    // 試聴と本編の読み上げが重ならないよう、一覧を開く前に止める
+                    stopSpeaking()
+                    showingVoicePicker = true
+                }
+                .padding(.top, 8)
             }
 
             // プレイヤーコントロール

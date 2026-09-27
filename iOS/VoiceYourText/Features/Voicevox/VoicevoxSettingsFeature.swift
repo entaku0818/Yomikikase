@@ -52,7 +52,8 @@ struct VoicevoxSettingsFeature {
             case .view(.onAppear):
                 state.isEnabled = settings.isEnabled()
                 state.selectedSpeakerId = settings.speakerId()
-                return loadUsage()
+                // オフの人のためにサーバーを起こさない（使われていないと0台で、起動のたびに費用がかかる）
+                return state.isEnabled ? loadUsage() : .none
 
             case let .view(.enabledChanged(enabled)):
                 state.isEnabled = enabled
@@ -61,6 +62,11 @@ struct VoicevoxSettingsFeature {
                 return enabled ? loadUsage() : .none
 
             case let .view(.voiceTapped(speakerId)):
+                // 再生画面の声の一覧からキャラを選んだときは、キャラ音声もオンにする
+                if !state.isEnabled {
+                    state.isEnabled = true
+                    settings.setEnabled(true)
+                }
                 state.selectedSpeakerId = speakerId
                 settings.setSpeakerId(speakerId)
                 state.previewingSpeakerId = speakerId
