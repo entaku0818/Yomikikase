@@ -101,3 +101,18 @@ func TestErrorsDoNotContainText(t *testing.T) {
 func containsText(msg, text string) bool {
 	return strings.Contains(msg, text) || strings.Contains(msg, url.QueryEscape(text))
 }
+
+func TestInitializeSpeakerAccepts204(t *testing.T) {
+	var got string
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.URL.Path + "?" + r.URL.RawQuery
+		w.WriteHeader(http.StatusNoContent)
+	}))
+	defer srv.Close()
+	if err := NewClient(srv.URL).InitializeSpeaker(context.Background(), 14); err != nil {
+		t.Fatalf("204 should be success: %v", err)
+	}
+	if got != "/initialize_speaker?skip_reinit=true&speaker=14" {
+		t.Errorf("request = %s", got)
+	}
+}

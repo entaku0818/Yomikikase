@@ -125,7 +125,8 @@ func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, er
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode != http.StatusOK {
+	// initialize_speaker は 204 を返すので 2xx を成功とする
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		// エンジンのエラー本文は入力（文章）を含むことがあるので、ステータスだけ返す
 		return nil, fmt.Errorf("engine returned %d for %s", resp.StatusCode, req.URL.Path)
 	}
