@@ -80,7 +80,8 @@ func main() {
 
 		h.AppCheck = appcheck.Verifier{Client: ac, AllowedAppIDs: strings.Split(mustEnv("ALLOWED_APP_IDS"), ",")}
 		h.Entitlement = &entitlement.RevenueCat{
-			SecretKey:     mustEnv("REVENUECAT_SECRET_KEY"),
+			// Secret Manager に改行付きで登録されると Authorization ヘッダーが不正になるので落とす
+			SecretKey:     strings.TrimSpace(mustEnv("REVENUECAT_SECRET_KEY")),
 			ProjectID:     mustEnv("REVENUECAT_PROJECT_ID"),
 			EntitlementID: mustEnv("REVENUECAT_ENTITLEMENT_ID"),
 		}
