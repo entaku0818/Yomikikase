@@ -35,6 +35,7 @@ struct TextInputView: View {
     @Dependency(\.audioFileManager) var audioFileManager
     @Dependency(\.voicevoxPlayer) var voicevoxPlayer
     @Dependency(\.voicevoxSettings) var voicevoxSettings
+    @Dependency(\.voicevox) var voicevox
     /// キャラ音声（VOICEVOX）の再生を受け取るタスク。停止時にキャンセルする
     @State private var voicevoxTask: Task<Void, Never>?
     /// 月の上限に達したときの案内。resumeAt から先を端末の音声で続けられる
@@ -116,6 +117,13 @@ struct TextInputView: View {
 
             // 既存ファイルに旧クラウドTTSの音声ファイルが残っていれば、それを再生に使う
             checkGeneratedAudio()
+
+            // キャラ音声のサーバーは使われていないと0台になり、起動に十数秒かかる。
+            // 画面を開いた時点で起こしておき、再生ボタンを押すまでに起動を済ませる
+            if voicevoxSettings.isEnabled(),
+               VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
+                Task { _ = try? await voicevox.voices() }
+            }
 
             // 既存ファイルを開いた場合はプレイヤーモードで開始
             if fileId != nil && !initialText.isEmpty {
