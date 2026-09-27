@@ -91,6 +91,8 @@ cmd_test() {
     # 並列テストのクローンデバイスではアプリ起動に失敗するので無効化する。
     # シミュレータでは AVSpeechSynthesisVoice(language:) が戻らずテストがハングすることがあるため、
     # ジョブの timeout まで待たずにテスト単位のタイムアウトで失敗させる。
+    # ただしこの Mac は他の作業と共有していて load average が 100 を超えることがあり、
+    # 60秒だと無関係なテストが遅いだけで落ちるため余裕を持たせる（手元では全件12秒程度）。
     xcodebuild test \
         -project "$PROJECT" \
         -scheme "$SCHEME" \
@@ -101,8 +103,8 @@ cmd_test() {
         -only-testing:VoiceYourTextTests \
         -parallel-testing-enabled NO \
         -test-timeouts-enabled YES \
-        -default-test-execution-time-allowance 60 \
-        -maximum-test-execution-time-allowance 120 \
+        -default-test-execution-time-allowance 180 \
+        -maximum-test-execution-time-allowance 300 \
         -skipMacroValidation \
         -skipPackagePluginValidation \
         CODE_SIGNING_ALLOWED=NO
