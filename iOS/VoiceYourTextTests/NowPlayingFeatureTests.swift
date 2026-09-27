@@ -188,10 +188,16 @@ final class NowPlayingFeatureTests: XCTestCase {
         )) { state in
             state.isPlaying = true
         }
-        await store.finish()
+        // startPlaying の effect は observeRemoteCommands を送るだけ。
+        // observeRemoteCommands は終わらない通知購読を始めるので、ここで store.finish() を待つと
+        // マシンの負荷次第でテスト自体がタイムアウトする（CIで実際に発生）。購読は dismiss で止める。
+        await store.receive(\.observeRemoteCommands)
 
         XCTAssertFalse(stopSpeakingCalled,
             "startPlaying の effect が stopSpeaking() を呼ぶと playWithDeviceTTS との競合で CancellationError が発生する")
+
+        await store.send(.dismiss)
+        await store.finish()
     }
 
     // MARK: - dismiss
