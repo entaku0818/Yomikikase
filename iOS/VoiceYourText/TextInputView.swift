@@ -237,23 +237,32 @@ struct TextInputView: View {
 
             Spacer()
 
-            // 再生方式の説明
+            // 読み上げに使う声。保存・再生の前にここで選べる
             VStack(spacing: 12) {
-                if text.count > 4_000 {
-                    Text("文字数が多いため、端末TTSで直接再生します（保存されません）")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                } else {
-                    Text("オンデバイス音声で再生します（インターネット不要）")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
+                if VoicevoxCatalog.isAvailable(languageCode: UserDefaultsManager.shared.languageSetting) {
+                    VoicePickerRow(store: voicevoxStore) {
+                        showingVoicePicker = true
+                    }
                 }
+                Text(playbackDescription)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
             }
             .padding(.horizontal)
             .padding(.bottom, 16)
         }
+    }
+
+    /// 編集画面に出す、いまの読み上げ方法の説明
+    private var playbackDescription: String {
+        if text.count > 4_000 {
+            return String(localized: "文字数が多いため、端末TTSで直接再生します（保存されません）")
+        }
+        if voicevoxStore.isEnabled {
+            return String(localized: "キャラ音声で読み上げます（インターネットが必要）")
+        }
+        return String(localized: "オンデバイス音声で再生します（インターネット不要）")
     }
 
     // MARK: - プレイヤーモード

@@ -20676,6 +20676,134 @@
           }
         }
       }
+    },
+    "キャラ音声で読み上げます（インターネットが必要）" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Liest mit einer Charakterstimme vor (Internet erforderlich)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reads aloud in a character voice (needs internet)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lee en voz alta con una voz de personaje (necesita internet)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture avec une voix de personnage (connexion Internet requise)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legge con una voce di personaggio (richiede Internet)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キャラ音声で読み上げます（インターネットが必要）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐릭터 음성으로 읽어 줍니다(인터넷 필요)"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อ่านออกเสียงด้วยเสียงตัวละคร (ต้องใช้อินเทอร์เน็ต)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Karakter sesiyle sesli okur (internet gerekir)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đọc bằng giọng nhân vật (cần internet)"
+          }
+        }
+      }
+    },
+    "オンデバイス音声で再生します（インターネット不要）" : {
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiedergabe mit Stimmen auf dem Gerät (kein Internet nötig)"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plays with on-device voices (no internet needed)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se reproduce con voces del dispositivo (sin internet)"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lecture avec les voix de l’appareil (sans Internet)"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Riproduce con voci sul dispositivo (senza Internet)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンデバイス音声で再生します（インターネット不要）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기기 내 음성으로 재생합니다(인터넷 불필요)"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เล่นด้วยเสียงในเครื่อง (ไม่ต้องใช้อินเทอร์เน็ต)"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cihazdaki seslerle oynatır (internet gerekmez)"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phát bằng giọng có sẵn trên máy (không cần internet)"
+          }
+        }
+      }
     }
   },
   "version" : "1.1"
