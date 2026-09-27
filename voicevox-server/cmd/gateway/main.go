@@ -48,7 +48,7 @@ func main() {
 		Engine: voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")),
 		Limits: api.Limits{
 			FreeMonthly:     envInt("FREE_MONTHLY_CHARS", 5000),
-			PremiumMonthly:  envInt("PREMIUM_MONTHLY_CHARS", 300000),
+			PremiumMonthly:  envInt("PREMIUM_MONTHLY_CHARS", 200000),
 			MaxRequestChars: envInt("MAX_REQUEST_CHARS", 300),
 		},
 		Log: log,

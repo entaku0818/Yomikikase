@@ -52,7 +52,7 @@ spec:
             - name: FREE_MONTHLY_CHARS
               value: "5000"
             - name: PREMIUM_MONTHLY_CHARS
-              value: "300000"
+              value: "200000"
             - name: MAX_REQUEST_CHARS
               value: "300"
           resources:
