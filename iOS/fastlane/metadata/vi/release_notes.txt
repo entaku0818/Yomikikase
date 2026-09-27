@@ -1,5 +1,7 @@
 Mới
+- Giọng nhân vật: nghe bằng sáu giọng như Zundamon, Shikoku Metan và Meimei Himari (miễn phí 5.000 ký tự/tháng, Premium 200.000)
 - Gói Premium giờ có 7 ngày dùng thử miễn phí. Nếu đủ điều kiện, bạn có thể dùng thử miễn phí mọi tính năng Premium trong thời gian này
 
 Cải thiện
+- Chọn giọng ngay trên màn hình phát và màn hình chỉnh sửa
 - Màn hình Premium đã được dịch sang tất cả các ngôn ngữ được hỗ trợ
