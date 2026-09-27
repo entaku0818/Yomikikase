@@ -5,7 +5,11 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"math"
+	"net/http"
+	"net/http/httptest"
+	"net/url"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -73,4 +77,27 @@ func wavDuration(t *testing.T, wav []byte) float64 {
 	}
 	t.Fatal("no data chunk")
 	return 0
+}
+
+// 利用者の文章をログに残さないため、エラーメッセージに文章が入らないこと
+func TestErrorsDoNotContainText(t *testing.T) {
+	secret := "ひみつの文章"
+	// 接続できない（url.Error）
+	c := NewClient("http://127.0.0.1:1")
+	if _, err := c.Synthesize(context.Background(), secret, 14, Options{}); err == nil || containsText(err.Error(), secret) {
+		t.Errorf("connection error leaks text: %v", err)
+	}
+	// エンジンがエラー本文に入力を含めて返す
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		_, _ = w.Write([]byte(`{"detail":[{"input":"` + r.URL.Query().Get("text") + `"}]}`))
+	}))
+	defer srv.Close()
+	if _, err := NewClient(srv.URL).Synthesize(context.Background(), secret, 14, Options{}); err == nil || containsText(err.Error(), secret) {
+		t.Errorf("engine error leaks text: %v", err)
+	}
+}
+
+func containsText(msg, text string) bool {
+	return strings.Contains(msg, text) || strings.Contains(msg, url.QueryEscape(text))
 }

@@ -66,8 +66,15 @@ spec:
         - name: engine
           image: asia-northeast1-docker.pkg.dev/voiceyourtext/dockerhub/voicevox/voicevox_engine:cpu-0.25.2
           # ユーザー辞書などを書き換える API は使わないので無効にする
-          # 公式イメージの CMD（gosu user ...）に --disable_mutable_api を足したもの
-          args: ["gosu", "user", "/opt/voicevox_engine/run", "--host", "0.0.0.0", "--disable_mutable_api"]
+          # 公式イメージの CMD（gosu user ...）に --disable_mutable_api を足したもの。
+          # エンジンのアクセスログは URL に読み上げる文章がそのまま入る（audio_query?text=...）ので、
+          # 利用者の文章が Cloud Logging に残らないようアクセスログの行だけ捨てる。起動・エラーのログは残す
+          args:
+            - sh
+            - -c
+            - >-
+              gosu user /opt/voicevox_engine/run --host 0.0.0.0 --disable_mutable_api 2>&1
+              | grep --line-buffered -v -E '^INFO: +[0-9.]+:[0-9]+ - "'
           env:
             # 未指定だとエンジンが割り当て vCPU を使い切らない
             - name: VV_CPU_NUM_THREADS

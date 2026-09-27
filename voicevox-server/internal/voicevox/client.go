@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -104,6 +105,11 @@ func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, er
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := c.HTTP.Do(req)
 	if err != nil {
+		// url.Error はリクエスト URL（= 読み上げる文章入り）をメッセージに含むので、ログに出る前に外す
+		var urlErr *url.Error
+		if errors.As(err, &urlErr) {
+			return nil, fmt.Errorf("%s %s: %w", req.Method, req.URL.Path, urlErr.Err)
+		}
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -112,7 +118,8 @@ func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, er
 		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("engine returned %d: %s", resp.StatusCode, truncate(data, 200))
+		// エンジンのエラー本文は入力（文章）を含むことがあるので、ステータスだけ返す
+		return nil, fmt.Errorf("engine returned %d for %s", resp.StatusCode, req.URL.Path)
 	}
 	return data, nil
 }
@@ -176,11 +183,4 @@ func (t queryTiming) phrases() ([]Phrase, float64) {
 
 func round3(v float64) float64 {
 	return float64(int64(v*1000+0.5)) / 1000
-}
-
-func truncate(b []byte, n int) string {
-	if len(b) > n {
-		return string(b[:n])
-	}
-	return string(b)
 }
