@@ -234,13 +234,18 @@ struct AnnualPlanCard: View {
         SubscriptionPlanPresentation(plan: annualPlan, fallbackPeriod: .annual)
     }
 
+    /// 年額がどれだけ安いか。実際の価格から計算する（通貨や価格改定で変わるため固定値にしない）
+    private var savingsPercent: Int? {
+        SubscriptionPlanInfo.annualSavingsPercent(monthly: monthlyPlan, annual: annualPlan)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             // おすすめバッジ
             HStack {
                 Spacer()
-                if let days = presentation.trialTerms?.days {
-                    Text("\(days)日間無料・約38%お得")
+                if let days = presentation.trialTerms?.days, let savings = savingsPercent {
+                    Text("\(days)日間無料・約\(savings)%お得")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
@@ -248,8 +253,17 @@ struct AnnualPlanCard: View {
                         .padding(.vertical, 5)
                         .background(AppTheme.badgeBackground)
                         .clipShape(Capsule())
-                } else {
-                    Text("おすすめ・約38%お得")
+                } else if let days = presentation.trialTerms?.days {
+                    Text("\(days)日間無料")
+                        .font(.caption)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 5)
+                        .background(AppTheme.badgeBackground)
+                        .clipShape(Capsule())
+                } else if let savings = savingsPercent {
+                    Text("おすすめ・約\(savings)%お得")
                         .font(.caption)
                         .fontWeight(.bold)
                         .foregroundColor(.white)
@@ -456,6 +470,7 @@ class SubscriptionViewModel: ObservableObject {
                     self.monthlyPlan = SubscriptionPlanInfo(
                         name: plan.name,
                         price: plan.price,
+                        priceValue: 0,
                         period: .monthly,
                         trialDays: nil,
                         isTrialEligible: false

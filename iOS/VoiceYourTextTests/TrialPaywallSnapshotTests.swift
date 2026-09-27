@@ -68,6 +68,7 @@ final class TrialPaywallSnapshotTests: XCTestCase {
             return SubscriptionPlanInfo(
                 name: product.displayName,
                 price: product.displayPrice,
+                priceValue: product.price,
                 period: period,
                 trialDays: trialDays,
                 isTrialEligible: await subscription.isEligibleForIntroOffer

@@ -104,6 +104,7 @@ class PurchaseManager: PurchaseManagerProtocol {
         return SubscriptionPlanInfo(
             name: package.storeProduct.localizedTitle,
             price: package.localizedPriceString,
+            priceValue: package.storeProduct.price,
             period: period,
             trialDays: trialDays(from: package),
             isTrialEligible: isEligible

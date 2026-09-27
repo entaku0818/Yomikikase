@@ -6,12 +6,14 @@ final class SubscriptionPlanPresentationTests: XCTestCase {
     private func plan(
         period: SubscriptionPlanInfo.BillingPeriod = .monthly,
         price: String = "¥300",
+        priceValue: Decimal = 300,
         trialDays: Int? = 7,
         isTrialEligible: Bool = true
     ) -> SubscriptionPlanInfo {
         SubscriptionPlanInfo(
             name: "Pro",
             price: price,
+            priceValue: priceValue,
             period: period,
             trialDays: trialDays,
             isTrialEligible: isTrialEligible
@@ -76,6 +78,41 @@ final class SubscriptionPlanPresentationTests: XCTestCase {
             .purchase(.annual)
         )
         XCTAssertNil(SubscriptionPlanPresentation(plan: nil, fallbackPeriod: .monthly).trialTerms)
+    }
+
+    // MARK: - 年額の割引率
+
+    func testAnnualSavingsIsComputedFromRealPrices() {
+        // 日本: ¥500/月 vs ¥5,000/年 → 12か月分 ¥6,000 に対して約17%
+        XCTAssertEqual(
+            SubscriptionPlanInfo.annualSavingsPercent(
+                monthly: plan(period: .monthly, priceValue: 500),
+                annual: plan(period: .annual, priceValue: 5000)
+            ),
+            17
+        )
+        // 米国: $2.99/月 vs $29.99/年 → 約16%
+        XCTAssertEqual(
+            SubscriptionPlanInfo.annualSavingsPercent(
+                monthly: plan(period: .monthly, priceValue: Decimal(string: "2.99")!),
+                annual: plan(period: .annual, priceValue: Decimal(string: "29.99")!)
+            ),
+            16
+        )
+    }
+
+    func testAnnualSavingsIsNilWhenNotCheaperOrPriceMissing() {
+        // 年額のほうが高い/同じなら割引として見せない
+        XCTAssertNil(SubscriptionPlanInfo.annualSavingsPercent(
+            monthly: plan(period: .monthly, priceValue: 500),
+            annual: plan(period: .annual, priceValue: 6000)
+        ))
+        // 価格が取れないとき（フォールバック経路）
+        XCTAssertNil(SubscriptionPlanInfo.annualSavingsPercent(
+            monthly: plan(period: .monthly, priceValue: 0),
+            annual: plan(period: .annual, priceValue: 5000)
+        ))
+        XCTAssertNil(SubscriptionPlanInfo.annualSavingsPercent(monthly: nil, annual: plan(period: .annual, priceValue: 5000)))
     }
 
     // MARK: - 文言
