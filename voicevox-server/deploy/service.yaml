@@ -1,0 +1,77 @@
+# Cloud Run サービス定義。scripts/deploy.sh が ${GATEWAY_IMAGE} を埋めてから `gcloud run services replace` する。
+#
+# 1インスタンスに2つのコンテナを置く:
+#   gateway … 外に公開する唯一の口（:8080）。App Check・課金判定・文字数の上限を担当
+#   engine  … VOICEVOX 公式イメージをそのまま動かす。認証が無いので外には出さず、gateway から 127.0.0.1:50021 で呼ぶ
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: voicevox-tts
+  labels:
+    cloud.googleapis.com/location: asia-northeast1
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        # 使っていないときは0台（課金なし）。上限は想定外の利用で請求が膨らまないように小さく置く
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+        # リクエスト処理中だけ CPU を割り当てる（リクエスト課金）
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/startup-cpu-boost: "true"
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/container-dependencies: '{"gateway":["engine"]}'
+    spec:
+      serviceAccountName: voicevox-gateway@voiceyourtext.iam.gserviceaccount.com
+      # エンジンは CPU を使い切るので、同時に処理する文は少なめにする
+      containerConcurrency: 4
+      timeoutSeconds: 120
+      containers:
+        - name: gateway
+          image: ${GATEWAY_IMAGE}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: GOOGLE_CLOUD_PROJECT
+              value: voiceyourtext
+            - name: ENGINE_URL
+              value: http://127.0.0.1:50021
+            - name: ALLOWED_APP_IDS
+              value: "1:990821915106:ios:4e2a188278c27c40a001bb"
+            - name: REVENUECAT_PROJECT_ID
+              value: projf454902e
+            - name: REVENUECAT_ENTITLEMENT_ID
+              value: entl9f431d6a61
+            - name: REVENUECAT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: voicevox-revenuecat-secret-key
+                  key: latest
+            - name: FREE_MONTHLY_CHARS
+              value: "5000"
+            - name: PREMIUM_MONTHLY_CHARS
+              value: "300000"
+            - name: MAX_REQUEST_CHARS
+              value: "300"
+          resources:
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+        - name: engine
+          image: asia-northeast1-docker.pkg.dev/voiceyourtext/dockerhub/voicevox/voicevox_engine:cpu-0.25.2
+          resources:
+            limits:
+              cpu: "4"
+              memory: 8Gi
+          startupProbe:
+            httpGet:
+              path: /version
+              port: 50021
+            periodSeconds: 5
+            failureThreshold: 48
