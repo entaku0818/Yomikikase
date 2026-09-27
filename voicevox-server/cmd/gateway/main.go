@@ -23,6 +23,7 @@ import (
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/audio"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/entitlement"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/quota"
+	"github.com/entaku0818/voiceyourtext-voicevox/internal/voices"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/voicevox"
 )
 
@@ -87,6 +88,9 @@ func main() {
 		h.Encoder = audio.FFmpegAAC{}
 	}
 
+	// 最初の利用者が声の読み込みを待たないよう、起動したら裏で6声を読み込んでおく
+	go warmUp(ctx, log, voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")))
+
 	srv := &http.Server{
 		Addr:              ":" + env("PORT", "8080"),
 		Handler:           h.Routes(),
@@ -103,6 +107,27 @@ func main() {
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		fatal(log, "serve", err)
 	}
+}
+
+// warmUp はエンジンの起動を待ってから、許可リストの声を全部読み込む。
+func warmUp(ctx context.Context, log *slog.Logger, engine *voicevox.Client) {
+	start := time.Now()
+	for engine.Ready(ctx) != nil {
+		select {
+		case <-ctx.Done():
+			return
+		case <-time.After(time.Second):
+		}
+	}
+	for _, v := range voices.All {
+		t := time.Now()
+		if err := engine.InitializeSpeaker(ctx, v.SpeakerID); err != nil {
+			log.Warn("warm up failed", "speaker", v.SpeakerID, "err", err)
+			continue
+		}
+		log.Info("speaker loaded", "speaker", v.SpeakerID, "seconds", time.Since(t).Seconds())
+	}
+	log.Info("warm up done", "seconds", time.Since(start).Seconds())
 }
 
 func env(key, fallback string) string {

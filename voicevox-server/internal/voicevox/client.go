@@ -80,6 +80,14 @@ func (c *Client) Synthesize(ctx context.Context, text string, speakerID int, opt
 	return Result{WAV: wav, Duration: duration, Phrases: phrases}, nil
 }
 
+// InitializeSpeaker は声のモデルを先に読み込む。初めて使う声は合成前の読み込みに数秒かかるため、
+// 起動直後に済ませておくと最初の利用者を待たせない。読み込み済みなら何もしない。
+func (c *Client) InitializeSpeaker(ctx context.Context, speakerID int) error {
+	q := url.Values{"speaker": {strconv.Itoa(speakerID)}, "skip_reinit": {"true"}}
+	_, err := c.post(ctx, "/initialize_speaker?"+q.Encode(), nil)
+	return err
+}
+
 // Ready はエンジンが応答するかを返す。
 func (c *Client) Ready(ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, c.BaseURL+"/version", nil)
