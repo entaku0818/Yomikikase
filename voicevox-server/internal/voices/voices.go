@@ -25,7 +25,7 @@ var All = []Voice{
 	{SpeakerID: 3, Character: "ずんだもん", Style: "ノーマル", Credit: "VOICEVOX:ずんだもん", TermsURL: "https://zunko.jp/con_ongen_kiyaku.html"},
 	{SpeakerID: 2, Character: "四国めたん", Style: "ノーマル", Credit: "VOICEVOX:四国めたん", TermsURL: "https://zunko.jp/con_ongen_kiyaku.html"},
 	{SpeakerID: 11, Character: "玄野武宏", Style: "ノーマル", Credit: "VOICEVOX:玄野武宏(CV:ガロ)", TermsURL: "https://www.virvoxproject.com/voicevoxの利用規約"},
-	{SpeakerID: 12, Character: "白上虎太郎", Style: "ふつう", Credit: "VOICEVOX:白上虎太郎", TermsURL: "https://www.virvoxproject.com/voicevoxの利用規約"},
+	{SpeakerID: 12, Character: "白上虎太郎", Style: "ふつう", Credit: "VOICEVOX:白上虎太郎(CV:可愛ユウ)", TermsURL: "https://www.virvoxproject.com/voicevoxの利用規約"},
 	{SpeakerID: 9, Character: "波音リツ", Style: "ノーマル", Credit: "VOICEVOX:波音リツ", TermsURL: "https://www.canon-voice.com/terms"},
 }
 

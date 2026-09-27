@@ -15,7 +15,7 @@ enum VoicevoxCatalog {
                       termsUrl: "https://zunko.jp/con_ongen_kiyaku.html"),
         VoicevoxVoice(speakerId: 11, character: "玄野武宏", style: "ノーマル", credit: "VOICEVOX:玄野武宏(CV:ガロ)",
                       termsUrl: "https://www.virvoxproject.com/voicevoxの利用規約"),
-        VoicevoxVoice(speakerId: 12, character: "白上虎太郎", style: "ふつう", credit: "VOICEVOX:白上虎太郎",
+        VoicevoxVoice(speakerId: 12, character: "白上虎太郎", style: "ふつう", credit: "VOICEVOX:白上虎太郎(CV:可愛ユウ)",
                       termsUrl: "https://www.virvoxproject.com/voicevoxの利用規約"),
         VoicevoxVoice(speakerId: 9, character: "波音リツ", style: "ノーマル", credit: "VOICEVOX:波音リツ",
                       termsUrl: "https://www.canon-voice.com/terms"),
