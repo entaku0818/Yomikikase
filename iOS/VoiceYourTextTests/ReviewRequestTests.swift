@@ -68,6 +68,18 @@ final class ReviewRequestTests: XCTestCase {
         XCTAssertEqual(UserDefaultsManager.shared.appLaunchCount, 2)
     }
 
+    func test_満足していないと答えたらシステムのレビューダイアログを呼ばないこと() {
+        let events = LockIsolated<[String]>([])
+        let analytics = AnalyticsClient(
+            logEvent: { name, _ in events.withValue { $0.append(name) } },
+            setUserProperty: { _, _ in }
+        )
+
+        ReviewRequestPrompt.answerPrompt(satisfied: false, analytics: analytics)
+
+        XCTAssertEqual(events.value, ["review_prompt_answer"])
+    }
+
     func test_Speechesのonappearでは起動回数を数えないこと() async {
         // onAppear はスキャン保存後のリスト再取得でも呼ばれるため、起動時判定を置かない
         UserDefaultsManager.shared.appLaunchCount = 1

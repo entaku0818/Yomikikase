@@ -158,6 +158,8 @@ struct VoiceYourTextApp: App {
     @State private var isPremiumChecked = false
     @State private var showOnboarding = !UserDefaultsManager.shared.hasCompletedOnboarding
     @StateObject private var adConfig = AdConfig.shared
+    @State private var showReviewPrompt = false
+    @State private var showFeedback = false
     /// 起動時処理（起動回数・広告・レビュー依頼）を cold start ごとに1回だけ走らせる
     @MainActor private static var hasHandledColdStart = false
 
@@ -208,12 +210,26 @@ struct VoiceYourTextApp: App {
             // オンボーディング表示中は被せない。表示回でなければロード要求も行わない。
             guard !showOnboarding else { return }
             let didShowAppOpenAd = await AppOpenAdManager.shared.showAdOnColdStartIfEligible()
-            // レビュー依頼（起動時判定）。2回目以降の起動で直接システムダイアログを呼ぶ
-            await ReviewRequestPrompt.requestOnLaunchIfEligible(
+            // レビュー依頼（起動時判定）。2回目以降の起動で満足度を1問だけ聞く
+            showReviewPrompt = await ReviewRequestPrompt.shouldPromptOnLaunch(
                 launchCount: launchCount,
                 didShowAppOpenAd: didShowAppOpenAd,
                 analytics: .liveValue
             )
+        }
+        .alert(Text("review.title"), isPresented: $showReviewPrompt) {
+            Button("review.button.yes") {
+                ReviewRequestPrompt.answerPrompt(satisfied: true, analytics: .liveValue)
+            }
+            Button("review.button.no") {
+                ReviewRequestPrompt.answerPrompt(satisfied: false, analytics: .liveValue)
+                showFeedback = true
+            }
+        } message: {
+            Text("review.message.reinstall")
+        }
+        .sheet(isPresented: $showFeedback) {
+            FeedbackView()
         }
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingSheetContainer(onComplete: { showOnboarding = false })
