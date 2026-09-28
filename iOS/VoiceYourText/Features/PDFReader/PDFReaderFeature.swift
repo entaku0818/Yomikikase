@@ -21,7 +21,6 @@ private let logger = Logger(
 
 struct PDFReaderFeature: Reducer {
     struct State: Equatable {
-        @PresentationState var alert: AlertState<ReviewPromptAction>?
         var pdfText: String = ""
         var isReading: Bool = false
         var selectedPage: Int = 0
@@ -30,7 +29,6 @@ struct PDFReaderFeature: Reducer {
         var highlightedRange: NSRange? = nil
         var highlightedText: String? = nil  // ハイライトするテキスト
         var startCharacterIndex: Int = 0
-        var isFeedbackPresented: Bool = false
     }
 
     enum Action: Equatable {
@@ -44,8 +42,6 @@ struct PDFReaderFeature: Reducer {
         case speechFinished
         case setStartCharacterIndex(Int)
         case pageTapped(page: Int, characterIndex: Int)
-        case alert(PresentationAction<ReviewPromptAction>)
-        case feedbackDismissed
     }
 
     /// 指定ページのテキストを抽出し、フッター文言除去・トリムまで行う。
@@ -167,33 +163,9 @@ struct PDFReaderFeature: Reducer {
                 state.isReading = false
                 state.highlightedRange = nil
                 state.highlightedText = nil
-                // PDF読み上げもコア体験の一つとして、SpeechViewと同じ完了カウント・条件でレビュー事前確認を検討する
                 let completedCount = UserDefaultsManager.shared.speechCompletedCount + 1
                 UserDefaultsManager.shared.speechCompletedCount = completedCount
                 analytics.logEvent("speech_completed", ["count": completedCount, "source": "pdf"])
-                if let alert = ReviewRequestPrompt.alertForSpeechCompletion(completedCount: completedCount, analytics: analytics) {
-                    state.alert = alert
-                }
-                return .none
-
-            case .alert(.presented(.onGoodReview)):
-                state.alert = ReviewRequestPrompt.markAnsweredPositively()
-                return .none
-
-            case .alert(.presented(.onBadReview)):
-                state.alert = nil
-                state.isFeedbackPresented = true
-                return .none
-
-            case .alert(.presented(.onAddReview)):
-                ReviewRequestPrompt.requestSystemReview()
-                return .none
-
-            case .alert(.dismiss):
-                return .none
-
-            case .feedbackDismissed:
-                state.isFeedbackPresented = false
                 return .none
 
             case .syncPlayingState(let isPlaying):
@@ -218,7 +190,6 @@ struct PDFReaderFeature: Reducer {
                 return .none
             }
         }
-        .ifLet(\.$alert, action: /Action.alert)
     }
 }
 
@@ -330,15 +301,6 @@ struct PDFReaderView: View {
             }
             Button("キャンセル", role: .cancel) {}
         }
-        .sheet(
-            isPresented: viewStore.binding(
-                get: \.isFeedbackPresented,
-                send: PDFReaderFeature.Action.feedbackDismissed
-            )
-        ) {
-            FeedbackView()
-        }
-        .alert(store: self.store.scope(state: \.$alert, action: PDFReaderFeature.Action.alert))
     }
 }
 

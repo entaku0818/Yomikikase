@@ -191,9 +191,9 @@ final class PDFReaderFeatureTests: XCTestCase {
         XCTAssertEqual(capturedUtteranceText, "World")
     }
 
-    // MARK: - レビュー事前確認（PDF読み上げ完了）
+    // MARK: - 読み上げ完了（レビュー事前確認は廃止）
 
-    func test_PDF読み上げ5回目完了でレビュー事前確認が表示されること() async {
+    func test_PDF読み上げ5回目完了でもレビュー事前確認を出さないこと() async {
         UserDefaultsManager.shared.reviewRequestCount = 0
         UserDefaultsManager.shared.speechCompletedCount = 4  // 次で5回目
 
@@ -207,32 +207,10 @@ final class PDFReaderFeatureTests: XCTestCase {
 
         await store.send(.speechFinished) { state in
             state.isReading = false
-            state.alert = ReviewRequestPrompt.alertState(messageKey: "review.message.first")
         }
 
-        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
-        XCTAssertNotNil(UserDefaultsManager.shared.lastReviewRequestDate)
-    }
-
-    func test_直近でレビュー事前確認済みの場合はPDF側5回目完了でも再表示されないこと() async {
-        UserDefaultsManager.shared.reviewRequestCount = 1
-        UserDefaultsManager.shared.speechCompletedCount = 4  // 次で5回目
-        UserDefaultsManager.shared.lastReviewRequestDate = Date()  // 直前に表示済み（頻度制御が効く）
-
-        let store = TestStore(
-            initialState: PDFReaderFeature.State(pdfText: "テスト", isReading: true)
-        ) {
-            PDFReaderFeature()
-        } withDependencies: {
-            $0.analytics = .testValue
-        }
-
-        await store.send(.speechFinished) { state in
-            state.isReading = false
-            // 頻度制御(ReviewRequestConfig.minimumDaysBetweenPrompts)によりalertは表示されない
-        }
-
-        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
+        XCTAssertEqual(UserDefaultsManager.shared.speechCompletedCount, 5)
+        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 0)
     }
 
     // MARK: - pageTapped（複数ページPDF）

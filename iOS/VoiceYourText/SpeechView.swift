@@ -25,10 +25,8 @@ struct Speeches: Reducer {
     }
 
     struct State: Equatable {
-        @PresentationState var alert: AlertState<ReviewPromptAction>?
         var speechList: IdentifiedArrayOf<Speech> = []
         var currentText: String
-        var isFeedbackPresented: Bool = false
         var highlightedRange: NSRange? = nil
         var isSpeaking: Bool = false
         var nowPlaying: NowPlayingFeature.State = .init()
@@ -41,8 +39,6 @@ struct Speeches: Reducer {
         case onTap
         case currentTextChanged(String)
         case speechSelected(String)
-        case alert(PresentationAction<ReviewPromptAction>)
-        case feedbackDismissed
         case startSpeaking
         case stopSpeaking
         case highlightRange(NSRange?)
@@ -83,21 +79,6 @@ struct Speeches: Reducer {
                 state.currentText = selectedText
                 return .none
 
-            case .alert(.presented(.onGoodReview)):
-                state.alert = ReviewRequestPrompt.markAnsweredPositively()
-                return .none
-            case .alert(.presented(.onBadReview)):
-                state.alert = nil
-                state.isFeedbackPresented = true
-                return .none
-            case .alert(.presented(.onAddReview)):
-                ReviewRequestPrompt.requestSystemReview()
-                return .none
-            case .feedbackDismissed:
-                state.isFeedbackPresented = false
-                return .none
-            case .alert(.dismiss):
-                return .none
             case .startSpeaking:
                 state.isSpeaking = true
                 return .none
@@ -114,13 +95,9 @@ struct Speeches: Reducer {
                 // nowPlayingも停止
                 state.nowPlaying.isPlaying = false
                 state.nowPlaying.progress = 1.0
-                // 読み上げ完了カウントを増加し、コア体験（読み上げ完了）の直後にレビュー事前確認を検討する
                 let completedCount = UserDefaultsManager.shared.speechCompletedCount + 1
                 UserDefaultsManager.shared.speechCompletedCount = completedCount
                 analytics.logEvent("speech_completed", ["count": completedCount])
-                if let alert = ReviewRequestPrompt.alertForSpeechCompletion(completedCount: completedCount, analytics: analytics) {
-                    state.alert = alert
-                }
                 return .none
 
             case .nowPlaying(.stopPlaying):
@@ -142,7 +119,7 @@ struct Speeches: Reducer {
                 state.navigationSource = nil
                 return .none
             }
-        }.ifLet(\.$alert, action: /Action.alert)
+        }
 
     }
 
@@ -215,14 +192,6 @@ struct SpeechView: View {
                         AdmobBannerView().frame(width: .infinity, height: 50)
                     }
                 }
-                .sheet(
-                  isPresented: viewStore.binding(
-                    get: \.isFeedbackPresented,
-                    send: Speeches.Action.feedbackDismissed
-                  )
-                ) {
-                    FeedbackView()
-                }
                 .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
                     ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
                         Button(SpeechSettings.formatSpeedOption(speed)) {
@@ -235,7 +204,6 @@ struct SpeechView: View {
                 .onAppear {
                     viewStore.send(.onAppear)
                 }
-                .alert(store: self.store.scope(state: \.$alert, action: Speeches.Action.alert))
                 .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
                     isPremium = UserDefaultsManager.shared.isPremiumUser
                 }
