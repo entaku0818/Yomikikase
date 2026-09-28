@@ -1,7 +1,2 @@
-Yeni
-- Karakter sesleri: Zundamon, Shikoku Metan ve Meimei Himari gibi altı sesle dinleyin (ücretsiz: ayda 5.000 karakter, Premium: 200.000)
-- Premium artık 7 günlük ücretsiz deneme ile geliyor. Uygunsanız deneme süresince tüm Premium özellikleri ücretsiz deneyebilirsiniz
-
 İyileştirmeler
-- Sesi doğrudan oynatma ve düzenleme ekranından seçin
-- Premium ekranı artık desteklenen tüm dillere çevrildi
+- Küçük iyileştirmeler ve hata düzeltmeleri

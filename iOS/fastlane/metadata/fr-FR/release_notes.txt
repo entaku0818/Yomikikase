@@ -1,7 +1,2 @@
-Nouveautés
-- Voix de personnages : écoutez avec six voix comme Zundamon, Shikoku Metan et Meimei Himari (gratuit : 5 000 caractères/mois ; Premium : 200 000)
-- Premium propose désormais un essai gratuit de 7 jours. Si vous y avez droit, vous pouvez essayer gratuitement toutes les fonctionnalités Premium pendant l’essai
-
 Améliorations
-- Choisissez la voix depuis le lecteur et l’écran d’édition
-- L’écran Premium est maintenant traduit dans toutes les langues prises en charge
+- Améliorations mineures et corrections de bugs
