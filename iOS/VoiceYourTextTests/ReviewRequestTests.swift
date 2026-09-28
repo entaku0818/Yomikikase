@@ -34,18 +34,31 @@ final class ReviewRequestTests: XCTestCase {
 
     // MARK: - 起動時判定（システムダイアログを直接呼ぶ）
 
-    func test_初回起動ではレビューを呼ばないこと() {
-        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 1, didShowAppOpenAd: false))
+    private func daysAgo(_ days: Int) -> Date {
+        Calendar.current.date(byAdding: .day, value: -days, to: Date())!
     }
 
-    func test_2回目以降の起動ではレビューを呼ぶこと() {
-        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 2, didShowAppOpenAd: false))
-        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false))
-        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 50, didShowAppOpenAd: false))
+    func test_初回起動ではレビューを呼ばないこと() {
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 1, didShowAppOpenAd: false, lastRequestDate: nil))
+    }
+
+    func test_2回目以降の起動で未依頼ならレビューを呼ぶこと() {
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 2, didShowAppOpenAd: false, lastRequestDate: nil))
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 50, didShowAppOpenAd: false, lastRequestDate: nil))
     }
 
     func test_App_Open広告を出した起動ではレビューを呼ばないこと() {
-        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 5, didShowAppOpenAd: true))
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 5, didShowAppOpenAd: true, lastRequestDate: nil))
+    }
+
+    func test_前回から90日未満ならレビューを呼ばないこと() {
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false, lastRequestDate: Date()))
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false, lastRequestDate: daysAgo(89)))
+    }
+
+    func test_前回から90日以上経っていればレビューを呼ぶこと() {
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false, lastRequestDate: daysAgo(90)))
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false, lastRequestDate: daysAgo(400)))
     }
 
     func test_起動回数のインクリメントとインストール日の初期化() {
