@@ -113,10 +113,12 @@ final class AppOpenAdManager: NSObject {
 
     /// 起動時に一度だけ呼ぶ。表示回であればロードを待って全画面広告を表示する。
     /// 表示回でなければロード要求すら行わない（共通ルール5）。
+    /// - Returns: この起動で広告を表示したか（起動時のレビュー依頼を被せないために使う）
     @MainActor
-    func showAdOnColdStartIfEligible() async {
-        guard !AppDelegate.isRunningTests else { return }
-        guard !hasHandledColdStart else { return }
+    @discardableResult
+    func showAdOnColdStartIfEligible() async -> Bool {
+        guard !AppDelegate.isRunningTests else { return false }
+        guard !hasHandledColdStart else { return false }
         hasHandledColdStart = true
 
         // 共通ルール3: 専用キーのカウンタをインクリメント
@@ -141,14 +143,14 @@ final class AppOpenAdManager: NSObject {
             }
             debugLog("App open ad skipped (\(reason), launchCount=\(launchCount))")
             logSkipped(reason: reason, launchCount: launchCount)
-            return
+            return false
         }
 
         let unitID = AdConfig.shared.appOpenAdUnitID
         guard !unitID.isEmpty else {
             errorLog("App open ad unit ID is empty - skipping")
             logSkipped(reason: "no_unit_id", launchCount: launchCount)
-            return
+            return false
         }
 
         // 共通ルール1: SDK初期化を待ってからロードし、最大 loadTimeout 秒待つ
@@ -156,12 +158,13 @@ final class AppOpenAdManager: NSObject {
         beginLoadIfNeeded(unitID: unitID)
 
         if await waitForAd(timeout: loadTimeout) {
-            present(launchCount: launchCount)
+            return present(launchCount: launchCount)
         } else {
             // ここで諦めてもロードは継続させる。次の表示回に間に合わせるため
             // キャッシュを捨てない（共通ルール1）。
             debugLog("App open ad not ready within \(loadTimeout)s - skipping this launch")
             logSkipped(reason: "load_timeout", launchCount: launchCount)
+            return false
         }
     }
 
@@ -205,8 +208,8 @@ final class AppOpenAdManager: NSObject {
     // MARK: - Present
 
     @MainActor
-    private func present(launchCount: Int) {
-        guard !isShowingAd, let ad = appOpenAd else { return }
+    private func present(launchCount: Int) -> Bool {
+        guard !isShowingAd, let ad = appOpenAd else { return false }
 
         // rootViewController に nil を渡すと、SDKがメインウィンドウの最前面の
         // ビューコントローラから表示する。
@@ -216,13 +219,14 @@ final class AppOpenAdManager: NSObject {
             errorLog("App open ad cannot be presented: \(error.localizedDescription)")
             logSkipped(reason: "cannot_present", launchCount: launchCount)
             clearAd()
-            return
+            return false
         }
 
         ad.fullScreenContentDelegate = self
         isShowingAd = true
         Analytics.logEvent("app_open_ad_shown", parameters: ["launch_count": launchCount])
         ad.present(fromRootViewController: nil)
+        return true
     }
 
     private func clearAd() {

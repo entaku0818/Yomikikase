@@ -32,45 +32,33 @@ final class ReviewRequestTests: XCTestCase {
         defaults.removeObject(forKey: "AppLaunchCount")
     }
 
-    // MARK: - 2回目起動
+    // MARK: - 起動時判定（システムダイアログを直接呼ぶ）
 
-    func test_2回目起動でレビューが表示されること() async {
-        UserDefaultsManager.shared.appLaunchCount = 1  // 次で2回目
-        UserDefaultsManager.shared.reviewRequestCount = 0
-        UserDefaultsManager.shared.installDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+    func test_初回起動ではレビューを呼ばないこと() {
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 1, didShowAppOpenAd: false))
+    }
 
-        let store = TestStore(initialState: Speeches.State(currentText: "")) {
-            Speeches()
-        } withDependencies: {
-            $0.analytics = .testValue
-        }
-        store.exhaustivity = .off
+    func test_2回目以降の起動ではレビューを呼ぶこと() {
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 2, didShowAppOpenAd: false))
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 3, didShowAppOpenAd: false))
+        XCTAssertTrue(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 50, didShowAppOpenAd: false))
+    }
 
-        await store.send(.onAppear) { state in
-            state.alert = AlertState {
-                TextState("review.title")
-            } actions: {
-                ButtonState(action: .send(.onGoodReview)) {
-                    TextState("review.button.yes")
-                }
-                ButtonState(action: .send(.onBadReview)) {
-                    TextState("review.button.no")
-                }
-            } message: {
-                TextState("review.message.first")
-            }
-        }
+    func test_App_Open広告を出した起動ではレビューを呼ばないこと() {
+        XCTAssertFalse(ReviewRequestPrompt.shouldRequestOnLaunch(launchCount: 5, didShowAppOpenAd: true))
+    }
 
-        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
+    func test_起動回数のインクリメントとインストール日の初期化() {
+        XCTAssertEqual(ReviewRequestPrompt.incrementLaunchCount(), 1)
+        XCTAssertNotNil(UserDefaultsManager.shared.installDate)
+        XCTAssertEqual(ReviewRequestPrompt.incrementLaunchCount(), 2)
         XCTAssertEqual(UserDefaultsManager.shared.appLaunchCount, 2)
     }
 
-    func test_3回目以降の起動ではレビューが表示されないこと() async {
-        UserDefaultsManager.shared.appLaunchCount = 2  // 次で3回目
-        UserDefaultsManager.shared.reviewRequestCount = 1
-        UserDefaultsManager.shared.hasAnsweredReviewPositively = false
-        UserDefaultsManager.shared.lastReviewRequestDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
-        UserDefaultsManager.shared.installDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+    func test_Speechesのonappearではレビュー事前確認を出さず起動回数も数えないこと() async {
+        // onAppear はスキャン保存後のリスト再取得でも呼ばれるため、ここで判定すると
+        // 表示されないアラートでカウントだけ消費していた
+        UserDefaultsManager.shared.appLaunchCount = 1
 
         let store = TestStore(initialState: Speeches.State(currentText: "")) {
             Speeches()
@@ -82,6 +70,9 @@ final class ReviewRequestTests: XCTestCase {
         await store.send(.onAppear) { state in
             XCTAssertNil(state.alert)
         }
+
+        XCTAssertEqual(UserDefaultsManager.shared.appLaunchCount, 1)
+        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 0)
     }
 
     // MARK: - speechFinished
@@ -133,78 +124,6 @@ final class ReviewRequestTests: XCTestCase {
         }
 
         XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 1)
-    }
-
-    // MARK: - onAppear 再表示
-
-    func test_条件満たす場合にonAppearでレビューが表示されること() async {
-        UserDefaultsManager.shared.reviewRequestCount = 1
-        UserDefaultsManager.shared.speechCompletedCount = 1
-        UserDefaultsManager.shared.hasAnsweredReviewPositively = false
-        UserDefaultsManager.shared.lastReviewRequestDate = Calendar.current.date(byAdding: .day, value: -4, to: Date())
-        UserDefaultsManager.shared.installDate = Calendar.current.date(byAdding: .day, value: -30, to: Date())
-
-        let store = TestStore(initialState: Speeches.State(currentText: "読み上げるテキスト")) {
-            Speeches()
-        } withDependencies: {
-            $0.analytics = .testValue
-        }
-        store.exhaustivity = .off
-
-        await store.send(.onAppear) { state in
-            state.alert = AlertState {
-                TextState("review.title")
-            } actions: {
-                ButtonState(action: .send(.onGoodReview)) {
-                    TextState("review.button.yes")
-                }
-                ButtonState(action: .send(.onBadReview)) {
-                    TextState("review.button.no")
-                }
-            } message: {
-                TextState("review.message.reinstall")
-            }
-        }
-
-        XCTAssertEqual(UserDefaultsManager.shared.reviewRequestCount, 2)
-    }
-
-    func test_hasAnsweredReviewPositivelyがtrueの場合は再表示されないこと() async {
-        UserDefaultsManager.shared.reviewRequestCount = 1
-        UserDefaultsManager.shared.speechCompletedCount = 1
-        UserDefaultsManager.shared.hasAnsweredReviewPositively = true
-        UserDefaultsManager.shared.lastReviewRequestDate = Calendar.current.date(byAdding: .day, value: -5, to: Date())
-        UserDefaultsManager.shared.installDate = Calendar.current.date(byAdding: .day, value: -30, to: Date())
-
-        let store = TestStore(initialState: Speeches.State(currentText: "")) {
-            Speeches()
-        } withDependencies: {
-            $0.analytics = .testValue
-        }
-        store.exhaustivity = .off
-
-        await store.send(.onAppear) { state in
-            XCTAssertNil(state.alert)
-        }
-    }
-
-    func test_lastReviewRequestDateが3日以内の場合は再表示されないこと() async {
-        UserDefaultsManager.shared.reviewRequestCount = 1
-        UserDefaultsManager.shared.speechCompletedCount = 1
-        UserDefaultsManager.shared.hasAnsweredReviewPositively = false
-        UserDefaultsManager.shared.lastReviewRequestDate = Calendar.current.date(byAdding: .day, value: -2, to: Date())
-        UserDefaultsManager.shared.installDate = Calendar.current.date(byAdding: .day, value: -30, to: Date())
-
-        let store = TestStore(initialState: Speeches.State(currentText: "")) {
-            Speeches()
-        } withDependencies: {
-            $0.analytics = .testValue
-        }
-        store.exhaustivity = .off
-
-        await store.send(.onAppear) { state in
-            XCTAssertNil(state.alert)
-        }
     }
 
     func test_直近でレビュー事前確認済みの場合は5回ごとの条件を満たしても表示されないこと() async {

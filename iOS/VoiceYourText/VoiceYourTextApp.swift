@@ -158,6 +158,8 @@ struct VoiceYourTextApp: App {
     @State private var isPremiumChecked = false
     @State private var showOnboarding = !UserDefaultsManager.shared.hasCompletedOnboarding
     @StateObject private var adConfig = AdConfig.shared
+    /// 起動時処理（起動回数・広告・レビュー依頼）を cold start ごとに1回だけ走らせる
+    @MainActor private static var hasHandledColdStart = false
 
     let initialState = Speeches.State(
         speechList: IdentifiedArrayOf(uniqueElements: []),
@@ -198,10 +200,20 @@ struct VoiceYourTextApp: App {
             }
         }
         .task {
+            guard !AppDelegate.isRunningTests, !Self.hasHandledColdStart else { return }
+            Self.hasHandledColdStart = true
+            // 起動回数はオンボーディング中の初回起動も含めて数える（レビュー依頼の起動時判定で使う）
+            let launchCount = ReviewRequestPrompt.incrementLaunchCount()
             // App Open広告（起動時の全画面広告）。
             // オンボーディング表示中は被せない。表示回でなければロード要求も行わない。
             guard !showOnboarding else { return }
-            await AppOpenAdManager.shared.showAdOnColdStartIfEligible()
+            let didShowAppOpenAd = await AppOpenAdManager.shared.showAdOnColdStartIfEligible()
+            // レビュー依頼（起動時判定）。2回目以降の起動で直接システムダイアログを呼ぶ
+            await ReviewRequestPrompt.requestOnLaunchIfEligible(
+                launchCount: launchCount,
+                didShowAppOpenAd: didShowAppOpenAd,
+                analytics: .liveValue
+            )
         }
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingSheetContainer(onComplete: { showOnboarding = false })

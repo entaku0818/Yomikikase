@@ -70,24 +70,8 @@ struct Speeches: Reducer {
 
                 state.speechList = IdentifiedArrayOf(uniqueElements: texts)
 
-                // 起動カウントを増やす
-                let launchCount = UserDefaultsManager.shared.appLaunchCount + 1
-                UserDefaultsManager.shared.appLaunchCount = launchCount
-
-                let installDate = UserDefaultsManager.shared.installDate
-
-                // インストール日の初期化
-                if installDate == nil {
-                    UserDefaultsManager.shared.installDate = Date()
-                }
-
-                // onAppear時のレビュー事前確認は3条件のうち最初に一致したものだけを表示する
-                // （複数条件が同時に真になっても二重発火・カウント不整合が起きないようにする）
-                if let (messageKey, trigger) = Self.onAppearReviewTrigger(launchCount: launchCount, installDate: installDate) {
-                    state.alert = ReviewRequestPrompt.alertState(messageKey: messageKey)
-                    ReviewRequestPrompt.markShown(trigger: trigger, analytics: analytics)
-                }
-
+                // 起動回数のカウントと起動時のレビュー依頼は VoiceYourTextApp の cold start 処理で行う。
+                // ここ（onAppear）はスキャン保存後のリスト再取得などでも呼ばれるため判定を置かない。
                 return .none
 
             case .onTap:
@@ -160,42 +144,6 @@ struct Speeches: Reducer {
             }
         }.ifLet(\.$alert, action: /Action.alert)
 
-    }
-
-    /// onAppear時にレビュー事前確認を出すべきか判定する。
-    /// 優先順位付きで最初に一致した1条件だけを返す（同時に複数成立してもどちらか一方のみ表示するため）。
-    /// 各条件の内容・理由は`ReviewRequestConfig`のコメントを参照。
-    private static func onAppearReviewTrigger(
-        launchCount: Int,
-        installDate: Date?
-    ) -> (messageKey: String, trigger: String)? {
-        let reviewCount = UserDefaultsManager.shared.reviewRequestCount
-
-        // 1. 2回目起動（まだ一度も表示していない場合）
-        if launchCount == ReviewRequestConfig.secondLaunchTrigger && reviewCount == 0 {
-            return ("review.message.first", "second_launch")
-        }
-
-        // 2. インストールから既定日数後（まだ一度も表示していない場合）
-        if let installDate,
-           let daysSinceInstall = Calendar.current.dateComponents([.day], from: installDate, to: Date()).day,
-           daysSinceInstall >= ReviewRequestConfig.installDaysTrigger && reviewCount == 0 {
-            return ("review.message.reinstall", "install_\(ReviewRequestConfig.installDaysTrigger)days")
-        }
-
-        // 3. 再表示: 過去に表示済み・1回以上読み上げ・「はい」未押下・既定日数以上経過
-        let completedCount = UserDefaultsManager.shared.speechCompletedCount
-        let hasAnswered = UserDefaultsManager.shared.hasAnsweredReviewPositively
-        if !hasAnswered &&
-           reviewCount >= 1 &&
-           completedCount >= 1,
-           let lastDate = UserDefaultsManager.shared.lastReviewRequestDate,
-           let daysSince = Calendar.current.dateComponents([.day], from: lastDate, to: Date()).day,
-           daysSince >= ReviewRequestConfig.reappearMinDays {
-            return ("review.message.reinstall", "reappear")
-        }
-
-        return nil
     }
 
 }

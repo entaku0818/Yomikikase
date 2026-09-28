@@ -21,14 +21,13 @@ import ComposableArchitecture
 /// 「ポジティブ体験の直後」に事前確認を出すタイミングを選ぶことと、
 /// 同じユーザーに何度も事前確認ダイアログを見せすぎないよう独自に間隔を空けることの2点。
 enum ReviewRequestConfig {
-    /// 何回目の起動で初回の事前確認を検討するか（インストール直後よりは少し使ってもらった後、の意図）
-    static let secondLaunchTrigger = 2
+    /// 何回目の起動からシステムのレビューダイアログを直接呼ぶか（起動時判定）。
+    /// 事前確認を挟まず、この回以降は毎回の cold start で呼び、表示の間引きは Apple（年3回）に任せる。
+    /// シンプル録音（2回目以降の録音保存で毎回呼ぶ）と同じ考え方で、評価件数が桁違いに多い実績がある。
+    static let launchReviewMinimumCount = 2
 
-    /// インストールから何日後に、まだ一度も表示していなければ事前確認を検討するか
-    static let installDaysTrigger = 2
-
-    /// 起動ベースの再表示条件（onAppearの「reappear」分岐）: 前回表示から最低何日空けるか
-    static let reappearMinDays = 3
+    /// 起動からシステムダイアログを呼ぶまでの待ち時間（画面が落ち着いてから出す）
+    static let launchReviewDelayNanoseconds: UInt64 = 2_000_000_000
 
     /// 読み上げ完了が何回ごとに事前確認を検討するか（コア体験＝読み上げを聴けた直後）
     /// SpeechView（テキスト直接入力）とPDFReader（PDF読み上げ）の両方で共通して使う。
@@ -80,7 +79,9 @@ enum ReviewRequestPrompt {
 
     /// サンクス画面の「OK」タップ時、実際のシステムレビューダイアログを呼び出す。
     static func requestSystemReview() {
-        if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+        let scenes = UIApplication.shared.connectedScenes
+        let activeScene = scenes.first { $0.activationState == .foregroundActive } ?? scenes.first
+        if let scene = activeScene as? UIWindowScene {
             SKStoreReviewController.requestReview(in: scene)
         }
     }
@@ -109,6 +110,33 @@ enum ReviewRequestPrompt {
         }
         let days = Calendar.current.dateComponents([.day], from: lastDate, to: now).day ?? 0
         return days < minimumDays
+    }
+
+    /// この cold start でシステムのレビューダイアログを呼ぶべきか。
+    /// App Open広告を出した起動では、全画面広告の上に被せないよう呼ばない。
+    static func shouldRequestOnLaunch(launchCount: Int, didShowAppOpenAd: Bool) -> Bool {
+        launchCount >= ReviewRequestConfig.launchReviewMinimumCount && !didShowAppOpenAd
+    }
+
+    /// 起動回数をインクリメントして返す。cold start ごとに1回だけ呼ぶ。
+    @discardableResult
+    static func incrementLaunchCount() -> Int {
+        let launchCount = UserDefaultsManager.shared.appLaunchCount + 1
+        UserDefaultsManager.shared.appLaunchCount = launchCount
+        if UserDefaultsManager.shared.installDate == nil {
+            UserDefaultsManager.shared.installDate = Date()
+        }
+        return launchCount
+    }
+
+    /// 起動時判定: 条件を満たせば少し待ってからシステムのレビューダイアログを直接呼ぶ。
+    /// 事前確認（はい/いいえ）は挟まない。実際に表示するかどうかは Apple 側が決める。
+    @MainActor
+    static func requestOnLaunchIfEligible(launchCount: Int, didShowAppOpenAd: Bool, analytics: AnalyticsClient) async {
+        guard shouldRequestOnLaunch(launchCount: launchCount, didShowAppOpenAd: didShowAppOpenAd) else { return }
+        try? await Task.sleep(nanoseconds: ReviewRequestConfig.launchReviewDelayNanoseconds)
+        analytics.logEvent("review_request_system", ["trigger": "launch", "launch_count": launchCount])
+        requestSystemReview()
     }
 
     static func markShown(trigger: String, analytics: AnalyticsClient) {
