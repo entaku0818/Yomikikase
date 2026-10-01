@@ -90,7 +90,7 @@ struct SettingsView: View {
                 
                 // 広告バナーを追加
                 if !isPremium {
-                    AdmobBannerView().frame(width: .infinity, height: 50)
+                    AdmobBannerView(placement: .settings).frame(width: .infinity, height: 50)
                 }
             }
             .navigationTitle("読み上げ設定")

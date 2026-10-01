@@ -247,7 +247,7 @@ struct PDFReaderView: View {
 
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
-                AdmobBannerView()
+                AdmobBannerView(placement: .pdfReader)
                     .frame(height: 50)
             }
 

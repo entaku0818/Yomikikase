@@ -8,7 +8,8 @@
 //   1. ロード待ちを必ず入れる。App Open広告の取得には1〜2秒かかるため、
 //      SDK初期化直後に「未ロードなら即諦める」実装だと表示率が0.2%になる
 //      （別アプリで実測）。ここでは上限4秒待つ。
-//   2. 表示間隔のゲート。毎起動で出すのは体験を壊すので5回に1回。
+//   2. 表示間隔のゲート。毎起動で出すのは体験を壊すので3回に1回。
+//      （5回に1回だった 2026-09 は cold start が少なく月数回しか出なかったため 2026-10 に3回へ）
 //   3. カウンタは専用キー（UserDefaultsManager.appOpenAdLaunchCount）。
 //      他機能とキーを共有すると表示機会が消え、課金訴求まで誤爆する。
 //   4. 課金ユーザーには出さない。
@@ -31,7 +32,7 @@ import UIKit
 /// 表示判定の純粋ロジック。SDKに依存しないのでユニットテストできる。
 enum AppOpenAdGate {
     /// 何回の起動に1回表示するか（初期値。共通ルール2）
-    static let defaultShowEveryNLaunches = 5
+    static let defaultShowEveryNLaunches = 3
 
     /// この起動で App Open広告を表示すべきか。
     /// - Parameters:
@@ -223,6 +224,14 @@ final class AppOpenAdManager: NSObject {
         }
 
         ad.fullScreenContentDelegate = self
+        // 表示1回ごとの推定収益（AdMob の「インプレッション単位の広告収益」が有効なときだけ届く）
+        ad.paidEventHandler = { adValue in
+            Analytics.logEvent("ad_app_open_paid", parameters: [
+                "value": adValue.value.doubleValue,
+                "currency": adValue.currencyCode,
+                "precision": adValue.precision.rawValue
+            ])
+        }
         isShowingAd = true
         Analytics.logEvent("app_open_ad_shown", parameters: ["launch_count": launchCount])
         ad.present(fromRootViewController: nil)

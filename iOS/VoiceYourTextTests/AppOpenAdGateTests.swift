@@ -24,41 +24,41 @@ final class AppOpenAdGateTests: XCTestCase {
         )
     }
 
-    func testShowsOnEveryFifthLaunch() {
+    func testShowsOnEveryThirdLaunch() {
         for launchCount in 1...20 {
             let shouldShow = AppOpenAdGate.shouldShow(
                 launchCount: launchCount,
                 isPremiumUser: false,
                 hasCompletedOnboarding: true
             )
-            let isFifth = launchCount % 5 == 0
+            let isThird = launchCount % 3 == 0
             XCTAssertEqual(
-                shouldShow, isFifth,
-                "launchCount=\(launchCount) では \(isFifth ? "表示" : "非表示") が期待値"
+                shouldShow, isThird,
+                "launchCount=\(launchCount) では \(isThird ? "表示" : "非表示") が期待値"
             )
         }
     }
 
-    func testDefaultIntervalIsFive() {
+    func testDefaultIntervalIsThree() {
         // 初期値が変わったらテストも意図的に直す
-        XCTAssertEqual(AppOpenAdGate.defaultShowEveryNLaunches, 5)
+        XCTAssertEqual(AppOpenAdGate.defaultShowEveryNLaunches, 3)
     }
 
     func testCustomIntervalIsRespected() {
         XCTAssertTrue(
             AppOpenAdGate.shouldShow(
-                launchCount: 3,
+                launchCount: 4,
                 isPremiumUser: false,
                 hasCompletedOnboarding: true,
-                showEveryNLaunches: 3
+                showEveryNLaunches: 4
             )
         )
         XCTAssertFalse(
             AppOpenAdGate.shouldShow(
-                launchCount: 4,
+                launchCount: 3,
                 isPremiumUser: false,
                 hasCompletedOnboarding: true,
-                showEveryNLaunches: 3
+                showEveryNLaunches: 4
             )
         )
     }
@@ -66,8 +66,8 @@ final class AppOpenAdGateTests: XCTestCase {
     // MARK: - 課金ユーザー除外（共通ルール4）
 
     func testNeverShowsToPremiumUser() {
-        // 表示回（5の倍数）であっても課金ユーザーには出さない
-        for launchCount in [5, 10, 15, 100] {
+        // 表示回（3の倍数）であっても課金ユーザーには出さない
+        for launchCount in [3, 6, 9, 99] {
             XCTAssertFalse(
                 AppOpenAdGate.shouldShow(
                     launchCount: launchCount,
@@ -84,7 +84,7 @@ final class AppOpenAdGateTests: XCTestCase {
     func testDoesNotShowDuringOnboarding() {
         XCTAssertFalse(
             AppOpenAdGate.shouldShow(
-                launchCount: 5,
+                launchCount: 3,
                 isPremiumUser: false,
                 hasCompletedOnboarding: false
             )

@@ -281,7 +281,7 @@ struct TextInputView: View {
 
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
-                AdmobBannerView()
+                AdmobBannerView(placement: .textInput)
                     .frame(height: 50)
             }
 
