@@ -163,7 +163,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
         currentTitle = text.take(60)
-        val chunks = synchronized(queue) { queue.start(text, maxChunkLength()) }
+        // 英略語・単位・折り返し改行などを読みやすく整えてから読む（iOS と同じルール）
+        val spoken = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language).spoken
+        val chunks = synchronized(queue) { queue.start(spoken, maxChunkLength()) }
         enqueue(chunks)
         saveToHistory(text)
         startNotificationService(currentTitle, isPlaying = true)
