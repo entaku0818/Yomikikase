@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.tts.TtsState
+import com.entaku.VoiceYourText.tts.MiniPlayer
+import androidx.compose.runtime.collectAsState
 import kotlinx.coroutines.delay
 import com.entaku.VoiceYourText.review.ReviewRequester
 import com.entaku.VoiceYourText.review.ReviewPromptStore
@@ -46,6 +49,8 @@ import com.entaku.VoiceYourText.tts.TtsViewModel
 fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     val ttsViewModel: TtsViewModel = viewModel()
     val context = LocalContext.current
+    val nowPlaying by ttsViewModel.nowPlaying.collectAsState()
+    val ttsState by ttsViewModel.state.collectAsState()
     var selectedTab by remember { mutableIntStateOf(0) }
     var pendingText by remember { mutableStateOf(initialSharedText ?: "") }
     val analytics = remember { AnalyticsClient.get(context) }
@@ -83,6 +88,20 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
+            // 読み上げ元とは別の画面にいるときだけミニプレイヤーを出す
+            val playing = nowPlaying
+            val sourceTab = if (playing?.source == TtsViewModel.SOURCE_PDF) PDF_TAB else SPEECH_TAB
+            if (playing != null && selectedTab != sourceTab) {
+                MiniPlayer(
+                    nowPlaying = playing,
+                    isSpeaking = ttsState == TtsState.SPEAKING,
+                    onOpen = { selectedTab = sourceTab },
+                    onTogglePlay = {
+                        if (ttsState == TtsState.SPEAKING) ttsViewModel.pause() else ttsViewModel.resume()
+                    },
+                    onClose = ttsViewModel::stop
+                )
+            }
             BannerAdView(placement = "main")
             NavigationBar {
                 NavigationBarItem(
@@ -172,3 +191,5 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
 }
 
 private val TAB_NAMES = listOf("speech", "my_files", "pdf", "settings")
+private const val SPEECH_TAB = 0
+private const val PDF_TAB = 2

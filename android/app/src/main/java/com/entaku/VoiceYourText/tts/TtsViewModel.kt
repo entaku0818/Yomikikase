@@ -59,6 +59,9 @@ data class SpeechLanguage(
     }
 }
 
+/** ミニプレイヤーに出す再生中の情報。source は "text" / "pdf"（戻り先の画面を決める） */
+data class NowPlaying(val title: String, val source: String)
+
 /** 読み上げ中の箇所。text は読み上げを始めた元のテキスト、range はその上の範囲 */
 data class SpeechHighlight(val text: String, val range: TextRange, val source: String)
 
@@ -84,6 +87,18 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     val isLanguageUnavailable: StateFlow<Boolean> = _isLanguageUnavailable.asStateFlow()
 
     private val settingsPrefs = application.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
+
+    /** 読み上げ画面の入力欄の内容。画面（タブ）を移っても残す */
+    private val _draftText = MutableStateFlow("")
+    val draftText: StateFlow<String> = _draftText.asStateFlow()
+
+    fun setDraftText(text: String) {
+        _draftText.value = text
+    }
+
+    /** 再生中（一時停止中を含む）の内容。止めたら null */
+    private val _nowPlaying = MutableStateFlow<NowPlaying?>(null)
+    val nowPlaying: StateFlow<NowPlaying?> = _nowPlaying.asStateFlow()
 
     /** 読み上げ中の箇所（元のテキスト上の範囲）。止めたら null */
     private val _highlight = MutableStateFlow<SpeechHighlight?>(null)
@@ -178,6 +193,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
                             synchronized(queue) { queue.clear() }
                             _state.value = TtsState.IDLE
                             _highlight.value = null
+                            _nowPlaying.value = null
                             stopNotificationService()
                             // 読み終えたら「文章の終わりで停止」も含めてタイマーは役目を終える
                             setSleepTimer(null)
@@ -220,6 +236,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         val preparedText = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language)
         prepared = preparedText
         _highlight.value = null
+        _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
         val chunks = synchronized(queue) { queue.start(preparedText.spoken, maxChunkLength()) }
         enqueue(chunks)
         saveToHistory(text, title, saveAs)
@@ -282,6 +299,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         tts?.stop()
         _state.value = TtsState.IDLE
         _highlight.value = null
+        _nowPlaying.value = null
         stopNotificationService()
     }
 

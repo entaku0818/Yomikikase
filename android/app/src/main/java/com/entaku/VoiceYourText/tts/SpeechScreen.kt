@@ -78,13 +78,14 @@ fun SpeechScreen(
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    var inputText by remember { mutableStateOf("") }
+    // 入力内容は ViewModel に持たせる（タブを移っても消えないように）
+    val inputText by viewModel.draftText.collectAsState()
     var showLanguageSheet by remember { mutableStateOf(false) }
 
     // Apply text from history selection
     LaunchedEffect(initialText) {
         if (initialText.isNotBlank()) {
-            inputText = initialText
+            viewModel.setDraftText(initialText)
             onTextConsumed()
         }
     }
@@ -126,7 +127,7 @@ fun SpeechScreen(
                 )
             } else OutlinedTextField(
                 value = inputText,
-                onValueChange = { inputText = it },
+                onValueChange = viewModel::setDraftText,
                 label = { Text("読み上げるテキストを入力") },
                 placeholder = { Text("ここにテキストを入力してください…") },
                 modifier = Modifier
@@ -140,7 +141,7 @@ fun SpeechScreen(
                             coroutineScope.launch {
                                 TextFileReader.read(context, uri)
                                     .onSuccess { imported ->
-                                        inputText = imported.content
+                                        viewModel.setDraftText(imported.content)
                                         viewModel.saveImportedFile(
                                             title = imported.fileName,
                                             content = imported.content,
