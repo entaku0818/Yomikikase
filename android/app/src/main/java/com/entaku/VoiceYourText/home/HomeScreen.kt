@@ -1,5 +1,10 @@
 package com.entaku.VoiceYourText.home
 
+import com.entaku.VoiceYourText.pdf.PdfTextReader
+import com.entaku.VoiceYourText.epub.EpubTextExtractor
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -65,6 +70,7 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val analytics = remember { AnalyticsClient.get(context) }
     var showLinkImport by remember { mutableStateOf(false) }
+    var importError by remember { mutableStateOf<String?>(null) }
 
     val txtPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri ?: return@rememberLauncherForActivityResult
@@ -76,10 +82,24 @@ fun HomeScreen(
         }
     }
 
+    val epubPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+        scope.launch {
+            EpubTextExtractor.read(context, uri)
+                .onSuccess { book ->
+                    val title = book.title ?: PdfTextReader.displayName(context, uri) ?: "本"
+                    onSaveImported(title, book.text, SourceType.EPUB)
+                    onOpenText(book.text)
+                }
+                .onFailure { importError = it.message ?: "EPUB を読み込めませんでした" }
+        }
+    }
+
     val actions = listOf(
         HomeAction("text", "テキスト", Icons.Default.Description) { onOpenText("") },
         HomeAction("pdf", "PDF", Icons.Default.PictureAsPdf, onOpenPdf),
         HomeAction("txt", "TXTファイル", Icons.Default.TextSnippet) { txtPicker.launch("text/*") },
+        HomeAction("epub", "本", Icons.AutoMirrored.Filled.MenuBook) { epubPicker.launch("application/epub+zip") },
         HomeAction("link", "リンク", Icons.Default.Link) { showLinkImport = true },
     ) + extraActions
 
@@ -105,6 +125,15 @@ fun HomeScreen(
                 }
             }
         }
+    }
+
+    importError?.let { message ->
+        AlertDialog(
+            onDismissRequest = { importError = null },
+            title = { Text("読み込めませんでした") },
+            text = { Text(message) },
+            confirmButton = { TextButton(onClick = { importError = null }) { Text("OK") } }
+        )
     }
 
     if (showLinkImport) {

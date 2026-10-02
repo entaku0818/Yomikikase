@@ -12,13 +12,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 enum class MyFilesFilter {
-    ALL, TEXT, LINK, PDF;
+    ALL, TEXT, LINK, PDF, BOOK;
 
     fun matches(sourceType: SourceType): Boolean = when (this) {
         ALL -> true
         TEXT -> sourceType == SourceType.TYPED || sourceType == SourceType.TXT_IMPORT
         LINK -> sourceType == SourceType.LINK
         PDF -> sourceType == SourceType.PDF
+        BOOK -> sourceType == SourceType.EPUB
     }
 }
 

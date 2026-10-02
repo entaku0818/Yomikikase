@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -217,6 +218,7 @@ private val MyFilesFilter.label: String
         MyFilesFilter.TEXT -> "テキスト"
         MyFilesFilter.LINK -> "リンク"
         MyFilesFilter.PDF -> "PDF"
+        MyFilesFilter.BOOK -> "本"
     }
 
 @Composable
@@ -243,6 +245,7 @@ private fun MyFileItem(
                 imageVector = when (file.sourceType) {
                     SourceType.LINK -> Icons.Default.Link
                     SourceType.PDF -> Icons.Default.PictureAsPdf
+                    SourceType.EPUB -> Icons.AutoMirrored.Filled.MenuBook
                     else -> Icons.Default.Description
                 },
                 contentDescription = null,
