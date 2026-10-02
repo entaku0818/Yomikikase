@@ -88,6 +88,27 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val settingsPrefs = application.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
 
+    /** 選んでいる言語の声の一覧と、選んでいる声（null なら端末の既定） */
+    private val _voiceOptions = MutableStateFlow<List<VoiceOption>>(emptyList())
+    val voiceOptions: StateFlow<List<VoiceOption>> = _voiceOptions.asStateFlow()
+    private val _selectedVoiceName = MutableStateFlow<String?>(null)
+    val selectedVoiceName: StateFlow<String?> = _selectedVoiceName.asStateFlow()
+
+    /** 声を選ぶ（null で既定に戻す）。言語ごとに保存する */
+    fun setVoice(name: String?) {
+        val language = _selectedLanguage.value
+        settingsPrefs.edit {
+            if (name == null) remove(voiceKey(language)) else putString(voiceKey(language), name)
+        }
+        _selectedVoiceName.value = name
+        applyLanguage(language)
+    }
+
+    /** 端末の音声データの追加・更新後に一覧を取り直す */
+    fun refreshVoices() = applyLanguage(_selectedLanguage.value)
+
+    private fun voiceKey(language: SpeechLanguage) = "voice_${language.code}"
+
     /** 読み上げ画面の入力欄の内容。画面（タブ）を移っても残す */
     private val _draftText = MutableStateFlow("")
     val draftText: StateFlow<String> = _draftText.asStateFlow()
@@ -359,12 +380,21 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun applyLanguage(language: SpeechLanguage) {
-        val result = tts?.setLanguage(language.locale) ?: return
+        val engine = tts ?: return
+        val result = engine.setLanguage(language.locale)
         val unavailable = result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED
         _isLanguageUnavailable.value = unavailable
         if (unavailable) {
-            tts?.setLanguage(Locale.getDefault())
+            engine.setLanguage(Locale.getDefault())
         }
+
+        // 声の一覧と、この言語で選んでいた声（無くなっていたら既定に戻す）
+        val voices = runCatching { engine.voices.orEmpty().toList() }.getOrDefault(emptyList())
+        _voiceOptions.value = VoiceOptions.build(voices.map(VoiceOptions::from), language.code)
+        val saved = settingsPrefs.getString(voiceKey(language), null)
+        val voice = voices.firstOrNull { it.name == saved && VoiceOptions.from(it).let { info -> !info.notInstalled } }
+        _selectedVoiceName.value = voice?.name
+        if (voice != null && !unavailable) engine.voice = voice
     }
 
     companion object {

@@ -1,5 +1,9 @@
 package com.entaku.VoiceYourText.tts
 
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.Lifecycle
+import androidx.compose.runtime.DisposableEffect
 import android.speech.tts.TextToSpeech
 import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
@@ -81,6 +85,19 @@ fun SpeechScreen(
     // 入力内容は ViewModel に持たせる（タブを移っても消えないように）
     val inputText by viewModel.draftText.collectAsState()
     var showLanguageSheet by remember { mutableStateOf(false) }
+    var showVoiceSheet by remember { mutableStateOf(false) }
+    val voiceOptions by viewModel.voiceOptions.collectAsState()
+    val selectedVoiceName by viewModel.selectedVoiceName.collectAsState()
+
+    // 端末の設定で音声データを追加して戻ってきたら、声の一覧を取り直す
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) viewModel.refreshVoices()
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     // Apply text from history selection
     LaunchedEffect(initialText) {
@@ -154,40 +171,36 @@ fun SpeechScreen(
                 }
             )
 
-            // Language selector (BottomSheet)
-            Card(
-                onClick = { showLanguageSheet = true },
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+            // 言語と声（縦の余白が少ないので1行に並べる）
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                SettingChip(
+                    label = "言語",
+                    value = selectedLanguage.displayName,
+                    onClick = { showLanguageSheet = true },
+                    modifier = Modifier.weight(1f)
                 )
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        Text(
-                            text = "言語",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = selectedLanguage.displayName,
-                            style = MaterialTheme.typography.bodyLarge,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                SettingChip(
+                    label = "声",
+                    value = voiceOptions.firstOrNull { it.name == selectedVoiceName }?.label ?: "標準",
+                    onClick = { showVoiceSheet = true },
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            if (showVoiceSheet) {
+                VoiceBottomSheet(
+                    options = voiceOptions,
+                    selectedName = selectedVoiceName,
+                    onSelect = viewModel::setVoice,
+                    onAddVoices = {
+                        runCatching {
+                            context.startActivity(
+                                Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            )
+                        }
+                    },
+                    onDismiss = { showVoiceSheet = false }
+                )
             }
 
             if (isLanguageUnavailable) {
@@ -407,6 +420,33 @@ private fun SleepTimerButton(
                     }
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun SettingChip(label: String, value: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Card(
+        onClick = onClick,
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp), modifier = Modifier.weight(1f)) {
+                Text(text = label, style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(text = value, style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Medium, maxLines = 1)
+            }
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(20.dp)
+            )
         }
     }
 }
