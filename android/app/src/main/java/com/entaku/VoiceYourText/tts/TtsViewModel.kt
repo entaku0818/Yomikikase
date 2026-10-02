@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.core.content.ContextCompat
@@ -20,10 +19,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
-import java.util.UUID
 
 enum class TtsState {
-    IDLE, SPEAKING, ERROR
+    IDLE, SPEAKING, PAUSED, ERROR
 }
 
 data class SpeechLanguage(
@@ -71,11 +69,17 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     @Volatile
     private var currentSource: String = SOURCE_TEXT
 
-    /** BroadcastReceiver: receives TTS_STOP from TtsNotificationService stop button */
-    private val stopReceiver = object : BroadcastReceiver() {
+    /** 文単位の読み上げ位置。一時停止→再開はここから積み直す */
+    private val queue = PlaybackQueue()
+    private var currentTitle: String = ""
+
+    /** 通知のボタン（停止・一時停止・再開）から届く操作 */
+    private val controlReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            if (intent?.action == "com.entaku.VoiceYourText.TTS_STOP") {
-                stop()
+            when (intent?.action) {
+                TtsNotificationService.BROADCAST_STOP -> stop()
+                TtsNotificationService.BROADCAST_PAUSE -> pause()
+                TtsNotificationService.BROADCAST_RESUME -> resume()
             }
         }
     }
@@ -96,12 +100,17 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun registerStopReceiver() {
-        val filter = IntentFilter("com.entaku.VoiceYourText.TTS_STOP")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            getApplication<Application>().registerReceiver(stopReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-        } else {
-            getApplication<Application>().registerReceiver(stopReceiver, filter)
+        val filter = IntentFilter().apply {
+            addAction(TtsNotificationService.BROADCAST_STOP)
+            addAction(TtsNotificationService.BROADCAST_PAUSE)
+            addAction(TtsNotificationService.BROADCAST_RESUME)
         }
+        ContextCompat.registerReceiver(
+            getApplication(),
+            controlReceiver,
+            filter,
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     private fun initTts() {
@@ -109,13 +118,20 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
             if (status == TextToSpeech.SUCCESS) {
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
-                        _state.value = TtsState.SPEAKING
+                        // 一時停止・停止の後に古い文のコールバックが来ても状態を戻さない
+                        if (synchronized(queue) { queue.onChunkStarted(utteranceId) }) {
+                            _state.value = TtsState.SPEAKING
+                        }
                     }
 
                     override fun onDone(utteranceId: String?) {
-                        _state.value = TtsState.IDLE
-                        // stop() で止めた場合は onStop が呼ばれ、ここには来ない＝最後まで聴いた
-                        completionTracker.onSpeechCompleted(currentSource)
+                        // 最後の文を読み終えたときだけ完了。stop()/pause() で止めた場合は onStop が呼ばれここには来ない
+                        if (synchronized(queue) { queue.isFinished(utteranceId) }) {
+                            synchronized(queue) { queue.clear() }
+                            _state.value = TtsState.IDLE
+                            stopNotificationService()
+                            completionTracker.onSpeechCompleted(currentSource)
+                        }
                     }
 
                     @Deprecated("Deprecated in Java")
@@ -138,21 +154,57 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     fun speak(text: String, source: String = SOURCE_TEXT) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
-        tts?.setSpeechRate(_speechRate.value)
-        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())
+        currentTitle = text.take(60)
+        val chunks = synchronized(queue) { queue.start(text, maxChunkLength()) }
+        enqueue(chunks)
         saveToHistory(text)
-        startNotificationService(text.take(60))
+        startNotificationService(currentTitle, isPlaying = true)
+    }
+
+    /** 今読んでいる文の頭で止める。再開すると同じ文の頭から読む */
+    fun pause() {
+        if (_state.value != TtsState.SPEAKING) return
+        // 先にセッションを変えて、stop() の後に遅れて届く onStart で SPEAKING に戻らないようにする
+        synchronized(queue) { queue.pause() }
+        _state.value = TtsState.PAUSED
+        tts?.stop()
+        startNotificationService(currentTitle, isPlaying = false)
+    }
+
+    fun resume() {
+        if (_state.value != TtsState.PAUSED) return
+        val chunks = synchronized(queue) { queue.resume() }
+        if (chunks.isEmpty()) {
+            stop()
+            return
+        }
+        _state.value = TtsState.SPEAKING
+        enqueue(chunks)
+        startNotificationService(currentTitle, isPlaying = true)
     }
 
     fun stop() {
+        synchronized(queue) { queue.clear() }
         tts?.stop()
         _state.value = TtsState.IDLE
         stopNotificationService()
     }
 
-    private fun startNotificationService(title: String) {
+    private fun enqueue(chunks: List<Pair<String, String>>) {
+        tts?.setSpeechRate(_speechRate.value)
+        chunks.forEachIndexed { i, (utteranceId, chunk) ->
+            val mode = if (i == 0) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
+            tts?.speak(chunk, mode, null, utteranceId)
+        }
+    }
+
+    private fun maxChunkLength(): Int =
+        minOf(SpeechChunker.DEFAULT_MAX_LENGTH, TextToSpeech.getMaxSpeechInputLength())
+
+    private fun startNotificationService(title: String, isPlaying: Boolean) {
         val intent = Intent(getApplication(), TtsNotificationService::class.java).apply {
             putExtra(TtsNotificationService.EXTRA_TITLE, title)
+            putExtra(TtsNotificationService.EXTRA_IS_PLAYING, isPlaying)
         }
         ContextCompat.startForegroundService(getApplication(), intent)
     }
@@ -204,7 +256,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
-        runCatching { getApplication<Application>().unregisterReceiver(stopReceiver) }
+        runCatching { getApplication<Application>().unregisterReceiver(controlReceiver) }
         tts?.stop()
         tts?.shutdown()
         tts = null

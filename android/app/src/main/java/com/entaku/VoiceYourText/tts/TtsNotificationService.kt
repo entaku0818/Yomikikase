@@ -24,7 +24,19 @@ class TtsNotificationService : Service() {
         const val CHANNEL_ID = "tts_playback"
         const val NOTIFICATION_ID = 1
         const val ACTION_STOP = "com.entaku.VoiceYourText.ACTION_STOP"
+        const val ACTION_PAUSE = "com.entaku.VoiceYourText.ACTION_PAUSE"
+        const val ACTION_RESUME = "com.entaku.VoiceYourText.ACTION_RESUME"
         const val EXTRA_TITLE = "extra_title"
+        const val EXTRA_IS_PLAYING = "extra_is_playing"
+
+        /** 通知の操作を TtsViewModel に伝えるブロードキャスト（アプリ内のみ） */
+        const val BROADCAST_STOP = "com.entaku.VoiceYourText.TTS_STOP"
+        const val BROADCAST_PAUSE = "com.entaku.VoiceYourText.TTS_PAUSE"
+        const val BROADCAST_RESUME = "com.entaku.VoiceYourText.TTS_RESUME"
+    }
+
+    private fun sendControl(action: String) {
+        sendBroadcast(Intent(action).setPackage(packageName))
     }
 
     override fun onCreate() {
@@ -39,13 +51,22 @@ class TtsNotificationService : Service() {
             ACTION_STOP -> {
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()
-                sendBroadcast(Intent("com.entaku.VoiceYourText.TTS_STOP"))
+                sendControl(BROADCAST_STOP)
+                return START_NOT_STICKY
+            }
+            ACTION_PAUSE -> {
+                sendControl(BROADCAST_PAUSE)
+                return START_NOT_STICKY
+            }
+            ACTION_RESUME -> {
+                sendControl(BROADCAST_RESUME)
                 return START_NOT_STICKY
             }
         }
 
         val title = intent?.getStringExtra(EXTRA_TITLE) ?: "読み上げ中"
-        startForeground(NOTIFICATION_ID, buildNotification(title, isPlaying = true))
+        val isPlaying = intent?.getBooleanExtra(EXTRA_IS_PLAYING, true) ?: true
+        startForeground(NOTIFICATION_ID, buildNotification(title, isPlaying))
         return START_STICKY
     }
 
@@ -78,6 +99,15 @@ class TtsNotificationService : Service() {
                 override fun onStop() {
                     stopForeground(STOP_FOREGROUND_REMOVE)
                     stopSelf()
+                    sendControl(BROADCAST_STOP)
+                }
+
+                override fun onPause() {
+                    sendControl(BROADCAST_PAUSE)
+                }
+
+                override fun onPlay() {
+                    sendControl(BROADCAST_RESUME)
                 }
             })
             isActive = true
@@ -99,11 +129,25 @@ class TtsNotificationService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        val toggleIntent = PendingIntent.getService(
+            this,
+            1,
+            Intent(this, TtsNotificationService::class.java).apply {
+                action = if (isPlaying) ACTION_PAUSE else ACTION_RESUME
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         val state = if (isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED
         mediaSession.setPlaybackState(
             PlaybackStateCompat.Builder()
                 .setState(state, PlaybackStateCompat.PLAYBACK_POSITION_UNKNOWN, 1f)
-                .setActions(PlaybackStateCompat.ACTION_STOP)
+                .setActions(
+                    PlaybackStateCompat.ACTION_STOP or
+                        PlaybackStateCompat.ACTION_PAUSE or
+                        PlaybackStateCompat.ACTION_PLAY or
+                        PlaybackStateCompat.ACTION_PLAY_PAUSE
+                )
                 .build()
         )
 
@@ -113,14 +157,19 @@ class TtsNotificationService : Service() {
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setContentIntent(contentIntent)
             .addAction(
-                android.R.drawable.ic_media_pause,
+                if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play,
+                if (isPlaying) "一時停止" else "再開",
+                toggleIntent
+            )
+            .addAction(
+                android.R.drawable.ic_menu_close_clear_cancel,
                 "停止",
                 stopIntent
             )
             .setStyle(
                 androidx.media.app.NotificationCompat.MediaStyle()
                     .setMediaSession(mediaSession.sessionToken)
-                    .setShowActionsInCompactView(0)
+                    .setShowActionsInCompactView(0, 1)
             )
             .setOngoing(true)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)

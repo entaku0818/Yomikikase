@@ -1,7 +1,6 @@
 package com.entaku.VoiceYourText.tts
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,9 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import com.entaku.VoiceYourText.file.FilePickerButton
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -260,38 +262,52 @@ fun SpeechScreen(
                 }
             }
 
-            // Play/Stop button
-            Box(
+            // 再生 / 一時停止・再開 / 停止
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                horizontalArrangement = Arrangement.spacedBy(24.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                if (ttsState == TtsState.SPEAKING) {
-                    Button(
-                        onClick = { viewModel.stop() },
-                        modifier = Modifier.size(80.dp),
-                        shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.primary
-                        )
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Stop,
-                            contentDescription = "停止",
-                            modifier = Modifier.size(36.dp)
-                        )
+                when (ttsState) {
+                    TtsState.SPEAKING, TtsState.PAUSED -> {
+                        val isSpeaking = ttsState == TtsState.SPEAKING
+                        Button(
+                            onClick = { if (isSpeaking) viewModel.pause() else viewModel.resume() },
+                            modifier = Modifier.size(80.dp),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = if (isSpeaking) Icons.Default.Pause else Icons.Default.PlayArrow,
+                                contentDescription = if (isSpeaking) "一時停止" else "再開",
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
+                        OutlinedButton(
+                            onClick = { viewModel.stop() },
+                            modifier = Modifier.size(56.dp),
+                            shape = CircleShape,
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Stop,
+                                contentDescription = "停止",
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
                     }
-                } else {
-                    Button(
-                        onClick = { viewModel.speak(inputText) },
-                        enabled = isInitialized && inputText.isNotBlank() && ttsState != TtsState.ERROR,
-                        modifier = Modifier.size(80.dp),
-                        shape = CircleShape
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PlayArrow,
-                            contentDescription = "再生",
-                            modifier = Modifier.size(36.dp)
-                        )
+                    else -> {
+                        Button(
+                            onClick = { viewModel.speak(inputText) },
+                            enabled = isInitialized && inputText.isNotBlank() && ttsState != TtsState.ERROR,
+                            modifier = Modifier.size(80.dp),
+                            shape = CircleShape
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "再生",
+                                modifier = Modifier.size(36.dp)
+                            )
+                        }
                     }
                 }
             }
