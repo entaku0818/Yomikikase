@@ -1,5 +1,14 @@
 package com.entaku.VoiceYourText.home
 
+import android.net.Uri
+import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import com.entaku.VoiceYourText.scan.ScanTextRecognizer
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.filled.DocumentScanner
+import androidx.activity.result.IntentSenderRequest
+import android.content.ContextWrapper
+import android.content.Context
+import android.app.Activity
 import androidx.compose.material.icons.filled.AutoStories
 import com.entaku.VoiceYourText.pdf.PdfTextReader
 import com.entaku.VoiceYourText.epub.EpubTextExtractor
@@ -97,12 +106,54 @@ fun HomeScreen(
         }
     }
 
+    // スキャン: Document Scanner で撮影 → 文字認識 → テキスト画面で開く
+    var isRecognizing by remember { mutableStateOf(false) }
+    fun recognizePages(pages: List<Uri>) {
+        isRecognizing = true
+        scope.launch {
+            runCatching { ScanTextRecognizer.recognize(context, pages) }
+                .onSuccess { text ->
+                    if (text.isBlank()) {
+                        importError = "文字を読み取れませんでした。明るい場所で、文字がはっきり写るように撮ってください"
+                    } else {
+                        analytics.logEvent("scan_completed", mapOf("pages" to pages.size, "length" to text.length))
+                        onSaveImported(text.lineSequence().first().take(30), text, SourceType.SCAN)
+                        onOpenText(text)
+                    }
+                }
+                .onFailure {
+                    analytics.logEvent("scan_error", mapOf("reason" to (it.message ?: "unknown").take(100)))
+                    importError = "文字を読み取れませんでした（${it.message}）"
+                }
+            isRecognizing = false
+        }
+    }
+    val scanner = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        val pages = GmsDocumentScanningResult.fromActivityResultIntent(result.data)?.pages?.map { it.imageUri }
+        if (result.resultCode == Activity.RESULT_OK && !pages.isNullOrEmpty()) recognizePages(pages)
+    }
+    // Document Scanner が使えない端末（Google Play 開発者サービスが古いなど）は、写真を選んで文字認識する
+    val imagePicker = rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) { uris ->
+        if (uris.isNotEmpty()) recognizePages(uris.take(ScanTextRecognizer.MAX_PAGES))
+    }
+
     val actions = listOf(
         HomeAction("text", "テキスト", Icons.Default.Description) { onOpenText("") },
         HomeAction("pdf", "PDF", Icons.Default.PictureAsPdf, onOpenPdf),
         HomeAction("txt", "TXTファイル", Icons.Default.TextSnippet) { txtPicker.launch("text/*") },
         HomeAction("epub", "本", Icons.AutoMirrored.Filled.MenuBook) { epubPicker.launch("application/epub+zip") },
         HomeAction("link", "リンク", Icons.Default.Link) { showLinkImport = true },
+        HomeAction("scan", "スキャン", Icons.Default.DocumentScanner) {
+            val activity = context.findActivity() ?: return@HomeAction
+            scope.launch {
+                runCatching { ScanTextRecognizer.startIntent(activity) }
+                    .onSuccess { scanner.launch(IntentSenderRequest.Builder(it).build()) }
+                    .onFailure {
+                        analytics.logEvent("scan_error", mapOf("reason" to "scanner_unavailable"))
+                        imagePicker.launch("image/*")
+                    }
+            }
+        },
         HomeAction("aozora", "名作", Icons.Default.AutoStories, onOpenAozora),
     ) + extraActions
 
@@ -128,6 +179,15 @@ fun HomeScreen(
                 }
             }
         }
+    }
+
+    if (isRecognizing) {
+        AlertDialog(
+            onDismissRequest = {},
+            title = { Text("文字を読み取っています") },
+            text = { CircularProgressIndicator() },
+            confirmButton = {}
+        )
     }
 
     importError?.let { message ->
@@ -179,4 +239,10 @@ private fun HomeButton(action: HomeAction, onClick: () -> Unit) {
             )
         }
     }
+}
+
+private tailrec fun Context.findActivity(): Activity? = when (this) {
+    is Activity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
 }

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.ParcelFileDescriptor
+import androidx.core.graphics.createBitmap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -31,7 +32,7 @@ class PdfPageRenderer private constructor(
         mutex.withLock {
             renderer.openPage(index).use { page ->
                 val height = (widthPx.toFloat() / page.width * page.height).toInt().coerceAtLeast(1)
-                val argb = Bitmap.createBitmap(widthPx, height, Bitmap.Config.ARGB_8888)
+                val argb = createBitmap(widthPx, height, Bitmap.Config.ARGB_8888)
                 Canvas(argb).drawColor(android.graphics.Color.WHITE)
                 page.render(argb, null, null, android.graphics.pdf.PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
                 argb.copy(Bitmap.Config.RGB_565, false).also { argb.recycle() }

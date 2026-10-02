@@ -61,8 +61,8 @@ import com.entaku.VoiceYourText.tts.TtsViewModel
 @Composable
 fun PdfViewerScreen(
     ttsViewModel: TtsViewModel,
+    modifier: Modifier = Modifier,
     onBack: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val pdfViewModel: PdfViewModel = viewModel()

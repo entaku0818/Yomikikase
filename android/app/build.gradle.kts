@@ -111,6 +111,8 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.play.review.ktx)
     implementation(libs.pdfbox.android)
+    implementation(libs.mlkit.document.scanner)
+    implementation(libs.mlkit.text.recognition.japanese)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)

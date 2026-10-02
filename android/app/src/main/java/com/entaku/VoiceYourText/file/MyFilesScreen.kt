@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
@@ -246,6 +247,7 @@ private fun MyFileItem(
                     SourceType.LINK -> Icons.Default.Link
                     SourceType.PDF -> Icons.Default.PictureAsPdf
                     SourceType.EPUB, SourceType.AOZORA -> Icons.AutoMirrored.Filled.MenuBook
+                    SourceType.SCAN -> Icons.Default.DocumentScanner
                     else -> Icons.Default.Description
                 },
                 contentDescription = null,

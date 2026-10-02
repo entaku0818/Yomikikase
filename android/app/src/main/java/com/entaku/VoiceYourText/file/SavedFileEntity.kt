@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 enum class SourceType {
-    TYPED, TXT_IMPORT, LINK, PDF, EPUB, AOZORA
+    TYPED, TXT_IMPORT, LINK, PDF, EPUB, AOZORA, SCAN
 }
 
 @Entity(tableName = "saved_files")

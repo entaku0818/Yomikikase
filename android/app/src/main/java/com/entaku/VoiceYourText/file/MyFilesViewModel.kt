@@ -16,7 +16,7 @@ enum class MyFilesFilter {
 
     fun matches(sourceType: SourceType): Boolean = when (this) {
         ALL -> true
-        TEXT -> sourceType == SourceType.TYPED || sourceType == SourceType.TXT_IMPORT
+        TEXT -> sourceType == SourceType.TYPED || sourceType == SourceType.TXT_IMPORT || sourceType == SourceType.SCAN
         LINK -> sourceType == SourceType.LINK
         PDF -> sourceType == SourceType.PDF
         BOOK -> sourceType == SourceType.EPUB || sourceType == SourceType.AOZORA
