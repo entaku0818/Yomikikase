@@ -16,6 +16,8 @@ import com.entaku.VoiceYourText.file.SavedFileRepository
 import com.entaku.VoiceYourText.file.SourceType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -57,6 +59,10 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    private val _sleepTimer = MutableStateFlow<SleepTimerState?>(null)
+    val sleepTimer: StateFlow<SleepTimerState?> = _sleepTimer.asStateFlow()
+    private var sleepTimerJob: Job? = null
 
     private var tts: TextToSpeech? = null
     private val savedFileRepository = SavedFileRepository(application)
@@ -130,6 +136,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
                             synchronized(queue) { queue.clear() }
                             _state.value = TtsState.IDLE
                             stopNotificationService()
+                            // 読み終えたら「文章の終わりで停止」も含めてタイマーは役目を終える
+                            setSleepTimer(null)
                             completionTracker.onSpeechCompleted(currentSource)
                         }
                     }
@@ -183,7 +191,36 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         startNotificationService(currentTitle, isPlaying = true)
     }
 
+    /**
+     * スリープタイマーを設定する（null で解除）。時間指定は0になったら一時停止する
+     * （iOS と同じく、あとで再開できるよう停止ではなく一時停止にする）。
+     * 読み上げ中はフォアグラウンドサービスでプロセスが生きているので、画面オフでもカウントは進む。
+     */
+    fun setSleepTimer(option: SleepTimerOption?) {
+        sleepTimerJob?.cancel()
+        sleepTimerJob = null
+        if (option == null) {
+            _sleepTimer.value = null
+            return
+        }
+        _sleepTimer.value = SleepTimerState(option)
+        if (option.totalSeconds == null) return
+        sleepTimerJob = viewModelScope.launch {
+            while (true) {
+                delay(1_000)
+                val next = _sleepTimer.value?.ticked() ?: return@launch
+                _sleepTimer.value = next
+                if (next.isExpired) {
+                    _sleepTimer.value = null
+                    pause()
+                    return@launch
+                }
+            }
+        }
+    }
+
     fun stop() {
+        setSleepTimer(null)
         synchronized(queue) { queue.clear() }
         tts?.stop()
         _state.value = TtsState.IDLE

@@ -17,6 +17,13 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import com.entaku.VoiceYourText.file.FilePickerButton
 import androidx.compose.material3.Button
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material.icons.outlined.Bedtime
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.foundation.layout.PaddingValues
@@ -60,6 +67,7 @@ fun SpeechScreen(
     modifier: Modifier = Modifier
 ) {
     val ttsState by viewModel.state.collectAsState()
+    val sleepTimer by viewModel.sleepTimer.collectAsState()
     val speechRate by viewModel.speechRate.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val isInitialized by viewModel.isInitialized.collectAsState()
@@ -312,7 +320,59 @@ fun SpeechScreen(
                 }
             }
 
+            if (ttsState == TtsState.SPEAKING || ttsState == TtsState.PAUSED) {
+                SleepTimerButton(
+                    sleepTimer = sleepTimer,
+                    onSelect = viewModel::setSleepTimer,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+}
+
+/** スリープタイマーの設定ボタン（月アイコン＋残り時間）。iOS のミニプレイヤーのメニューと同じ選択肢。 */
+@Composable
+private fun SleepTimerButton(
+    sleepTimer: SleepTimerState?,
+    onSelect: (SleepTimerOption?) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Box(modifier = modifier) {
+        TextButton(onClick = { expanded = true }) {
+            Icon(
+                imageVector = if (sleepTimer == null) Icons.Outlined.Bedtime else Icons.Filled.Bedtime,
+                contentDescription = "スリープタイマー",
+                tint = if (sleepTimer == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+                text = sleepTimer?.displayText ?: "スリープタイマー",
+                color = if (sleepTimer == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
+            )
+        }
+        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            SleepTimerOption.PRESETS.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option.title) },
+                    onClick = {
+                        onSelect(option)
+                        expanded = false
+                    }
+                )
+            }
+            if (sleepTimer != null) {
+                DropdownMenuItem(
+                    text = { Text("タイマーを解除") },
+                    onClick = {
+                        onSelect(null)
+                        expanded = false
+                    }
+                )
+            }
         }
     }
 }
