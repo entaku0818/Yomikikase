@@ -8,6 +8,7 @@ import android.content.IntentFilter
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.entaku.VoiceYourText.analytics.AnalyticsClient
@@ -30,6 +31,9 @@ data class SpeechLanguage(
     val locale: Locale,
     val displayName: String
 ) {
+    /** 保存・iOS との対応に使う言語コード（"ja", "en" など） */
+    val code: String get() = locale.language
+
     companion object {
         val JAPANESE = SpeechLanguage(Locale.JAPANESE, "日本語")
         val ENGLISH = SpeechLanguage(Locale.ENGLISH, "English")
@@ -38,8 +42,20 @@ data class SpeechLanguage(
         val FRENCH = SpeechLanguage(Locale.FRENCH, "Français")
         val GERMAN = SpeechLanguage(Locale.GERMAN, "Deutsch")
         val SPANISH = SpeechLanguage(Locale("es"), "Español")
+        val ITALIAN = SpeechLanguage(Locale.ITALIAN, "Italiano")
+        val PORTUGUESE = SpeechLanguage(Locale("pt"), "Português")
+        val RUSSIAN = SpeechLanguage(Locale("ru"), "Русский")
+        val TURKISH = SpeechLanguage(Locale("tr"), "Türkçe")
+        val VIETNAMESE = SpeechLanguage(Locale("vi"), "Tiếng Việt")
+        val THAI = SpeechLanguage(Locale("th"), "ไทย")
 
-        val ALL = listOf(JAPANESE, ENGLISH, CHINESE, KOREAN, FRENCH, GERMAN, SPANISH)
+        /** iOS（Setting.swift の availableLanguages）と同じ13言語 */
+        val ALL = listOf(
+            JAPANESE, ENGLISH, CHINESE, KOREAN, FRENCH, GERMAN, SPANISH,
+            ITALIAN, PORTUGUESE, RUSSIAN, TURKISH, VIETNAMESE, THAI,
+        )
+
+        fun fromCode(code: String?): SpeechLanguage? = ALL.firstOrNull { it.code == code }
     }
 }
 
@@ -59,6 +75,12 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _isInitialized = MutableStateFlow(false)
     val isInitialized: StateFlow<Boolean> = _isInitialized.asStateFlow()
+
+    /** 選んだ言語の音声データが端末に無く、既定の言語で代わりに読んでいるとき true */
+    private val _isLanguageUnavailable = MutableStateFlow(false)
+    val isLanguageUnavailable: StateFlow<Boolean> = _isLanguageUnavailable.asStateFlow()
+
+    private val settingsPrefs = application.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
 
     private val _sleepTimer = MutableStateFlow<SleepTimerState?>(null)
     val sleepTimer: StateFlow<SleepTimerState?> = _sleepTimer.asStateFlow()
@@ -91,6 +113,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
+        // 前回選んだ言語を復元する（以前は起動のたびに日本語に戻っていた）
+        SpeechLanguage.fromCode(settingsPrefs.getString(KEY_LANGUAGE, null))?.let { _selectedLanguage.value = it }
         initTts()
         registerStopReceiver()
     }
@@ -266,6 +290,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setLanguage(language: SpeechLanguage) {
         _selectedLanguage.value = language
+        settingsPrefs.edit { putString(KEY_LANGUAGE, language.code) }
         applyLanguage(language)
     }
 
@@ -282,8 +307,10 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun applyLanguage(language: SpeechLanguage) {
-        val result = tts?.setLanguage(language.locale)
-        if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+        val result = tts?.setLanguage(language.locale) ?: return
+        val unavailable = result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED
+        _isLanguageUnavailable.value = unavailable
+        if (unavailable) {
             tts?.setLanguage(Locale.getDefault())
         }
     }
@@ -291,6 +318,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val SOURCE_TEXT = "text"
         const val SOURCE_PDF = "pdf"
+        private const val SETTINGS_PREFS = "tts_settings"
+        private const val KEY_LANGUAGE = "speech_language"
     }
 
     override fun onCleared() {

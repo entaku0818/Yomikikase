@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.tts
 
+import android.speech.tts.TextToSpeech
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -70,6 +72,7 @@ fun SpeechScreen(
     val sleepTimer by viewModel.sleepTimer.collectAsState()
     val speechRate by viewModel.speechRate.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
+    val isLanguageUnavailable by viewModel.isLanguageUnavailable.collectAsState()
     val isInitialized by viewModel.isInitialized.collectAsState()
 
     val context = LocalContext.current
@@ -172,6 +175,29 @@ fun SpeechScreen(
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(20.dp)
                     )
+                }
+            }
+
+            if (isLanguageUnavailable) {
+                // 端末に音声データが無い言語は既定の言語で読まれてしまうので、追加方法を案内する
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "${selectedLanguage.displayName} の音声データがこの端末にありません。追加するまでは端末の既定の言語で読み上げます。",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                    TextButton(
+                        onClick = {
+                            runCatching {
+                                context.startActivity(
+                                    Intent(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                )
+                            }
+                        }
+                    ) {
+                        Text("音声データを追加する")
+                    }
                 }
             }
 
