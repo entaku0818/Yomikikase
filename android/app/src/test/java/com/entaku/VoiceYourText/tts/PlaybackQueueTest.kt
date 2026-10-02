@@ -80,3 +80,38 @@ class PlaybackQueueTest {
         assertFalse(queue.isFinished(chunks[0].first))
     }
 }
+
+class HighlightRangeTest {
+
+    @Test
+    fun 文の中の位置をテキスト全体の位置にする() {
+        val queue = PlaybackQueue()
+        val chunks = queue.start("一文目。二文目です。")
+        // 二文目（開始位置4）の「です」(2..4)
+        assertEquals(TextRange(6, 2), queue.spokenRange(chunks[1].first, 2, 4))
+    }
+
+    @Test
+    fun 空白だけの断片を捨てても位置はずれない() {
+        val chunked = SpeechChunker.splitWithOffsets("一行目\n\n  \n二行目")
+        assertEquals(listOf(TextChunk("一行目\n", 0), TextChunk("二行目", 8)), chunked)
+    }
+
+    @Test
+    fun 整形で置き換えた語は元の語全体を指す() {
+        val prepared = SpeechTextPreprocessor.prepare("PDFを開く。", "ja")
+        val queue = PlaybackQueue()
+        val chunks = queue.start(prepared.spoken)
+        // 「ピーディーエフ」の途中(2..4)を読んでいる → 元の「PDF」(0..3)
+        val spoken = queue.spokenRange(chunks[0].first, 2, 4)!!
+        assertEquals(TextRange(0, 3), prepared.originalRange(spoken))
+    }
+
+    @Test
+    fun 古いセッションの範囲は無視する() {
+        val queue = PlaybackQueue()
+        val chunks = queue.start("一文目。")
+        queue.pause()
+        assertEquals(null, queue.spokenRange(chunks[0].first, 0, 2))
+    }
+}

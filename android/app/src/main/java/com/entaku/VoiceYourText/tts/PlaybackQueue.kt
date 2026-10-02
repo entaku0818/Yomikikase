@@ -6,14 +6,14 @@ package com.entaku.VoiceYourText.tts
  * 古いセッションのコールバックは無視できる。
  */
 class PlaybackQueue {
-    var chunks: List<String> = emptyList()
-        private set
+    private var textChunks: List<TextChunk> = emptyList()
+    val chunks: List<String> get() = textChunks.map { it.text }
     var currentIndex: Int = 0
         private set
     private var session: Int = 0
 
     fun start(text: String, maxLength: Int = SpeechChunker.DEFAULT_MAX_LENGTH): List<Pair<String, String>> {
-        chunks = SpeechChunker.split(text, maxLength)
+        textChunks = SpeechChunker.splitWithOffsets(text, maxLength)
         currentIndex = 0
         session++
         return pending()
@@ -31,7 +31,7 @@ class PlaybackQueue {
     }
 
     fun clear() {
-        chunks = emptyList()
+        textChunks = emptyList()
         currentIndex = 0
         session++
     }
@@ -46,15 +46,27 @@ class PlaybackQueue {
     /** onDone で呼ぶ。最後の文を読み終えたら true（＝最後まで聴いた） */
     fun isFinished(utteranceId: String?): Boolean {
         val index = indexOf(utteranceId) ?: return false
-        return index == chunks.lastIndex
+        return index == textChunks.lastIndex
+    }
+
+    /**
+     * onRangeStart の（文の中の）start/end を、start() に渡したテキスト全体の上の範囲にする。
+     * 古いセッションの id なら null。
+     */
+    fun spokenRange(utteranceId: String?, start: Int, end: Int): TextRange? {
+        val index = indexOf(utteranceId) ?: return null
+        val chunk = textChunks[index]
+        val from = start.coerceIn(0, chunk.text.length)
+        val to = end.coerceIn(from, chunk.text.length)
+        return TextRange(chunk.start + from, to - from)
     }
 
     private fun pending(): List<Pair<String, String>> =
-        chunks.withIndex().drop(currentIndex).map { (i, chunk) -> "$session:$i" to chunk }
+        textChunks.withIndex().drop(currentIndex).map { (i, chunk) -> "$session:$i" to chunk.text }
 
     private fun indexOf(utteranceId: String?): Int? {
         val parts = utteranceId?.split(":") ?: return null
         if (parts.size != 2 || parts[0].toIntOrNull() != session) return null
-        return parts[1].toIntOrNull()?.takeIf { it in chunks.indices }
+        return parts[1].toIntOrNull()?.takeIf { it in textChunks.indices }
     }
 }

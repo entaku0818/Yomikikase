@@ -59,6 +59,9 @@ data class SpeechLanguage(
     }
 }
 
+/** 読み上げ中の箇所。text は読み上げを始めた元のテキスト、range はその上の範囲 */
+data class SpeechHighlight(val text: String, val range: TextRange, val source: String)
+
 class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _state = MutableStateFlow(TtsState.IDLE)
@@ -81,6 +84,14 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     val isLanguageUnavailable: StateFlow<Boolean> = _isLanguageUnavailable.asStateFlow()
 
     private val settingsPrefs = application.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
+
+    /** 読み上げ中の箇所（元のテキスト上の範囲）。止めたら null */
+    private val _highlight = MutableStateFlow<SpeechHighlight?>(null)
+    val highlight: StateFlow<SpeechHighlight?> = _highlight.asStateFlow()
+
+    /** 今読んでいるテキストの整形結果（読み上げ用テキスト→元テキストの位置の逆引きに使う） */
+    @Volatile
+    private var prepared: PreparedSpeechText? = null
 
     private val _sleepTimer = MutableStateFlow<SleepTimerState?>(null)
     val sleepTimer: StateFlow<SleepTimerState?> = _sleepTimer.asStateFlow()
@@ -154,11 +165,19 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
                         }
                     }
 
+                    override fun onRangeStart(utteranceId: String?, start: Int, end: Int, frame: Int) {
+                        val spoken = synchronized(queue) { queue.spokenRange(utteranceId, start, end) } ?: return
+                        val current = prepared ?: return
+                        val range = current.originalRange(spoken) ?: return
+                        _highlight.value = SpeechHighlight(current.original, range, currentSource)
+                    }
+
                     override fun onDone(utteranceId: String?) {
                         // 最後の文を読み終えたときだけ完了。stop()/pause() で止めた場合は onStop が呼ばれここには来ない
                         if (synchronized(queue) { queue.isFinished(utteranceId) }) {
                             synchronized(queue) { queue.clear() }
                             _state.value = TtsState.IDLE
+                            _highlight.value = null
                             stopNotificationService()
                             // 読み終えたら「文章の終わりで停止」も含めてタイマーは役目を終える
                             setSleepTimer(null)
@@ -198,8 +217,10 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         currentSource = source
         currentTitle = text.take(60)
         // 英略語・単位・折り返し改行などを読みやすく整えてから読む（iOS と同じルール）
-        val spoken = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language).spoken
-        val chunks = synchronized(queue) { queue.start(spoken, maxChunkLength()) }
+        val preparedText = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language)
+        prepared = preparedText
+        _highlight.value = null
+        val chunks = synchronized(queue) { queue.start(preparedText.spoken, maxChunkLength()) }
         enqueue(chunks)
         saveToHistory(text, title, saveAs)
         startNotificationService(title ?: currentTitle, isPlaying = true)
@@ -260,6 +281,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         synchronized(queue) { queue.clear() }
         tts?.stop()
         _state.value = TtsState.IDLE
+        _highlight.value = null
         stopNotificationService()
     }
 

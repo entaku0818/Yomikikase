@@ -70,6 +70,7 @@ fun SpeechScreen(
 ) {
     val ttsState by viewModel.state.collectAsState()
     val sleepTimer by viewModel.sleepTimer.collectAsState()
+    val highlight by viewModel.highlight.collectAsState()
     val speechRate by viewModel.speechRate.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val isLanguageUnavailable by viewModel.isLanguageUnavailable.collectAsState()
@@ -112,8 +113,18 @@ fun SpeechScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Text input area with file picker
-            OutlinedTextField(
+            // 読み上げ中は入力欄の代わりに、読んでいる箇所をハイライトした本文を出す
+            val isPlaying = ttsState == TtsState.SPEAKING || ttsState == TtsState.PAUSED
+            val playingHere = highlight?.source ?: TtsViewModel.SOURCE_TEXT
+            if (isPlaying && playingHere == TtsViewModel.SOURCE_TEXT) {
+                HighlightedText(
+                    text = highlight?.text ?: inputText,
+                    range = highlight?.range,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                )
+            } else OutlinedTextField(
                 value = inputText,
                 onValueChange = { inputText = it },
                 label = { Text("読み上げるテキストを入力") },
@@ -328,6 +339,11 @@ fun SpeechScreen(
                                 modifier = Modifier.size(28.dp)
                             )
                         }
+                        // 縦の余白が足りない端末でも潰れないよう、再生ボタンと同じ行に置く
+                        SleepTimerButton(
+                            sleepTimer = sleepTimer,
+                            onSelect = viewModel::setSleepTimer
+                        )
                     }
                     else -> {
                         Button(
@@ -344,14 +360,6 @@ fun SpeechScreen(
                         }
                     }
                 }
-            }
-
-            if (ttsState == TtsState.SPEAKING || ttsState == TtsState.PAUSED) {
-                SleepTimerButton(
-                    sleepTimer = sleepTimer,
-                    onSelect = viewModel::setSleepTimer,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -374,11 +382,10 @@ private fun SleepTimerButton(
                 contentDescription = "スリープタイマー",
                 tint = if (sleepTimer == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = sleepTimer?.displayText ?: "スリープタイマー",
-                color = if (sleepTimer == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
-            )
+            if (sleepTimer != null) {
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = sleepTimer.displayText, color = MaterialTheme.colorScheme.primary)
+            }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             SleepTimerOption.PRESETS.forEach { option ->
