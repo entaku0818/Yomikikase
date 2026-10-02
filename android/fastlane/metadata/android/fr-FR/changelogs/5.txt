@@ -1,0 +1,6 @@
+- Ouvrez un PDF et écoutez-le (les PDF lus sont enregistrés dans Mes fichiers)
+- Pause et reprise de la lecture, aussi depuis la notification
+- Minuterie de mise en veille (5 à 60 minutes ou à la fin du texte)
+- Nouvelles langues : italien, portugais, russe, turc, vietnamien et thaï (13 au total). La langue choisie est mémorisée
+- Les textes longs sont désormais lus jusqu'au bout
+- Envoyez vos commentaires depuis les Réglages

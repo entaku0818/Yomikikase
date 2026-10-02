@@ -1,0 +1,6 @@
+- Open a PDF and have it read aloud (read PDFs are saved to My Files)
+- Pause and resume playback, also from the notification
+- Sleep timer (stop after 5–60 minutes or at the end of the text)
+- Added Italian, Portuguese, Russian, Turkish, Vietnamese and Thai (13 languages in total). Your language choice is remembered
+- Long texts are now read all the way through
+- Send feedback from Settings

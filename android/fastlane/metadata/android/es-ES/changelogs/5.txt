@@ -1,0 +1,6 @@
+- Abre un PDF y escúchalo en voz alta (se guarda en Mis archivos)
+- Pausa y reanuda la lectura, también desde la notificación
+- Temporizador de apagado (5–60 minutos o al final del texto)
+- Nuevos idiomas: italiano, portugués, ruso, turco, vietnamita y tailandés (13 en total). Se recuerda el idioma elegido
+- Ahora se leen textos largos hasta el final
+- Envía comentarios desde Ajustes
