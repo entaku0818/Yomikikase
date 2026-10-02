@@ -1,5 +1,15 @@
 package com.entaku.VoiceYourText.settings
 
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.Icons
+import androidx.compose.foundation.clickable
+import com.entaku.VoiceYourText.tts.SpeechLanguage
+import com.entaku.VoiceYourText.feedback.FeedbackDialog
+import com.entaku.VoiceYourText.BuildConfig
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +46,7 @@ fun SettingsScreen(
     val speechRate by viewModel.speechRate.collectAsState()
     val pitch by viewModel.pitch.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
+    var showFeedback by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -203,7 +214,7 @@ fun SettingsScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
-                            text = "1.0.0",
+                            text = BuildConfig.VERSION_NAME,
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -220,13 +231,41 @@ fun SettingsScreen(
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
-                            text = "7言語",
+                            text = "${SpeechLanguage.ALL.size}言語",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
             }
+
+            // サポート
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showFeedback = true }
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "フィードバックを送る", style = MaterialTheme.typography.bodyMedium)
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
+    }
+
+    if (showFeedback) {
+        FeedbackDialog(onDismiss = { showFeedback = false })
     }
 }
