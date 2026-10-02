@@ -1,0 +1,5 @@
+- Se resalta la parte que se está leyendo y se desplaza automáticamente
+- Minirreproductor: pausa, reanuda o vuelve a la lectura desde cualquier pestaña
+- Toca una página del PDF para empezar a leer desde ahí
+- Elige una voz (se guarda por idioma)
+- El texto ya no se borra al cambiar de pestaña

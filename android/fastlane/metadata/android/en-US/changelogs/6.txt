@@ -1,0 +1,5 @@
+- The part being read is now highlighted and scrolls into view
+- Mini player: pause, resume or return to the reading screen from any tab
+- Tap a PDF page to start reading from that spot
+- Choose a voice (saved per language)
+- Your text is no longer cleared when you switch tabs

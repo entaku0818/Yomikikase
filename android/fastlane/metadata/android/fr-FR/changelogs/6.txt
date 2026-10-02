@@ -1,0 +1,5 @@
+- Le passage lu est surligné et défile automatiquement
+- Mini-lecteur : pause, reprise ou retour à la lecture depuis n'importe quel onglet
+- Touchez une page du PDF pour lire à partir de cet endroit
+- Choisissez une voix (enregistrée par langue)
+- Le texte saisi n'est plus effacé quand vous changez d'onglet
