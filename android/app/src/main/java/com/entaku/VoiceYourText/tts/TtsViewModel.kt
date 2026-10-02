@@ -11,6 +11,8 @@ import android.speech.tts.UtteranceProgressListener
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.entaku.VoiceYourText.analytics.AnalyticsClient
+import com.entaku.VoiceYourText.analytics.SpeechCompletionTracker
 import com.entaku.VoiceYourText.file.SavedFileRepository
 import com.entaku.VoiceYourText.file.SourceType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +62,14 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private var tts: TextToSpeech? = null
     private val savedFileRepository = SavedFileRepository(application)
+    private val completionTracker = SpeechCompletionTracker(
+        application.getSharedPreferences(SpeechCompletionTracker.PREFS_NAME, Context.MODE_PRIVATE),
+        AnalyticsClient.get(application),
+    )
+
+    /** 今読み上げている内容の出どころ（speech_completed の source。iOS と同じ値を使う） */
+    @Volatile
+    private var currentSource: String = SOURCE_TEXT
 
     /** BroadcastReceiver: receives TTS_STOP from TtsNotificationService stop button */
     private val stopReceiver = object : BroadcastReceiver() {
@@ -104,6 +114,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
                     override fun onDone(utteranceId: String?) {
                         _state.value = TtsState.IDLE
+                        // stop() で止めた場合は onStop が呼ばれ、ここには来ない＝最後まで聴いた
+                        completionTracker.onSpeechCompleted(currentSource)
                     }
 
                     @Deprecated("Deprecated in Java")
@@ -123,8 +135,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun speak(text: String) {
+    fun speak(text: String, source: String = SOURCE_TEXT) {
         if (text.isBlank() || !_isInitialized.value) return
+        currentSource = source
         tts?.setSpeechRate(_speechRate.value)
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, UUID.randomUUID().toString())
         saveToHistory(text)
@@ -182,6 +195,11 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
             tts?.setLanguage(Locale.getDefault())
         }
+    }
+
+    companion object {
+        const val SOURCE_TEXT = "text"
+        const val SOURCE_PDF = "pdf"
     }
 
     override fun onCleared() {

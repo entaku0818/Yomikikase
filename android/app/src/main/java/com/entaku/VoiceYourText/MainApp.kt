@@ -14,14 +14,17 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.entaku.VoiceYourText.ads.BannerAdView
+import com.entaku.VoiceYourText.analytics.AnalyticsClient
 import com.entaku.VoiceYourText.file.MyFilesScreen
 import com.entaku.VoiceYourText.pdf.PdfViewerScreen
 import com.entaku.VoiceYourText.settings.SettingsScreen
@@ -31,14 +34,25 @@ import com.entaku.VoiceYourText.tts.TtsViewModel
 @Composable
 fun MainApp(initialSharedText: String? = null) {
     val ttsViewModel: TtsViewModel = viewModel()
+    val context = LocalContext.current
     var selectedTab by remember { mutableIntStateOf(0) }
     var pendingText by remember { mutableStateOf(initialSharedText ?: "") }
+    val analytics = remember { AnalyticsClient.get(context) }
+
+    // iOS と同じ tab_clicked / view_settings を送る
+    LaunchedEffect(selectedTab) {
+        analytics.logEvent(
+            "tab_clicked",
+            mapOf("tab_name" to TAB_NAMES[selectedTab], "screen" to "main_tab_view")
+        )
+        if (selectedTab == 3) analytics.logEvent("view_settings")
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             Column {
-            BannerAdView()
+            BannerAdView(placement = "main")
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == 0,
@@ -93,3 +107,5 @@ fun MainApp(initialSharedText: String? = null) {
         }
     }
 }
+
+private val TAB_NAMES = listOf("speech", "my_files", "pdf", "settings")
