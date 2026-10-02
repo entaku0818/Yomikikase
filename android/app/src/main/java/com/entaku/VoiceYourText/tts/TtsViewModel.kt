@@ -222,12 +222,14 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
      * @param source speech_completed の source（"text" / "pdf"）
      * @param title マイファイルに保存するときのタイトル（null なら本文から自動生成）
      * @param saveAs マイファイルに保存するときの種類
+     * @param saveText マイファイルに保存する本文（途中から読むときも全文を保存するため）
      */
     fun speak(
         text: String,
         source: String = SOURCE_TEXT,
         title: String? = null,
         saveAs: SourceType = SourceType.TYPED,
+        saveText: String = text,
     ) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
@@ -239,7 +241,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
         val chunks = synchronized(queue) { queue.start(preparedText.spoken, maxChunkLength()) }
         enqueue(chunks)
-        saveToHistory(text, title, saveAs)
+        saveToHistory(saveText, title, saveAs)
         startNotificationService(title ?: currentTitle, isPlaying = true)
     }
 

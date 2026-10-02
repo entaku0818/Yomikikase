@@ -6,6 +6,8 @@ import android.provider.OpenableColumns
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.text.PDFTextStripper
+import com.tom_roush.pdfbox.text.TextPosition
+import java.io.StringWriter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -18,19 +20,49 @@ import kotlinx.coroutines.withContext
  */
 object PdfTextReader {
 
-    /** ページ順に結合した本文。ページの間は空行で区切る */
-    suspend fun read(context: Context, uri: Uri, maxPages: Int = Int.MAX_VALUE): Result<String> =
+    /**
+     * ページ順に結合した本文と、各文字のページ上の位置。ページの間は空行で区切る。
+     * 位置は PDFTextStripper が文字列を書き出すときの TextPosition から取る。
+     */
+    suspend fun readLayout(context: Context, uri: Uri): Result<PdfTextLayout> =
         withContext(Dispatchers.IO) {
             runCatching {
                 PDFBoxResourceLoader.init(context.applicationContext)
                 val input = context.contentResolver.openInputStream(uri) ?: error("PDF ファイルを開けませんでした")
                 input.use { stream ->
                     PDDocument.load(stream).use { document ->
-                        val stripper = PDFTextStripper().apply {
-                            startPage = 1
-                            endPage = minOf(document.numberOfPages, maxPages)
+                        val raw = StringBuilder()
+                        val glyphs = mutableListOf<PdfGlyph>()
+                        for (pageIndex in 0 until document.numberOfPages) {
+                            val page = document.getPage(pageIndex)
+                            val width = page.mediaBox.width.takeIf { it > 0 } ?: 1f
+                            val height = page.mediaBox.height.takeIf { it > 0 } ?: 1f
+                            val writer = StringWriter()
+                            val pageStart = raw.length
+                            val stripper = object : PDFTextStripper() {
+                                override fun writeString(text: String, textPositions: List<TextPosition>) {
+                                    val base = pageStart + writer.buffer.length
+                                    textPositions.forEachIndexed { i, pos ->
+                                        if (i < text.length) {
+                                            glyphs += PdfGlyph(
+                                                offset = base + i,
+                                                page = pageIndex,
+                                                x = (pos.xDirAdj + pos.widthDirAdj / 2) / width,
+                                                y = (pos.yDirAdj - pos.heightDir / 2) / height,
+                                            )
+                                        }
+                                    }
+                                    super.writeString(text, textPositions)
+                                }
+                            }.apply {
+                                startPage = pageIndex + 1
+                                endPage = pageIndex + 1
+                            }
+                            stripper.writeText(document, writer)
+                            raw.append(writer.buffer)
+                            if (pageIndex < document.numberOfPages - 1) raw.append("\n\n")
                         }
-                        clean(stripper.getText(document))
+                        PdfTextLayout(raw.toString(), glyphs)
                     }
                 }
             }

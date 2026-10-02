@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.pdf
 
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.runtime.produceState
 import com.entaku.VoiceYourText.file.SourceType
@@ -187,7 +189,23 @@ fun PdfViewerScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         items(count = s.pageCount, key = { it }) { index ->
-                            PdfPageCard(renderer = s.renderer, pageIndex = index)
+                            PdfPageCard(
+                                renderer = s.renderer,
+                                pageIndex = index,
+                                onTap = { x, y ->
+                                    // タップした文の頭から最後まで読む（iOS の PDF タップ読み上げと同じ）
+                                    val offset = s.layout.startOffsetAt(index, x, y) ?: return@PdfPageCard
+                                    val text = s.layout.textFrom(offset)
+                                    if (text.isBlank() || !isInitialized) return@PdfPageCard
+                                    ttsViewModel.speak(
+                                        text,
+                                        source = TtsViewModel.SOURCE_PDF,
+                                        title = s.title,
+                                        saveAs = SourceType.PDF,
+                                        saveText = s.text
+                                    )
+                                }
+                            )
                         }
                     }
                 }
@@ -228,7 +246,7 @@ fun PdfViewerScreen(
 
 /** 画面に出たページだけを描く（画面外に出たら破棄される） */
 @Composable
-private fun PdfPageCard(renderer: PdfPageRenderer, pageIndex: Int) {
+private fun PdfPageCard(renderer: PdfPageRenderer, pageIndex: Int, onTap: (x: Float, y: Float) -> Unit) {
     val bitmap by produceState<Bitmap?>(initialValue = null, renderer, pageIndex) {
         value = runCatching { renderer.render(pageIndex) }.getOrNull()
     }
@@ -251,7 +269,13 @@ private fun PdfPageCard(renderer: PdfPageRenderer, pageIndex: Int) {
             Image(
                 bitmap = page.asImageBitmap(),
                 contentDescription = "${pageIndex + 1}ページ",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .pointerInput(pageIndex) {
+                        detectTapGestures { offset ->
+                            onTap(offset.x / size.width, offset.y / size.height)
+                        }
+                    },
                 contentScale = ContentScale.FillWidth
             )
         }
@@ -308,7 +332,7 @@ private fun PdfSpeechControls(
             }
         }
         Text(
-            text = "${text.length}文字",
+            text = "${text.length}文字・ページをタップするとその位置から読みます",
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

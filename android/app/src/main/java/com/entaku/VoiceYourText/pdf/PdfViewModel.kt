@@ -14,9 +14,10 @@ sealed class PdfState {
     data object Empty : PdfState()
     data object Loading : PdfState()
 
-    /** text はページ順の本文（画像だけの PDF なら空）、title は端末上のファイル名 */
-    data class Loaded(val renderer: PdfPageRenderer, val text: String, val title: String?) : PdfState() {
+    /** layout はページ順の本文と文字の位置（画像だけの PDF なら空）、title は端末上のファイル名 */
+    data class Loaded(val renderer: PdfPageRenderer, val layout: PdfTextLayout, val title: String?) : PdfState() {
         val pageCount: Int get() = renderer.pageCount
+        val text: String = layout.text
     }
 
     data class Error(val message: String) : PdfState()
@@ -39,8 +40,8 @@ class PdfViewModel(application: Application) : AndroidViewModel(application) {
                         return@onSuccess
                     }
                     // 文字が取れなくても表示はできるので、失敗は空文字として扱う
-                    val text = PdfTextReader.read(context, uri).getOrDefault("")
-                    _state.value = PdfState.Loaded(renderer, text, PdfTextReader.displayName(context, uri))
+                    val layout = PdfTextReader.readLayout(context, uri).getOrDefault(PdfTextLayout("", emptyList()))
+                    _state.value = PdfState.Loaded(renderer, layout, PdfTextReader.displayName(context, uri))
                 }
                 .onFailure { error ->
                     _state.value = PdfState.Error(error.message ?: "不明なエラー")
