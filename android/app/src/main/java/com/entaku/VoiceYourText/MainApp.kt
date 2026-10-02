@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.file.SourceType
+import com.entaku.VoiceYourText.aozora.AozoraLibraryScreen
 import com.entaku.VoiceYourText.home.HomeScreen
 import androidx.activity.compose.BackHandler
 import com.entaku.VoiceYourText.tts.TtsState
@@ -153,11 +155,20 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
                     HomeDestination.HOME -> HomeScreen(
                         onOpenText = ::openText,
                         onOpenPdf = { homeScreen = HomeDestination.PDF },
+                        onOpenAozora = { homeScreen = HomeDestination.AOZORA },
                         onSaveImported = ttsViewModel::saveImportedFile,
                         modifier = contentModifier
                     )
                     HomeDestination.SPEECH -> SpeechScreen(
                         viewModel = ttsViewModel,
+                        onBack = { homeScreen = HomeDestination.HOME },
+                        modifier = contentModifier
+                    )
+                    HomeDestination.AOZORA -> AozoraLibraryScreen(
+                        onOpen = { work, text ->
+                            ttsViewModel.saveImportedFile("${work.displayTitle}（${work.author}）", text, SourceType.AOZORA)
+                            openText(text)
+                        },
                         onBack = { homeScreen = HomeDestination.HOME },
                         modifier = contentModifier
                     )
@@ -213,7 +224,7 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
 }
 
 /** ホームタブの中の画面 */
-private enum class HomeDestination { HOME, SPEECH, PDF }
+private enum class HomeDestination { HOME, SPEECH, PDF, AOZORA }
 
 private const val HOME_TAB = 0
 private const val MY_FILES_TAB = 1

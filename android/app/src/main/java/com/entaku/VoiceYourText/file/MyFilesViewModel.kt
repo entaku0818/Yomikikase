@@ -19,7 +19,7 @@ enum class MyFilesFilter {
         TEXT -> sourceType == SourceType.TYPED || sourceType == SourceType.TXT_IMPORT
         LINK -> sourceType == SourceType.LINK
         PDF -> sourceType == SourceType.PDF
-        BOOK -> sourceType == SourceType.EPUB
+        BOOK -> sourceType == SourceType.EPUB || sourceType == SourceType.AOZORA
     }
 }
 

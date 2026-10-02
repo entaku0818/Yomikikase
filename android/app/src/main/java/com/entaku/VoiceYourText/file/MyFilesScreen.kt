@@ -245,7 +245,7 @@ private fun MyFileItem(
                 imageVector = when (file.sourceType) {
                     SourceType.LINK -> Icons.Default.Link
                     SourceType.PDF -> Icons.Default.PictureAsPdf
-                    SourceType.EPUB -> Icons.AutoMirrored.Filled.MenuBook
+                    SourceType.EPUB, SourceType.AOZORA -> Icons.AutoMirrored.Filled.MenuBook
                     else -> Icons.Default.Description
                 },
                 contentDescription = null,

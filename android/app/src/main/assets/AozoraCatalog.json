@@ -1,0 +1,406 @@
+{
+  "version": 1,
+  "source": "https://www.aozora.gr.jp/index_pages/list_person_all_extended_utf8.zip",
+  "works": [
+    {
+      "id": "000092",
+      "title": "蜘蛛の糸",
+      "subtitle": "",
+      "author": "芥川竜之介",
+      "authorId": "000879",
+      "cardURL": "https://www.aozora.gr.jp/cards/000879/card92.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000879/files/92_ruby_164.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000128",
+      "title": "羅生門",
+      "subtitle": "",
+      "author": "芥川竜之介",
+      "authorId": "000879",
+      "cardURL": "https://www.aozora.gr.jp/cards/000879/card128.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000879/files/128_ruby_2046.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "001567",
+      "title": "走れメロス",
+      "subtitle": "",
+      "author": "太宰治",
+      "authorId": "000035",
+      "cardURL": "https://www.aozora.gr.jp/cards/000035/card1567.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000035/files/1567_ruby_4948.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000623",
+      "title": "山月記",
+      "subtitle": "",
+      "author": "中島敦",
+      "authorId": "000119",
+      "cardURL": "https://www.aozora.gr.jp/cards/000119/card623.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000119/files/623_ruby_18352.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000628",
+      "title": "ごん狐",
+      "subtitle": "",
+      "author": "新美南吉",
+      "authorId": "000121",
+      "cardURL": "https://www.aozora.gr.jp/cards/000121/card628.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000121/files/628_ruby_649.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "046349",
+      "title": "檸檬",
+      "subtitle": "",
+      "author": "梶井基次郎",
+      "authorId": "000074",
+      "cardURL": "https://www.aozora.gr.jp/cards/000074/card46349.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000074/files/46349_ruby_23599.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "001927",
+      "title": "注文の多い料理店",
+      "subtitle": "",
+      "author": "宮沢賢治",
+      "authorId": "000081",
+      "cardURL": "https://www.aozora.gr.jp/cards/000081/card1927.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000081/files/1927_ruby_17835.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000473",
+      "title": "よだかの星",
+      "subtitle": "",
+      "author": "宮沢賢治",
+      "authorId": "000081",
+      "cardURL": "https://www.aozora.gr.jp/cards/000081/card473.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000081/files/473_ruby_467.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000470",
+      "title": "セロ弾きのゴーシュ",
+      "subtitle": "",
+      "author": "宮沢賢治",
+      "authorId": "000081",
+      "cardURL": "https://www.aozora.gr.jp/cards/000081/card470.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000081/files/470_ruby_3987.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000691",
+      "title": "高瀬舟",
+      "subtitle": "",
+      "author": "森鴎外",
+      "authorId": "000129",
+      "cardURL": "https://www.aozora.gr.jp/cards/000129/card691.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000129/files/691_ruby_15351.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000211",
+      "title": "一房の葡萄",
+      "subtitle": "",
+      "author": "有島武郎",
+      "authorId": "000025",
+      "cardURL": "https://www.aozora.gr.jp/cards/000025/card211.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000025/files/211_ruby_20471.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000637",
+      "title": "手袋を買いに",
+      "subtitle": "",
+      "author": "新美南吉",
+      "authorId": "000121",
+      "cardURL": "https://www.aozora.gr.jp/cards/000121/card637.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000121/files/637_ruby_4095.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "054372",
+      "title": "赤い蝋燭と人魚",
+      "subtitle": "",
+      "author": "小川未明",
+      "authorId": "001475",
+      "cardURL": "https://www.aozora.gr.jp/cards/001475/card54372.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001475/files/54372_ruby_46181.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000042",
+      "title": "鼻",
+      "subtitle": "",
+      "author": "芥川竜之介",
+      "authorId": "000879",
+      "cardURL": "https://www.aozora.gr.jp/cards/000879/card42.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000879/files/42_ruby_154.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000170",
+      "title": "杜子春",
+      "subtitle": "",
+      "author": "芥川竜之介",
+      "authorId": "000879",
+      "cardURL": "https://www.aozora.gr.jp/cards/000879/card170.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000879/files/170_ruby_348.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "047552",
+      "title": "桜の樹の下には",
+      "subtitle": "",
+      "author": "梶井基次郎",
+      "authorId": "000074",
+      "cardURL": "https://www.aozora.gr.jp/cards/000074/card47552.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000074/files/47552_ruby_29364.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000799",
+      "title": "夢十夜",
+      "subtitle": "",
+      "author": "夏目漱石",
+      "authorId": "000148",
+      "cardURL": "https://www.aozora.gr.jp/cards/000148/card799.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000148/files/799_ruby_6024.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "042618",
+      "title": "桜の森の満開の下",
+      "subtitle": "",
+      "author": "坂口安吾",
+      "authorId": "001095",
+      "cardURL": "https://www.aozora.gr.jp/cards/001095/card42618.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001095/files/42618_ruby_21052.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "042620",
+      "title": "堕落論",
+      "subtitle": "",
+      "author": "坂口安吾",
+      "authorId": "001095",
+      "cardURL": "https://www.aozora.gr.jp/cards/001095/card42620.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001095/files/42620_ruby_21051.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000270",
+      "title": "富嶽百景",
+      "subtitle": "",
+      "author": "太宰治",
+      "authorId": "000035",
+      "cardURL": "https://www.aozora.gr.jp/cards/000035/card270.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000035/files/270_ruby_1164.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000275",
+      "title": "女生徒",
+      "subtitle": "",
+      "author": "太宰治",
+      "authorId": "000035",
+      "cardURL": "https://www.aozora.gr.jp/cards/000035/card275.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000035/files/275_ruby_1532.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "056647",
+      "title": "二銭銅貨",
+      "subtitle": "",
+      "author": "江戸川乱歩",
+      "authorId": "001779",
+      "cardURL": "https://www.aozora.gr.jp/cards/001779/card56647.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001779/files/56647_ruby_58166.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "056648",
+      "title": "人間椅子",
+      "subtitle": "",
+      "author": "江戸川乱歩",
+      "authorId": "001779",
+      "cardURL": "https://www.aozora.gr.jp/cards/001779/card56648.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001779/files/56648_ruby_58198.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "056645",
+      "title": "押絵と旅する男",
+      "subtitle": "",
+      "author": "江戸川乱歩",
+      "authorId": "001779",
+      "cardURL": "https://www.aozora.gr.jp/cards/001779/card56645.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001779/files/56645_ruby_58194.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000061",
+      "title": "地獄変",
+      "subtitle": "",
+      "author": "芥川竜之介",
+      "authorId": "000879",
+      "cardURL": "https://www.aozora.gr.jp/cards/000879/card61.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000879/files/61_ruby_2706.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000682",
+      "title": "舞姫",
+      "subtitle": "",
+      "author": "森鴎外",
+      "authorId": "000129",
+      "cardURL": "https://www.aozora.gr.jp/cards/000129/card682.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000129/files/682_ruby_15413.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "056041",
+      "title": "たけくらべ",
+      "subtitle": "",
+      "author": "樋口一葉",
+      "authorId": "000064",
+      "cardURL": "https://www.aozora.gr.jp/cards/000064/card56041.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000064/files/56041_ruby_54720.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "056042",
+      "title": "にごりえ",
+      "subtitle": "",
+      "author": "樋口一葉",
+      "authorId": "000064",
+      "cardURL": "https://www.aozora.gr.jp/cards/000064/card56042.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000064/files/56042_ruby_54937.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "004803",
+      "title": "風立ちぬ",
+      "subtitle": "",
+      "author": "堀辰雄",
+      "authorId": "001030",
+      "cardURL": "https://www.aozora.gr.jp/cards/001030/card4803.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/001030/files/4803_ruby_14149.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000329",
+      "title": "武蔵野",
+      "subtitle": "",
+      "author": "国木田独歩",
+      "authorId": "000038",
+      "cardURL": "https://www.aozora.gr.jp/cards/000038/card329.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000038/files/329_ruby_5709.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000816",
+      "title": "一握の砂",
+      "subtitle": "",
+      "author": "石川啄木",
+      "authorId": "000153",
+      "cardURL": "https://www.aozora.gr.jp/cards/000153/card816.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000153/files/816_ruby_5621.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000462",
+      "title": "風の又三郎",
+      "subtitle": "",
+      "author": "宮沢賢治",
+      "authorId": "000081",
+      "cardURL": "https://www.aozora.gr.jp/cards/000081/card462.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000081/files/462_ruby_716.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "048222",
+      "title": "銀河鉄道の夜",
+      "subtitle": "",
+      "author": "宮沢賢治",
+      "authorId": "000081",
+      "cardURL": "https://www.aozora.gr.jp/cards/000081/card48222.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000081/files/48222_ruby_59603.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000752",
+      "title": "坊っちゃん",
+      "subtitle": "",
+      "author": "夏目漱石",
+      "authorId": "000148",
+      "cardURL": "https://www.aozora.gr.jp/cards/000148/card752.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000148/files/752_ruby_2438.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "001565",
+      "title": "斜陽",
+      "subtitle": "",
+      "author": "太宰治",
+      "authorId": "000035",
+      "cardURL": "https://www.aozora.gr.jp/cards/000035/card1565.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000035/files/1565_ruby_8220.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000301",
+      "title": "人間失格",
+      "subtitle": "",
+      "author": "太宰治",
+      "authorId": "000035",
+      "cardURL": "https://www.aozora.gr.jp/cards/000035/card301.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000035/files/301_ruby_5915.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000773",
+      "title": "こころ",
+      "subtitle": "",
+      "author": "夏目漱石",
+      "authorId": "000148",
+      "cardURL": "https://www.aozora.gr.jp/cards/000148/card773.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000148/files/773_ruby_5968.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "058842",
+      "title": "三四郎",
+      "subtitle": "",
+      "author": "夏目漱石",
+      "authorId": "000148",
+      "cardURL": "https://www.aozora.gr.jp/cards/000148/card58842.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000148/files/58842_ruby_76723.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000620",
+      "title": "名人伝",
+      "subtitle": "",
+      "author": "中島敦",
+      "authorId": "000119",
+      "cardURL": "https://www.aozora.gr.jp/cards/000119/card620.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000119/files/620_ruby_657.zip",
+      "encoding": "ShiftJIS"
+    },
+    {
+      "id": "000789",
+      "title": "吾輩は猫である",
+      "subtitle": "",
+      "author": "夏目漱石",
+      "authorId": "000148",
+      "cardURL": "https://www.aozora.gr.jp/cards/000148/card789.html",
+      "textZipURL": "https://www.aozora.gr.jp/cards/000148/files/789_ruby_5639.zip",
+      "encoding": "ShiftJIS"
+    }
+  ]
+}

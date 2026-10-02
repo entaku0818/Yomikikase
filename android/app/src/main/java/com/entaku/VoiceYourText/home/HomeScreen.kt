@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText.home
 
+import androidx.compose.material.icons.filled.AutoStories
 import com.entaku.VoiceYourText.pdf.PdfTextReader
 import com.entaku.VoiceYourText.epub.EpubTextExtractor
 import androidx.compose.material3.TextButton
@@ -62,6 +63,7 @@ data class HomeAction(val key: String, val title: String, val icon: ImageVector,
 fun HomeScreen(
     onOpenText: (String) -> Unit,
     onOpenPdf: () -> Unit,
+    onOpenAozora: () -> Unit,
     onSaveImported: (title: String, content: String, sourceType: SourceType) -> Unit,
     modifier: Modifier = Modifier,
     extraActions: List<HomeAction> = emptyList(),
@@ -101,6 +103,7 @@ fun HomeScreen(
         HomeAction("txt", "TXTファイル", Icons.Default.TextSnippet) { txtPicker.launch("text/*") },
         HomeAction("epub", "本", Icons.AutoMirrored.Filled.MenuBook) { epubPicker.launch("application/epub+zip") },
         HomeAction("link", "リンク", Icons.Default.Link) { showLinkImport = true },
+        HomeAction("aozora", "名作", Icons.Default.AutoStories, onOpenAozora),
     ) + extraActions
 
     Column(modifier = modifier.fillMaxSize()) {
