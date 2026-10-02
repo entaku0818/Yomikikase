@@ -25,7 +25,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             VoiceYourTextTheme {
-                MainApp(initialSharedText = sharedText)
+                // 回転などの再生成では起動回数を数えない（レビュー依頼の判定に使う）
+                MainApp(initialSharedText = sharedText, isColdStart = savedInstanceState == null)
             }
         }
     }

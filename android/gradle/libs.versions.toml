@@ -16,6 +16,7 @@ room = "2.8.4"
 okhttp = "4.12.0"
 jsoup = "1.21.1"
 firebaseBom = "33.16.0"
+playReview = "2.0.2"
 googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.4"
 
@@ -45,6 +46,7 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okhttp" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+play-review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }

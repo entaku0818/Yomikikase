@@ -109,6 +109,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.okhttp)
     implementation(libs.jsoup)
+    implementation(libs.play.review.ktx)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
