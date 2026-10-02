@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.FileOpen
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -215,6 +216,7 @@ private val MyFilesFilter.label: String
         MyFilesFilter.ALL -> "すべて"
         MyFilesFilter.TEXT -> "テキスト"
         MyFilesFilter.LINK -> "リンク"
+        MyFilesFilter.PDF -> "PDF"
     }
 
 @Composable
@@ -238,7 +240,11 @@ private fun MyFileItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (file.sourceType == SourceType.LINK) Icons.Default.Link else Icons.Default.Description,
+                imageVector = when (file.sourceType) {
+                    SourceType.LINK -> Icons.Default.Link
+                    SourceType.PDF -> Icons.Default.PictureAsPdf
+                    else -> Icons.Default.Description
+                },
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary
             )

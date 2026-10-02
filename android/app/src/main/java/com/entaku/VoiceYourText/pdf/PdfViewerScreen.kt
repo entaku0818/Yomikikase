@@ -1,5 +1,13 @@
 package com.entaku.VoiceYourText.pdf
 
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.runtime.produceState
+import com.entaku.VoiceYourText.file.SourceType
+import com.entaku.VoiceYourText.tts.TtsState
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material3.OutlinedButton
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -15,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -55,6 +62,8 @@ fun PdfViewerScreen(
     val context = LocalContext.current
     val pdfViewModel: PdfViewModel = viewModel()
     val state by pdfViewModel.state.collectAsState()
+    val ttsState by ttsViewModel.state.collectAsState()
+    val isInitialized by ttsViewModel.isInitialized.collectAsState()
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -141,20 +150,35 @@ fun PdfViewerScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = if (s.pages.size >= 50) "${s.pages.size}ページ（最大50ページ）" else "${s.pages.size}ページ",
+                            text = "${s.pageCount}ページ",
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(
+                            OutlinedButton(
                                 onClick = { launcher.launch("application/pdf") },
                             ) {
-                                Icon(Icons.Default.PictureAsPdf, contentDescription = null)
-                                Spacer(modifier = Modifier.padding(4.dp))
                                 Text("開き直す")
                             }
                         }
                     }
+
+                    PdfSpeechControls(
+                        text = s.text,
+                        ttsState = ttsState,
+                        isInitialized = isInitialized,
+                        onPlay = {
+                            ttsViewModel.speak(
+                                s.text,
+                                source = TtsViewModel.SOURCE_PDF,
+                                title = s.title,
+                                saveAs = SourceType.PDF
+                            )
+                        },
+                        onPause = ttsViewModel::pause,
+                        onResume = ttsViewModel::resume,
+                        onStop = ttsViewModel::stop,
+                    )
 
                     // PDF pages
                     LazyColumn(
@@ -162,8 +186,8 @@ fun PdfViewerScreen(
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(s.pages) { page ->
-                            PdfPageCard(page = page)
+                        items(count = s.pageCount, key = { it }) { index ->
+                            PdfPageCard(renderer = s.renderer, pageIndex = index)
                         }
                     }
                 }
@@ -202,8 +226,12 @@ fun PdfViewerScreen(
     }
 }
 
+/** 画面に出たページだけを描く（画面外に出たら破棄される） */
 @Composable
-private fun PdfPageCard(page: PdfPage) {
+private fun PdfPageCard(renderer: PdfPageRenderer, pageIndex: Int) {
+    val bitmap by produceState<Bitmap?>(initialValue = null, renderer, pageIndex) {
+        value = runCatching { renderer.render(pageIndex) }.getOrNull()
+    }
     Card(
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(
@@ -211,11 +239,78 @@ private fun PdfPageCard(page: PdfPage) {
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Image(
-            bitmap = page.bitmap.asImageBitmap(),
-            contentDescription = "Page ${page.pageIndex + 1}",
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
+        val page = bitmap
+        if (page == null) {
+            Box(
+                modifier = Modifier.fillMaxWidth().aspectRatio(1f / 1.414f),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Image(
+                bitmap = page.asImageBitmap(),
+                contentDescription = "${pageIndex + 1}ページ",
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
+            )
+        }
+    }
+}
+
+/** PDF の読み上げ操作（再生 / 一時停止・再開 / 停止）。文字が取れない PDF では案内だけ出す */
+@Composable
+private fun PdfSpeechControls(
+    text: String,
+    ttsState: TtsState,
+    isInitialized: Boolean,
+    onPlay: () -> Unit,
+    onPause: () -> Unit,
+    onResume: () -> Unit,
+    onStop: () -> Unit,
+) {
+    if (text.isBlank()) {
+        Text(
+            text = "このPDFからは文字を取り出せませんでした（画像だけのPDFは読み上げられません）",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
+        return
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        when (ttsState) {
+            TtsState.SPEAKING -> Button(onClick = onPause) {
+                Icon(Icons.Default.Pause, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("一時停止")
+            }
+            TtsState.PAUSED -> Button(onClick = onResume) {
+                Icon(Icons.Default.PlayArrow, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("再開")
+            }
+            else -> Button(onClick = onPlay, enabled = isInitialized && ttsState != TtsState.ERROR) {
+                Icon(Icons.Default.PlayArrow, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("読み上げる")
+            }
+        }
+        if (ttsState == TtsState.SPEAKING || ttsState == TtsState.PAUSED) {
+            OutlinedButton(onClick = onStop) {
+                Icon(Icons.Default.Stop, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("停止")
+            }
+        }
+        Text(
+            text = "${text.length}文字",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

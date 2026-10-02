@@ -13,7 +13,12 @@ import kotlinx.coroutines.launch
 sealed class PdfState {
     data object Empty : PdfState()
     data object Loading : PdfState()
-    data class Loaded(val pages: List<PdfPage>) : PdfState()
+
+    /** text はページ順の本文（画像だけの PDF なら空）、title は端末上のファイル名 */
+    data class Loaded(val renderer: PdfPageRenderer, val text: String, val title: String?) : PdfState() {
+        val pageCount: Int get() = renderer.pageCount
+    }
+
     data class Error(val message: String) : PdfState()
 }
 
@@ -24,18 +29,31 @@ class PdfViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPdf(context: Context, uri: Uri) {
         viewModelScope.launch {
+            closeCurrent()
             _state.value = PdfState.Loading
-            PdfRenderer.renderPages(context, uri)
-                .onSuccess { pages ->
-                    _state.value = if (pages.isEmpty()) {
-                        PdfState.Error("PDFにページが見つかりませんでした")
-                    } else {
-                        PdfState.Loaded(pages)
+            PdfPageRenderer.open(context, uri)
+                .onSuccess { renderer ->
+                    if (renderer.pageCount == 0) {
+                        renderer.close()
+                        _state.value = PdfState.Error("PDFにページが見つかりませんでした")
+                        return@onSuccess
                     }
+                    // 文字が取れなくても表示はできるので、失敗は空文字として扱う
+                    val text = PdfTextReader.read(context, uri).getOrDefault("")
+                    _state.value = PdfState.Loaded(renderer, text, PdfTextReader.displayName(context, uri))
                 }
                 .onFailure { error ->
                     _state.value = PdfState.Error(error.message ?: "不明なエラー")
                 }
         }
+    }
+
+    private fun closeCurrent() {
+        (_state.value as? PdfState.Loaded)?.renderer?.close()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        closeCurrent()
     }
 }

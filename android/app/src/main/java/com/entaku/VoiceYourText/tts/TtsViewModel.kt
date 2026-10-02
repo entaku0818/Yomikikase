@@ -183,7 +183,17 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun speak(text: String, source: String = SOURCE_TEXT) {
+    /**
+     * @param source speech_completed の source（"text" / "pdf"）
+     * @param title マイファイルに保存するときのタイトル（null なら本文から自動生成）
+     * @param saveAs マイファイルに保存するときの種類
+     */
+    fun speak(
+        text: String,
+        source: String = SOURCE_TEXT,
+        title: String? = null,
+        saveAs: SourceType = SourceType.TYPED,
+    ) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
         currentTitle = text.take(60)
@@ -191,8 +201,8 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         val spoken = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language).spoken
         val chunks = synchronized(queue) { queue.start(spoken, maxChunkLength()) }
         enqueue(chunks)
-        saveToHistory(text)
-        startNotificationService(currentTitle, isPlaying = true)
+        saveToHistory(text, title, saveAs)
+        startNotificationService(title ?: currentTitle, isPlaying = true)
     }
 
     /** 今読んでいる文の頭で止める。再開すると同じ文の頭から読む */
@@ -294,9 +304,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         applyLanguage(language)
     }
 
-    private fun saveToHistory(text: String) {
+    private fun saveToHistory(text: String, title: String?, sourceType: SourceType) {
         viewModelScope.launch {
-            savedFileRepository.saveOrTouch(text, title = null, sourceType = SourceType.TYPED)
+            savedFileRepository.saveOrTouch(text, title = title, sourceType = sourceType)
         }
     }
 
