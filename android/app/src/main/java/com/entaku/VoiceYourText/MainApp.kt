@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.home.HomeScreen
+import androidx.activity.compose.BackHandler
 import com.entaku.VoiceYourText.tts.TtsState
 import com.entaku.VoiceYourText.tts.MiniPlayer
 import androidx.compose.runtime.collectAsState
@@ -19,8 +21,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.Mic
-import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -51,8 +52,17 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     val context = LocalContext.current
     val nowPlaying by ttsViewModel.nowPlaying.collectAsState()
     val ttsState by ttsViewModel.state.collectAsState()
-    var selectedTab by remember { mutableIntStateOf(0) }
-    var pendingText by remember { mutableStateOf(initialSharedText ?: "") }
+    var selectedTab by remember { mutableIntStateOf(HOME_TAB) }
+    // ホームタブの中の画面（ホーム → テキスト / PDF）。共有で文章を受け取ったときはテキスト画面から始める
+    var homeScreen by remember { mutableStateOf(if (initialSharedText.isNullOrBlank()) HomeDestination.HOME else HomeDestination.SPEECH) }
+    LaunchedEffect(Unit) {
+        if (!initialSharedText.isNullOrBlank()) ttsViewModel.setDraftText(initialSharedText)
+    }
+    fun openText(text: String) {
+        ttsViewModel.setDraftText(text)
+        selectedTab = HOME_TAB
+        homeScreen = HomeDestination.SPEECH
+    }
     val analytics = remember { AnalyticsClient.get(context) }
 
     var showReviewPrompt by remember { mutableStateOf(false) }
@@ -81,7 +91,7 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             "tab_clicked",
             mapOf("tab_name" to TAB_NAMES[selectedTab], "screen" to "main_tab_view")
         )
-        if (selectedTab == 3) analytics.logEvent("view_settings")
+        if (selectedTab == SETTINGS_TAB) analytics.logEvent("view_settings")
     }
 
     Scaffold(
@@ -90,12 +100,16 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             Column {
             // 読み上げ元とは別の画面にいるときだけミニプレイヤーを出す
             val playing = nowPlaying
-            val sourceTab = if (playing?.source == TtsViewModel.SOURCE_PDF) PDF_TAB else SPEECH_TAB
-            if (playing != null && selectedTab != sourceTab) {
+            val sourceScreen = if (playing?.source == TtsViewModel.SOURCE_PDF) HomeDestination.PDF else HomeDestination.SPEECH
+            val isOnSource = selectedTab == HOME_TAB && homeScreen == sourceScreen
+            if (playing != null && !isOnSource) {
                 MiniPlayer(
                     nowPlaying = playing,
                     isSpeaking = ttsState == TtsState.SPEAKING,
-                    onOpen = { selectedTab = sourceTab },
+                    onOpen = {
+                        selectedTab = HOME_TAB
+                        homeScreen = sourceScreen
+                    },
                     onTogglePlay = {
                         if (ttsState == TtsState.SPEAKING) ttsViewModel.pause() else ttsViewModel.resume()
                     },
@@ -105,26 +119,24 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             BannerAdView(placement = "main")
             NavigationBar {
                 NavigationBarItem(
-                    selected = selectedTab == 0,
-                    onClick = { selectedTab = 0 },
-                    icon = { Icon(Icons.Default.Mic, contentDescription = "読み上げ") },
-                    label = { Text("読み上げ") }
+                    selected = selectedTab == HOME_TAB,
+                    onClick = {
+                        // ホームタブをもう一度押したらホームに戻る
+                        if (selectedTab == HOME_TAB) homeScreen = HomeDestination.HOME
+                        selectedTab = HOME_TAB
+                    },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "ホーム") },
+                    label = { Text("ホーム") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 1,
-                    onClick = { selectedTab = 1 },
+                    selected = selectedTab == MY_FILES_TAB,
+                    onClick = { selectedTab = MY_FILES_TAB },
                     icon = { Icon(Icons.Default.Folder, contentDescription = "マイファイル") },
                     label = { Text("マイファイル") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 2,
-                    onClick = { selectedTab = 2 },
-                    icon = { Icon(Icons.Default.PictureAsPdf, contentDescription = "PDF") },
-                    label = { Text("PDF") }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 3,
-                    onClick = { selectedTab = 3 },
+                    selected = selectedTab == SETTINGS_TAB,
+                    onClick = { selectedTab = SETTINGS_TAB },
                     icon = { Icon(Icons.Default.Settings, contentDescription = "設定") },
                     label = { Text("設定") }
                 )
@@ -132,27 +144,37 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             }
         }
     ) { innerPadding ->
+        val contentModifier = Modifier.padding(innerPadding)
         when (selectedTab) {
-            0 -> SpeechScreen(
+            HOME_TAB -> {
+                // テキスト / PDF 画面ではシステムの戻るでホームに戻る
+                BackHandler(enabled = homeScreen != HomeDestination.HOME) { homeScreen = HomeDestination.HOME }
+                when (homeScreen) {
+                    HomeDestination.HOME -> HomeScreen(
+                        onOpenText = ::openText,
+                        onOpenPdf = { homeScreen = HomeDestination.PDF },
+                        onSaveImported = ttsViewModel::saveImportedFile,
+                        modifier = contentModifier
+                    )
+                    HomeDestination.SPEECH -> SpeechScreen(
+                        viewModel = ttsViewModel,
+                        onBack = { homeScreen = HomeDestination.HOME },
+                        modifier = contentModifier
+                    )
+                    HomeDestination.PDF -> PdfViewerScreen(
+                        ttsViewModel = ttsViewModel,
+                        onBack = { homeScreen = HomeDestination.HOME },
+                        modifier = contentModifier
+                    )
+                }
+            }
+            MY_FILES_TAB -> MyFilesScreen(
+                onOpenFile = ::openText,
+                modifier = contentModifier
+            )
+            SETTINGS_TAB -> SettingsScreen(
                 viewModel = ttsViewModel,
-                initialText = pendingText,
-                onTextConsumed = { pendingText = "" },
-                modifier = Modifier.padding(innerPadding)
-            )
-            1 -> MyFilesScreen(
-                onOpenFile = { text ->
-                    pendingText = text
-                    selectedTab = 0
-                },
-                modifier = Modifier.padding(innerPadding)
-            )
-            2 -> PdfViewerScreen(
-                ttsViewModel = ttsViewModel,
-                modifier = Modifier.padding(innerPadding)
-            )
-            3 -> SettingsScreen(
-                viewModel = ttsViewModel,
-                modifier = Modifier.padding(innerPadding)
+                modifier = contentModifier
             )
         }
     }
@@ -190,6 +212,10 @@ private tailrec fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
-private val TAB_NAMES = listOf("speech", "my_files", "pdf", "settings")
-private const val SPEECH_TAB = 0
-private const val PDF_TAB = 2
+/** ホームタブの中の画面 */
+private enum class HomeDestination { HOME, SPEECH, PDF }
+
+private const val HOME_TAB = 0
+private const val MY_FILES_TAB = 1
+private const val SETTINGS_TAB = 2
+private val TAB_NAMES = listOf("home", "my_files", "settings")
