@@ -12,6 +12,7 @@ import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.entaku.VoiceYourText.analytics.AnalyticsClient
+import com.entaku.VoiceYourText.dictionary.UserDictionaryStore
 import com.entaku.VoiceYourText.analytics.SpeechCompletionTracker
 import com.entaku.VoiceYourText.file.SavedFileRepository
 import com.entaku.VoiceYourText.file.SourceType
@@ -256,7 +257,11 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         currentSource = source
         currentTitle = text.take(60)
         // 英略語・単位・折り返し改行などを読みやすく整えてから読む（iOS と同じルール）
-        val preparedText = SpeechTextPreprocessor.prepare(text, _selectedLanguage.value.locale.language)
+        val preparedText = SpeechTextPreprocessor.prepare(
+            text,
+            _selectedLanguage.value.locale.language,
+            readings = UserDictionaryStore.get(getApplication()).readings,
+        )
         prepared = preparedText
         _highlight.value = null
         _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)

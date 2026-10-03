@@ -95,20 +95,20 @@ fun TrashScreen(
                 }
             }
         }
-    }
 
-    toDelete?.let { file ->
-        AlertDialog(
-            onDismissRequest = { toDelete = null },
-            title = { Text("完全に削除") },
-            text = { Text("「${file.title}」を完全に削除しますか？元に戻せません。") },
-            confirmButton = {
-                TextButton(onClick = {
-                    onDeletePermanently(file.id)
-                    toDelete = null
-                }) { Text("削除", color = MaterialTheme.colorScheme.error) }
-            },
-            dismissButton = { TextButton(onClick = { toDelete = null }) { Text("キャンセル") } }
-        )
+        toDelete?.let { file ->
+            AlertDialog(
+                onDismissRequest = { toDelete = null },
+                title = { Text("完全に削除") },
+                text = { Text("「${file.title}」を完全に削除しますか？元に戻せません。") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        onDeletePermanently(file.id)
+                        toDelete = null
+                    }) { Text("削除", color = MaterialTheme.colorScheme.error) }
+                },
+                dismissButton = { TextButton(onClick = { toDelete = null }) { Text("キャンセル") } }
+            )
+        }
     }
 }

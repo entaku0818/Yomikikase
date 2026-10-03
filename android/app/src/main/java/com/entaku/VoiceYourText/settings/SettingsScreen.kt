@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText.settings
 
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import com.entaku.VoiceYourText.dictionary.UserDictionaryScreen
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -47,6 +50,7 @@ fun SettingsScreen(
     val pitch by viewModel.pitch.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     var showFeedback by remember { mutableStateOf(false) }
+    var showDictionary by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -69,6 +73,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -239,6 +244,37 @@ fun SettingsScreen(
                 }
             }
 
+            // ユーザー辞書
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showDictionary = true }
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(text = "ユーザー辞書", style = MaterialTheme.typography.bodyMedium)
+                        Text(
+                            text = "読み間違える単語の読み方を登録",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
             // サポート
             Card(
                 shape = RoundedCornerShape(12.dp),
@@ -267,5 +303,8 @@ fun SettingsScreen(
 
     if (showFeedback) {
         FeedbackDialog(onDismiss = { showFeedback = false })
+    }
+    if (showDictionary) {
+        UserDictionaryScreen(onDismiss = { showDictionary = false })
     }
 }
