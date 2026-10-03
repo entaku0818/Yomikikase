@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.onboarding.OnboardingScreen
+import com.entaku.VoiceYourText.onboarding.OnboardingPrefs
+import androidx.compose.ui.res.stringResource
 import com.entaku.VoiceYourText.file.SourceType
 import com.entaku.VoiceYourText.aozora.AozoraLibraryScreen
 import com.entaku.VoiceYourText.home.HomeScreen
@@ -67,6 +70,8 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     }
     val analytics = remember { AnalyticsClient.get(context) }
 
+    // 初回起動はオンボーディングから
+    var showOnboarding by remember { mutableStateOf(OnboardingPrefs.shouldShow(context)) }
     var showReviewPrompt by remember { mutableStateOf(false) }
     var showFeedback by remember { mutableStateOf(false) }
     val reviewRequester = remember { ReviewRequester(analytics) }
@@ -94,6 +99,11 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             mapOf("tab_name" to TAB_NAMES[selectedTab], "screen" to "main_tab_view")
         )
         if (selectedTab == SETTINGS_TAB) analytics.logEvent("view_settings")
+    }
+
+    if (showOnboarding) {
+        OnboardingScreen(ttsViewModel = ttsViewModel, onFinish = { showOnboarding = false })
+        return
     }
 
     Scaffold(
@@ -127,20 +137,20 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
                         if (selectedTab == HOME_TAB) homeScreen = HomeDestination.HOME
                         selectedTab = HOME_TAB
                     },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "ホーム") },
-                    label = { Text("ホーム") }
+                    icon = { Icon(Icons.Default.Home, contentDescription = stringResource(R.string.tab_home)) },
+                    label = { Text(stringResource(R.string.tab_home)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == MY_FILES_TAB,
                     onClick = { selectedTab = MY_FILES_TAB },
-                    icon = { Icon(Icons.Default.Folder, contentDescription = "マイファイル") },
-                    label = { Text("マイファイル") }
+                    icon = { Icon(Icons.Default.Folder, contentDescription = stringResource(R.string.tab_my_files)) },
+                    label = { Text(stringResource(R.string.tab_my_files)) }
                 )
                 NavigationBarItem(
                     selected = selectedTab == SETTINGS_TAB,
                     onClick = { selectedTab = SETTINGS_TAB },
-                    icon = { Icon(Icons.Default.Settings, contentDescription = "設定") },
-                    label = { Text("設定") }
+                    icon = { Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.tab_settings)) },
+                    label = { Text(stringResource(R.string.tab_settings)) }
                 )
             }
             }
@@ -194,20 +204,20 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
         AlertDialog(
             onDismissRequest = {},
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false),
-            title = { Text("このアプリについて") },
-            text = { Text("読み上げナレーターに満足していますか？") },
+            title = { Text(stringResource(R.string.review_title)) },
+            text = { Text(stringResource(R.string.review_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     showReviewPrompt = false
                     reviewRequester.onAnswer(satisfied = true, activity = context.findActivity())
-                }) { Text("はい") }
+                }) { Text(stringResource(R.string.common_yes)) }
             },
             dismissButton = {
                 TextButton(onClick = {
                     showReviewPrompt = false
                     reviewRequester.onAnswer(satisfied = false, activity = context.findActivity())
                     showFeedback = true
-                }) { Text("いいえ、フィードバックを送信") }
+                }) { Text(stringResource(R.string.review_no)) }
             }
         )
     }

@@ -1,5 +1,9 @@
 package com.entaku.VoiceYourText.tts
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.entaku.VoiceYourText.R
+
 import android.speech.tts.TextToSpeech
 import android.speech.tts.Voice
 
@@ -12,13 +16,16 @@ data class VoiceInfo(
     val notInstalled: Boolean,
 )
 
-/** 声の選択肢として画面に出す1件 */
+/** 声の選択肢として画面に出す1件。number は「声 1」「声 2」の番号 */
 data class VoiceOption(
     val name: String,
-    val label: String,
-    val note: String?,
-    val selectable: Boolean,
-)
+    val number: Int,
+    val highQuality: Boolean,
+    val requiresNetwork: Boolean,
+    val notInstalled: Boolean,
+) {
+    val selectable: Boolean get() = !notInstalled
+}
 
 object VoiceOptions {
 
@@ -36,16 +43,12 @@ object VoiceOptions {
                     .thenBy { it.name }
             )
             .mapIndexed { i, v ->
-                val notes = buildList {
-                    if (v.quality >= Voice.QUALITY_HIGH) add("高品質")
-                    if (v.requiresNetwork) add("ネット接続が必要")
-                    if (v.notInstalled) add("未ダウンロード")
-                }
                 VoiceOption(
                     name = v.name,
-                    label = "声 ${i + 1}",
-                    note = notes.joinToString("・").ifEmpty { null },
-                    selectable = !v.notInstalled,
+                    number = i + 1,
+                    highQuality = v.quality >= Voice.QUALITY_HIGH,
+                    requiresNetwork = v.requiresNetwork,
+                    notInstalled = v.notInstalled,
                 )
             }
 
@@ -57,3 +60,15 @@ object VoiceOptions {
         notInstalled = voice.features?.contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED) == true,
     )
 }
+
+/** 「声 1」「声 2」… */
+@Composable
+fun voiceLabel(option: VoiceOption): String = stringResource(R.string.voice_label, option.number)
+
+/** 高品質・ネット接続が必要・未ダウンロード を「・」でつなげた補足（無ければ null） */
+@Composable
+fun voiceNote(option: VoiceOption): String? = buildList {
+    if (option.highQuality) add(stringResource(R.string.voice_high_quality))
+    if (option.requiresNetwork) add(stringResource(R.string.voice_requires_network))
+    if (option.notInstalled) add(stringResource(R.string.voice_not_installed))
+}.joinToString(" · ").ifEmpty { null }

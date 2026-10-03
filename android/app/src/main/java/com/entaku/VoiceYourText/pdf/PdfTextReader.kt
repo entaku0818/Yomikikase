@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.pdf
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -28,7 +30,7 @@ object PdfTextReader {
         withContext(Dispatchers.IO) {
             runCatching {
                 PDFBoxResourceLoader.init(context.applicationContext)
-                val input = context.contentResolver.openInputStream(uri) ?: error("PDF ファイルを開けませんでした")
+                val input = context.contentResolver.openInputStream(uri) ?: throw UserMessageException(R.string.error_open_file)
                 input.use { stream ->
                     PDDocument.load(stream).use { document ->
                         val raw = StringBuilder()

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.settings
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.rememberScrollState
 import com.entaku.VoiceYourText.dictionary.UserDictionaryScreen
@@ -58,7 +60,7 @@ fun SettingsScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "設定",
+                        text = stringResource(R.string.settings_title),
                         fontWeight = FontWeight.Bold
                     )
                 },
@@ -91,7 +93,7 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "音声設定",
+                        text = stringResource(R.string.settings_voice),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -105,7 +107,7 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "デフォルト言語",
+                            text = stringResource(R.string.settings_default_language),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
@@ -124,7 +126,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "読み上げ速度",
+                                text = stringResource(R.string.settings_speed),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
@@ -145,9 +147,9 @@ fun SettingsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("遅い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("標準 1.0", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("速い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.speed_slow), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.speed_normal), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.speed_fast), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
 
@@ -160,7 +162,7 @@ fun SettingsScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "声の高さ",
+                                text = stringResource(R.string.settings_pitch),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                             Text(
@@ -181,9 +183,9 @@ fun SettingsScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text("低い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("標準 1.0", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                            Text("高い", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.pitch_low), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.speed_normal), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.pitch_high), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     }
                 }
@@ -203,7 +205,7 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Text(
-                        text = "アプリ情報",
+                        text = stringResource(R.string.settings_app_info),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold
                     )
@@ -215,7 +217,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "バージョン",
+                            text = stringResource(R.string.settings_version),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
@@ -232,11 +234,11 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "対応言語",
+                            text = stringResource(R.string.settings_languages),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Text(
-                            text = "${SpeechLanguage.ALL.size}言語",
+                            text = stringResource(R.string.settings_language_count, SpeechLanguage.ALL.size),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -260,9 +262,9 @@ fun SettingsScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(text = "ユーザー辞書", style = MaterialTheme.typography.bodyMedium)
+                        Text(text = stringResource(R.string.settings_dictionary), style = MaterialTheme.typography.bodyMedium)
                         Text(
-                            text = "読み間違える単語の読み方を登録",
+                            text = stringResource(R.string.settings_dictionary_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -290,7 +292,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = "フィードバックを送る", style = MaterialTheme.typography.bodyMedium)
+                    Text(text = stringResource(R.string.settings_feedback), style = MaterialTheme.typography.bodyMedium)
                     Icon(
                         imageVector = Icons.Default.ChevronRight,
                         contentDescription = null,

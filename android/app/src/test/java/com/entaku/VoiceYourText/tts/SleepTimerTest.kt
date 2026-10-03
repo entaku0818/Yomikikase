@@ -11,8 +11,8 @@ class SleepTimerTest {
     @Test
     fun 選択肢はiOSと同じ() {
         assertEquals(
-            listOf("5分後に停止", "10分後に停止", "15分後に停止", "30分後に停止", "45分後に停止", "60分後に停止", "この文章の終わりで停止"),
-            SleepTimerOption.PRESETS.map { it.title }
+            listOf(5, 10, 15, 30, 45, 60).map { SleepTimerOption.Minutes(it) } + SleepTimerOption.EndOfText,
+            SleepTimerOption.PRESETS
         )
     }
 
@@ -22,7 +22,7 @@ class SleepTimerTest {
         assertEquals(300, state.remainingSeconds)
         repeat(299) { state = state.ticked() }
         assertFalse(state.isExpired)
-        assertEquals("0:01", state.displayText)
+        assertEquals("0:01", state.remainingText)
         state = state.ticked()
         assertTrue(state.isExpired)
     }
@@ -32,7 +32,7 @@ class SleepTimerTest {
         val state = SleepTimerState(SleepTimerOption.EndOfText).ticked()
         assertNull(state.remainingSeconds)
         assertFalse(state.isExpired)
-        assertEquals("文章の終わりまで", state.displayText)
+        assertNull(state.remainingText)
     }
 
     @Test

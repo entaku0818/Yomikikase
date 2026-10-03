@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.aozora
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -51,18 +53,18 @@ class AozoraClient(
     suspend fun downloadText(work: AozoraWork): String = withContext(Dispatchers.IO) {
         val bytes = try {
             httpClient.newCall(Request.Builder().url(work.textZipUrl).build()).execute().use { response ->
-                if (!response.isSuccessful) throw AozoraException("青空文庫から作品を取得できませんでした。しばらくしてからお試しください")
-                response.body?.bytes() ?: throw AozoraException("作品の本文を取得できませんでした")
+                if (!response.isSuccessful) throw UserMessageException(R.string.aozora_error_server)
+                response.body?.bytes() ?: throw UserMessageException(R.string.aozora_error_empty)
             }
-        } catch (e: AozoraException) {
+        } catch (e: UserMessageException) {
             throw e
         } catch (e: IOException) {
-            throw AozoraException("インターネットに接続できませんでした。通信環境を確認してもう一度お試しください")
+            throw UserMessageException(R.string.aozora_error_offline)
         }
         val raw = AozoraTextNormalizer.decode(extractTxt(bytes))
-            ?: throw AozoraException("作品ファイルの文字コードを判別できませんでした")
+            ?: throw UserMessageException(R.string.aozora_error_encoding)
         val document = AozoraTextNormalizer.normalize(raw)
-        if (document.body.isBlank()) throw AozoraException("作品の本文を取得できませんでした")
+        if (document.body.isBlank()) throw UserMessageException(R.string.aozora_error_empty)
         readingText(work, document)
     }
 
@@ -81,7 +83,7 @@ class AozoraClient(
                     if (fallback == null) fallback = data
                 }
             }
-            return fallback ?: throw AozoraException("作品ファイルを展開できませんでした")
+            return fallback ?: throw UserMessageException(R.string.aozora_error_archive)
         }
 
         /** 本文の前に作品名と著者、末尾に出典（青空文庫・図書カード・底本）を付ける */
@@ -95,4 +97,3 @@ class AozoraClient(
     }
 }
 
-class AozoraException(message: String) : Exception(message)

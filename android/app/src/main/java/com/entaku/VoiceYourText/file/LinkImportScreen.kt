@@ -1,5 +1,9 @@
 package com.entaku.VoiceYourText.file
 
+import androidx.compose.ui.platform.LocalContext
+import com.entaku.VoiceYourText.ui.userMessage
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +37,7 @@ fun LinkImportScreen(
     onDismiss: () -> Unit,
     onTextExtracted: (title: String, text: String) -> Unit
 ) {
+    val context = LocalContext.current
     var urlText by remember { mutableStateOf("") }
     var isLoading by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -42,11 +47,11 @@ fun LinkImportScreen(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("リンク") },
+        title = { Text(stringResource(R.string.link_title)) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "WebページのURLを入力すると、テキストを抽出して読み上げます。",
+                    text = stringResource(R.string.link_intro),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -77,7 +82,7 @@ fun LinkImportScreen(
                 if (isLoading) {
                     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                         CircularProgressIndicator(modifier = Modifier.padding(end = 8.dp))
-                        Text("取得中…")
+                        Text(stringResource(R.string.link_fetching))
                     }
                 }
             }
@@ -93,24 +98,24 @@ fun LinkImportScreen(
                             .onSuccess { page ->
                                 isLoading = false
                                 if (page.text.isBlank()) {
-                                    errorMessage = "テキストを取得できませんでした"
+                                    errorMessage = context.getString(R.string.link_fetch_failed)
                                 } else {
                                     onTextExtracted(page.title, page.text)
                                 }
                             }
                             .onFailure { error ->
                                 isLoading = false
-                                errorMessage = error.message ?: "テキストを取得できませんでした"
+                                errorMessage = error.userMessage(context, R.string.link_fetch_failed)
                             }
                     }
                 }
             ) {
-                Text("テキストを取得")
+                Text(stringResource(R.string.link_fetch))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("閉じる")
+                Text(stringResource(R.string.common_close))
             }
         }
     )

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.pdf
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.input.pointer.pointerInput
@@ -80,11 +82,11 @@ fun PdfViewerScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("PDF", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.pdf_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
                     if (onBack != null) {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "戻る")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                         }
                     }
                 },
@@ -114,13 +116,13 @@ fun PdfViewerScreen(
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "PDFファイルを選択してください",
+                            text = stringResource(R.string.pdf_select),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center
                         )
                         Button(onClick = { launcher.launch("application/pdf") }) {
-                            Text("PDFを開く")
+                            Text(stringResource(R.string.pdf_open))
                         }
                     }
                 }
@@ -139,7 +141,7 @@ fun PdfViewerScreen(
                     ) {
                         CircularProgressIndicator()
                         Text(
-                            text = "PDFを読み込み中…",
+                            text = stringResource(R.string.pdf_loading),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -162,7 +164,7 @@ fun PdfViewerScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${s.pageCount}ページ",
+                            text = stringResource(R.string.pdf_pages, s.pageCount),
                             style = MaterialTheme.typography.labelLarge,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -170,7 +172,7 @@ fun PdfViewerScreen(
                             OutlinedButton(
                                 onClick = { launcher.launch("application/pdf") },
                             ) {
-                                Text("開き直す")
+                                Text(stringResource(R.string.pdf_reopen))
                             }
                         }
                     }
@@ -234,7 +236,7 @@ fun PdfViewerScreen(
                         modifier = Modifier.padding(24.dp)
                     ) {
                         Text(
-                            text = "PDFの読み込みに失敗しました",
+                            text = stringResource(R.string.pdf_load_failed),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyLarge
                         )
@@ -245,7 +247,7 @@ fun PdfViewerScreen(
                             textAlign = TextAlign.Center
                         )
                         Button(onClick = { launcher.launch("application/pdf") }) {
-                            Text("別のPDFを開く")
+                            Text(stringResource(R.string.pdf_open_another))
                         }
                     }
                 }
@@ -278,7 +280,7 @@ private fun PdfPageCard(renderer: PdfPageRenderer, pageIndex: Int, onTap: (x: Fl
         } else {
             Image(
                 bitmap = page.asImageBitmap(),
-                contentDescription = "${pageIndex + 1}ページ",
+                contentDescription = stringResource(R.string.pdf_page, pageIndex + 1),
                 modifier = Modifier
                     .fillMaxWidth()
                     .pointerInput(pageIndex) {
@@ -305,7 +307,7 @@ private fun PdfSpeechControls(
 ) {
     if (text.isBlank()) {
         Text(
-            text = "このPDFからは文字を取り出せませんでした（画像だけのPDFは読み上げられません）",
+            text = stringResource(R.string.pdf_no_text),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.error,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -321,28 +323,28 @@ private fun PdfSpeechControls(
             TtsState.SPEAKING -> Button(onClick = onPause) {
                 Icon(Icons.Default.Pause, contentDescription = null)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("一時停止")
+                Text(stringResource(R.string.common_pause))
             }
             TtsState.PAUSED -> Button(onClick = onResume) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("再開")
+                Text(stringResource(R.string.common_resume))
             }
             else -> Button(onClick = onPlay, enabled = isInitialized && ttsState != TtsState.ERROR) {
                 Icon(Icons.Default.PlayArrow, contentDescription = null)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("読み上げる")
+                Text(stringResource(R.string.pdf_read_aloud))
             }
         }
         if (ttsState == TtsState.SPEAKING || ttsState == TtsState.PAUSED) {
             OutlinedButton(onClick = onStop) {
                 Icon(Icons.Default.Stop, contentDescription = null)
                 Spacer(modifier = Modifier.width(4.dp))
-                Text("停止")
+                Text(stringResource(R.string.common_stop))
             }
         }
         Text(
-            text = "${text.length}文字・ページをタップするとその位置から読みます",
+            text = stringResource(R.string.pdf_hint, text.length),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.epub
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import android.content.Context
 import android.net.Uri
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +31,7 @@ object EpubTextExtractor {
 
     suspend fun read(context: Context, uri: Uri): Result<EpubBook> = withContext(Dispatchers.IO) {
         runCatching {
-            val input = context.contentResolver.openInputStream(uri) ?: error("EPUB ファイルを開けませんでした")
+            val input = context.contentResolver.openInputStream(uri) ?: throw UserMessageException(R.string.error_open_file)
             input.use { extract(unzipTextEntries(it)) }
         }
     }
@@ -44,7 +46,7 @@ object EpubTextExtractor {
                 if (!entry.isDirectory && TEXT_EXTENSIONS.any { name.endsWith(it, ignoreCase = true) }) {
                     val bytes = zip.readBytes()
                     total += bytes.size
-                    check(total <= MAX_TOTAL_BYTES) { "EPUB が大きすぎます" }
+                    if (total > MAX_TOTAL_BYTES) throw UserMessageException(R.string.epub_too_large)
                     entries[name] = bytes
                 }
                 zip.closeEntry()
@@ -54,11 +56,11 @@ object EpubTextExtractor {
     }
 
     fun extract(entries: Map<String, ByteArray>): EpubBook {
-        val container = entries["META-INF/container.xml"] ?: error("EPUB の構造が読めませんでした（container.xml が無い）")
+        val container = entries["META-INF/container.xml"] ?: throw UserMessageException(R.string.epub_invalid)
         val opfPath = Jsoup.parse(container.decodeToString(), "", Parser.xmlParser())
             .selectFirst("rootfile")?.attr("full-path")?.takeIf { it.isNotBlank() }
-            ?: error("EPUB の構造が読めませんでした（OPF が無い）")
-        val opfBytes = entries[opfPath] ?: error("EPUB の構造が読めませんでした（$opfPath が無い）")
+            ?: throw UserMessageException(R.string.epub_invalid)
+        val opfBytes = entries[opfPath] ?: throw UserMessageException(R.string.epub_invalid)
         val opf = Jsoup.parse(opfBytes.decodeToString(), "", Parser.xmlParser())
         val opfDir = opfPath.substringBeforeLast('/', "")
 
@@ -70,7 +72,7 @@ object EpubTextExtractor {
             entries[resolve(opfDir, href)]?.let { xhtmlToText(it.decodeToString()) }
         }.filter { it.isNotBlank() }.joinToString("\n\n")
 
-        check(text.isNotBlank()) { "本文を取り出せませんでした（DRM 付きの本は読めません）" }
+        if (text.isBlank()) throw UserMessageException(R.string.epub_no_text)
         return EpubBook(title, text)
     }
 

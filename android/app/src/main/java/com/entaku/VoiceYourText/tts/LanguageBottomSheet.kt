@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.tts
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -44,7 +46,7 @@ fun LanguageBottomSheet(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "言語を選択",
+                text = stringResource(R.string.language_select),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
@@ -72,7 +74,7 @@ fun LanguageBottomSheet(
                     if (isSelected) {
                         Icon(
                             imageVector = Icons.Default.Check,
-                            contentDescription = "選択中",
+                            contentDescription = stringResource(R.string.common_selected),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(20.dp)
                         )

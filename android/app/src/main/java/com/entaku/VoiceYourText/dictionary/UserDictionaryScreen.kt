@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.dictionary
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,20 +52,20 @@ fun UserDictionaryScreen(onDismiss: () -> Unit) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("ユーザー辞書") },
-                    navigationIcon = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = "閉じる") } }
+                    title = { Text(stringResource(R.string.dictionary_title)) },
+                    navigationIcon = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.common_close)) } }
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = { showAdd = true }) { Icon(Icons.Default.Add, contentDescription = "追加") }
+                FloatingActionButton(onClick = { showAdd = true }) { Icon(Icons.Default.Add, contentDescription = stringResource(R.string.common_add)) }
             }
         ) { padding ->
             if (entries.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(24.dp)) {
-                        Text("登録された単語はありません", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.dictionary_empty), style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            "読み間違える単語と、正しい読み方を登録できます（例: 生田 → いくた）",
+                            stringResource(R.string.dictionary_empty_hint),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -81,7 +83,7 @@ fun UserDictionaryScreen(onDismiss: () -> Unit) {
                                 Text(entry.reading, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                             IconButton(onClick = { store.delete(entry.id) }) {
-                                Icon(Icons.Default.Delete, contentDescription = "削除", tint = MaterialTheme.colorScheme.error)
+                                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.common_delete), tint = MaterialTheme.colorScheme.error)
                             }
                         }
                         HorizontalDivider()
@@ -95,11 +97,11 @@ fun UserDictionaryScreen(onDismiss: () -> Unit) {
             var reading by remember { mutableStateOf("") }
             AlertDialog(
                 onDismissRequest = { showAdd = false },
-                title = { Text("単語を追加") },
+                title = { Text(stringResource(R.string.dictionary_add_title)) },
                 text = {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedTextField(value = word, onValueChange = { word = it }, label = { Text("単語") }, singleLine = true)
-                        OutlinedTextField(value = reading, onValueChange = { reading = it }, label = { Text("読み方") }, singleLine = true)
+                        OutlinedTextField(value = word, onValueChange = { word = it }, label = { Text(stringResource(R.string.dictionary_word)) }, singleLine = true)
+                        OutlinedTextField(value = reading, onValueChange = { reading = it }, label = { Text(stringResource(R.string.dictionary_reading)) }, singleLine = true)
                     }
                 },
                 confirmButton = {
@@ -109,9 +111,9 @@ fun UserDictionaryScreen(onDismiss: () -> Unit) {
                             showAdd = false
                         },
                         enabled = word.isNotBlank() && reading.isNotBlank()
-                    ) { Text("追加") }
+                    ) { Text(stringResource(R.string.common_add)) }
                 },
-                dismissButton = { TextButton(onClick = { showAdd = false }) { Text("キャンセル") } }
+                dismissButton = { TextButton(onClick = { showAdd = false }) { Text(stringResource(R.string.common_cancel)) } }
             )
         }
     }

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.pdf
 
+import com.entaku.VoiceYourText.ui.userMessage
+import com.entaku.VoiceYourText.R
 import android.app.Application
 import android.content.Context
 import android.net.Uri
@@ -36,7 +38,7 @@ class PdfViewModel(application: Application) : AndroidViewModel(application) {
                 .onSuccess { renderer ->
                     if (renderer.pageCount == 0) {
                         renderer.close()
-                        _state.value = PdfState.Error("PDFにページが見つかりませんでした")
+                        _state.value = PdfState.Error(context.getString(R.string.pdf_no_pages))
                         return@onSuccess
                     }
                     // 文字が取れなくても表示はできるので、失敗は空文字として扱う
@@ -44,7 +46,7 @@ class PdfViewModel(application: Application) : AndroidViewModel(application) {
                     _state.value = PdfState.Loaded(renderer, layout, PdfTextReader.displayName(context, uri))
                 }
                 .onFailure { error ->
-                    _state.value = PdfState.Error(error.message ?: "不明なエラー")
+                    _state.value = PdfState.Error(error.userMessage(context, R.string.common_unknown_error))
                 }
         }
     }

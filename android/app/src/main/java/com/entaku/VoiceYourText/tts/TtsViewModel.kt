@@ -161,8 +161,10 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
-        // 前回選んだ言語を復元する（以前は起動のたびに日本語に戻っていた）
-        SpeechLanguage.fromCode(settingsPrefs.getString(KEY_LANGUAGE, null))?.let { _selectedLanguage.value = it }
+        // 前回選んだ言語を復元する。初回は端末の言語（対応外なら英語）にする
+        _selectedLanguage.value = SpeechLanguage.fromCode(settingsPrefs.getString(KEY_LANGUAGE, null))
+            ?: SpeechLanguage.fromCode(Locale.getDefault().language)
+            ?: SpeechLanguage.ENGLISH
         initTts()
         registerStopReceiver()
     }
@@ -252,6 +254,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         title: String? = null,
         saveAs: SourceType = SourceType.TYPED,
         saveText: String = text,
+        saveToMyFiles: Boolean = true,
     ) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
@@ -267,7 +270,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
         val chunks = synchronized(queue) { queue.start(preparedText.spoken, maxChunkLength()) }
         enqueue(chunks)
-        saveToHistory(saveText, title, saveAs)
+        if (saveToMyFiles) saveToHistory(saveText, title, saveAs)
         startNotificationService(title ?: currentTitle, isPlaying = true)
     }
 

@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.ui.localizedMonthDayFormat
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -94,11 +97,11 @@ fun MyFilesScreen(
         floatingActionButton = {
             Box {
                 FloatingActionButton(onClick = { showAddMenu = true }) {
-                    Icon(Icons.Default.Add, contentDescription = "追加")
+                    Icon(Icons.Default.Add, contentDescription = stringResource(R.string.common_add))
                 }
                 DropdownMenu(expanded = showAddMenu, onDismissRequest = { showAddMenu = false }) {
                     DropdownMenuItem(
-                        text = { Text("テキストファイルを開く") },
+                        text = { Text(stringResource(R.string.open_text_file)) },
                         leadingIcon = { Icon(Icons.Default.FileOpen, contentDescription = null) },
                         onClick = {
                             showAddMenu = false
@@ -106,7 +109,7 @@ fun MyFilesScreen(
                         }
                     )
                     DropdownMenuItem(
-                        text = { Text("リンクを追加") },
+                        text = { Text(stringResource(R.string.my_files_add_link)) },
                         leadingIcon = { Icon(Icons.Default.Link, contentDescription = null) },
                         onClick = {
                             showAddMenu = false
@@ -126,12 +129,12 @@ fun MyFilesScreen(
             modifier = Modifier.align(Alignment.End).padding(end = 8.dp)
         ) {
             Icon(Icons.Default.DeleteOutline, contentDescription = null)
-            Text(if (deletedFiles.isEmpty()) "ゴミ箱" else "ゴミ箱（${deletedFiles.size}）", modifier = Modifier.padding(start = 4.dp))
+            Text(if (deletedFiles.isEmpty()) stringResource(R.string.my_files_trash) else stringResource(R.string.my_files_trash_count, deletedFiles.size), modifier = Modifier.padding(start = 4.dp))
         }
         OutlinedTextField(
             value = searchQuery,
             onValueChange = viewModel::setSearchQuery,
-            label = { Text("ファイルを検索") },
+            label = { Text(stringResource(R.string.my_files_search)) },
             singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
@@ -149,7 +152,7 @@ fun MyFilesScreen(
                     onClick = { viewModel.setFilter(entry) },
                     shape = SegmentedButtonDefaults.itemShape(index = index, count = MyFilesFilter.entries.size)
                 ) {
-                    Text(entry.label)
+                    Text(stringResource(entry.label))
                 }
             }
         }
@@ -161,12 +164,12 @@ fun MyFilesScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "ファイルがありません",
+                        text = stringResource(R.string.my_files_empty),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text = "テキストを保存するとここに一覧が表示されます",
+                        text = stringResource(R.string.my_files_empty_hint),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -202,19 +205,19 @@ fun MyFilesScreen(
     fileToDelete?.let { file ->
         AlertDialog(
             onDismissRequest = { fileToDelete = null },
-            title = { Text("ゴミ箱に移動") },
-            text = { Text("「${file.title}」をゴミ箱に移動しますか？${TRASH_RETENTION_DAYS}日間は元に戻せます。") },
+            title = { Text(stringResource(R.string.my_files_move_to_trash_title)) },
+            text = { Text(stringResource(R.string.my_files_move_to_trash_message, file.title, TRASH_RETENTION_DAYS)) },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.delete(file.id)
                     fileToDelete = null
                 }) {
-                    Text("移動")
+                    Text(stringResource(R.string.my_files_move))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { fileToDelete = null }) {
-                    Text("キャンセル")
+                    Text(stringResource(R.string.common_cancel))
                 }
             }
         )
@@ -233,13 +236,13 @@ fun MyFilesScreen(
     }
 }
 
-private val MyFilesFilter.label: String
+private val MyFilesFilter.label: Int
     get() = when (this) {
-        MyFilesFilter.ALL -> "すべて"
-        MyFilesFilter.TEXT -> "テキスト"
-        MyFilesFilter.LINK -> "リンク"
-        MyFilesFilter.PDF -> "PDF"
-        MyFilesFilter.BOOK -> "本"
+        MyFilesFilter.ALL -> R.string.filter_all
+        MyFilesFilter.TEXT -> R.string.filter_text
+        MyFilesFilter.LINK -> R.string.filter_link
+        MyFilesFilter.PDF -> R.string.filter_pdf
+        MyFilesFilter.BOOK -> R.string.filter_book
     }
 
 @Composable
@@ -293,14 +296,14 @@ private fun MyFileItem(
             IconButton(onClick = onOpen) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "再生",
+                    contentDescription = stringResource(R.string.common_play),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
             IconButton(onClick = onDelete) {
                 Icon(
                     imageVector = Icons.Default.Delete,
-                    contentDescription = "削除",
+                    contentDescription = stringResource(R.string.common_delete),
                     tint = MaterialTheme.colorScheme.error
                 )
             }
@@ -308,14 +311,15 @@ private fun MyFileItem(
     }
 }
 
+@Composable
 private fun formatDate(epochMillis: Long): String {
     val target = Calendar.getInstance().apply { timeInMillis = epochMillis }
     val today = Calendar.getInstance()
     val isToday = target.get(Calendar.YEAR) == today.get(Calendar.YEAR) &&
         target.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)
     return if (isToday) {
-        "今日"
+        stringResource(R.string.common_today)
     } else {
-        SimpleDateFormat("M月d日", Locale.getDefault()).format(target.time)
+        localizedMonthDayFormat().format(target.time)
     }
 }

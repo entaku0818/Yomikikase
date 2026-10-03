@@ -22,8 +22,9 @@ class VoiceOptionsTest {
             "ja"
         )
         assertEquals(listOf("ja-high", "ja-low", "ja-net", "ja-missing"), options.map { it.name })
-        assertEquals(listOf("声 1", "声 2", "声 3", "声 4"), options.map { it.label })
-        assertEquals(listOf("高品質", null, "高品質・ネット接続が必要", "未ダウンロード"), options.map { it.note })
+        assertEquals(listOf(1, 2, 3, 4), options.map { it.number })
+        assertEquals(listOf(true, false, true, false), options.map { it.highQuality })
+        assertEquals(listOf(false, false, true, false), options.map { it.requiresNetwork })
         assertEquals(listOf(true, true, true, false), options.map { it.selectable })
     }
 }

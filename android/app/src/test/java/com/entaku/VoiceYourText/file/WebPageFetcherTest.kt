@@ -1,5 +1,9 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+
+import com.entaku.VoiceYourText.R
+
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.mockwebserver.MockResponse
@@ -44,23 +48,27 @@ class WebPageFetcherTest {
     }
 
     @Test
-    fun `fetchText fails with a message containing the status code on a 404 response`() = runBlocking {
+    fun `fetchText fails with a message with the status code on a 404 response`() = runBlocking {
         server.enqueue(MockResponse().setResponseCode(404))
 
         val result = WebPageFetcher.fetchText(server.url("/missing").toString())
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message.orEmpty().contains("404"))
+        val error = result.exceptionOrNull() as UserMessageException
+        assertEquals(R.string.link_http_error, error.messageRes)
+        assertEquals(listOf(404), error.args.toList())
     }
 
     @Test
-    fun `fetchText fails with a message containing the status code on a 500 response`() = runBlocking {
+    fun `fetchText fails with a message with the status code on a 500 response`() = runBlocking {
         server.enqueue(MockResponse().setResponseCode(500))
 
         val result = WebPageFetcher.fetchText(server.url("/error").toString())
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull()?.message.orEmpty().contains("500"))
+        val error = result.exceptionOrNull() as UserMessageException
+        assertEquals(R.string.link_http_error, error.messageRes)
+        assertEquals(listOf(500), error.args.toList())
     }
 
     @Test

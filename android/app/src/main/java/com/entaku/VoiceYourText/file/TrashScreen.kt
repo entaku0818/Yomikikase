@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.ui.localizedMonthDayFormat
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,9 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.Locale
 
 /** ゴミ箱（iOS `Features/DeletedItems/` 相当）。7日間は元に戻せ、すぐに完全削除もできる */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,23 +48,23 @@ fun TrashScreen(
 ) {
     var toDelete by remember { mutableStateOf<SavedFileEntity?>(null) }
     val now = System.currentTimeMillis()
-    val dateFormat = remember { SimpleDateFormat("M月d日", Locale.JAPAN) }
+    val dateFormat = remember { localizedMonthDayFormat() }
 
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("ゴミ箱") },
-                    navigationIcon = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = "閉じる") } }
+                    title = { Text(stringResource(R.string.trash_title)) },
+                    navigationIcon = { IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.common_close)) } }
                 )
             }
         ) { padding ->
             if (files.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("削除済みのファイルはありません", style = MaterialTheme.typography.bodyLarge)
+                        Text(stringResource(R.string.trash_empty), style = MaterialTheme.typography.bodyLarge)
                         Text(
-                            "削除したファイルは${TRASH_RETENTION_DAYS}日間保持されます",
+                            stringResource(R.string.trash_retention, TRASH_RETENTION_DAYS),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -82,13 +83,13 @@ fun TrashScreen(
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(file.title, maxLines = 1, overflow = TextOverflow.Ellipsis, style = MaterialTheme.typography.bodyLarge)
                                 Text(
-                                    "${dateFormat.format(Date(deletedAt))}に削除・あと${days}日",
+                                    stringResource(R.string.trash_item_info, dateFormat.format(Date(deletedAt)), days),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = if (days <= 1) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            TextButton(onClick = { onRestore(file.id) }) { Text("元に戻す") }
-                            TextButton(onClick = { toDelete = file }) { Text("削除", color = MaterialTheme.colorScheme.error) }
+                            TextButton(onClick = { onRestore(file.id) }) { Text(stringResource(R.string.trash_restore)) }
+                            TextButton(onClick = { toDelete = file }) { Text(stringResource(R.string.common_delete), color = MaterialTheme.colorScheme.error) }
                         }
                         HorizontalDivider()
                     }
@@ -99,15 +100,15 @@ fun TrashScreen(
         toDelete?.let { file ->
             AlertDialog(
                 onDismissRequest = { toDelete = null },
-                title = { Text("完全に削除") },
-                text = { Text("「${file.title}」を完全に削除しますか？元に戻せません。") },
+                title = { Text(stringResource(R.string.trash_delete_forever_title)) },
+                text = { Text(stringResource(R.string.trash_delete_forever_message, file.title)) },
                 confirmButton = {
                     TextButton(onClick = {
                         onDeletePermanently(file.id)
                         toDelete = null
-                    }) { Text("削除", color = MaterialTheme.colorScheme.error) }
+                    }) { Text(stringResource(R.string.common_delete), color = MaterialTheme.colorScheme.error) }
                 },
-                dismissButton = { TextButton(onClick = { toDelete = null }) { Text("キャンセル") } }
+                dismissButton = { TextButton(onClick = { toDelete = null }) { Text(stringResource(R.string.common_cancel)) } }
             )
         }
     }

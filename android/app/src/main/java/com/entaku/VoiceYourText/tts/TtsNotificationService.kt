@@ -64,7 +64,7 @@ class TtsNotificationService : Service() {
             }
         }
 
-        val title = intent?.getStringExtra(EXTRA_TITLE) ?: "読み上げ中"
+        val title = intent?.getStringExtra(EXTRA_TITLE) ?: getString(R.string.notification_playing)
         val isPlaying = intent?.getBooleanExtra(EXTRA_IS_PLAYING, true) ?: true
         startForeground(NOTIFICATION_ID, buildNotification(title, isPlaying))
         return START_STICKY
@@ -80,10 +80,10 @@ class TtsNotificationService : Service() {
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
             CHANNEL_ID,
-            "読み上げ再生",
+            getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_LOW
         ).apply {
-            description = "テキスト読み上げの再生コントロール"
+            description = getString(R.string.notification_channel_description)
             setShowBadge(false)
         }
         notificationManager.createNotificationChannel(channel)
@@ -152,18 +152,18 @@ class TtsNotificationService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle("Voice Your Text")
+            .setContentTitle(getString(R.string.app_name))
             .setContentText(title)
             .setSmallIcon(android.R.drawable.ic_btn_speak_now)
             .setContentIntent(contentIntent)
             .addAction(
                 if (isPlaying) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play,
-                if (isPlaying) "一時停止" else "再開",
+                getString(if (isPlaying) R.string.common_pause else R.string.common_resume),
                 toggleIntent
             )
             .addAction(
                 android.R.drawable.ic_menu_close_clear_cancel,
-                "停止",
+                getString(R.string.common_stop),
                 stopIntent
             )
             .setStyle(

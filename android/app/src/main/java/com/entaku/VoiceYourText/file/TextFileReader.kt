@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import android.content.Context
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -17,7 +19,7 @@ object TextFileReader {
                 BufferedReader(InputStreamReader(inputStream, Charsets.UTF_8)).use { reader ->
                     reader.readText()
                 }
-            } ?: throw IllegalStateException("ファイルを開けませんでした")
+            } ?: throw UserMessageException(R.string.error_open_file)
             ImportedText(fileName = resolveFileName(context, uri), content = content)
         }
     }
@@ -29,6 +31,6 @@ object TextFileReader {
                 cursor.getString(nameIndex)?.let { return it }
             }
         }
-        return "テキストファイル"
+        return context.getString(R.string.default_text_file_name)
     }
 }

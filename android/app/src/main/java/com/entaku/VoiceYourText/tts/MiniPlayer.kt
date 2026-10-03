@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.tts
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -60,14 +62,14 @@ fun MiniPlayer(
             IconButton(onClick = onTogglePlay) {
                 Icon(
                     imageVector = if (isSpeaking) Icons.Default.Pause else Icons.Default.PlayArrow,
-                    contentDescription = if (isSpeaking) "一時停止" else "再開",
+                    contentDescription = if (isSpeaking) stringResource(R.string.common_pause) else stringResource(R.string.common_resume),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
             IconButton(onClick = onClose) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "閉じる",
+                    contentDescription = stringResource(R.string.common_close),
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }

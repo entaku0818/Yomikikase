@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.tts
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,20 +42,20 @@ fun VoiceBottomSheet(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "声を選択",
+                text = stringResource(R.string.voice_select),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
             HorizontalDivider()
-            VoiceRow(label = "標準", note = "端末の既定の声", selected = selectedName == null, enabled = true) {
+            VoiceRow(label = stringResource(R.string.speech_voice_default), note = stringResource(R.string.voice_default_note), selected = selectedName == null, enabled = true) {
                 onSelect(null)
                 onDismiss()
             }
             options.forEach { option ->
                 VoiceRow(
-                    label = option.label,
-                    note = option.note,
+                    label = voiceLabel(option),
+                    note = voiceNote(option),
                     selected = option.name == selectedName,
                     enabled = option.selectable
                 ) {
@@ -63,7 +65,7 @@ fun VoiceBottomSheet(
             }
             if (options.any { !it.selectable } || options.isEmpty()) {
                 TextButton(onClick = onAddVoices, modifier = Modifier.padding(horizontal = 12.dp)) {
-                    Text("声を追加・ダウンロードする（端末の設定）")
+                    Text(stringResource(R.string.voice_add))
                 }
             }
         }

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.pdf
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -51,7 +53,7 @@ class PdfPageRenderer private constructor(
         suspend fun open(context: Context, uri: Uri): Result<PdfPageRenderer> = withContext(Dispatchers.IO) {
             runCatching {
                 val descriptor = context.contentResolver.openFileDescriptor(uri, "r")
-                    ?: error("PDF ファイルを開けませんでした")
+                    ?: throw UserMessageException(R.string.error_open_file)
                 try {
                     PdfPageRenderer(descriptor, android.graphics.pdf.PdfRenderer(descriptor))
                 } catch (e: Exception) {

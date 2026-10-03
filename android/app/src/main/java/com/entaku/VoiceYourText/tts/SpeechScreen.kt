@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.tts
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -105,14 +107,14 @@ fun SpeechScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "テキスト",
+                        text = stringResource(R.string.speech_title),
                         fontWeight = FontWeight.Bold
                     )
                 },
                 navigationIcon = {
                     if (onBack != null) {
                         IconButton(onClick = onBack) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "戻る")
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back))
                         }
                     }
                 },
@@ -144,8 +146,8 @@ fun SpeechScreen(
             } else OutlinedTextField(
                 value = inputText,
                 onValueChange = viewModel::setDraftText,
-                label = { Text("読み上げるテキストを入力") },
-                placeholder = { Text("ここにテキストを入力してください…") },
+                label = { Text(stringResource(R.string.speech_input_label)) },
+                placeholder = { Text(stringResource(R.string.speech_input_placeholder)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp),
@@ -173,14 +175,14 @@ fun SpeechScreen(
             // 言語と声（縦の余白が少ないので1行に並べる）
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SettingChip(
-                    label = "言語",
+                    label = stringResource(R.string.speech_language),
                     value = selectedLanguage.displayName,
                     onClick = { showLanguageSheet = true },
                     modifier = Modifier.weight(1f)
                 )
                 SettingChip(
-                    label = "声",
-                    value = voiceOptions.firstOrNull { it.name == selectedVoiceName }?.label ?: "標準",
+                    label = stringResource(R.string.speech_voice),
+                    value = voiceOptions.firstOrNull { it.name == selectedVoiceName }?.let { voiceLabel(it) } ?: stringResource(R.string.speech_voice_default),
                     onClick = { showVoiceSheet = true },
                     modifier = Modifier.weight(1f)
                 )
@@ -206,7 +208,7 @@ fun SpeechScreen(
                 // 端末に音声データが無い言語は既定の言語で読まれてしまうので、追加方法を案内する
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(
-                        text = "${selectedLanguage.displayName} の音声データがこの端末にありません。追加するまでは端末の既定の言語で読み上げます。",
+                        text = stringResource(R.string.speech_language_unavailable, selectedLanguage.displayName),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -220,7 +222,7 @@ fun SpeechScreen(
                             }
                         }
                     ) {
-                        Text("音声データを追加する")
+                        Text(stringResource(R.string.speech_add_voice_data))
                     }
                 }
             }
@@ -252,7 +254,7 @@ fun SpeechScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "速さ",
+                            text = stringResource(R.string.speech_speed),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -275,17 +277,17 @@ fun SpeechScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "遅い",
+                            text = stringResource(R.string.speed_slow),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "標準 1.0",
+                            text = stringResource(R.string.speed_normal),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = "速い",
+                            text = stringResource(R.string.speed_fast),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -303,7 +305,7 @@ fun SpeechScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "TTSエンジンの初期化に失敗しました",
+                        text = stringResource(R.string.tts_init_failed),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         textAlign = TextAlign.Center
@@ -315,7 +317,7 @@ fun SpeechScreen(
                             contentColor = MaterialTheme.colorScheme.onErrorContainer
                         )
                     ) {
-                        Text("再試行")
+                        Text(stringResource(R.string.common_retry))
                     }
                 }
             }
@@ -336,7 +338,7 @@ fun SpeechScreen(
                         ) {
                             Icon(
                                 imageVector = if (isSpeaking) Icons.Default.Pause else Icons.Default.PlayArrow,
-                                contentDescription = if (isSpeaking) "一時停止" else "再開",
+                                contentDescription = if (isSpeaking) stringResource(R.string.common_pause) else stringResource(R.string.common_resume),
                                 modifier = Modifier.size(36.dp)
                             )
                         }
@@ -348,7 +350,7 @@ fun SpeechScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Stop,
-                                contentDescription = "停止",
+                                contentDescription = stringResource(R.string.common_stop),
                                 modifier = Modifier.size(28.dp)
                             )
                         }
@@ -367,7 +369,7 @@ fun SpeechScreen(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.PlayArrow,
-                                contentDescription = "再生",
+                                contentDescription = stringResource(R.string.common_play),
                                 modifier = Modifier.size(36.dp)
                             )
                         }
@@ -392,18 +394,18 @@ private fun SleepTimerButton(
         TextButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = if (sleepTimer == null) Icons.Outlined.Bedtime else Icons.Filled.Bedtime,
-                contentDescription = "スリープタイマー",
+                contentDescription = stringResource(R.string.sleep_timer),
                 tint = if (sleepTimer == null) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.primary
             )
             if (sleepTimer != null) {
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(text = sleepTimer.displayText, color = MaterialTheme.colorScheme.primary)
+                Text(text = sleepTimerDisplay(sleepTimer), color = MaterialTheme.colorScheme.primary)
             }
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             SleepTimerOption.PRESETS.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option.title) },
+                    text = { Text(sleepTimerTitle(option)) },
                     onClick = {
                         onSelect(option)
                         expanded = false
@@ -412,7 +414,7 @@ private fun SleepTimerButton(
             }
             if (sleepTimer != null) {
                 DropdownMenuItem(
-                    text = { Text("タイマーを解除") },
+                    text = { Text(stringResource(R.string.sleep_timer_cancel)) },
                     onClick = {
                         onSelect(null)
                         expanded = false

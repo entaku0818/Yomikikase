@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText.home
 
+import com.entaku.VoiceYourText.ui.userMessage
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import android.net.Uri
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import com.entaku.VoiceYourText.scan.ScanTextRecognizer
@@ -98,11 +101,11 @@ fun HomeScreen(
         scope.launch {
             EpubTextExtractor.read(context, uri)
                 .onSuccess { book ->
-                    val title = book.title ?: PdfTextReader.displayName(context, uri) ?: "本"
+                    val title = book.title ?: PdfTextReader.displayName(context, uri) ?: context.getString(R.string.home_book_default_title)
                     onSaveImported(title, book.text, SourceType.EPUB)
                     onOpenText(book.text)
                 }
-                .onFailure { importError = it.message ?: "EPUB を読み込めませんでした" }
+                .onFailure { importError = it.userMessage(context, R.string.common_load_failed_title) }
         }
     }
 
@@ -114,7 +117,7 @@ fun HomeScreen(
             runCatching { ScanTextRecognizer.recognize(context, pages) }
                 .onSuccess { text ->
                     if (text.isBlank()) {
-                        importError = "文字を読み取れませんでした。明るい場所で、文字がはっきり写るように撮ってください"
+                        importError = context.getString(R.string.scan_no_text)
                     } else {
                         analytics.logEvent("scan_completed", mapOf("pages" to pages.size, "length" to text.length))
                         onSaveImported(text.lineSequence().first().take(30), text, SourceType.SCAN)
@@ -123,7 +126,7 @@ fun HomeScreen(
                 }
                 .onFailure {
                     analytics.logEvent("scan_error", mapOf("reason" to (it.message ?: "unknown").take(100)))
-                    importError = "文字を読み取れませんでした（${it.message}）"
+                    importError = context.getString(R.string.scan_failed, it.message.orEmpty())
                 }
             isRecognizing = false
         }
@@ -138,12 +141,12 @@ fun HomeScreen(
     }
 
     val actions = listOf(
-        HomeAction("text", "テキスト", Icons.Default.Description) { onOpenText("") },
-        HomeAction("pdf", "PDF", Icons.Default.PictureAsPdf, onOpenPdf),
-        HomeAction("txt", "TXTファイル", Icons.Default.TextSnippet) { txtPicker.launch("text/*") },
-        HomeAction("epub", "本", Icons.AutoMirrored.Filled.MenuBook) { epubPicker.launch("application/epub+zip") },
-        HomeAction("link", "リンク", Icons.Default.Link) { showLinkImport = true },
-        HomeAction("scan", "スキャン", Icons.Default.DocumentScanner) {
+        HomeAction("text", stringResource(R.string.home_text), Icons.Default.Description) { onOpenText("") },
+        HomeAction("pdf", stringResource(R.string.home_pdf), Icons.Default.PictureAsPdf, onOpenPdf),
+        HomeAction("txt", stringResource(R.string.home_txt), Icons.Default.TextSnippet) { txtPicker.launch("text/*") },
+        HomeAction("epub", stringResource(R.string.home_book), Icons.AutoMirrored.Filled.MenuBook) { epubPicker.launch("application/epub+zip") },
+        HomeAction("link", stringResource(R.string.home_link), Icons.Default.Link) { showLinkImport = true },
+        HomeAction("scan", stringResource(R.string.home_scan), Icons.Default.DocumentScanner) {
             val activity = context.findActivity() ?: return@HomeAction
             scope.launch {
                 runCatching { ScanTextRecognizer.startIntent(activity) }
@@ -154,14 +157,14 @@ fun HomeScreen(
                     }
             }
         },
-        HomeAction("aozora", "名作", Icons.Default.AutoStories, onOpenAozora),
+        HomeAction("aozora", stringResource(R.string.home_aozora), Icons.Default.AutoStories, onOpenAozora),
     ) + extraActions
 
     Column(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 8.dp)) {
-            Text(text = "ナレーター", style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
+            Text(text = stringResource(R.string.home_title), style = MaterialTheme.typography.headlineLarge, fontWeight = FontWeight.Bold)
             Text(
-                text = "読みたいものを、声で。",
+                text = stringResource(R.string.home_subtitle),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -184,7 +187,7 @@ fun HomeScreen(
     if (isRecognizing) {
         AlertDialog(
             onDismissRequest = {},
-            title = { Text("文字を読み取っています") },
+            title = { Text(stringResource(R.string.home_recognizing)) },
             text = { CircularProgressIndicator() },
             confirmButton = {}
         )
@@ -193,9 +196,9 @@ fun HomeScreen(
     importError?.let { message ->
         AlertDialog(
             onDismissRequest = { importError = null },
-            title = { Text("読み込めませんでした") },
+            title = { Text(stringResource(R.string.common_load_failed_title)) },
             text = { Text(message) },
-            confirmButton = { TextButton(onClick = { importError = null }) { Text("OK") } }
+            confirmButton = { TextButton(onClick = { importError = null }) { Text(stringResource(R.string.common_ok)) } }
         )
     }
 

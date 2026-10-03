@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.feedback
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -50,9 +52,9 @@ fun FeedbackDialog(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text("フィードバック") },
+                    title = { Text(stringResource(R.string.feedback_title)) },
                     navigationIcon = {
-                        IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = "キャンセル") }
+                        IconButton(onClick = onDismiss) { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.common_cancel)) }
                     }
                 )
             }
@@ -62,19 +64,19 @@ fun FeedbackDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Text(
-                    text = "ご不便をおかけして申し訳ありません。\n改善のため、詳しく教えていただけますか？",
+                    text = stringResource(R.string.feedback_intro),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 OutlinedTextField(
                     value = message,
                     onValueChange = { message = it.take(FeedbackClient.MAX_LENGTH) },
-                    placeholder = { Text("不満な点や改善してほしいことを入力してください") },
+                    placeholder = { Text(stringResource(R.string.feedback_placeholder)) },
                     modifier = Modifier.fillMaxWidth().heightIn(min = 180.dp)
                 )
                 if (failed) {
                     Text(
-                        text = "送信できませんでした。通信状況を確認してもう一度お試しください。",
+                        text = stringResource(R.string.feedback_send_failed),
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall
                     )
@@ -96,7 +98,7 @@ fun FeedbackDialog(
                     if (isSubmitting) {
                         CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                     } else {
-                        Text("送信する")
+                        Text(stringResource(R.string.feedback_send))
                     }
                 }
             }
@@ -106,9 +108,9 @@ fun FeedbackDialog(
     if (submitted) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("送信完了") },
-            text = { Text("フィードバックをありがとうございます。今後の改善に役立てます。") },
-            confirmButton = { TextButton(onClick = onDismiss) { Text("OK") } }
+            title = { Text(stringResource(R.string.feedback_sent_title)) },
+            text = { Text(stringResource(R.string.feedback_sent_message)) },
+            confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.common_ok)) } }
         )
     }
 }

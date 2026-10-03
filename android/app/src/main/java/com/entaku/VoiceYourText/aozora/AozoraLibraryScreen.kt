@@ -1,5 +1,8 @@
 package com.entaku.VoiceYourText.aozora
 
+import com.entaku.VoiceYourText.ui.userMessage
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,9 +69,9 @@ fun AozoraLibraryScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                title = { Text("名作", fontWeight = FontWeight.Bold) },
+                title = { Text(stringResource(R.string.aozora_title), fontWeight = FontWeight.Bold) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "戻る") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.common_back)) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -82,12 +85,12 @@ fun AozoraLibraryScreen(
                 value = query,
                 onValueChange = { query = it },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                placeholder = { Text("作品名・作者で検索") },
+                placeholder = { Text(stringResource(R.string.aozora_search)) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth().padding(16.dp)
             )
             Text(
-                text = "青空文庫の作品（著作権の切れたもの）を読み上げます",
+                text = stringResource(R.string.aozora_intro),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(horizontal = 16.dp)
@@ -108,7 +111,7 @@ fun AozoraLibraryScreen(
                                         }
                                         .onFailure {
                                             analytics.logEvent("aozora_download_failed", mapOf("work_id" to work.id))
-                                            error = it.message ?: "作品を取得できませんでした"
+                                            error = it.userMessage(context, R.string.aozora_failed_title)
                                         }
                                     downloading = null
                                 }
@@ -127,12 +130,12 @@ fun AozoraLibraryScreen(
     downloading?.let { work ->
         AlertDialog(
             onDismissRequest = {},
-            title = { Text("ダウンロード中") },
+            title = { Text(stringResource(R.string.aozora_downloading_title)) },
             text = {
                 Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxWidth()) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         CircularProgressIndicator()
-                        Text("「${work.title}」を取得しています", modifier = Modifier.padding(top = 12.dp))
+                        Text(stringResource(R.string.aozora_downloading, work.title), modifier = Modifier.padding(top = 12.dp))
                     }
                 }
             },
@@ -143,9 +146,9 @@ fun AozoraLibraryScreen(
     error?.let { message ->
         AlertDialog(
             onDismissRequest = { error = null },
-            title = { Text("取得できませんでした") },
+            title = { Text(stringResource(R.string.aozora_failed_title)) },
             text = { Text(message) },
-            confirmButton = { TextButton(onClick = { error = null }) { Text("OK") } }
+            confirmButton = { TextButton(onClick = { error = null }) { Text(stringResource(R.string.common_ok)) } }
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.R
+import androidx.compose.ui.res.stringResource
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +30,7 @@ fun FilePickerButton(
     ) {
         Icon(
             imageVector = Icons.Default.FileOpen,
-            contentDescription = "テキストファイルを開く",
+            contentDescription = stringResource(R.string.open_text_file),
             tint = MaterialTheme.colorScheme.primary
         )
     }

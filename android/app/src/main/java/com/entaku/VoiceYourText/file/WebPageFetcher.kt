@@ -1,5 +1,7 @@
 package com.entaku.VoiceYourText.file
 
+import com.entaku.VoiceYourText.ui.UserMessageException
+import com.entaku.VoiceYourText.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -24,9 +26,9 @@ object WebPageFetcher {
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) {
-                    throw IllegalStateException("ページの取得に失敗しました (HTTP ${response.code})")
+                    throw UserMessageException(R.string.link_http_error, response.code)
                 }
-                val html = response.body?.string() ?: throw IllegalStateException("ページの内容を取得できませんでした")
+                val html = response.body?.string() ?: throw UserMessageException(R.string.link_empty_page)
                 val doc = Jsoup.parse(html, url)
                 val title = doc.title().ifBlank { doc.location() }
                 val text = doc.body()?.text().orEmpty()
