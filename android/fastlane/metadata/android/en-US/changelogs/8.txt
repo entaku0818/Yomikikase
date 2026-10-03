@@ -1,0 +1,4 @@
+- The app is now available in 13 languages, including English
+- Trash: deleted files can be restored for 7 days
+- User dictionary: teach the reading of words that are mispronounced (in Settings)
+- A short guide for first-time users

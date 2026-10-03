@@ -1,0 +1,4 @@
+- La aplicación ahora está disponible en 13 idiomas, incluido el español
+- Papelera: los archivos eliminados se pueden restaurar durante 7 días
+- Diccionario de usuario: enseña cómo leer las palabras que se pronuncian mal (en Ajustes)
+- Una breve guía para quienes usan la app por primera vez

@@ -1,0 +1,4 @@
+- L'application est désormais disponible en 13 langues, dont le français
+- Corbeille : les fichiers supprimés peuvent être restaurés pendant 7 jours
+- Dictionnaire utilisateur : indiquez comment lire les mots mal prononcés (dans Réglages)
+- Un petit guide pour la première utilisation
