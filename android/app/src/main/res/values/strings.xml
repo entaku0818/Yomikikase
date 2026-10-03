@@ -86,7 +86,7 @@
     <string name="trash_title">Trash</string>
     <string name="trash_empty">Trash is empty</string>
     <string name="trash_retention">Deleted files are kept for %1$d days</string>
-    <string name="trash_item_info">Deleted %1$s · %2$d days left</string>
+    <string name="trash_item_info">Deleted %1$s · Days left: %2$d</string>
     <string name="trash_restore">Restore</string>
     <string name="trash_delete_forever_title">Delete forever</string>
     <string name="trash_delete_forever_message">Delete \"%1$s\" forever? This can\'t be undone.</string>
@@ -94,14 +94,14 @@
     <string name="pdf_select">Choose a PDF file</string>
     <string name="pdf_open">Open PDF</string>
     <string name="pdf_loading">Loading PDF…</string>
-    <string name="pdf_pages">%1$d pages</string>
+    <string name="pdf_pages">Pages: %1$d</string>
     <string name="pdf_reopen">Open another</string>
     <string name="pdf_load_failed">Couldn\'t load the PDF</string>
     <string name="pdf_open_another">Open another PDF</string>
     <string name="pdf_page">Page %1$d</string>
     <string name="pdf_no_text">Couldn\'t get any text from this PDF (PDFs that contain only images can\'t be read aloud)</string>
     <string name="pdf_read_aloud">Read aloud</string>
-    <string name="pdf_hint">%1$d characters · tap a page to read from there</string>
+    <string name="pdf_hint">Characters: %1$d · tap a page to read from there</string>
     <string name="pdf_no_pages">No pages found in the PDF</string>
     <string name="settings_title">Settings</string>
     <string name="settings_voice">Voice</string>
