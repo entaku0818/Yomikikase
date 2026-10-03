@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText.settings
 
+import com.entaku.VoiceYourText.billing.PremiumManager
 import com.entaku.VoiceYourText.R
 import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.verticalScroll
@@ -46,8 +47,10 @@ import com.entaku.VoiceYourText.tts.TtsViewModel
 @Composable
 fun SettingsScreen(
     viewModel: TtsViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onOpenPremium: () -> Unit = {},
 ) {
+    val isPremium by PremiumManager.isPremium.collectAsState()
     val speechRate by viewModel.speechRate.collectAsState()
     val pitch by viewModel.pitch.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
@@ -79,6 +82,35 @@ fun SettingsScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            // プレミアム（RevenueCat のキーが入っているビルドだけ）
+            if (PremiumManager.isAvailable) {
+                Card(
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(enabled = !isPremium, onClick = onOpenPremium)
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = stringResource(if (isPremium) R.string.premium_active else R.string.settings_premium),
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (!isPremium) {
+                                Text(text = stringResource(R.string.settings_premium_hint), style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        if (!isPremium) Icon(imageVector = Icons.Default.ChevronRight, contentDescription = null)
+                    }
+                }
+            }
+
             // TTS Settings
             Card(
                 shape = RoundedCornerShape(12.dp),

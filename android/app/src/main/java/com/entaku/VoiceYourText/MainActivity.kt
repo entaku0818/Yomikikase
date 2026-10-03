@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.billing.PremiumManager
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,6 +14,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         MobileAds.initialize(this)
+        PremiumManager.configure(this)
 
         // Extract shared text if launched via ACTION_SEND
         val sharedText = if (intent?.action == Intent.ACTION_SEND &&

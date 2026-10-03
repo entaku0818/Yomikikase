@@ -79,6 +79,8 @@ fun HomeScreen(
     onSaveImported: (title: String, content: String, sourceType: SourceType) -> Unit,
     modifier: Modifier = Modifier,
     extraActions: List<HomeAction> = emptyList(),
+    /** 新しいファイルを増やす操作の前に呼ぶ。無料版の上限に達していれば block を実行せずに案内を出す */
+    guardNewFile: (block: () -> Unit) -> Unit = { it() },
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -158,7 +160,7 @@ fun HomeScreen(
             }
         },
         HomeAction("aozora", stringResource(R.string.home_aozora), Icons.Default.AutoStories, onOpenAozora),
-    ) + extraActions
+    ).map { action -> action.copy(onClick = { guardNewFile(action.onClick) }) } + extraActions
 
     Column(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 24.dp, bottom = 8.dp)) {

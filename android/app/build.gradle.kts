@@ -39,6 +39,9 @@ android {
         val bannerUnitId = localProperties.getProperty("admob.banner.unit.id", ADMOB_TEST_BANNER_UNIT_ID)
         manifestPlaceholders["admobAppId"] = admobAppId
         buildConfigField("String", "BANNER_AD_UNIT_ID", "\"$bannerUnitId\"")
+        // RevenueCat の Android 用公開キー（goog_...）。無ければ課金機能を出さない（無料版として動く）
+        val revenueCatApiKey = localProperties.getProperty("revenuecat.api.key", "")
+        buildConfigField("String", "REVENUECAT_API_KEY", "\"$revenueCatApiKey\"")
 
         // release ビルドでテストIDが混入していないか検証する
         // （local.properties は .gitignore 対象なので、無い環境では上のデフォルト=
@@ -112,6 +115,7 @@ dependencies {
     implementation(libs.play.review.ktx)
     implementation(libs.pdfbox.android)
     implementation(libs.mlkit.document.scanner)
+    implementation(libs.revenuecat.purchases)
     implementation(libs.mlkit.text.recognition.japanese)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)

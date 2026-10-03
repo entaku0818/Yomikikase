@@ -1,5 +1,10 @@
 package com.entaku.VoiceYourText
 
+import kotlinx.coroutines.flow.map
+import com.entaku.VoiceYourText.file.SavedFileRepository
+import com.entaku.VoiceYourText.billing.PaywallScreen
+import com.entaku.VoiceYourText.billing.FileLimits
+import com.entaku.VoiceYourText.billing.PremiumManager
 import com.entaku.VoiceYourText.onboarding.OnboardingScreen
 import com.entaku.VoiceYourText.onboarding.OnboardingPrefs
 import androidx.compose.ui.res.stringResource
@@ -73,6 +78,14 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     // 初回起動はオンボーディングから
     var showOnboarding by remember { mutableStateOf(OnboardingPrefs.shouldShow(context)) }
     var showReviewPrompt by remember { mutableStateOf(false) }
+    // 課金: プレミアムなら広告を出さない。無料版はファイル5件まで（iOS と同じ）
+    val isPremium by PremiumManager.isPremium.collectAsState()
+    val fileCount by remember { SavedFileRepository(context).getAll().map { it.size } }.collectAsState(initial = 0)
+    var paywallSource by remember { mutableStateOf<String?>(null) }
+    var showFileLimit by remember { mutableStateOf(false) }
+    fun guardNewFile(block: () -> Unit) {
+        if (PremiumManager.isAvailable && FileLimits.hasReachedLimit(fileCount, isPremium)) showFileLimit = true else block()
+    }
     var showFeedback by remember { mutableStateOf(false) }
     val reviewRequester = remember { ReviewRequester(analytics) }
 
@@ -128,7 +141,7 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
                     onClose = ttsViewModel::stop
                 )
             }
-            BannerAdView(placement = "main")
+            if (!isPremium) BannerAdView(placement = "main")
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == HOME_TAB,
@@ -167,7 +180,8 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
                         onOpenPdf = { homeScreen = HomeDestination.PDF },
                         onOpenAozora = { homeScreen = HomeDestination.AOZORA },
                         onSaveImported = ttsViewModel::saveImportedFile,
-                        modifier = contentModifier
+                        modifier = contentModifier,
+                        guardNewFile = ::guardNewFile,
                     )
                     HomeDestination.SPEECH -> SpeechScreen(
                         viewModel = ttsViewModel,
@@ -195,9 +209,29 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             )
             SETTINGS_TAB -> SettingsScreen(
                 viewModel = ttsViewModel,
+                onOpenPremium = { paywallSource = "settings" },
                 modifier = contentModifier
             )
         }
+    }
+
+    paywallSource?.let { source ->
+        PaywallScreen(source = source, onDismiss = { paywallSource = null })
+    }
+
+    if (showFileLimit) {
+        AlertDialog(
+            onDismissRequest = { showFileLimit = false },
+            title = { Text(stringResource(R.string.file_limit_title)) },
+            text = { Text(stringResource(R.string.file_limit_message, FileLimits.MAX_FREE_FILES)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showFileLimit = false
+                    paywallSource = "file_limit"
+                }) { Text(stringResource(R.string.file_limit_upgrade)) }
+            },
+            dismissButton = { TextButton(onClick = { showFileLimit = false }) { Text(stringResource(R.string.common_cancel)) } }
+        )
     }
 
     if (showReviewPrompt) {
