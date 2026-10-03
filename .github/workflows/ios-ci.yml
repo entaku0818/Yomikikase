@@ -4,10 +4,18 @@ name: iOS CI (self-hosted)
 # GitHub-hosted の macos-* ランナーは課金されるため使わないこと（self-hosted のみ可）。
 # 実行コマンドは iOS/scripts/ci_ios.sh にまとめてあり、ローカルでも同じコマンドで再現できる。
 
+# iOS に関係する変更のときだけ動かす（Android だけのコミットで走らせない。
+# 連続 push で途中の run が取り消されると、パッケージのキャッシュが壊れて次の run が落ちていた）
 on:
   push:
     branches: [ '**' ]
+    paths:
+      - 'iOS/**'
+      - '.github/workflows/ios-ci.yml'
   pull_request:
+    paths:
+      - 'iOS/**'
+      - '.github/workflows/ios-ci.yml'
   workflow_dispatch:
 
 permissions:

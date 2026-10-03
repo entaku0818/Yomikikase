@@ -70,7 +70,25 @@ cmd_simulator() {
     echo "$udid"
 }
 
+# Swift パッケージを解決する。途中で取り消された run がキャッシュ（SourcePackages）を壊すことがあり、
+# 「artifacts の zip が無い」「protobuf の clone に失敗」で落ちるので、失敗したらキャッシュを消して1回だけやり直す。
+cmd_resolve() {
+    resolve() {
+        xcodebuild -resolvePackageDependencies \
+            -project "$PROJECT" \
+            -scheme "$SCHEME" \
+            -derivedDataPath "$DERIVED_DATA_PATH" \
+            -skipPackagePluginValidation
+    }
+    if ! resolve; then
+        echo "パッケージの解決に失敗したので SourcePackages を消してやり直します" >&2
+        rm -rf "$DERIVED_DATA_PATH/SourcePackages"
+        resolve
+    fi
+}
+
 cmd_build() {
+    cmd_resolve
     # generic destination だと x86_64 もビルドして倍かかるので、test と同じシミュレータを指定する
     udid="$(cmd_simulator)"
     xcodebuild build \
@@ -113,10 +131,11 @@ cmd_test() {
 case "${1:-}" in
     config) cmd_config ;;
     simulator) cmd_simulator ;;
+    resolve) cmd_resolve ;;
     build) cmd_build ;;
     test) cmd_test ;;
     *)
-        echo "usage: $0 {config|simulator|build|test}" >&2
+        echo "usage: $0 {config|simulator|resolve|build|test}" >&2
         exit 64
         ;;
 esac
