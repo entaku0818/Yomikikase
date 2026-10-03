@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText
 
+import com.entaku.VoiceYourText.ads.AppOpenAdManager
 import kotlinx.coroutines.flow.map
 import com.entaku.VoiceYourText.file.SavedFileRepository
 import com.entaku.VoiceYourText.billing.PaywallScreen
@@ -96,8 +97,15 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
             context.getSharedPreferences(ReviewPromptStore.PREFS_NAME, Context.MODE_PRIVATE)
         )
         val launchCount = store.incrementLaunchCount()
-        // 起動時広告はまだ無いので didShowAppOpenAd は常に false（#150 で広告を入れたら渡す）
-        if (ReviewPolicy.shouldPrompt(launchCount, false, store.lastPromptAtMillis, System.currentTimeMillis())) {
+        // 起動時の全画面広告（3回に1回・プレミアムとオンボーディング中は出さない）。出した起動ではレビュー依頼を出さない
+        val didShowAppOpenAd = context.findActivity()?.let { activity ->
+            AppOpenAdManager.showOnColdStartIfEligible(
+                activity,
+                isPremium = PremiumManager.isPremium.value,
+                hasCompletedOnboarding = !showOnboarding,
+            )
+        } ?: false
+        if (ReviewPolicy.shouldPrompt(launchCount, didShowAppOpenAd, store.lastPromptAtMillis, System.currentTimeMillis())) {
             delay(ReviewPolicy.DELAY_MILLIS)
             store.markPrompted(System.currentTimeMillis())
             reviewRequester.onPromptShown(launchCount)

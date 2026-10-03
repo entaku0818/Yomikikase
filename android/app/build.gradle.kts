@@ -18,6 +18,7 @@ val localProperties = Properties().apply {
 val ADMOB_TEST_PUBLISHER_ID = "ca-app-pub-3940256099942544"
 val ADMOB_TEST_APP_ID = "$ADMOB_TEST_PUBLISHER_ID~3347511713"
 val ADMOB_TEST_BANNER_UNIT_ID = "$ADMOB_TEST_PUBLISHER_ID/6300978111"
+val ADMOB_TEST_APP_OPEN_UNIT_ID = "$ADMOB_TEST_PUBLISHER_ID/9257395921"
 
 // defaultConfig から値を受け取り、release タスクの検証に使う
 var admobIdsToValidate: Map<String, String> = emptyMap()
@@ -39,6 +40,8 @@ android {
         val bannerUnitId = localProperties.getProperty("admob.banner.unit.id", ADMOB_TEST_BANNER_UNIT_ID)
         manifestPlaceholders["admobAppId"] = admobAppId
         buildConfigField("String", "BANNER_AD_UNIT_ID", "\"$bannerUnitId\"")
+        val appOpenUnitId = localProperties.getProperty("admob.app.open.unit.id", ADMOB_TEST_APP_OPEN_UNIT_ID)
+        buildConfigField("String", "APP_OPEN_AD_UNIT_ID", "\"$appOpenUnitId\"")
         // RevenueCat の Android 用公開キー（goog_...）。無ければ課金機能を出さない（無料版として動く）
         val revenueCatApiKey = localProperties.getProperty("revenuecat.api.key", "")
         buildConfigField("String", "REVENUECAT_API_KEY", "\"$revenueCatApiKey\"")
@@ -49,6 +52,7 @@ android {
         admobIdsToValidate = mapOf(
             "admob.app.id" to admobAppId,
             "admob.banner.unit.id" to bannerUnitId,
+            "admob.app.open.unit.id" to appOpenUnitId,
         )
     }
 
