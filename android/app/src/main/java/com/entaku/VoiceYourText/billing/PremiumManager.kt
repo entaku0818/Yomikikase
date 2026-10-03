@@ -3,6 +3,8 @@ package com.entaku.VoiceYourText.billing
 import android.content.Context
 import androidx.core.content.edit
 import com.entaku.VoiceYourText.BuildConfig
+import com.entaku.VoiceYourText.file.SavedFileEntity
+import com.entaku.VoiceYourText.file.SourceType
 import com.revenuecat.purchases.CustomerInfo
 import com.revenuecat.purchases.Purchases
 import com.revenuecat.purchases.PurchasesConfiguration
@@ -47,9 +49,15 @@ object PremiumManager {
     }
 }
 
-/** 無料版の上限（iOS FileLimitsManager と同じ5件） */
+/**
+ * 無料版の上限（iOS FileLimitsManager と同じ5件）。
+ * Android は入力して読み上げた文章もマイファイルに自動保存されるので、それ（TYPED）は数えず、
+ * 取り込んだファイル（TXT・リンク・PDF・本・名作・スキャン）だけを数える。
+ */
 object FileLimits {
     const val MAX_FREE_FILES = 5
+
+    fun countedFiles(files: List<SavedFileEntity>): Int = files.count { it.sourceType != SourceType.TYPED }
 
     fun hasReachedLimit(fileCount: Int, isPremium: Boolean): Boolean = !isPremium && fileCount >= MAX_FREE_FILES
 }

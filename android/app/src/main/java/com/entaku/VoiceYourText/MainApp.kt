@@ -80,7 +80,7 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     var showReviewPrompt by remember { mutableStateOf(false) }
     // 課金: プレミアムなら広告を出さない。無料版はファイル5件まで（iOS と同じ）
     val isPremium by PremiumManager.isPremium.collectAsState()
-    val fileCount by remember { SavedFileRepository(context).getAll().map { it.size } }.collectAsState(initial = 0)
+    val fileCount by remember { SavedFileRepository(context).getAll().map(FileLimits::countedFiles) }.collectAsState(initial = 0)
     var paywallSource by remember { mutableStateOf<String?>(null) }
     var showFileLimit by remember { mutableStateOf(false) }
     fun guardNewFile(block: () -> Unit) {

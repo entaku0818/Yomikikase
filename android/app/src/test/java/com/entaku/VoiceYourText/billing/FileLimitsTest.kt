@@ -17,3 +17,19 @@ class FileLimitsTest {
         assertFalse(FileLimits.hasReachedLimit(fileCount = 100, isPremium = true))
     }
 }
+
+class CountedFilesTest {
+    private fun file(type: com.entaku.VoiceYourText.file.SourceType) =
+        com.entaku.VoiceYourText.file.SavedFileEntity(type.name + Math.random(), "t", "c", type, 0, 0)
+
+    @org.junit.Test
+    fun 入力して読み上げた文章は数えない() {
+        val files = listOf(
+            file(com.entaku.VoiceYourText.file.SourceType.TYPED),
+            file(com.entaku.VoiceYourText.file.SourceType.TYPED),
+            file(com.entaku.VoiceYourText.file.SourceType.PDF),
+            file(com.entaku.VoiceYourText.file.SourceType.LINK),
+        )
+        org.junit.Assert.assertEquals(2, FileLimits.countedFiles(files))
+    }
+}
