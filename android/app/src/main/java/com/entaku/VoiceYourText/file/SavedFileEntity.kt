@@ -14,5 +14,7 @@ data class SavedFileEntity(
     val content: String,
     val sourceType: SourceType,
     val createdAt: Long,
-    val updatedAt: Long
+    val updatedAt: Long,
+    /** ゴミ箱に入れた日時（null なら通常のファイル）。7日たったら完全に削除する（iOS と同じ） */
+    val deletedAt: Long? = null,
 )

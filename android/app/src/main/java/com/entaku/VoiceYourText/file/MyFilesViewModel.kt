@@ -57,8 +57,26 @@ class MyFilesViewModel(application: Application) : AndroidViewModel(application)
         _filter.value = filter
     }
 
+    /** ゴミ箱の中身（新しく削除した順） */
+    val deletedFiles: StateFlow<List<SavedFileEntity>> = repository.getDeleted()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
+
+    init {
+        // 保持期間（7日）を過ぎたゴミ箱のファイルを消しておく
+        viewModelScope.launch { repository.purgeExpired() }
+    }
+
+    /** ゴミ箱に入れる（7日間は復元できる） */
     fun delete(id: String) {
         viewModelScope.launch { repository.delete(id) }
+    }
+
+    fun restore(id: String) {
+        viewModelScope.launch { repository.restore(id) }
+    }
+
+    fun deletePermanently(id: String) {
+        viewModelScope.launch { repository.deletePermanently(id) }
     }
 
     fun saveImportedFile(title: String, content: String, sourceType: SourceType) {

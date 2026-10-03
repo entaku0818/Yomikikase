@@ -2,6 +2,8 @@ package com.entaku.VoiceYourText.file
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
@@ -13,7 +15,23 @@ private class FakeSavedFileDao : SavedFileDao {
 
     fun snapshot(): List<SavedFileEntity> = state.value
 
-    override fun getAll(): Flow<List<SavedFileEntity>> = state
+    override fun getAll(): Flow<List<SavedFileEntity>> = state.map { list -> list.filter { it.deletedAt == null } }
+
+    override fun getDeleted(): Flow<List<SavedFileEntity>> = state.map { list -> list.filter { it.deletedAt != null } }
+
+    override suspend fun moveToTrash(id: String, now: Long) {
+        state.value = state.value.map { if (it.id == id) it.copy(deletedAt = now) else it }
+    }
+
+    override suspend fun restore(id: String) {
+        state.value = state.value.map { if (it.id == id) it.copy(deletedAt = null) else it }
+    }
+
+    override suspend fun purgeDeletedBefore(before: Long): Int {
+        val (expired, kept) = state.value.partition { it.deletedAt != null && it.deletedAt < before }
+        state.value = kept
+        return expired.size
+    }
 
     override suspend fun findByContent(content: String): SavedFileEntity? =
         state.value.firstOrNull { it.content == content }
@@ -101,5 +119,32 @@ class SavedFileRepositoryTest {
         dao.deleteById(saved.id)
 
         assertNull(dao.findByContent("to be deleted"))
+    }
+
+    @Test
+    fun ゴミ箱に入れたファイルは一覧から消え7日を過ぎると完全に消える() = runBlocking {
+        val dao = FakeSavedFileDao()
+        val day = 24L * 60 * 60 * 1000
+        val saved = dao.saveOrTouch("本文", title = "メモ", sourceType = SourceType.TYPED, now = 0L)
+
+        dao.moveToTrash(saved.id, now = 0L)
+        assertEquals(emptyList<SavedFileEntity>(), dao.getAll().first())
+        assertEquals(listOf(saved.id), dao.getDeleted().first().map { it.id })
+
+        assertEquals(0, dao.purgeDeletedBefore(6 * day - TRASH_RETENTION_MILLIS))
+        assertEquals(1, dao.purgeDeletedBefore(8 * day - TRASH_RETENTION_MILLIS))
+        assertEquals(emptyList<SavedFileEntity>(), dao.snapshot())
+    }
+
+    @Test
+    fun ゴミ箱の中と同じ内容を開き直したらゴミ箱から戻る() = runBlocking {
+        val dao = FakeSavedFileDao()
+        val saved = dao.saveOrTouch("本文", title = "メモ", sourceType = SourceType.TYPED, now = 0L)
+        dao.moveToTrash(saved.id, now = 1L)
+
+        dao.saveOrTouch("本文", title = null, sourceType = SourceType.TYPED, now = 2L)
+
+        assertEquals(listOf(saved.id), dao.getAll().first().map { it.id })
+        assertNull(dao.snapshot().single().deletedAt)
     }
 }

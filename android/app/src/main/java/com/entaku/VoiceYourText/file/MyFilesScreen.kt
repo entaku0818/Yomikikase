@@ -1,5 +1,6 @@
 package com.entaku.VoiceYourText.file
 
+import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -71,6 +72,8 @@ fun MyFilesScreen(
     var fileToDelete by remember { mutableStateOf<SavedFileEntity?>(null) }
     var showAddMenu by remember { mutableStateOf(false) }
     var showLinkImport by remember { mutableStateOf(false) }
+    var showTrash by remember { mutableStateOf(false) }
+    val deletedFiles by viewModel.deletedFiles.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     val txtPickerLauncher = rememberLauncherForActivityResult(
@@ -117,6 +120,14 @@ fun MyFilesScreen(
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(paddingValues)) {
+        // ゴミ箱（削除したファイルは7日間ここから戻せる）
+        TextButton(
+            onClick = { showTrash = true },
+            modifier = Modifier.align(Alignment.End).padding(end = 8.dp)
+        ) {
+            Icon(Icons.Default.DeleteOutline, contentDescription = null)
+            Text(if (deletedFiles.isEmpty()) "ゴミ箱" else "ゴミ箱（${deletedFiles.size}）", modifier = Modifier.padding(start = 4.dp))
+        }
         OutlinedTextField(
             value = searchQuery,
             onValueChange = viewModel::setSearchQuery,
@@ -179,17 +190,26 @@ fun MyFilesScreen(
         }
     }
 
+    if (showTrash) {
+        TrashScreen(
+            files = deletedFiles,
+            onRestore = viewModel::restore,
+            onDeletePermanently = viewModel::deletePermanently,
+            onDismiss = { showTrash = false }
+        )
+    }
+
     fileToDelete?.let { file ->
         AlertDialog(
             onDismissRequest = { fileToDelete = null },
-            title = { Text("削除の確認") },
-            text = { Text("「${file.title}」を削除しますか？") },
+            title = { Text("ゴミ箱に移動") },
+            text = { Text("「${file.title}」をゴミ箱に移動しますか？${TRASH_RETENTION_DAYS}日間は元に戻せます。") },
             confirmButton = {
                 TextButton(onClick = {
                     viewModel.delete(file.id)
                     fileToDelete = null
                 }) {
-                    Text("削除")
+                    Text("移動")
                 }
             },
             dismissButton = {
