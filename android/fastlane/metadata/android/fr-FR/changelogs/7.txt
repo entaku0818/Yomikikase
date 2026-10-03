@@ -1,0 +1,4 @@
+- Nouvel écran d'accueil avec des boutons pour tout ce que vous pouvez lire
+- Lecture à voix haute des livres numériques EPUB
+- Scanner : photographiez un document papier et écoutez son texte
+- Nouveau filtre « Livres » dans Mes fichiers

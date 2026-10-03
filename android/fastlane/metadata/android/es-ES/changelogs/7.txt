@@ -1,0 +1,4 @@
+- Nueva pantalla de inicio con botones para todo lo que puedes leer
+- Lectura en voz alta de libros electrónicos EPUB
+- Escanear: fotografía un documento en papel y escucha su texto
+- Nuevo filtro «Libros» en Mis archivos

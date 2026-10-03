@@ -1,0 +1,4 @@
+- New home screen with buttons for everything you can read
+- Read EPUB e-books aloud
+- Scan: take a photo of a paper document and have the text read aloud
+- New "Books" filter in My Files
