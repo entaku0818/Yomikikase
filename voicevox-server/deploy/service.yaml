@@ -39,7 +39,7 @@ spec:
             - name: ENGINE_URL
               value: http://127.0.0.1:50021
             - name: ALLOWED_APP_IDS
-              value: "1:990821915106:ios:4e2a188278c27c40a001bb"
+              value: "1:990821915106:ios:4e2a188278c27c40a001bb,1:990821915106:android:e73d927c9c3e69a9a001bb"
             - name: REVENUECAT_PROJECT_ID
               value: projf454902e
             - name: REVENUECAT_ENTITLEMENT_ID
