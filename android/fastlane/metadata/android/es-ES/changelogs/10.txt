@@ -1,2 +1,2 @@
-- Voces de personajes (VOICEVOX)
+- Lectura con voces de personajes
 - Importar desde Google Drive
