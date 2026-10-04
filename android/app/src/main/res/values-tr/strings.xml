@@ -215,9 +215,5 @@
     <string name="credits_voicevox_note">Karakter sesleri VOICEVOX ile oluşturulur. Okunan metinlerin her karakterin kullanım koşullarına uygun olduğundan emin olun.</string>
     <string name="credits_voicevox_terms">VOICEVOX kullanım koşulları</string>
     <string name="drive_title">Google Drive</string>
-    <string name="drive_connect">Google Drive’ı bağla</string>
-    <string name="drive_connect_note">Drive’ınızdaki Google Dokümanlar’ı ve metin dosyalarını (.txt / .md) sesli dinleyin. Dosyalar yalnızca okunur, değiştirilmez.</string>
-    <string name="drive_connect_failed">Google Drive’a bağlanılamadı</string>
-    <string name="drive_load_failed">Google Drive’daki dosyalar yüklenemedi</string>
-    <string name="drive_empty">Google Doküman veya metin dosyası bulunamadı</string>
+    <string name="drive_unsupported">Bu dosya okunamıyor. Desteklenenler: metin, Markdown, PDF ve Google Dokümanlar.</string>
 </resources>

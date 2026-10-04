@@ -215,9 +215,5 @@
     <string name="credits_voicevox_note">キャラ音声は VOICEVOX を使って作っています。読み上げる文章は各キャラクターの利用規約に沿ったものにしてください。</string>
     <string name="credits_voicevox_terms">VOICEVOX 利用規約</string>
     <string name="drive_title">Google ドライブ</string>
-    <string name="drive_connect">Google ドライブに接続</string>
-    <string name="drive_connect_note">ドライブの Google ドキュメントとテキストファイル（.txt / .md）を読み上げられます。ファイルは読み取るだけで、変更しません。</string>
-    <string name="drive_connect_failed">Google ドライブに接続できませんでした</string>
-    <string name="drive_load_failed">Google ドライブのファイルを読み込めませんでした</string>
-    <string name="drive_empty">読み上げられるファイル（Google ドキュメント・テキスト）がありません</string>
+    <string name="drive_unsupported">このファイルは読み込めません。テキスト・Markdown・PDF・Google ドキュメントに対応しています。</string>
 </resources>

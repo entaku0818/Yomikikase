@@ -215,9 +215,5 @@
     <string name="credits_voicevox_note">Голоса персонажей создаются с помощью VOICEVOX. Следите, чтобы читаемые тексты соответствовали условиям использования каждого персонажа.</string>
     <string name="credits_voicevox_terms">Условия использования VOICEVOX</string>
     <string name="drive_title">Google Диск</string>
-    <string name="drive_connect">Подключить Google Диск</string>
-    <string name="drive_connect_note">Читайте вслух Google Документы и текстовые файлы (.txt / .md) с Диска. Файлы только читаются и не изменяются.</string>
-    <string name="drive_connect_failed">Не удалось подключиться к Google Диску</string>
-    <string name="drive_load_failed">Не удалось загрузить файлы с Google Диска</string>
-    <string name="drive_empty">Google Документы и текстовые файлы не найдены</string>
+    <string name="drive_unsupported">Не удалось прочитать файл. Поддерживаются текст, Markdown, PDF и Google Документы.</string>
 </resources>

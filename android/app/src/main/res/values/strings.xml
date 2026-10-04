@@ -215,9 +215,5 @@
     <string name="credits_voicevox_note">Character voices are made with VOICEVOX. Please make sure the text you read follows each character’s terms of use.</string>
     <string name="credits_voicevox_terms">VOICEVOX terms of use</string>
     <string name="drive_title">Google Drive</string>
-    <string name="drive_connect">Connect Google Drive</string>
-    <string name="drive_connect_note">Read Google Docs and text files (.txt / .md) from your Drive aloud. Files are only read, never changed.</string>
-    <string name="drive_connect_failed">Couldn’t connect to Google Drive</string>
-    <string name="drive_load_failed">Couldn’t load files from Google Drive</string>
-    <string name="drive_empty">No Google Docs or text files found</string>
+    <string name="drive_unsupported">This file can’t be read. Supported: text, Markdown, PDF and Google Docs.</string>
 </resources>

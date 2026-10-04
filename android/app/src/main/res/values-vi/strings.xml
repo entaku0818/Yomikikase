@@ -215,9 +215,5 @@
     <string name="credits_voicevox_note">Giọng nhân vật được tạo bằng VOICEVOX. Hãy đảm bảo văn bản được đọc tuân theo điều khoản sử dụng của từng nhân vật.</string>
     <string name="credits_voicevox_terms">Điều khoản sử dụng VOICEVOX</string>
     <string name="drive_title">Google Drive</string>
-    <string name="drive_connect">Kết nối Google Drive</string>
-    <string name="drive_connect_note">Đọc to Google Tài liệu và tệp văn bản (.txt / .md) trong Drive. Ứng dụng chỉ đọc, không thay đổi tệp.</string>
-    <string name="drive_connect_failed">Không kết nối được Google Drive</string>
-    <string name="drive_load_failed">Không tải được tệp từ Google Drive</string>
-    <string name="drive_empty">Không có Google Tài liệu hay tệp văn bản nào</string>
+    <string name="drive_unsupported">Không đọc được tệp này. Hỗ trợ văn bản, Markdown, PDF và Google Tài liệu.</string>
 </resources>

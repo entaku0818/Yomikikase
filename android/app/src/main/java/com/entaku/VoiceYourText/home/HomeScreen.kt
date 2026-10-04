@@ -2,7 +2,8 @@ package com.entaku.VoiceYourText.home
 
 import com.entaku.VoiceYourText.ui.userMessage
 import com.entaku.VoiceYourText.R
-import com.entaku.VoiceYourText.drive.GoogleDriveScreen
+import com.entaku.VoiceYourText.drive.CloudFileImporter
+import com.entaku.VoiceYourText.drive.OpenCloudDocument
 import androidx.compose.material.icons.filled.AddToDrive
 import androidx.compose.ui.res.stringResource
 import android.net.Uri
@@ -88,7 +89,6 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val analytics = remember { AnalyticsClient.get(context) }
     var showLinkImport by remember { mutableStateOf(false) }
-    var showDrive by remember { mutableStateOf(false) }
     var importError by remember { mutableStateOf<String?>(null) }
 
     val txtPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -98,6 +98,20 @@ fun HomeScreen(
                 onSaveImported(imported.fileName, imported.content, SourceType.TXT_IMPORT)
                 onOpenText(imported.content)
             }
+        }
+    }
+
+    // Google ドライブ等: OS のファイル選択画面で選んだファイルだけを読む（OAuth 不要）
+    val cloudPicker = rememberLauncherForActivityResult(OpenCloudDocument()) { uri ->
+        uri ?: return@rememberLauncherForActivityResult
+        scope.launch {
+            CloudFileImporter.import(context, uri)
+                .onSuccess { imported ->
+                    analytics.logEvent("cloud_file_import", mapOf("source_type" to imported.sourceType.name))
+                    onSaveImported(imported.title, imported.text, imported.sourceType)
+                    onOpenText(imported.text)
+                }
+                .onFailure { importError = it.userMessage(context, R.string.error_open_file) }
         }
     }
 
@@ -163,7 +177,9 @@ fun HomeScreen(
             }
         },
         HomeAction("aozora", stringResource(R.string.home_aozora), Icons.Default.AutoStories, onOpenAozora),
-        HomeAction("google_drive", stringResource(R.string.drive_title), Icons.Default.AddToDrive) { showDrive = true },
+        HomeAction("google_drive", stringResource(R.string.drive_title), Icons.Default.AddToDrive) {
+            cloudPicker.launch(CloudFileImporter.MIME_TYPES)
+        },
     ).map { action -> action.copy(onClick = { guardNewFile(action.onClick) }) } + extraActions
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -205,17 +221,6 @@ fun HomeScreen(
             title = { Text(stringResource(R.string.common_load_failed_title)) },
             text = { Text(message) },
             confirmButton = { TextButton(onClick = { importError = null }) { Text(stringResource(R.string.common_ok)) } }
-        )
-    }
-
-    if (showDrive) {
-        GoogleDriveScreen(
-            onDismiss = { showDrive = false },
-            onOpen = { title, text ->
-                onSaveImported(title, text, SourceType.TXT_IMPORT)
-                showDrive = false
-                onOpenText(text)
-            }
         )
     }
 
