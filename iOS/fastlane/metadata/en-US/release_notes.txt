@@ -1,2 +1,3 @@
 Improvements
+- Import Google Drive files without signing in
 - Minor improvements and bug fixes

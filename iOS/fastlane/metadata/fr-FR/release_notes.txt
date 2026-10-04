@@ -1,2 +1,3 @@
 Améliorations
+- Importez des fichiers Google Drive sans vous connecter
 - Améliorations mineures et corrections de bugs

@@ -1,2 +1,3 @@
 İyileştirmeler
+- Google Drive dosyalarını oturum açmadan içe aktarın
 - Küçük iyileştirmeler ve hata düzeltmeleri

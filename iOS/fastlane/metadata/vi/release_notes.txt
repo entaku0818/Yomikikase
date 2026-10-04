@@ -1,2 +1,3 @@
 Cải tiến
+- Nhập tệp từ Google Drive mà không cần đăng nhập
 - Cải tiến nhỏ và sửa lỗi

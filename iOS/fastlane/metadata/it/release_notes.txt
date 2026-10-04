@@ -1,2 +1,3 @@
 Miglioramenti
+- Importa file da Google Drive senza accedere
 - Piccoli miglioramenti e correzioni di bug
