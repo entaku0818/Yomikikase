@@ -14,7 +14,6 @@ import FirebaseCrashlytics
 import FirebaseAppCheck
 import RevenueCat
 import GoogleMobileAds
-import GoogleSignIn
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     // ユニットテストのホストアプリとして起動された場合はtrue。
@@ -81,14 +80,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         infoLog("App launch completed")
         return true
-    }
-
-    func application(
-        _ app: UIApplication,
-        open url: URL,
-        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
-    ) -> Bool {
-        return GIDSignIn.sharedInstance.handle(url)
     }
 
     // RevenueCatのAPIキーを取得するメソッド

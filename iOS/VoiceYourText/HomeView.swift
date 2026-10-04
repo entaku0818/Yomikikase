@@ -40,10 +40,9 @@ struct HomeView: View {
     @State private var epubExtractedText = ""
     @State private var showingEPUBTextView = false
 
-    // Google Drive
-    @State private var showingGoogleDrive = false
-    @State private var googleDriveExtractedText = ""
-    @State private var showingGoogleDriveTextView = false
+    // TXT / Gドライブ は同じファイル選択画面を使う（.fileImporter を2つ付けると片方しか動かないため）。
+    // Gドライブ は PDF も選べる
+    @State private var filePickerTypes: [UTType] = [UTType.plainText, UTType.utf8PlainText]
 
     // 青空文庫
     @State private var showingAozoraLibrary = false
@@ -108,6 +107,7 @@ struct HomeView: View {
                                 if FileLimitsManager.hasReachedFreeLimit() {
                                     showingPremiumAlert = true
                                 } else {
+                                    filePickerTypes = [UTType.plainText, UTType.utf8PlainText]
                                     showingTextFilePicker = true
                                 }
                             } label: {
@@ -124,7 +124,9 @@ struct HomeView: View {
                                 if FileLimitsManager.hasReachedFreeLimit() {
                                     showingPremiumAlert = true
                                 } else {
-                                    showingGoogleDrive = true
+                                    analytics.logEvent("google_drive_picker_opened", [:])
+                                    filePickerTypes = TextFileImportClient.documentTypes
+                                    showingTextFilePicker = true
                                 }
                             } label: {
                                 createButtonContent(
@@ -284,7 +286,7 @@ struct HomeView: View {
             .navigationBarTitleDisplayMode(.large)
             .fileImporter(
                 isPresented: $showingTextFilePicker,
-                allowedContentTypes: [UTType.plainText, UTType.utf8PlainText],
+                allowedContentTypes: filePickerTypes,
                 allowsMultipleSelection: false
             ) { result in
                 switch result {
@@ -292,7 +294,7 @@ struct HomeView: View {
                     if let url = urls.first {
                         Task {
                             do {
-                                importedText = try await textFileImport.readTextFile(url)
+                                importedText = try await textFileImport.readDocument(url)
                                 showingImportedTextView = true
                             } catch {
                                 importErrorMessage = error.localizedDescription
@@ -397,16 +399,6 @@ struct HomeView: View {
             }
             .navigationDestination(isPresented: $showingEPUBTextView) {
                 TextInputView(store: store, initialText: epubExtractedText, fileId: nil, fileType: "epub")
-            }
-            // Google Drive
-            .sheet(isPresented: $showingGoogleDrive) {
-                GoogleDriveView(store: store) { text in
-                    googleDriveExtractedText = text
-                    showingGoogleDriveTextView = true
-                }
-            }
-            .navigationDestination(isPresented: $showingGoogleDriveTextView) {
-                TextInputView(store: store, initialText: googleDriveExtractedText, fileId: nil)
             }
             // 青空文庫
             .sheet(isPresented: $showingAozoraLibrary) {
