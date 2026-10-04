@@ -1,0 +1,3 @@
+- Nouvel abonnement Premium (mensuel ou annuel, avec 7 jours d'essai gratuit) : sans publicité et fichiers illimités
+- La version gratuite conserve jusqu'à 5 fichiers importés (PDF, livres, liens, etc.). Le texte saisi n'est pas compté
+- Une publicité peut s'afficher au démarrage (jamais pour les membres Premium)

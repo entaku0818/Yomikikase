@@ -1,0 +1,3 @@
+- New Premium plan (monthly or yearly, with a 7-day free trial): no ads and unlimited files
+- The free version can keep up to 5 imported files (PDFs, books, links, etc.). Text you type is not counted
+- An ad may appear when the app starts (never for Premium members)

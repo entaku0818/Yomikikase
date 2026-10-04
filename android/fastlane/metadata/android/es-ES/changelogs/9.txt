@@ -1,0 +1,3 @@
+- Nuevo plan Premium (mensual o anual, con 7 días de prueba gratis): sin anuncios y archivos ilimitados
+- La versión gratuita guarda hasta 5 archivos importados (PDF, libros, enlaces, etc.). El texto que escribes no cuenta
+- Puede aparecer un anuncio al abrir la app (nunca con Premium)
