@@ -214,4 +214,10 @@
     <string name="credits_title">เครดิต</string>
     <string name="credits_voicevox_note">เสียงตัวละครสร้างด้วย VOICEVOX โปรดใช้ข้อความที่เป็นไปตามข้อกำหนดการใช้งานของตัวละครแต่ละตัว</string>
     <string name="credits_voicevox_terms">ข้อกำหนดการใช้งาน VOICEVOX</string>
+    <string name="drive_title">Google ไดรฟ์</string>
+    <string name="drive_connect">เชื่อมต่อ Google ไดรฟ์</string>
+    <string name="drive_connect_note">อ่านออกเสียง Google เอกสารและไฟล์ข้อความ (.txt / .md) จากไดรฟ์ แอปอ่านไฟล์เท่านั้น ไม่แก้ไข</string>
+    <string name="drive_connect_failed">เชื่อมต่อ Google ไดรฟ์ไม่ได้</string>
+    <string name="drive_load_failed">โหลดไฟล์จาก Google ไดรฟ์ไม่ได้</string>
+    <string name="drive_empty">ไม่พบ Google เอกสารหรือไฟล์ข้อความ</string>
 </resources>

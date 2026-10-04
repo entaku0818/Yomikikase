@@ -125,6 +125,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.play.services.auth)
     debugImplementation(libs.firebase.appcheck.debug)
     testImplementation(libs.junit)
     testImplementation(libs.mockito.core)

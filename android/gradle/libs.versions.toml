@@ -22,6 +22,7 @@ mlkitDocumentScanner = "16.0.0"
 revenuecat = "9.29.1"
 mlkitTextRecognitionJapanese = "16.0.1"
 googleServices = "4.4.3"
+playServicesAuth = "21.3.0"
 firebaseCrashlyticsPlugin = "3.0.4"
 
 [libraries]
@@ -60,6 +61,7 @@ firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 firebase-appcheck-playintegrity = { group = "com.google.firebase", name = "firebase-appcheck-playintegrity" }
 firebase-appcheck-debug = { group = "com.google.firebase", name = "firebase-appcheck-debug" }
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
 org-json = { group = "org.json", name = "json", version = "20240303" }
 
 [plugins]

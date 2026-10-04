@@ -214,4 +214,10 @@
     <string name="credits_title">Créditos</string>
     <string name="credits_voicevox_note">As vozes de personagens são criadas com o VOICEVOX. Garanta que os textos lidos sigam os termos de uso de cada personagem.</string>
     <string name="credits_voicevox_terms">Termos de uso do VOICEVOX</string>
+    <string name="drive_title">Google Drive</string>
+    <string name="drive_connect">Conectar o Google Drive</string>
+    <string name="drive_connect_note">Ouça Documentos Google e arquivos de texto (.txt / .md) do seu Drive. Os arquivos só são lidos, nunca alterados.</string>
+    <string name="drive_connect_failed">Não foi possível conectar ao Google Drive</string>
+    <string name="drive_load_failed">Não foi possível carregar os arquivos do Google Drive</string>
+    <string name="drive_empty">Nenhum Documento Google ou arquivo de texto encontrado</string>
 </resources>

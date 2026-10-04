@@ -2,6 +2,8 @@ package com.entaku.VoiceYourText.home
 
 import com.entaku.VoiceYourText.ui.userMessage
 import com.entaku.VoiceYourText.R
+import com.entaku.VoiceYourText.drive.GoogleDriveScreen
+import androidx.compose.material.icons.filled.AddToDrive
 import androidx.compose.ui.res.stringResource
 import android.net.Uri
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
@@ -86,6 +88,7 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val analytics = remember { AnalyticsClient.get(context) }
     var showLinkImport by remember { mutableStateOf(false) }
+    var showDrive by remember { mutableStateOf(false) }
     var importError by remember { mutableStateOf<String?>(null) }
 
     val txtPicker = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -160,6 +163,7 @@ fun HomeScreen(
             }
         },
         HomeAction("aozora", stringResource(R.string.home_aozora), Icons.Default.AutoStories, onOpenAozora),
+        HomeAction("google_drive", stringResource(R.string.drive_title), Icons.Default.AddToDrive) { showDrive = true },
     ).map { action -> action.copy(onClick = { guardNewFile(action.onClick) }) } + extraActions
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -201,6 +205,17 @@ fun HomeScreen(
             title = { Text(stringResource(R.string.common_load_failed_title)) },
             text = { Text(message) },
             confirmButton = { TextButton(onClick = { importError = null }) { Text(stringResource(R.string.common_ok)) } }
+        )
+    }
+
+    if (showDrive) {
+        GoogleDriveScreen(
+            onDismiss = { showDrive = false },
+            onOpen = { title, text ->
+                onSaveImported(title, text, SourceType.TXT_IMPORT)
+                showDrive = false
+                onOpenText(text)
+            }
         )
     }
 

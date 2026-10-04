@@ -214,4 +214,10 @@
     <string name="credits_title">致谢</string>
     <string name="credits_voicevox_note">角色语音由 VOICEVOX 生成。朗读的文本请遵守各角色的使用条款。</string>
     <string name="credits_voicevox_terms">VOICEVOX 使用条款</string>
+    <string name="drive_title">Google 云端硬盘</string>
+    <string name="drive_connect">连接 Google 云端硬盘</string>
+    <string name="drive_connect_note">朗读云端硬盘中的 Google 文档和文本文件（.txt / .md）。只读取文件，不会修改。</string>
+    <string name="drive_connect_failed">无法连接 Google 云端硬盘</string>
+    <string name="drive_load_failed">无法加载 Google 云端硬盘中的文件</string>
+    <string name="drive_empty">没有找到 Google 文档或文本文件</string>
 </resources>

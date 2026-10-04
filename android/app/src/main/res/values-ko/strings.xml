@@ -214,4 +214,10 @@
     <string name="credits_title">크레딧</string>
     <string name="credits_voicevox_note">캐릭터 음성은 VOICEVOX로 만듭니다. 읽는 문장은 각 캐릭터의 이용 약관을 지켜 주세요.</string>
     <string name="credits_voicevox_terms">VOICEVOX 이용 약관</string>
+    <string name="drive_title">Google 드라이브</string>
+    <string name="drive_connect">Google 드라이브 연결</string>
+    <string name="drive_connect_note">드라이브의 Google 문서와 텍스트 파일(.txt / .md)을 읽어 줍니다. 파일은 읽기만 하고 변경하지 않습니다.</string>
+    <string name="drive_connect_failed">Google 드라이브에 연결하지 못했습니다</string>
+    <string name="drive_load_failed">Google 드라이브 파일을 불러오지 못했습니다</string>
+    <string name="drive_empty">Google 문서나 텍스트 파일이 없습니다</string>
 </resources>
