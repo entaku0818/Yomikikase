@@ -200,4 +200,18 @@
     <string name="file_limit_title">Bạn đã đạt đến giới hạn của phiên bản miễn phí</string>
     <string name="file_limit_message">Phiên bản miễn phí có thể lưu tối đa %1$d tệp. Hãy nâng cấp lên Premium để không giới hạn số tệp, hoặc xóa các tệp cũ để tiếp tục.</string>
     <string name="file_limit_upgrade">Xem Premium</string>
+    <string name="voicevox_section_title">Giọng nhân vật (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Giọng của thiết bị</string>
+    <string name="voicevox_usage">Còn %1$s / %2$s ký tự trong tháng này</string>
+    <string name="voicevox_resets_on">Đặt lại vào %1$s</string>
+    <string name="voicevox_usage_unavailable">Không tải được số ký tự còn lại</string>
+    <string name="voicevox_picker_note">Chạm vào một giọng để nghe thử. Cần kết nối internet. Câu đã nghe được lưu trên thiết bị, nghe lại không tốn ký tự.</string>
+    <string name="voicevox_upgrade">Premium: tối đa 200.000 ký tự mỗi tháng</string>
+    <string name="voicevox_quota_title">Đã hết hạn mức giọng nhân vật tháng này</string>
+    <string name="voicevox_quota_message">Sẽ đặt lại vào %1$s. Bạn có thể nghe tiếp bằng giọng của thiết bị.</string>
+    <string name="voicevox_see_premium">Xem Premium</string>
+    <string name="voicevox_continue_device">Tiếp tục bằng giọng thiết bị</string>
+    <string name="credits_title">Ghi công</string>
+    <string name="credits_voicevox_note">Giọng nhân vật được tạo bằng VOICEVOX. Hãy đảm bảo văn bản được đọc tuân theo điều khoản sử dụng của từng nhân vật.</string>
+    <string name="credits_voicevox_terms">Điều khoản sử dụng VOICEVOX</string>
 </resources>

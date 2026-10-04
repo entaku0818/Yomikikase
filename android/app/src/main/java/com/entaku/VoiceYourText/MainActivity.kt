@@ -15,6 +15,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         MobileAds.initialize(this)
         PremiumManager.configure(this)
+        AppCheckSetup.install()
 
         // Extract shared text if launched via ACTION_SEND
         val sharedText = if (intent?.action == Intent.ACTION_SEND &&

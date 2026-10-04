@@ -200,4 +200,18 @@
     <string name="file_limit_title">Has alcanzado el límite gratuito</string>
     <string name="file_limit_message">La versión gratuita permite guardar hasta %1$d archivos. Hazte Premium para tener archivos ilimitados, o elimina archivos antiguos para continuar.</string>
     <string name="file_limit_upgrade">Ver Premium</string>
+    <string name="voicevox_section_title">Voces de personajes (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Voces del dispositivo</string>
+    <string name="voicevox_usage">Quedan %1$s de %2$s caracteres este mes</string>
+    <string name="voicevox_resets_on">Se restablece el %1$s</string>
+    <string name="voicevox_usage_unavailable">No se pudieron cargar los caracteres restantes</string>
+    <string name="voicevox_picker_note">Toca una voz para escuchar una muestra. Requiere conexión a internet. Las frases ya escuchadas se guardan en el dispositivo y no consumen caracteres al repetirlas.</string>
+    <string name="voicevox_upgrade">Premium: hasta 200.000 caracteres al mes</string>
+    <string name="voicevox_quota_title">Has alcanzado el límite mensual de voces de personajes</string>
+    <string name="voicevox_quota_message">Se restablece el %1$s. Puedes seguir escuchando con la voz del dispositivo.</string>
+    <string name="voicevox_see_premium">Ver Premium</string>
+    <string name="voicevox_continue_device">Continuar con la voz del dispositivo</string>
+    <string name="credits_title">Créditos</string>
+    <string name="credits_voicevox_note">Las voces de personajes se crean con VOICEVOX. Asegúrate de que los textos que leas cumplan los términos de uso de cada personaje.</string>
+    <string name="credits_voicevox_terms">Términos de uso de VOICEVOX</string>
 </resources>

@@ -16,6 +16,14 @@ import com.entaku.VoiceYourText.dictionary.UserDictionaryStore
 import com.entaku.VoiceYourText.analytics.SpeechCompletionTracker
 import com.entaku.VoiceYourText.file.SavedFileRepository
 import com.entaku.VoiceYourText.file.SourceType
+import com.entaku.VoiceYourText.voicevox.MediaPlayerOutput
+import com.entaku.VoiceYourText.voicevox.VoicevoxAudioCache
+import com.entaku.VoiceYourText.voicevox.VoicevoxCatalog
+import com.entaku.VoiceYourText.voicevox.VoicevoxClient
+import com.entaku.VoiceYourText.voicevox.VoicevoxSettings
+import com.entaku.VoiceYourText.voicevox.VoicevoxSpeechPlayer
+import com.entaku.VoiceYourText.voicevox.VoicevoxUsage
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.Job
@@ -65,6 +73,9 @@ data class NowPlaying(val title: String, val source: String)
 
 /** 読み上げ中の箇所。text は読み上げを始めた元のテキスト、range はその上の範囲 */
 data class SpeechHighlight(val text: String, val range: TextRange, val source: String)
+
+/** キャラ音声が今月の上限で止まった。resumeAt（元のテキスト上の位置）から先は読めていない */
+data class VoicevoxQuotaStop(val usage: VoicevoxUsage, val text: String, val resumeAt: Int)
 
 class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -129,6 +140,48 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     /** 今読んでいるテキストの整形結果（読み上げ用テキスト→元テキストの位置の逆引きに使う） */
     @Volatile
     private var prepared: PreparedSpeechText? = null
+
+    /**
+     * ハイライトを出す元のテキストと、prepared がその何文字目から始まるか。
+     * キャラ音声が途中で止まって端末の音声で続きを読むときは、続きの部分だけを読むので 0 以外になる
+     */
+    @Volatile
+    private var highlightBase: String = ""
+    @Volatile
+    private var highlightOffset: Int = 0
+
+    // キャラ音声（VOICEVOX）。日本語の文章だけで使う
+    private val voicevoxSettings = VoicevoxSettings(application)
+    private val voicevoxClient = VoicevoxClient()
+    private val voicevoxPlayer = VoicevoxSpeechPlayer(
+        scope = viewModelScope,
+        synthesize = voicevoxClient::synthesize,
+        cache = VoicevoxAudioCache(File(application.cacheDir, "voicevox")),
+        output = MediaPlayerOutput(),
+        tempDir = application.cacheDir,
+    )
+    private val analytics = AnalyticsClient.get(application)
+
+    private val _voicevoxEnabled = MutableStateFlow(voicevoxSettings.isEnabled)
+    val voicevoxEnabled: StateFlow<Boolean> = _voicevoxEnabled.asStateFlow()
+    private val _voicevoxSpeakerId = MutableStateFlow(voicevoxSettings.speakerId)
+    val voicevoxSpeakerId: StateFlow<Int> = _voicevoxSpeakerId.asStateFlow()
+    private val _voicevoxUsage = MutableStateFlow<VoicevoxUsage?>(null)
+    val voicevoxUsage: StateFlow<VoicevoxUsage?> = _voicevoxUsage.asStateFlow()
+    private val _voicevoxUsageUnavailable = MutableStateFlow(false)
+    val voicevoxUsageUnavailable: StateFlow<Boolean> = _voicevoxUsageUnavailable.asStateFlow()
+    /** 試聴中の声 */
+    private val _previewingSpeakerId = MutableStateFlow<Int?>(null)
+    val previewingSpeakerId: StateFlow<Int?> = _previewingSpeakerId.asStateFlow()
+    private val _voicevoxQuotaStop = MutableStateFlow<VoicevoxQuotaStop?>(null)
+    val voicevoxQuotaStop: StateFlow<VoicevoxQuotaStop?> = _voicevoxQuotaStop.asStateFlow()
+    /** 課金画面を出してほしいとき、その source（試聴で上限に達した無料ユーザーなど） */
+    private val _paywallRequest = MutableStateFlow<String?>(null)
+    val paywallRequest: StateFlow<String?> = _paywallRequest.asStateFlow()
+
+    /** キャラ音声で読んでいる元のテキストと、今読んでいる文の頭（一時停止→再開はここから） */
+    private var voicevoxText: String? = null
+    private var voicevoxResumeAt: Int = 0
 
     private val _sleepTimer = MutableStateFlow<SleepTimerState?>(null)
     val sleepTimer: StateFlow<SleepTimerState?> = _sleepTimer.asStateFlow()
@@ -208,20 +261,18 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
                         val spoken = synchronized(queue) { queue.spokenRange(utteranceId, start, end) } ?: return
                         val current = prepared ?: return
                         val range = current.originalRange(spoken) ?: return
-                        _highlight.value = SpeechHighlight(current.original, range, currentSource)
+                        _highlight.value = SpeechHighlight(
+                            highlightBase,
+                            TextRange(range.start + highlightOffset, range.length),
+                            currentSource,
+                        )
                     }
 
                     override fun onDone(utteranceId: String?) {
                         // 最後の文を読み終えたときだけ完了。stop()/pause() で止めた場合は onStop が呼ばれここには来ない
                         if (synchronized(queue) { queue.isFinished(utteranceId) }) {
                             synchronized(queue) { queue.clear() }
-                            _state.value = TtsState.IDLE
-                            _highlight.value = null
-                            _nowPlaying.value = null
-                            stopNotificationService()
-                            // 読み終えたら「文章の終わりで停止」も含めてタイマーは役目を終える
-                            setSleepTimer(null)
-                            completionTracker.onSpeechCompleted(currentSource)
+                            viewModelScope.launch { onSpeechFinished() }
                         }
                     }
 
@@ -259,19 +310,162 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         if (text.isBlank() || !_isInitialized.value) return
         currentSource = source
         currentTitle = text.take(60)
-        // 英略語・単位・折り返し改行などを読みやすく整えてから読む（iOS と同じルール）
+        _highlight.value = null
+        _voicevoxQuotaStop.value = null
+        _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
+        if (isVoicevoxActive()) {
+            playWithVoicevox(text, 0)
+        } else {
+            speakWithDevice(text, 0)
+        }
+        if (saveToMyFiles) saveToHistory(saveText, title, saveAs)
+        startNotificationService(title ?: currentTitle, isPlaying = true)
+    }
+
+    /**
+     * text の offset 文字目から先を端末の音声で読む。ハイライトは text 全体の上の位置で出す。
+     * 英略語・単位・折り返し改行などを読みやすく整えてから読む（iOS と同じルール）
+     */
+    private fun speakWithDevice(text: String, offset: Int) {
+        voicevoxText = null
         val preparedText = SpeechTextPreprocessor.prepare(
-            text,
+            text.substring(offset),
             _selectedLanguage.value.locale.language,
             readings = UserDictionaryStore.get(getApplication()).readings,
         )
+        highlightBase = text
+        highlightOffset = offset
         prepared = preparedText
-        _highlight.value = null
-        _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
         val chunks = synchronized(queue) { queue.start(preparedText.spoken, maxChunkLength()) }
         enqueue(chunks)
-        if (saveToMyFiles) saveToHistory(saveText, title, saveAs)
-        startNotificationService(title ?: currentTitle, isPlaying = true)
+    }
+
+    /** キャラ音声を使うか（オンにしていて、日本語の文章のとき） */
+    private fun isVoicevoxActive(): Boolean =
+        _voicevoxEnabled.value && VoicevoxCatalog.isAvailable(_selectedLanguage.value.code)
+
+    /** text の offset 文字目から先をキャラ音声で読む */
+    private fun playWithVoicevox(text: String, offset: Int) {
+        synchronized(queue) { queue.clear() }
+        tts?.stop()
+        voicevoxText = text
+        voicevoxResumeAt = offset
+        _previewingSpeakerId.value = null
+        _state.value = TtsState.SPEAKING
+        voicevoxPlayer.play(
+            text = text.substring(offset),
+            speakerId = _voicevoxSpeakerId.value,
+            speedScale = _speechRate.value.toDouble().coerceIn(0.5, 2.0),
+            offset = offset,
+        ) { event ->
+            when (event) {
+                is VoicevoxSpeechPlayer.Event.Sentence -> {
+                    voicevoxResumeAt = event.range.start
+                    _highlight.value = SpeechHighlight(text, event.range, currentSource)
+                }
+                VoicevoxSpeechPlayer.Event.Finished -> onSpeechFinished()
+                is VoicevoxSpeechPlayer.Event.QuotaExceeded -> {
+                    _voicevoxUsage.value = event.usage
+                    analytics.logEvent("voicevox_quota_exceeded", mapOf("plan" to event.usage.plan))
+                    stop()
+                    _voicevoxQuotaStop.value = VoicevoxQuotaStop(event.usage, text, event.resumeAt)
+                }
+                is VoicevoxSpeechPlayer.Event.Failed -> {
+                    // 通信できない等。止まった文から端末の音声で読み続ける
+                    analytics.logEvent("voicevox_fallback", emptyMap())
+                    speakWithDevice(text, event.resumeAt)
+                }
+            }
+        }
+    }
+
+    /** 上限で止まったあと「端末の音声で続ける」 */
+    fun continueWithDeviceVoice() {
+        val stop = _voicevoxQuotaStop.value ?: return
+        _voicevoxQuotaStop.value = null
+        _nowPlaying.value = NowPlaying(currentTitle.lineSequence().first().take(40), currentSource)
+        _state.value = TtsState.SPEAKING
+        speakWithDevice(stop.text, stop.resumeAt)
+        startNotificationService(currentTitle, isPlaying = true)
+    }
+
+    fun dismissVoicevoxQuotaStop() {
+        _voicevoxQuotaStop.value = null
+    }
+
+    fun requestPaywall(source: String) {
+        _paywallRequest.value = source
+    }
+
+    fun consumePaywallRequest() {
+        _paywallRequest.value = null
+    }
+
+    /** 最後まで読み終えた */
+    private fun onSpeechFinished() {
+        voicevoxText = null
+        _state.value = TtsState.IDLE
+        _highlight.value = null
+        _nowPlaying.value = null
+        stopNotificationService()
+        // 読み終えたら「文章の終わりで停止」も含めてタイマーは役目を終える
+        setSleepTimer(null)
+        completionTracker.onSpeechCompleted(currentSource)
+    }
+
+    /** キャラ音声のオン・オフ（声の一覧の「端末の音声」を選ぶとオフ） */
+    fun setVoicevoxEnabled(enabled: Boolean) {
+        if (_voicevoxEnabled.value == enabled) return
+        voicevoxSettings.isEnabled = enabled
+        _voicevoxEnabled.value = enabled
+        analytics.logEvent("voicevox_toggle", mapOf("enabled" to enabled.toString()))
+        if (enabled) refreshVoicevoxUsage()
+    }
+
+    /** キャラを選ぶ。キャラ音声もオンにして試聴する */
+    fun selectVoicevoxVoice(speakerId: Int) {
+        stop()
+        setVoicevoxEnabled(true)
+        voicevoxSettings.speakerId = speakerId
+        _voicevoxSpeakerId.value = speakerId
+        _previewingSpeakerId.value = speakerId
+        voicevoxPlayer.play(VoicevoxCatalog.previewText(VoicevoxCatalog.voice(speakerId)), speakerId, 1.0) { event ->
+            when (event) {
+                is VoicevoxSpeechPlayer.Event.Sentence -> Unit
+                is VoicevoxSpeechPlayer.Event.QuotaExceeded -> {
+                    _previewingSpeakerId.value = null
+                    _voicevoxUsage.value = event.usage
+                    if (!event.usage.isPremium) requestPaywall("voicevox_picker")
+                }
+                else -> {
+                    _previewingSpeakerId.value = null
+                    refreshVoicevoxUsage()
+                }
+            }
+        }
+    }
+
+    /** 試聴を止める（声の一覧を閉じたとき） */
+    fun stopPreview() {
+        if (_previewingSpeakerId.value == null) return
+        _previewingSpeakerId.value = null
+        voicevoxPlayer.stop()
+    }
+
+    /** 今月の残り文字数を取り直す。オフの人のためにはサーバーを起こさない（使われていないと0台で、起動のたびに費用がかかる） */
+    fun refreshVoicevoxUsage() {
+        if (!_voicevoxEnabled.value) return
+        viewModelScope.launch {
+            runCatching { voicevoxClient.quota() }
+                .onSuccess {
+                    _voicevoxUsage.value = it
+                    _voicevoxUsageUnavailable.value = false
+                }
+                .onFailure {
+                    android.util.Log.w("Voicevox", "quota failed", it)
+                    _voicevoxUsageUnavailable.value = true
+                }
+        }
     }
 
     /** 今読んでいる文の頭で止める。再開すると同じ文の頭から読む */
@@ -281,11 +475,17 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         synchronized(queue) { queue.pause() }
         _state.value = TtsState.PAUSED
         tts?.stop()
+        voicevoxPlayer.stop()
         startNotificationService(currentTitle, isPlaying = false)
     }
 
     fun resume() {
         if (_state.value != TtsState.PAUSED) return
+        voicevoxText?.let { text ->
+            playWithVoicevox(text, voicevoxResumeAt)
+            startNotificationService(currentTitle, isPlaying = true)
+            return
+        }
         val chunks = synchronized(queue) { queue.resume() }
         if (chunks.isEmpty()) {
             stop()
@@ -328,6 +528,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         setSleepTimer(null)
         synchronized(queue) { queue.clear() }
         tts?.stop()
+        voicevoxPlayer.stop()
+        voicevoxText = null
+        _previewingSpeakerId.value = null
         _state.value = TtsState.IDLE
         _highlight.value = null
         _nowPlaying.value = null
@@ -415,6 +618,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     override fun onCleared() {
         super.onCleared()
         runCatching { getApplication<Application>().unregisterReceiver(controlReceiver) }
+        voicevoxPlayer.stop()
         tts?.stop()
         tts?.shutdown()
         tts = null

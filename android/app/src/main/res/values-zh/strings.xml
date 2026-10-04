@@ -200,4 +200,18 @@
     <string name="file_limit_title">你已达到免费版的上限</string>
     <string name="file_limit_message">免费版最多可保存 %1$d 个文件。升级到高级版即可不限数量，或删除旧文件以继续使用。</string>
     <string name="file_limit_upgrade">查看高级版</string>
+    <string name="voicevox_section_title">角色语音（VOICEVOX）</string>
+    <string name="voicevox_device_voices">设备语音</string>
+    <string name="voicevox_usage">本月剩余 %1$s / %2$s 字</string>
+    <string name="voicevox_resets_on">%1$s 重置</string>
+    <string name="voicevox_usage_unavailable">无法获取剩余字数</string>
+    <string name="voicevox_picker_note">点按语音即可试听。需要联网。听过的句子会保存在设备上，重听不消耗字数。</string>
+    <string name="voicevox_upgrade">高级版每月最多 20 万字</string>
+    <string name="voicevox_quota_title">本月角色语音已达上限</string>
+    <string name="voicevox_quota_message">将于 %1$s 重置。可以用设备语音继续收听。</string>
+    <string name="voicevox_see_premium">查看高级版</string>
+    <string name="voicevox_continue_device">用设备语音继续</string>
+    <string name="credits_title">致谢</string>
+    <string name="credits_voicevox_note">角色语音由 VOICEVOX 生成。朗读的文本请遵守各角色的使用条款。</string>
+    <string name="credits_voicevox_terms">VOICEVOX 使用条款</string>
 </resources>

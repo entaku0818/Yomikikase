@@ -15,6 +15,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.clickable
 import com.entaku.VoiceYourText.tts.SpeechLanguage
 import com.entaku.VoiceYourText.feedback.FeedbackDialog
+import com.entaku.VoiceYourText.voicevox.CreditsScreen
 import com.entaku.VoiceYourText.BuildConfig
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,6 +57,7 @@ fun SettingsScreen(
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     var showFeedback by remember { mutableStateOf(false) }
     var showDictionary by remember { mutableStateOf(false) }
+    var showCredits by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -332,6 +334,30 @@ fun SettingsScreen(
                     )
                 }
             }
+
+            // クレジット（キャラ音声の規約で表記が求められている）
+            Card(
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showCredits = true }
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = stringResource(R.string.credits_title), style = MaterialTheme.typography.bodyMedium)
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     }
 
@@ -340,5 +366,8 @@ fun SettingsScreen(
     }
     if (showDictionary) {
         UserDictionaryScreen(onDismiss = { showDictionary = false })
+    }
+    if (showCredits) {
+        CreditsScreen(onDismiss = { showCredits = false })
     }
 }

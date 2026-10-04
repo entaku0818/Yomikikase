@@ -200,4 +200,18 @@
     <string name="file_limit_title">無料版の上限に達しました</string>
     <string name="file_limit_message">無料版で保存できるファイルは%1$d件までです。プレミアムにすると無制限になります。古いファイルを削除しても続けられます。</string>
     <string name="file_limit_upgrade">プレミアムを見る</string>
+    <string name="voicevox_section_title">キャラ音声（VOICEVOX）</string>
+    <string name="voicevox_device_voices">端末の音声</string>
+    <string name="voicevox_usage">今月の残り %1$s / %2$s字</string>
+    <string name="voicevox_resets_on">%1$sにリセット</string>
+    <string name="voicevox_usage_unavailable">残り文字数を取得できませんでした</string>
+    <string name="voicevox_picker_note">選ぶと試聴します。インターネット接続が必要です。一度聴いた文は端末に保存され、聴き直しでは文字数を使いません。</string>
+    <string name="voicevox_upgrade">プレミアムなら月20万字まで</string>
+    <string name="voicevox_quota_title">今月のキャラ音声の上限に達しました</string>
+    <string name="voicevox_quota_message">%1$sにリセットされます。続きは端末の音声で聴けます。</string>
+    <string name="voicevox_see_premium">プレミアムを見る</string>
+    <string name="voicevox_continue_device">端末の音声で続ける</string>
+    <string name="credits_title">クレジット</string>
+    <string name="credits_voicevox_note">キャラ音声は VOICEVOX を使って作っています。読み上げる文章は各キャラクターの利用規約に沿ったものにしてください。</string>
+    <string name="credits_voicevox_terms">VOICEVOX 利用規約</string>
 </resources>

@@ -200,4 +200,18 @@
     <string name="file_limit_title">Vous avez atteint la limite gratuite</string>
     <string name="file_limit_message">La version gratuite permet de conserver jusqu\'à %1$d fichiers. Passez à Premium pour des fichiers illimités, ou supprimez d\'anciens fichiers pour continuer.</string>
     <string name="file_limit_upgrade">Voir Premium</string>
+    <string name="voicevox_section_title">Voix de personnages (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Voix de l’appareil</string>
+    <string name="voicevox_usage">Il reste %1$s caractères sur %2$s ce mois-ci</string>
+    <string name="voicevox_resets_on">Réinitialisation le %1$s</string>
+    <string name="voicevox_usage_unavailable">Impossible de charger les caractères restants</string>
+    <string name="voicevox_picker_note">Touchez une voix pour l’écouter. Connexion Internet requise. Les phrases déjà écoutées sont enregistrées sur l’appareil et ne consomment pas de caractères à la réécoute.</string>
+    <string name="voicevox_upgrade">Premium : jusqu’à 200 000 caractères par mois</string>
+    <string name="voicevox_quota_title">Limite mensuelle des voix de personnages atteinte</string>
+    <string name="voicevox_quota_message">Réinitialisation le %1$s. Vous pouvez continuer avec la voix de l’appareil.</string>
+    <string name="voicevox_see_premium">Voir Premium</string>
+    <string name="voicevox_continue_device">Continuer avec la voix de l’appareil</string>
+    <string name="credits_title">Crédits</string>
+    <string name="credits_voicevox_note">Les voix de personnages sont créées avec VOICEVOX. Veillez à ce que les textes lus respectent les conditions d’utilisation de chaque personnage.</string>
+    <string name="credits_voicevox_terms">Conditions d’utilisation de VOICEVOX</string>
 </resources>

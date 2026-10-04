@@ -200,4 +200,18 @@
     <string name="file_limit_title">You\'ve reached the free limit</string>
     <string name="file_limit_message">The free version can keep up to %1$d files. Go Premium for unlimited files, or delete old files to continue.</string>
     <string name="file_limit_upgrade">See Premium</string>
+    <string name="voicevox_section_title">Character voices (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Device voices</string>
+    <string name="voicevox_usage">%1$s of %2$s characters left this month</string>
+    <string name="voicevox_resets_on">Resets on %1$s</string>
+    <string name="voicevox_usage_unavailable">Couldn’t load the remaining characters</string>
+    <string name="voicevox_picker_note">Tap a voice to hear a sample. Needs an internet connection. Sentences you’ve played are saved on your device, so replaying them doesn’t use characters.</string>
+    <string name="voicevox_upgrade">Premium: up to 200,000 characters a month</string>
+    <string name="voicevox_quota_title">Monthly character voice limit reached</string>
+    <string name="voicevox_quota_message">It resets on %1$s. You can keep listening with the device voice.</string>
+    <string name="voicevox_see_premium">See Premium</string>
+    <string name="voicevox_continue_device">Continue with device voice</string>
+    <string name="credits_title">Credits</string>
+    <string name="credits_voicevox_note">Character voices are made with VOICEVOX. Please make sure the text you read follows each character’s terms of use.</string>
+    <string name="credits_voicevox_terms">VOICEVOX terms of use</string>
 </resources>

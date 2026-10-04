@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import com.entaku.VoiceYourText.file.FilePickerButton
 import com.entaku.VoiceYourText.file.SourceType
 import com.entaku.VoiceYourText.file.TextFileReader
+import com.entaku.VoiceYourText.voicevox.VoicevoxCatalog
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -90,6 +91,13 @@ fun SpeechScreen(
     var showVoiceSheet by remember { mutableStateOf(false) }
     val voiceOptions by viewModel.voiceOptions.collectAsState()
     val selectedVoiceName by viewModel.selectedVoiceName.collectAsState()
+    val voicevoxEnabled by viewModel.voicevoxEnabled.collectAsState()
+    val voicevoxSpeakerId by viewModel.voicevoxSpeakerId.collectAsState()
+    val voicevoxUsage by viewModel.voicevoxUsage.collectAsState()
+    val voicevoxUsageUnavailable by viewModel.voicevoxUsageUnavailable.collectAsState()
+    val previewingSpeakerId by viewModel.previewingSpeakerId.collectAsState()
+    // キャラ音声は日本語の文章だけ
+    val voicevoxAvailable = VoicevoxCatalog.isAvailable(selectedLanguage.code)
 
     // 端末の設定で音声データを追加して戻ってきたら、声の一覧を取り直す
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -182,8 +190,19 @@ fun SpeechScreen(
                 )
                 SettingChip(
                     label = stringResource(R.string.speech_voice),
-                    value = voiceOptions.firstOrNull { it.name == selectedVoiceName }?.let { voiceLabel(it) } ?: stringResource(R.string.speech_voice_default),
-                    onClick = { showVoiceSheet = true },
+                    value = if (voicevoxAvailable && voicevoxEnabled) {
+                        VoicevoxCatalog.voice(voicevoxSpeakerId).character
+                    } else {
+                        voiceOptions.firstOrNull { it.name == selectedVoiceName }?.let { voiceLabel(it) } ?: stringResource(R.string.speech_voice_default)
+                    },
+                    onClick = {
+                        // 試聴と本編の読み上げが重ならないよう、一覧を開く前に止める
+                        if (voicevoxAvailable) {
+                            viewModel.stop()
+                            viewModel.refreshVoicevoxUsage()
+                        }
+                        showVoiceSheet = true
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -192,7 +211,10 @@ fun SpeechScreen(
                 VoiceBottomSheet(
                     options = voiceOptions,
                     selectedName = selectedVoiceName,
-                    onSelect = viewModel::setVoice,
+                    onSelect = { name ->
+                        viewModel.setVoicevoxEnabled(false)
+                        viewModel.setVoice(name)
+                    },
                     onAddVoices = {
                         runCatching {
                             context.startActivity(
@@ -200,7 +222,25 @@ fun SpeechScreen(
                             )
                         }
                     },
-                    onDismiss = { showVoiceSheet = false }
+                    onDismiss = {
+                        viewModel.stopPreview()
+                        showVoiceSheet = false
+                    },
+                    voicevox = if (voicevoxAvailable) {
+                        VoicevoxPicker(
+                            enabled = voicevoxEnabled,
+                            speakerId = voicevoxSpeakerId,
+                            previewingSpeakerId = previewingSpeakerId,
+                            usage = voicevoxUsage,
+                            usageUnavailable = voicevoxUsageUnavailable,
+                            onSelectVoice = viewModel::selectVoicevoxVoice,
+                            onUpgrade = {
+                                viewModel.stopPreview()
+                                showVoiceSheet = false
+                                viewModel.requestPaywall("voicevox_picker")
+                            },
+                        )
+                    } else null,
                 )
             }
 

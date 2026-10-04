@@ -41,6 +41,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import com.entaku.VoiceYourText.ui.localizedMonthDayFormat
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -83,6 +84,15 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
     val isPremium by PremiumManager.isPremium.collectAsState()
     val fileCount by remember { SavedFileRepository(context).getAll().map(FileLimits::countedFiles) }.collectAsState(initial = 0)
     var paywallSource by remember { mutableStateOf<String?>(null) }
+    // 読み上げ側（キャラ音声の上限など）から課金画面を出してほしいと言われたら出す
+    val paywallRequest by ttsViewModel.paywallRequest.collectAsState()
+    LaunchedEffect(paywallRequest) {
+        paywallRequest?.let {
+            paywallSource = it
+            ttsViewModel.consumePaywallRequest()
+        }
+    }
+    val voicevoxQuotaStop by ttsViewModel.voicevoxQuotaStop.collectAsState()
     var showFileLimit by remember { mutableStateOf(false) }
     fun guardNewFile(block: () -> Unit) {
         if (PremiumManager.isAvailable && FileLimits.hasReachedLimit(fileCount, isPremium)) showFileLimit = true else block()
@@ -225,6 +235,32 @@ fun MainApp(initialSharedText: String? = null, isColdStart: Boolean = false) {
 
     paywallSource?.let { source ->
         PaywallScreen(source = source, onDismiss = { paywallSource = null })
+    }
+
+    voicevoxQuotaStop?.let { stop ->
+        // キャラ音声が今月の上限で止まった。続きは端末の音声で読める
+        AlertDialog(
+            onDismissRequest = ttsViewModel::dismissVoicevoxQuotaStop,
+            title = { Text(stringResource(R.string.voicevox_quota_title)) },
+            text = {
+                Text(stringResource(R.string.voicevox_quota_message, localizedMonthDayFormat().format(java.util.Date.from(stop.usage.resetAt))))
+            },
+            confirmButton = {
+                TextButton(onClick = ttsViewModel::continueWithDeviceVoice) {
+                    Text(stringResource(R.string.voicevox_continue_device))
+                }
+            },
+            dismissButton = {
+                if (!stop.usage.isPremium) {
+                    TextButton(onClick = {
+                        ttsViewModel.dismissVoicevoxQuotaStop()
+                        paywallSource = "voicevox_quota"
+                    }) { Text(stringResource(R.string.voicevox_see_premium)) }
+                } else {
+                    TextButton(onClick = ttsViewModel::dismissVoicevoxQuotaStop) { Text(stringResource(R.string.common_cancel)) }
+                }
+            }
+        )
     }
 
     if (showFileLimit) {

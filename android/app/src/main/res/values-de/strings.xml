@@ -200,4 +200,18 @@
     <string name="file_limit_title">Du hast das kostenlose Limit erreicht</string>
     <string name="file_limit_message">In der kostenlosen Version können bis zu %1$d Dateien gespeichert werden. Hol dir Premium für unbegrenzt viele Dateien oder lösche alte Dateien, um fortzufahren.</string>
     <string name="file_limit_upgrade">Premium ansehen</string>
+    <string name="voicevox_section_title">Charakterstimmen (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Gerätestimmen</string>
+    <string name="voicevox_usage">Diesen Monat noch %1$s von %2$s Zeichen</string>
+    <string name="voicevox_resets_on">Wird am %1$s zurückgesetzt</string>
+    <string name="voicevox_usage_unavailable">Verbleibende Zeichen konnten nicht geladen werden</string>
+    <string name="voicevox_picker_note">Tippe auf eine Stimme, um eine Probe zu hören. Internetverbindung erforderlich. Bereits gehörte Sätze werden auf dem Gerät gespeichert und verbrauchen beim erneuten Abspielen keine Zeichen.</string>
+    <string name="voicevox_upgrade">Premium: bis zu 200.000 Zeichen pro Monat</string>
+    <string name="voicevox_quota_title">Monatliches Limit für Charakterstimmen erreicht</string>
+    <string name="voicevox_quota_message">Es wird am %1$s zurückgesetzt. Du kannst mit der Gerätestimme weiterhören.</string>
+    <string name="voicevox_see_premium">Premium ansehen</string>
+    <string name="voicevox_continue_device">Mit Gerätestimme fortfahren</string>
+    <string name="credits_title">Danksagungen</string>
+    <string name="credits_voicevox_note">Charakterstimmen werden mit VOICEVOX erzeugt. Bitte achte darauf, dass die vorgelesenen Texte den Nutzungsbedingungen der jeweiligen Figur entsprechen.</string>
+    <string name="credits_voicevox_terms">VOICEVOX-Nutzungsbedingungen</string>
 </resources>

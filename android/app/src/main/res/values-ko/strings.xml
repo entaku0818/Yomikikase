@@ -200,4 +200,18 @@
     <string name="file_limit_title">무료 버전의 한도에 도달했습니다</string>
     <string name="file_limit_message">무료 버전에서는 최대 %1$d개의 파일을 보관할 수 있습니다. 파일을 무제한으로 사용하려면 프리미엄으로 전환하거나, 계속하려면 오래된 파일을 삭제하세요.</string>
     <string name="file_limit_upgrade">프리미엄 보기</string>
+    <string name="voicevox_section_title">캐릭터 음성 (VOICEVOX)</string>
+    <string name="voicevox_device_voices">기기 음성</string>
+    <string name="voicevox_usage">이번 달 남은 글자 수 %1$s / %2$s자</string>
+    <string name="voicevox_resets_on">%1$s에 초기화</string>
+    <string name="voicevox_usage_unavailable">남은 글자 수를 불러오지 못했습니다</string>
+    <string name="voicevox_picker_note">음성을 누르면 미리 들을 수 있습니다. 인터넷 연결이 필요합니다. 한 번 들은 문장은 기기에 저장되어 다시 들을 때는 글자 수를 쓰지 않습니다.</string>
+    <string name="voicevox_upgrade">프리미엄은 월 20만 자까지</string>
+    <string name="voicevox_quota_title">이번 달 캐릭터 음성 한도에 도달했습니다</string>
+    <string name="voicevox_quota_message">%1$s에 초기화됩니다. 이어서 기기 음성으로 들을 수 있습니다.</string>
+    <string name="voicevox_see_premium">프리미엄 보기</string>
+    <string name="voicevox_continue_device">기기 음성으로 계속</string>
+    <string name="credits_title">크레딧</string>
+    <string name="credits_voicevox_note">캐릭터 음성은 VOICEVOX로 만듭니다. 읽는 문장은 각 캐릭터의 이용 약관을 지켜 주세요.</string>
+    <string name="credits_voicevox_terms">VOICEVOX 이용 약관</string>
 </resources>

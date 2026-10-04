@@ -200,4 +200,18 @@
     <string name="file_limit_title">Ücretsiz sınıra ulaştınız</string>
     <string name="file_limit_message">Ücretsiz sürüm en fazla %1$d dosya saklayabilir. Sınırsız dosya için Premium\'a geçin veya devam etmek için eski dosyaları silin.</string>
     <string name="file_limit_upgrade">Premium\'u görüntüle</string>
+    <string name="voicevox_section_title">Karakter sesleri (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Cihaz sesleri</string>
+    <string name="voicevox_usage">Bu ay %2$s karakterden %1$s kaldı</string>
+    <string name="voicevox_resets_on">%1$s tarihinde sıfırlanır</string>
+    <string name="voicevox_usage_unavailable">Kalan karakterler yüklenemedi</string>
+    <string name="voicevox_picker_note">Örnek dinlemek için bir sese dokunun. İnternet bağlantısı gerekir. Dinlediğiniz cümleler cihazda saklanır, tekrar dinlemek karakter harcamaz.</string>
+    <string name="voicevox_upgrade">Premium: ayda 200.000 karaktere kadar</string>
+    <string name="voicevox_quota_title">Bu ayki karakter sesi sınırına ulaşıldı</string>
+    <string name="voicevox_quota_message">%1$s tarihinde sıfırlanır. Cihaz sesiyle dinlemeye devam edebilirsiniz.</string>
+    <string name="voicevox_see_premium">Premium’u gör</string>
+    <string name="voicevox_continue_device">Cihaz sesiyle devam et</string>
+    <string name="credits_title">Katkıda bulunanlar</string>
+    <string name="credits_voicevox_note">Karakter sesleri VOICEVOX ile oluşturulur. Okunan metinlerin her karakterin kullanım koşullarına uygun olduğundan emin olun.</string>
+    <string name="credits_voicevox_terms">VOICEVOX kullanım koşulları</string>
 </resources>

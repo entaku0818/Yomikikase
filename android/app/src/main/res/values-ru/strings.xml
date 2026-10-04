@@ -200,4 +200,18 @@
     <string name="file_limit_title">Вы достигли лимита бесплатной версии</string>
     <string name="file_limit_message">В бесплатной версии можно хранить до %1$d файлов. Перейдите на Premium для неограниченного количества файлов или удалите старые файлы, чтобы продолжить.</string>
     <string name="file_limit_upgrade">Посмотреть Premium</string>
+    <string name="voicevox_section_title">Голоса персонажей (VOICEVOX)</string>
+    <string name="voicevox_device_voices">Голоса устройства</string>
+    <string name="voicevox_usage">Осталось %1$s из %2$s символов в этом месяце</string>
+    <string name="voicevox_resets_on">Обновится %1$s</string>
+    <string name="voicevox_usage_unavailable">Не удалось загрузить остаток символов</string>
+    <string name="voicevox_picker_note">Нажмите на голос, чтобы прослушать пример. Нужен интернет. Прослушанные предложения сохраняются на устройстве, и повторное прослушивание не расходует символы.</string>
+    <string name="voicevox_upgrade">Премиум: до 200 000 символов в месяц</string>
+    <string name="voicevox_quota_title">Достигнут месячный лимит голосов персонажей</string>
+    <string name="voicevox_quota_message">Лимит обновится %1$s. Можно продолжить с голосом устройства.</string>
+    <string name="voicevox_see_premium">Посмотреть Премиум</string>
+    <string name="voicevox_continue_device">Продолжить голосом устройства</string>
+    <string name="credits_title">Благодарности</string>
+    <string name="credits_voicevox_note">Голоса персонажей создаются с помощью VOICEVOX. Следите, чтобы читаемые тексты соответствовали условиям использования каждого персонажа.</string>
+    <string name="credits_voicevox_terms">Условия использования VOICEVOX</string>
 </resources>

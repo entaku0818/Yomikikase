@@ -200,4 +200,18 @@
     <string name="file_limit_title">คุณถึงขีดจำกัดของเวอร์ชันฟรีแล้ว</string>
     <string name="file_limit_message">เวอร์ชันฟรีสามารถเก็บไฟล์ได้สูงสุด %1$d ไฟล์ อัปเกรดเป็น Premium เพื่อไม่จำกัดจำนวนไฟล์ หรือลบไฟล์เก่าเพื่อดำเนินการต่อ</string>
     <string name="file_limit_upgrade">ดู Premium</string>
+    <string name="voicevox_section_title">เสียงตัวละคร (VOICEVOX)</string>
+    <string name="voicevox_device_voices">เสียงของอุปกรณ์</string>
+    <string name="voicevox_usage">เหลือ %1$s จาก %2$s ตัวอักษรในเดือนนี้</string>
+    <string name="voicevox_resets_on">รีเซ็ตวันที่ %1$s</string>
+    <string name="voicevox_usage_unavailable">โหลดจำนวนตัวอักษรที่เหลือไม่ได้</string>
+    <string name="voicevox_picker_note">แตะเสียงเพื่อฟังตัวอย่าง ต้องเชื่อมต่ออินเทอร์เน็ต ประโยคที่ฟังแล้วจะบันทึกไว้ในอุปกรณ์ ฟังซ้ำได้โดยไม่ใช้ตัวอักษร</string>
+    <string name="voicevox_upgrade">พรีเมียม: สูงสุด 200,000 ตัวอักษรต่อเดือน</string>
+    <string name="voicevox_quota_title">ใช้เสียงตัวละครครบโควตาของเดือนนี้แล้ว</string>
+    <string name="voicevox_quota_message">จะรีเซ็ตวันที่ %1$s ฟังต่อด้วยเสียงของอุปกรณ์ได้</string>
+    <string name="voicevox_see_premium">ดูพรีเมียม</string>
+    <string name="voicevox_continue_device">ฟังต่อด้วยเสียงของอุปกรณ์</string>
+    <string name="credits_title">เครดิต</string>
+    <string name="credits_voicevox_note">เสียงตัวละครสร้างด้วย VOICEVOX โปรดใช้ข้อความที่เป็นไปตามข้อกำหนดการใช้งานของตัวละครแต่ละตัว</string>
+    <string name="credits_voicevox_terms">ข้อกำหนดการใช้งาน VOICEVOX</string>
 </resources>
