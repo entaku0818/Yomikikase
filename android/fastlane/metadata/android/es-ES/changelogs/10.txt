@@ -1,0 +1,2 @@
+- Voces de personajes (VOICEVOX)
+- Importar desde Google Drive
