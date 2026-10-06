@@ -53,7 +53,9 @@ final class AppStoreScreenshotTests: XCTestCase {
         app.staticTexts[ja ? "吾輩は猫である" : "Alice's Adventures in Wonderland"].firstMatch.tap()
         sleep(2)
         app.buttons["play.fill"].firstMatch.tap()
-        sleep(10)
+        // Mac が重いと再生開始が遅れる。停止ボタンが出る（=再生が始まる）のを待ってから、ハイライトが進むまで待つ
+        _ = app.buttons["stop.fill"].firstMatch.waitForExistence(timeout: 30)
+        sleep(8)
         snap("playing")
 
         captureSpeedAndVoices(ja: ja)

@@ -246,7 +246,10 @@ def render_callout(sentence, start, end, lang, width):
         limit -= 10
     lines = wrap(limit)
     text_w = max(probe.textlength("".join(t for t, _ in line).rstrip(), font=font) for line in lines)
-    card = Image.new("RGBA", (round(text_w) + pad_x * 2, pad_y * 2 + line_h * len(lines)), (0, 0, 0, 0))
+    # 端末の画面より広くして、帯の左右から本文の端がのぞかないようにする。文章は中央に置く
+    card_w = max(round(text_w) + pad_x * 2, width)
+    pad_x = (card_w - round(text_w)) // 2
+    card = Image.new("RGBA", (card_w, pad_y * 2 + line_h * len(lines)), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
     d.rounded_rectangle([0, 0, card.width - 1, card.height - 1], radius=40, fill=(255, 255, 255, 255))
     for row, line in enumerate(lines):
