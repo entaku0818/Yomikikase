@@ -21,6 +21,7 @@
 		61D17C8D2F5BD9E400FB1EAA /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 61D17C8C2F5BD9E400FB1EAA /* FirebaseFirestore */; };
 		61D17C8F2F5BD9E400FB1EAA /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 61D17C8E2F5BD9E400FB1EAA /* FirebaseAppCheck */; };
 		61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA062C03121200155D23 /* YomikikaseUITests.swift */; };
+		61E1FA0B2C03121200155D23 /* AppStoreScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA0C2C03121200155D23 /* AppStoreScreenshotTests.swift */; };
 		61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */; };
 		61E4F0032DC8000200000001 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 61E4F0022DC8000200000001 /* ZIPFoundation */; };
 /* End PBXBuildFile section */
@@ -46,6 +47,7 @@
 		614F56D12B11B81F00E21FE9 /* VoiceYourText.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VoiceYourText.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56E12B11B82000E21FE9 /* VoiceYourTextTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		614F56EB2B11B82000E21FE9 /* VoiceYourTextUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VoiceYourTextUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		61E1FA0C2C03121200155D23 /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		61E1FA062C03121200155D23 /* YomikikaseUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITests.swift; sourceTree = "<group>"; };
 		61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YomikikaseUITestsLaunchTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -135,6 +137,7 @@
 		61E1FA082C03121200155D23 /* VoiceYourTextUITests */ = {
 			isa = PBXGroup;
 			children = (
+				61E1FA0C2C03121200155D23 /* AppStoreScreenshotTests.swift */,
 				61E1FA062C03121200155D23 /* YomikikaseUITests.swift */,
 				61E1FA072C03121200155D23 /* YomikikaseUITestsLaunchTests.swift */,
 			);
@@ -375,6 +378,7 @@
 			files = (
 				61E1FA0A2C03121200155D23 /* YomikikaseUITestsLaunchTests.swift in Sources */,
 				61E1FA092C03121200155D23 /* YomikikaseUITests.swift in Sources */,
+				61E1FA0B2C03121200155D23 /* AppStoreScreenshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

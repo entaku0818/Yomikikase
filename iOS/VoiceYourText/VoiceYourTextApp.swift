@@ -154,6 +154,12 @@ struct VoiceYourTextApp: App {
     /// 起動時処理（起動回数・広告・レビュー依頼）を cold start ごとに1回だけ走らせる
     @MainActor private static var hasHandledColdStart = false
 
+    init() {
+        #if DEBUG
+        ScreenshotDemoSeeder.seedIfRequested()
+        #endif
+    }
+
     let initialState = Speeches.State(
         speechList: IdentifiedArrayOf(uniqueElements: []),
         currentText: ""
