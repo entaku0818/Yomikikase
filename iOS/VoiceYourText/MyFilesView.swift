@@ -402,11 +402,13 @@ struct FileItemView: View {
     var onDelete: (() -> Void)?
 
     private var dateFormatter: DateFormatter {
+        // 端末の言語で出す（ja: 今日 / 10月6日、en: Today / Oct 6）
         let formatter = DateFormatter()
         if Calendar.current.isDateInToday(file.date) {
-            formatter.dateFormat = "今日"
+            formatter.dateStyle = .medium
+            formatter.doesRelativeDateFormatting = true
         } else {
-            formatter.dateFormat = "M月d日"
+            formatter.setLocalizedDateFormatFromTemplate("MMMd")
         }
         return formatter
     }
