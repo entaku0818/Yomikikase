@@ -33,6 +33,9 @@ final class AppStoreScreenshotTests: XCTestCase {
             "-AppleLanguages", "(\(lang))",
             "-AppleLocale", locale
         ]
+        // UI テストから起動したアプリは TCA が「テスト中」と判定して testValue を使いうる。
+        // 本番と同じ依存で撮るため live に固定する
+        app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
     }
 
     /// 撮る画面（素材名）。どれを何枚目に使うかは compose_screenshots.py が決める
@@ -60,6 +63,10 @@ final class AppStoreScreenshotTests: XCTestCase {
         app.buttons[ja ? "ホーム" : "Home"].tap()
         sleep(2)
         snap("home")
+
+        captureSettings(ja: ja)
+        app.buttons[ja ? "ホーム" : "Home"].tap()
+        sleep(1)
 
         // 名作（青空文庫・日本語のみ）
         if ja {
@@ -113,10 +120,27 @@ final class AppStoreScreenshotTests: XCTestCase {
             resume.tap()
             sleep(3)
         }
+        // メニューを開いたままだと一覧に重なって見づらいので、30分を選んで残り時間が出た状態を撮る
         app.buttons[ja ? "スリープタイマー" : "Sleep timer"].firstMatch.tap()
         sleep(2)
+        app.buttons[ja ? "30分後に停止" : "Stop in 30 min"].firstMatch.tap()
+        sleep(3)
         snap("sleeptimer")
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.15)).tap()
+    }
+
+    private func captureSettings(ja: Bool) {
+        // ユーザー辞書（デモの単語が入っている）。6枚目に使う
+        app.buttons[ja ? "設定" : "Settings"].tap()
+        sleep(2)
+        // 辞書の行がミニプレイヤーの下に隠れて、タップがミニプレイヤーに当たるのでスクロールしておく
+        app.swipeUp()
+        sleep(1)
+        app.buttons[ja ? "ユーザー辞書" : "User Dictionary"].firstMatch.tap()
+        sleep(5)
+        snap("dictionary")
+        // 戻るボタンは辞書画面の「＋」と取り違えやすいので、左端からのスワイプで戻る
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.5)))
         sleep(1)
     }
 

@@ -38,14 +38,14 @@ SLIDES = {
         ("voices", "人気のキャラ音声で\n読み上げ", "VOICEVOX：ずんだもん・四国めたん ほか"),
         ("classics", "名作文学が、\nすぐ聴ける", "青空文庫の作品を選ぶだけ"),
         ("sleeptimer", "寝る前は\nスリープタイマー", "時間がきたら、そっと停止"),
-        ("myfiles", "読みたいものを、\nひとつの本棚に", "PDF・テキスト・本をまとめて管理"),
+        ("dictionary", "読み間違いは、\n辞書で直せる", "人名や専門用語の読み方を登録"),
     ],
     "en-US": [
         ("playing", "Listen while\nyou do anything", "Every word highlighted as it's read aloud"),
         ("home", "PDFs, books, web\npages — read aloud", "Text, PDF, ePub, links and scans"),
         ("speed", "Listen at\nyour own pace", "Playback from 0.7x to 2x"),
         ("sleeptimer", "Fall asleep\nlistening", "Sleep timer that fades out gently"),
-        ("myfiles", "All your reading\nin one place", "PDFs, notes and books, organized"),
+        ("dictionary", "Fix any\npronunciation", "Teach it names and terms in your dictionary"),
     ],
 }
 
@@ -115,33 +115,177 @@ def device(screen, width):
     return frame
 
 
-def highlight_band(screen):
-    """読み上げ中のハイライト（黄色）がある行の上下範囲を実画面の座標で返す。無ければ None"""
-    small = screen.convert("RGB").resize((screen.width // 4, screen.height // 4))
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+SEEDER = os.path.join(SCRIPT_DIR, "..", "VoiceYourText", "Features", "Debug", "ScreenshotDemoSeeder.swift")
+# 1枚目で読み上げているデモ文書のタイトル（本文は ScreenshotDemoSeeder.swift から読む）
+PLAYING_TITLE = {"ja": "吾輩は猫である", "en-US": "Alice's Adventures in Wonderland"}
+JA_REGULAR = os.path.join(FONT_DIR, "ヒラギノ角ゴシック W4.ttc")
+# 拡大して見せる部分（実画面 1320x2868 の座標）。スリープタイマーはミニプレイヤーの帯（残り時間つき）
+ZOOM = {"sleeptimer": (20, 2384, 1300, 2616)}
+
+
+def highlight_box(screen):
+    """読み上げ中のハイライト（黄色）の範囲を実画面の座標 (x0, y0, x1, y1) で返す。無ければ None"""
+    small = screen.convert("RGB").resize((screen.width // 2, screen.height // 2))
     px = small.load()
-    rows = [y for y in range(small.height)
-            if sum(1 for x in range(small.width)
-                   if px[x, y][0] > 230 and 150 < px[x, y][1] < 225 and px[x, y][2] < 90) > 3]
-    if not rows:
+    hits = [(x, y) for y in range(small.height) for x in range(small.width)
+            if px[x, y][0] > 230 and 150 < px[x, y][1] < 225 and px[x, y][2] < 90]
+    if len(hits) < 20:
         return None
-    return rows[0] * 4, (rows[-1] + 1) * 4
+    xs, ys = zip(*hits)
+    return min(xs) * 2, min(ys) * 2, (max(xs) + 1) * 2, (max(ys) + 1) * 2
 
 
-def callout(screen, band, width, theme):
-    """ハイライト行を拡大したカード（1枚目で「今読んでいる所が光る」を伝える）"""
-    top, bottom = band
-    pad = 2
-    crop = screen.convert("RGB").crop((30, max(top - pad, 0), screen.width - 30, min(bottom + pad, screen.height)))
-    inner_w = width - 48
-    crop = crop.resize((inner_w, round(crop.height * inner_w / crop.width)), Image.LANCZOS)
-    card = Image.new("RGBA", (width, crop.height + 48), (0, 0, 0, 0))
+def demo_text(lang):
+    """シーダーから1枚目のデモ本文を取り出す（Swift の文字列リテラルを連結して戻す）"""
+    import re
+    src = open(SEEDER, encoding="utf-8").read()
+    title = re.escape(PLAYING_TITLE[lang])
+    m = re.search(r'title: "' + title + r'",\s*text: (\[.*?\]\.joined\(\)|"(?:[^"\\]|\\.)*")', src, re.S)
+    if not m:
+        return None
+    lits = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
+    return "".join(lits).replace('\\"', '"').replace("\\n", "\n")
+
+
+def ocr_line(path, line_box, hx0, hx1, lang):
+    """1行を読み、(行の文字列, ハイライトにかかる文字列) を返す"""
+    import subprocess
+    x0, y0, x1, y1 = line_box
+    out = subprocess.run(
+        ["xcrun", "swift", os.path.join(SCRIPT_DIR, "ocr_region.swift"), path,
+         str(x0), str(y0), str(x1 - x0), str(y1 - y0), str(hx0), str(hx1), "ja" if lang == "ja" else "en"],
+        capture_output=True, text=True)
+    rows = out.stdout.split("\n")
+    return (rows[0].strip(), rows[1].strip()) if len(rows) >= 2 else ("", "")
+
+
+def locate(text, needle, lo=0, hi=None):
+    """text[lo:hi] の中で needle に一番似ている窓の開始位置。似ていなければ -1（OCR の読み違い対策）"""
+    import difflib
+    hi = len(text) if hi is None else hi
+    n = len(needle)
+    exact = text.find(needle, lo, hi)
+    if exact >= 0:
+        return exact
+    best = max(((difflib.SequenceMatcher(None, needle, text[i:i + n]).ratio(), i)
+                for i in range(lo, max(lo, hi - n) + 1)), default=(0, -1))
+    return best[1] if best[0] >= 0.7 else -1
+
+
+def excerpt(text, pos, end, lang, limit=150):
+    """pos〜end を含む文を返す。長すぎる文は節（；：、，）の区切りで切り、途中なら … を付ける"""
+    import re
+    levels = ([r"。|\n", r"、"] if lang == "ja"
+              else [r'[.!?]["”]?(?=\s)|\n', r"[;:]", r",(?=\s)"])
+    lo, hi = 0, len(text)
+    for level, pattern in enumerate(levels):
+        cuts = [m.end() for m in re.finditer(pattern, text[lo:hi])]
+        begin = max([lo + c for c in cuts if lo + c <= pos], default=lo)
+        finish = min([lo + c for c in cuts if lo + c >= end], default=hi)
+        lo, hi = begin, finish
+        if hi - lo <= limit:
+            break
+    raw = text[lo:hi]
+    lead = len(raw) - len(raw.lstrip())
+    sentence = raw.strip().rstrip(",;:、")
+    start = pos - lo - lead
+    def at_sentence_end(prefix):
+        stripped = prefix.rstrip(" ")
+        return not stripped.strip() or stripped[-1] in "。.!?\"”\n"
+    is_head = at_sentence_end(text[:lo])
+    is_tail = at_sentence_end(text[:hi])
+    if not is_head:
+        sentence, start = "…" + sentence, start + 1
+    if not is_tail:
+        sentence += "…"
+    return sentence, start, start + (end - pos)
+
+
+def render_callout(sentence, start, end, lang, width):
+    """文を折り返して描いたカード。読み上げ中の語に黄色のハイライトを敷く"""
+    size = 56
+    font = ImageFont.truetype(JA_REGULAR, size) if lang == "ja" else load_font(lang, size, False)
+    if lang != "ja":
+        try:
+            font.set_variation_by_name("Regular")
+        except (OSError, ValueError):
+            pass
+    pad_x, pad_y, line_h = 48, 40, round(size * 1.5)
+    max_w = width - pad_x * 2
+    probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
+    # 折り返しの単位: 日本語は1文字、英語は単語（後ろの空白込み）
+    import re
+    units = list(sentence) if lang == "ja" else re.findall(r"\S+\s*", sentence)
+    # ハイライト中の語は途中で折り返さず、1つの塊として扱う
+    merged, i = [], 0
+    for u in units:
+        if merged and i < end and i + len(u) > start and merged[-1][1] < end and merged[-1][1] + len(merged[-1][0]) > start:
+            merged[-1] = (merged[-1][0] + u, merged[-1][1])
+        else:
+            merged.append((u, i))
+        i += len(u)
+    units = [u for u, _ in merged]
+
+    def wrap(limit):
+        rows, cur, idx = [], [], 0
+        for u in units:
+            if cur and probe.textlength("".join(t for t, _ in cur) + u.rstrip(), font=font) > limit:
+                rows.append(cur)
+                cur = []
+            cur.append((u, idx))
+            idx += len(u)
+        if cur:
+            rows.append(cur)
+        return rows
+
+    # 行数は変えずに、一番狭く収まる幅で折り返し直して行の長さを揃える（最後の行だけ短くならないように）
+    lines = wrap(max_w)
+    limit = max_w
+    while limit > max_w * 0.5 and len(wrap(limit - 10)) == len(lines):
+        limit -= 10
+    lines = wrap(limit)
+    text_w = max(probe.textlength("".join(t for t, _ in line).rstrip(), font=font) for line in lines)
+    card = Image.new("RGBA", (round(text_w) + pad_x * 2, pad_y * 2 + line_h * len(lines)), (0, 0, 0, 0))
     d = ImageDraw.Draw(card)
-    d.rounded_rectangle([0, 0, card.width - 1, card.height - 1], radius=36, fill=(255, 255, 255, 255),
-                        outline=THEMES[theme]["bg"][0] if theme == "light" else None, width=4)
-    mask = Image.new("L", crop.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle([0, 0, crop.width - 1, crop.height - 1], radius=20, fill=255)
-    card.paste(crop, (24, 24), mask)
+    d.rounded_rectangle([0, 0, card.width - 1, card.height - 1], radius=40, fill=(255, 255, 255, 255))
+    for row, line in enumerate(lines):
+        y = pad_y + row * line_h
+        x = pad_x
+        for u, i in line:
+            text_u = u
+            # ハイライト（語の部分だけ。英語は後ろの空白・句読点を含めない）
+            hs, he = max(start, i), min(end, i + len(u))
+            if hs < he:
+                hx0 = x + probe.textlength(u[:hs - i], font=font)
+                hx1 = x + probe.textlength(u[:he - i], font=font)
+                d.rounded_rectangle([hx0 - 4, y + 6, hx1 + 4, y + line_h - 6], radius=8, fill=(255, 204, 0, 255))
+            d.text((x, y + line_h / 2), text_u.rstrip() if lang != "ja" else text_u, font=font,
+                   fill=(28, 28, 30, 255), anchor="lm")
+            x += probe.textlength(u, font=font)
     return card
+
+
+def callout(screen_path, screen, lang, width):
+    """1枚目の拡大カード。ハイライト中の語を OCR で読み、デモ本文から文の区切りまでを描く。
+    読めない・本文に無いときは None（嘘の文を出さないため、カード自体を出さない）"""
+    box = highlight_box(screen)
+    text = demo_text(lang)
+    if not box or not text:
+        print("  ⚠️ ハイライトか本文が見つからないので拡大カードを省略", file=sys.stderr)
+        return None, None
+    # 行全体を読んで本文中の位置を決め（同じ語が何度も出てくる対策）、その中で語を探す
+    line, word = ocr_line(screen_path, (40, box[1] + 2, screen.width - 40, box[3] - 2), box[0], box[2], lang)
+    word = word.strip(" ,.;:!?\"”“、。")
+    line_pos = locate(text, line) if len(line) >= 4 else -1
+    pos = locate(text, word, max(line_pos, 0), line_pos + len(line) + 2 if line_pos >= 0 else None) if word else -1
+    if pos < 0:
+        print(f"  ⚠️ OCR「{line}」/「{word}」が本文に見つからないので拡大カードを省略", file=sys.stderr)
+        return None, None
+    found = excerpt(text, pos, pos + len(word), lang)
+    sentence, start, end = found
+    print(f"  拡大カード: 「{sentence}」（{sentence[start:end]}）")
+    return render_callout(sentence, start, end, lang, width), box
 
 
 def compose(lang, raw_name, title, sub, raw_dir, theme):
@@ -171,18 +315,35 @@ def compose(lang, raw_name, title, sub, raw_dir, theme):
     phone_x = (CANVAS[0] - phone.width) // 2
     canvas.paste(phone, (phone_x, top), phone)
 
+    if raw_name in ZOOM:
+        scale = (phone.width - round(phone.width * 0.03) * 2) / screen.width
+        x0, y0, x1, y1 = ZOOM[raw_name]
+        crop = screen.convert("RGB").crop(ZOOM[raw_name])
+        width = CANVAS[0] - 110
+        crop = crop.resize((width, round(crop.height * width / crop.width)), Image.LANCZOS)
+        mask = Image.new("L", crop.size, 0)
+        ImageDraw.Draw(mask).rounded_rectangle([0, 0, crop.width - 1, crop.height - 1], radius=48, fill=255)
+        center_y = top + round(phone.width * 0.03) + (y0 + y1) / 2 * scale
+        y = round(center_y - crop.height / 2) - 60  # 元の位置より少し上に浮かせる
+        card_shadow = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
+        ImageDraw.Draw(card_shadow).rounded_rectangle([55, y + 24, 55 + width, y + crop.height + 24], radius=48,
+                                                      fill=(0, 0, 0, 110))
+        canvas.paste(Image.new("RGB", CANVAS, (0, 0, 0)), (0, 0), _blur(card_shadow))
+        canvas.paste(crop, (55, y), mask)
+
     if raw_name == "playing":
-        band = highlight_band(screen)
-        if band:
-            card = callout(screen, band, CANVAS[0] - 110, theme)
+        screen_path = os.path.join(raw_dir, f"{raw_name}.png")
+        card, box = callout(screen_path, screen, lang, CANVAS[0] - 110)
+        if card:
             scale = (phone.width - round(phone.width * 0.03) * 2) / screen.width
-            center_y = top + round(phone.width * 0.03) + (band[0] + band[1]) / 2 * scale
+            center_y = top + round(phone.width * 0.03) + (box[1] + box[3]) / 2 * scale
             y = round(center_y - card.height / 2)
+            x = (CANVAS[0] - card.width) // 2
             card_shadow = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
             ImageDraw.Draw(card_shadow).rounded_rectangle(
-                [55, y + 20, 55 + card.width, y + card.height + 20], radius=36, fill=(0, 0, 0, 90))
+                [x, y + 20, x + card.width, y + card.height + 20], radius=40, fill=(0, 0, 0, 90))
             canvas.paste(Image.new("RGB", CANVAS, (0, 0, 0)), (0, 0), _blur(card_shadow))
-            canvas.paste(card, (55, y), card)
+            canvas.paste(card, (x, y), card)
     return canvas
 
 
@@ -225,6 +386,10 @@ def main():
     args = p.parse_args()
 
     os.makedirs(args.out, exist_ok=True)
+    # 枚数が減ったときに古い画像が残らないよう、前回の出力を消してから書く
+    for old in os.listdir(args.out):
+        if old.startswith("APP_IPHONE_") and old.endswith(".png"):
+            os.remove(os.path.join(args.out, old))
     missing = [n for n, _, _ in SLIDES[args.lang] if not os.path.exists(os.path.join(args.raw, f"{n}.png"))]
     if missing:
         sys.exit(f"素材がありません: {', '.join(missing)}（{args.raw}）")

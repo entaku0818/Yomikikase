@@ -35,6 +35,10 @@ enum ScreenshotDemoSeeder {
             Thread.sleep(forTimeInterval: 0.02)
         }
         writePDF(content.pdf)
+        let entries = content.dictionary.map { UserDictionaryEntry(word: $0.0, reading: $0.1) }
+        if let data = try? JSONEncoder().encode(entries) {
+            defaults.set(data, forKey: "userDictionary")
+        }
         defaults.set(true, forKey: seededKey)
     }
 
@@ -81,6 +85,8 @@ private struct DemoContent {
 
     let texts: [Item]
     let pdf: PDF
+    /// ユーザー辞書（単語, 読み方）
+    let dictionary: [(String, String)]
 
     static let all: [String: DemoContent] = ["ja": ja, "en": en]
 
@@ -121,7 +127,14 @@ private struct DemoContent {
                 "午前中の作業がもっとも捗る傾向が見られました。一方で、寝る直前までスマートフォンの画面を見ていた日は、寝つきが悪くなる傾向がありました。\n\n画面を見る時間を減らすために、夜は文章を目で読むのではなく、",
                 "耳で聴く方法を試しました。目を休めながら情報を受け取れるため、続けやすいという声が多く集まりました。"
             ].joined()
-        )
+        ),
+        dictionary: [
+            ("生成AI", "せいせいエーアイ"),
+            ("日本橋", "にほんばし"),
+            ("十分", "じゅっぷん"),
+            ("Kubernetes", "クバネティス"),
+            ("御社", "おんしゃ")
+        ]
     )
 
     static let en = DemoContent(
@@ -176,7 +189,14 @@ private struct DemoContent {
                 "participants tried listening to articles in the evening instead of reading them. Resting their eyes while ",
                 "still taking in information made the habit much easier to keep."
             ].joined()
-        )
+        ),
+        dictionary: [
+            ("GIF", "jif"),
+            ("SQL", "sequel"),
+            ("Nguyen", "win"),
+            ("Worcestershire", "wuss-ter-sheer"),
+            ("Hermione", "her-my-oh-nee")
+        ]
     )
 }
 #endif
