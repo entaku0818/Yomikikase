@@ -15,6 +15,10 @@ import Dependencies
 struct LanguageSettingView: View {
     @Bindable var store: StoreOf<SettingsReducer>
     @State private var isPremium: Bool = UserDefaultsManager.shared.isPremiumUser
+    // 遷移先の Store は描き直しのたびに作り直さないよう保持する（作り直すと読み込んだ一覧が消えて空に見える）
+    @State private var userDictionaryStore = Store(initialState: UserDictionaryReducer.State()) {
+        UserDictionaryReducer()
+    }
     #if DEBUG
     @State private var showScreenshotView = false
     #endif
@@ -142,13 +146,7 @@ struct LanguageSettingView: View {
                 }
 
                 Section(header: Text("辞書")) {
-                    NavigationLink(destination: UserDictionaryView(
-                        store: Store(
-                            initialState: UserDictionaryReducer.State()
-                        ) {
-                            UserDictionaryReducer()
-                        }
-                    )) {
+                    NavigationLink(destination: UserDictionaryView(store: userDictionaryStore)) {
                         HStack {
                             Image(systemName: "book.fill")
                             Text("ユーザー辞書")
