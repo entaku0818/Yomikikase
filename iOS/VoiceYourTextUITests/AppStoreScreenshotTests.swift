@@ -67,6 +67,8 @@ final class AppStoreScreenshotTests: XCTestCase {
             sleep(4)
             snap("classics")
         }
+        // 再生中のまま終えると、テスト後の診断収集が10分タイムアウトするまで xcodebuild が返らない
+        app.terminate()
     }
 
     private func captureSpeedAndVoices(ja: Bool) {

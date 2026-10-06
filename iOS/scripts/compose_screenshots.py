@@ -130,7 +130,7 @@ def highlight_band(screen):
 def callout(screen, band, width, theme):
     """ハイライト行を拡大したカード（1枚目で「今読んでいる所が光る」を伝える）"""
     top, bottom = band
-    pad = 10
+    pad = 2
     crop = screen.convert("RGB").crop((30, max(top - pad, 0), screen.width - 30, min(bottom + pad, screen.height)))
     inner_w = width - 48
     crop = crop.resize((inner_w, round(crop.height * inner_w / crop.width)), Image.LANCZOS)
