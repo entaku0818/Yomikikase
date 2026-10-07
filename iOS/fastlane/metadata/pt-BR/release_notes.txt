@@ -1,3 +1,2 @@
 Melhorias
-- Importe arquivos do Google Drive sem fazer login
 - Pequenas melhorias e correções de bugs

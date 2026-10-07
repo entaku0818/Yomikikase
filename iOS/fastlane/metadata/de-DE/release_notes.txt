@@ -1,3 +1,2 @@
 Verbesserungen
-- Google-Drive-Dateien ohne Anmeldung importieren
 - Kleinere Verbesserungen und Fehlerbehebungen

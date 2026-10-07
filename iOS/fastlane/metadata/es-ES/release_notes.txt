@@ -1,3 +1,2 @@
 Mejoras
-- Importa archivos de Google Drive sin iniciar sesión
-- Mejoras menores y corrección de errores
+- Pequeñas mejoras y corrección de errores
