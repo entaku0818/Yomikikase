@@ -18,7 +18,7 @@ enum ScreenshotDemoSeeder {
     /// 起動引数で言語が指定されていれば、初回だけデモデータを入れる
     static func seedIfRequested() {
         guard let code = UserDefaults.standard.string(forKey: launchArgument),
-              let content = DemoContent.all[code] else {
+              let content = ScreenshotDemoContent.all[code] else {
             return
         }
         let defaults = UserDefaults.standard
@@ -42,7 +42,7 @@ enum ScreenshotDemoSeeder {
         defaults.set(true, forKey: seededKey)
     }
 
-    private static func writePDF(_ pdf: DemoContent.PDF) {
+    private static func writePDF(_ pdf: ScreenshotDemoContent.PDF) {
         guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return
         }
@@ -70,7 +70,7 @@ enum ScreenshotDemoSeeder {
     }
 }
 
-private struct DemoContent {
+struct ScreenshotDemoContent {
     struct Item {
         let title: String
         let text: String
@@ -88,9 +88,11 @@ private struct DemoContent {
     /// ユーザー辞書（単語, 読み方）
     let dictionary: [(String, String)]
 
-    static let all: [String: DemoContent] = ["ja": ja, "en": en]
+    static let all: [String: ScreenshotDemoContent] = [
+        "ja": ja, "en": en, "de": de, "es": es, "fr": fr, "it": it, "ko": ko, "th": th, "tr": tr, "vi": vi
+    ]
 
-    static let ja = DemoContent(
+    static let ja = ScreenshotDemoContent(
         texts: [
             Item(
                 title: "吾輩は猫である",
@@ -137,7 +139,7 @@ private struct DemoContent {
         ]
     )
 
-    static let en = DemoContent(
+    static let en = ScreenshotDemoContent(
         texts: [
             Item(
                 title: "Alice's Adventures in Wonderland",

@@ -9,7 +9,7 @@
 #    2. compose_screenshots.py で背景・キャッチコピー・端末フレームを合成する
 #
 #  使い方（どこからでも可）:
-#    iOS/scripts/appstore_screenshots.sh             # ja と en-US を撮影＋合成
+#    iOS/scripts/appstore_screenshots.sh             # 10言語を撮影＋合成
 #    iOS/scripts/appstore_screenshots.sh ja          # 言語を絞る
 #    SKIP_CAPTURE=1 iOS/scripts/appstore_screenshots.sh   # 撮影済みの素材から合成だけやり直す
 #
@@ -30,7 +30,7 @@ OUT_DIR="${OUT_DIR:-${IOS_DIR}/build/appstore_screenshots}"
 SIMULATOR_NAME="${SIMULATOR_NAME:-iPhone 18 Pro Max}"
 BUNDLE_ID="com.entaku.VoiceYourText"
 LANGS=("$@")
-[ ${#LANGS[@]} -eq 0 ] && LANGS=(ja en-US)
+[ ${#LANGS[@]} -eq 0 ] && LANGS=(ja en-US de-DE es-ES fr-FR it ko th tr vi)
 
 udid=$(xcrun simctl list devices available -j | /usr/bin/python3 -c '
 import json, sys
@@ -56,25 +56,38 @@ capture() {
     xctestrun=$(ls "$DERIVED_DATA_PATH"/Build/Products/*.xctestrun | head -1)
 
     for lang in "${LANGS[@]}"; do
-        code="${lang%%-*}"   # en-US -> en
+        # アプリの言語コード・AppleLocale・UI テストがタップする文言（Localizable.xcstrings から）
+        info=$(/usr/bin/env python3 "${IOS_DIR}/scripts/compose_screenshots.py" --labels "$lang")
+        code=$(echo "$info" | sed -n 1p)
+        locale=$(echo "$info" | sed -n 2p)
+        labels=$(echo "$info" | sed -n 3p)
         raw="${OUT_DIR}/raw/${lang}"
         rm -rf "$raw" && mkdir -p "$raw"
         # 毎回入れ直してデモデータと起動回数（レビュー依頼の判定）を初期状態にする
         xcrun simctl uninstall "$udid" "$BUNDLE_ID" || true
         echo "▶ ${lang} を撮影"
         TEST_RUNNER_SHOT_DIR="$raw" TEST_RUNNER_SHOT_LANG="$code" \
+            TEST_RUNNER_SHOT_LOCALE="$locale" TEST_RUNNER_SHOT_LABELS="$labels" \
             xcodebuild test-without-building -xctestrun "$xctestrun" \
             -destination "platform=iOS Simulator,id=${udid}" \
             -only-testing:VoiceYourTextUITests/AppStoreScreenshotTests \
-            -parallel-testing-enabled NO -quiet
+            -parallel-testing-enabled NO -quiet \
+            || { echo "✗ ${lang} の撮影に失敗" >&2; FAILED+=("$lang"); }
     done
 }
 
+# 1言語の失敗で全体を止めず、最後にまとめて報告する
+FAILED=()
 [ "${SKIP_CAPTURE:-0}" = "1" ] || capture
 
 for lang in "${LANGS[@]}"; do
     /usr/bin/env python3 "${IOS_DIR}/scripts/compose_screenshots.py" \
         --lang "$lang" --raw "${OUT_DIR}/raw/${lang}" --out "${OUT_DIR}/final/${lang}" \
-        --theme "${THEME:-indigo}" --compare-old "${IOS_DIR}/fastlane/screenshots/${lang}"
+        --theme "${THEME:-indigo}" --compare-old "${IOS_DIR}/fastlane/screenshots/${lang}" \
+        || { echo "✗ ${lang} の合成に失敗" >&2; FAILED+=("$lang"); }
 done
+if [ ${#FAILED[@]} -gt 0 ]; then
+    echo "❌ 失敗: ${FAILED[*]}" >&2
+    exit 1
+fi
 echo "✅ ${OUT_DIR}/final"

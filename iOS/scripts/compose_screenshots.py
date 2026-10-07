@@ -44,9 +44,73 @@ SLIDES = {
         ("playing", "Listen while\nyou do anything", "Every word highlighted as it's read aloud"),
         ("home", "PDFs, books, web\npages — read aloud", "Text, PDF, ePub, links and scans"),
         ("speed", "Listen at\nyour own pace", "Playback from 0.7x to 2x"),
-        ("sleeptimer", "Fall asleep\nlistening", "Sleep timer that fades out gently"),
+        ("sleeptimer", "Fall asleep\nlistening", "Stops automatically when time's up"),
         ("dictionary", "Fix any\npronunciation", "Teach it names and terms in your dictionary"),
     ],
+    "de-DE": [
+        ("playing", "Nebenbei hören –\nüberall", "Jedes Wort wird beim Vorlesen markiert"),
+        ("home", "PDFs, Bücher, Web –\nalles vorgelesen", "Text, PDF, ePub, Links und Scans"),
+        ("speed", "Hör in deinem\neigenen Tempo", "Wiedergabe von 0,7x bis 2x"),
+        ("sleeptimer", "Mit Vorlesen\neinschlafen", "Stoppt automatisch zur gewählten Zeit"),
+        ("dictionary", "Jede Aussprache\nkorrigieren", "Namen und Begriffe im Wörterbuch hinterlegen"),
+    ],
+    "es-ES": [
+        ("playing", "Escucha mientras\nhaces otras cosas", "Cada palabra se resalta al leerla en voz alta"),
+        ("home", "PDF, libros y webs,\nleídos en voz alta", "Texto, PDF, ePub, enlaces y escaneos"),
+        ("speed", "Escucha a\ntu ritmo", "Velocidad de 0,7x a 2x"),
+        ("sleeptimer", "Duérmete\nescuchando", "Se detiene solo cuando se acaba el tiempo"),
+        ("dictionary", "Corrige cualquier\npronunciación", "Enseña nombres y términos con tu diccionario"),
+    ],
+    "fr-FR": [
+        ("playing", "Écoutez tout en\nfaisant autre chose", "Chaque mot est surligné pendant la lecture"),
+        ("home", "PDF, livres, web :\ntout est lu à voix haute", "Texte, PDF, ePub, liens et scans"),
+        ("speed", "Écoutez à\nvotre rythme", "Vitesse de 0,7x à 2x"),
+        ("sleeptimer", "Endormez-vous\nen écoutant", "S'arrête tout seul à l'heure choisie"),
+        ("dictionary", "Corrigez chaque\nprononciation", "Ajoutez noms et termes à votre dictionnaire"),
+    ],
+    "it": [
+        ("playing", "Ascolta mentre\nfai altro", "Ogni parola evidenziata durante la lettura"),
+        ("home", "PDF, libri e web,\nletti ad alta voce", "Testo, PDF, ePub, link e scansioni"),
+        ("speed", "Ascolta al\ntuo ritmo", "Velocità da 0,7x a 2x"),
+        ("sleeptimer", "Addormentati\nascoltando", "Si ferma da solo allo scadere del tempo"),
+        ("dictionary", "Correggi ogni\npronuncia", "Insegna nomi e termini con il dizionario"),
+    ],
+    "ko": [
+        ("playing", "집안일하면서,\n이동하면서 듣기", "읽는 부분을 하이라이트로 표시"),
+        ("home", "PDF도 책도 웹도,\n바로 음성으로", "텍스트・PDF・ePub・링크・스캔"),
+        ("speed", "내 속도에\n맞춰 듣기", "0.7배부터 2배까지"),
+        ("sleeptimer", "잠들기 전엔\n수면 타이머", "시간이 되면 자동으로 정지"),
+        ("dictionary", "잘못 읽는 말은\n사전으로 고치기", "이름과 전문 용어의 읽는 법을 등록"),
+    ],
+    "th": [
+        ("playing", "ฟังได้ทุกที่\nระหว่างทำอย่างอื่น", "ไฮไลต์คำที่กำลังอ่านออกเสียง"),
+        ("home", "PDF หนังสือ เว็บ\nอ่านออกเสียงได้หมด", "ข้อความ PDF ePub ลิงก์ และสแกน"),
+        ("speed", "ฟังตามจังหวะ\nของคุณ", "ปรับความเร็ว 0.7x ถึง 2x"),
+        ("sleeptimer", "ฟังจนหลับ\nด้วยตัวตั้งเวลา", "หยุดอัตโนมัติเมื่อถึงเวลา"),
+        ("dictionary", "แก้คำอ่าน\nได้ด้วยพจนานุกรม", "เพิ่มคำอ่านของชื่อและศัพท์เฉพาะ"),
+    ],
+    "tr": [
+        ("playing", "Başka işler\nyaparken dinleyin", "Okunan her kelime vurgulanır"),
+        ("home", "PDF, kitap, web:\nhepsi sesli okunur", "Metin, PDF, ePub, bağlantı ve tarama"),
+        ("speed", "Kendi hızınızda\ndinleyin", "0,7x ile 2x arası hız"),
+        ("sleeptimer", "Dinlerken\nuykuya dalın", "Süre dolunca otomatik durur"),
+        ("dictionary", "Her telaffuzu\ndüzeltin", "Adları ve terimleri sözlüğe ekleyin"),
+    ],
+    "vi": [
+        ("playing", "Vừa làm việc khác\nvừa nghe", "Từng chữ được tô sáng khi đọc"),
+        ("home", "PDF, sách, web —\nđều đọc thành tiếng", "Văn bản, PDF, ePub, liên kết và bản quét"),
+        ("speed", "Nghe theo\nnhịp của bạn", "Tốc độ từ 0,7x đến 2x"),
+        ("sleeptimer", "Nghe đến\nkhi ngủ", "Hẹn giờ tự dừng khi hết thời gian"),
+        ("dictionary", "Sửa mọi\ncách phát âm", "Thêm tên và thuật ngữ vào từ điển"),
+    ],
+}
+
+# fastlane のディレクトリ名 → (アプリの言語コード, AppleLocale, Vision の認識言語)
+LOCALES = {
+    "ja": ("ja", "ja_JP", "ja-JP"), "en-US": ("en", "en_US", "en-US"), "de-DE": ("de", "de_DE", "de-DE"),
+    "es-ES": ("es", "es_ES", "es-ES"), "fr-FR": ("fr", "fr_FR", "fr-FR"), "it": ("it", "it_IT", "it-IT"),
+    "ko": ("ko", "ko_KR", "ko-KR"), "th": ("th", "th_TH", "th-TH"), "tr": ("tr", "tr_TR", "tr-TR"),
+    "vi": ("vi", "vi_VN", "vi-VT"),
 }
 
 FONT_DIR = "/System/Library/Fonts"
@@ -55,12 +119,20 @@ JA_MEDIUM = os.path.join(FONT_DIR, "ヒラギノ角ゴシック W6.ttc")
 EN_FONT = os.path.join(FONT_DIR, "SFNS.ttf")
 
 
-def load_font(lang, size, bold):
+KO_FONT = os.path.join(FONT_DIR, "AppleSDGothicNeo.ttc")  # index 6=Bold, 4=SemiBold, 0=Regular
+TH_FONT = os.path.join(FONT_DIR, "Supplemental", "SukhumvitSet.ttc")  # index 5=Bold, 3=Medium, 2=Text
+
+
+def load_font(lang, size, bold, regular=False):
     if lang == "ja":
-        return ImageFont.truetype(JA_BOLD if bold else JA_MEDIUM, size)
+        return ImageFont.truetype(JA_REGULAR if regular else JA_BOLD if bold else JA_MEDIUM, size)
+    if lang == "ko":
+        return ImageFont.truetype(KO_FONT, size, index=0 if regular else 6 if bold else 4)
+    if lang == "th":
+        return ImageFont.truetype(TH_FONT, size, index=2 if regular else 5 if bold else 3)
     font = ImageFont.truetype(EN_FONT, size)
     try:
-        font.set_variation_by_name("Bold" if bold else "Semibold")
+        font.set_variation_by_name("Regular" if regular else "Bold" if bold else "Semibold")
     except (OSError, ValueError):
         pass
     return font
@@ -116,9 +188,15 @@ def device(screen, width):
 
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-SEEDER = os.path.join(SCRIPT_DIR, "..", "VoiceYourText", "Features", "Debug", "ScreenshotDemoSeeder.swift")
+DEBUG_DIR = os.path.join(SCRIPT_DIR, "..", "VoiceYourText", "Features", "Debug")
+SEEDER_FILES = [os.path.join(DEBUG_DIR, "ScreenshotDemoSeeder.swift"),
+                os.path.join(DEBUG_DIR, "ScreenshotDemoContent+Locales.swift")]
 # 1枚目で読み上げているデモ文書のタイトル（本文は ScreenshotDemoSeeder.swift から読む）
-PLAYING_TITLE = {"ja": "吾輩は猫である", "en-US": "Alice's Adventures in Wonderland"}
+PLAYING_TITLE = {
+    "ja": "吾輩は猫である", "en-US": "Alice's Adventures in Wonderland", "de-DE": "Die Verwandlung",
+    "es-ES": "Don Quijote de la Mancha", "fr-FR": "Du côté de chez Swann", "it": "Le avventure di Pinocchio",
+    "ko": "서시", "th": "ฟังระหว่างเดินทาง", "tr": "Yolda Dinlemek", "vi": "Truyện Kiều",
+}
 JA_REGULAR = os.path.join(FONT_DIR, "ヒラギノ角ゴシック W4.ttc")
 # 拡大して見せる部分（実画面 1320x2868 の座標）。スリープタイマーはミニプレイヤーの帯（残り時間つき）
 ZOOM = {"sleeptimer": (20, 2384, 1300, 2616)}
@@ -139,7 +217,7 @@ def highlight_box(screen):
 def demo_text(lang):
     """シーダーから1枚目のデモ本文を取り出す（Swift の文字列リテラルを連結して戻す）"""
     import re
-    src = open(SEEDER, encoding="utf-8").read()
+    src = "".join(open(f, encoding="utf-8").read() for f in SEEDER_FILES)
     title = re.escape(PLAYING_TITLE[lang])
     m = re.search(r'title: "' + title + r'",\s*text: (\[.*?\]\.joined\(\)|"(?:[^"\\]|\\.)*")', src, re.S)
     if not m:
@@ -154,7 +232,7 @@ def ocr_line(path, line_box, hx0, hx1, lang):
     x0, y0, x1, y1 = line_box
     out = subprocess.run(
         ["xcrun", "swift", os.path.join(SCRIPT_DIR, "ocr_region.swift"), path,
-         str(x0), str(y0), str(x1 - x0), str(y1 - y0), str(hx0), str(hx1), "ja" if lang == "ja" else "en"],
+         str(x0), str(y0), str(x1 - x0), str(y1 - y0), str(hx0), str(hx1), LOCALES[lang][2]],
         capture_output=True, text=True)
     rows = out.stdout.split("\n")
     return (rows[0].strip(), rows[1].strip()) if len(rows) >= 2 else ("", "")
@@ -177,7 +255,7 @@ def excerpt(text, pos, end, lang, limit=150):
     """pos〜end を含む文を返す。長すぎる文は節（；：、，）の区切りで切り、途中なら … を付ける"""
     import re
     levels = ([r"。|\n", r"、"] if lang == "ja"
-              else [r'[.!?]["”]?(?=\s)|\n', r"[;:]", r",(?=\s)"])
+              else [r'[.!?](?:["”]|\s?»)?(?=\s|$)|\n', r"[;:]", r",(?=\s)"])
     lo, hi = 0, len(text)
     for level, pattern in enumerate(levels):
         cuts = [m.end() for m in re.finditer(pattern, text[lo:hi])]
@@ -186,13 +264,29 @@ def excerpt(text, pos, end, lang, limit=150):
         lo, hi = begin, finish
         if hi - lo <= limit:
             break
+    if hi - lo > limit:
+        # 句読点で切れない言語（タイ語など）: 語の入った句（空白区切り）から左右に広げられるだけ広げる
+        spans = [(m.start() + lo, m.end() + lo) for m in re.finditer(r"\S+", text[lo:hi])]
+        idx = next((i for i, (a, b) in enumerate(spans) if a <= pos < b), 0)
+        left = right = idx
+        while True:
+            grown = False
+            if right + 1 < len(spans) and spans[right + 1][1] - spans[left][0] <= limit:
+                right += 1
+                grown = True
+            if left > 0 and spans[right][1] - spans[left - 1][0] <= limit:
+                left -= 1
+                grown = True
+            if not grown:
+                break
+        lo, hi = spans[left][0], max(spans[right][1], end)
     raw = text[lo:hi]
     lead = len(raw) - len(raw.lstrip())
     sentence = raw.strip().rstrip(",;:、")
     start = pos - lo - lead
     def at_sentence_end(prefix):
         stripped = prefix.rstrip(" ")
-        return not stripped.strip() or stripped[-1] in "。.!?\"”\n"
+        return not stripped.strip() or stripped[-1] in "。.!?\"”»\n"
     is_head = at_sentence_end(text[:lo])
     is_tail = at_sentence_end(text[:hi])
     if not is_head:
@@ -205,18 +299,15 @@ def excerpt(text, pos, end, lang, limit=150):
 def render_callout(sentence, start, end, lang, width):
     """文を折り返して描いたカード。読み上げ中の語に黄色のハイライトを敷く"""
     size = 56
-    font = ImageFont.truetype(JA_REGULAR, size) if lang == "ja" else load_font(lang, size, False)
-    if lang != "ja":
-        try:
-            font.set_variation_by_name("Regular")
-        except (OSError, ValueError):
-            pass
+    font = load_font(lang, size, False, regular=True)
     pad_x, pad_y, line_h = 48, 40, round(size * 1.5)
     max_w = width - pad_x * 2
     probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
     # 折り返しの単位: 日本語は1文字、英語は単語（後ろの空白込み）
     import re
     units = list(sentence) if lang == "ja" else re.findall(r"\S+\s*", sentence)
+    # 1語で幅を超える塊（空白の少ない言語）は文字単位に崩す
+    units = [c for u in units for c in ([u] if probe.textlength(u, font=font) <= max_w else list(u))]
     # ハイライト中の語は途中で折り返さず、1つの塊として扱う
     merged, i = [], 0
     for u in units:
@@ -297,7 +388,7 @@ def compose(lang, raw_name, title, sub, raw_dir, theme):
     draw = ImageDraw.Draw(canvas)
     margin = 90
 
-    title_font, title_size = fit_font(draw, lang, title, CANVAS[0] - margin * 2, 124 if lang == "ja" else 136, True, 0.22)
+    title_font, title_size = fit_font(draw, lang, title, CANVAS[0] - margin * 2, 124 if lang in ("ja", "ko", "th") else 136, True, 0.22)
     y = 190
     draw.multiline_text((CANVAS[0] / 2, y), title, font=title_font, fill=colors["title"], anchor="ma",
                         align="center", spacing=title_size * 0.22)
@@ -309,7 +400,7 @@ def compose(lang, raw_name, title, sub, raw_dir, theme):
     screen = Image.open(os.path.join(raw_dir, f"{raw_name}.png"))
     phone = device(screen, 1010)
     # 端末は下端を少しはみ出させて大きく見せる
-    top = max(box[3] + 170, 690)
+    top = round(max(box[3] + 170, 690))
     shadow = Image.new("RGBA", CANVAS, (0, 0, 0, 0))
     ImageDraw.Draw(shadow).rounded_rectangle(
         [(CANVAS[0] - phone.width) / 2 + 10, top + 30, (CANVAS[0] + phone.width) / 2 - 10, top + phone.height],
@@ -379,7 +470,35 @@ def compare(lang, old_dir, new_dir, out_path):
     print(f"  比較: {out_path}")
 
 
+UI_KEYS = ["マイファイル", "ホーム", "設定", "名作", "声を選ぶ", "完了", "スリープタイマー", "ユーザー辞書"]
+XCSTRINGS = os.path.join(SCRIPT_DIR, "..", "VoiceYourText", "Localization", "Localizable.xcstrings")
+
+
+def ui_labels(lang):
+    """UI テストがタップするボタンの文言（日本語 → その言語）を Localizable.xcstrings から引く"""
+    import json
+    code = LOCALES[lang][0]
+    strings = json.load(open(XCSTRINGS, encoding="utf-8"))["strings"]
+
+    def tr(key):
+        value = strings.get(key, {}).get("localizations", {}).get(code, {}).get("stringUnit", {}).get("value")
+        return value or key
+    labels = {key: tr(key) for key in UI_KEYS}
+    labels["_sleep30"] = tr("%d分後に停止").replace("%d", "30").replace("%lld", "30")
+    labels["_playTitle"] = PLAYING_TITLE[lang]
+    return labels
+
+
 def main():
+    if len(sys.argv) == 3 and sys.argv[1] == "--labels":
+        # appstore_screenshots.sh 用: UI テストに渡す文言と、起動時の言語設定を出す
+        import json
+        lang = sys.argv[2]
+        code, locale, _ = LOCALES[lang]
+        print(code)
+        print(locale)
+        print(json.dumps(ui_labels(lang), ensure_ascii=False))
+        return
     p = argparse.ArgumentParser()
     p.add_argument("--lang", required=True, choices=sorted(SLIDES))
     p.add_argument("--raw", required=True)

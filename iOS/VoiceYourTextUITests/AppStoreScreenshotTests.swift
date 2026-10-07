@@ -4,7 +4,8 @@
 //
 //  App Store 用スクリーンショットの素材（実画面）を撮る。
 //  通常のテストでは何もしない。iOS/scripts/appstore_screenshots.sh から
-//  SHOT_DIR / SHOT_LANG を渡したときだけ動く。
+//  SHOT_DIR / SHOT_LANG / SHOT_LOCALE / SHOT_LABELS を渡したときだけ動く。
+//  SHOT_LABELS は「日本語の文言 → その言語の文言」の JSON（スクリプトが Localizable.xcstrings から作る）。
 //
 
 import XCTest
@@ -12,6 +13,7 @@ import XCTest
 final class AppStoreScreenshotTests: XCTestCase {
     private var shotDir: URL!
     private var lang = "ja"
+    private var labels: [String: String] = [:]
     private var app: XCUIApplication!
 
     override func setUpWithError() throws {
@@ -22,10 +24,14 @@ final class AppStoreScreenshotTests: XCTestCase {
         continueAfterFailure = false
         shotDir = URL(fileURLWithPath: dir)
         lang = env["SHOT_LANG"] ?? "ja"
+        if let json = env["SHOT_LABELS"]?.data(using: .utf8),
+           let decoded = try? JSONDecoder().decode([String: String].self, from: json) {
+            labels = decoded
+        }
         try FileManager.default.createDirectory(at: shotDir, withIntermediateDirectories: true)
 
         app = XCUIApplication()
-        let locale = lang == "ja" ? "ja_JP" : "en_US"
+        let locale = env["SHOT_LOCALE"] ?? "ja_JP"
         app.launchArguments = [
             "-ScreenshotSeed", lang,
             "-IsPremiumUser", "YES",
@@ -45,12 +51,12 @@ final class AppStoreScreenshotTests: XCTestCase {
         sleep(3)
 
         // マイファイル（デモデータの一覧）
-        app.buttons[ja ? "マイファイル" : "My Files"].tap()
+        app.buttons[label("マイファイル")].tap()
         sleep(2)
         snap("myfiles")
 
         // 読み上げ中のハイライト。端末の声が単語を追い始めるまで待つ
-        app.staticTexts[ja ? "吾輩は猫である" : "Alice's Adventures in Wonderland"].firstMatch.tap()
+        app.staticTexts[label("_playTitle")].firstMatch.tap()
         sleep(2)
         app.buttons["play.fill"].firstMatch.tap()
         // Mac が重いと再生開始が遅れる。停止ボタンが出る（=再生が始まる）のを待ってから、ハイライトが進むまで待つ
@@ -62,17 +68,17 @@ final class AppStoreScreenshotTests: XCTestCase {
         captureMiniPlayer(ja: ja)
 
         // ホーム（取り込める種類の一覧）
-        app.buttons[ja ? "ホーム" : "Home"].tap()
+        app.buttons[label("ホーム")].tap()
         sleep(2)
         snap("home")
 
         captureSettings(ja: ja)
-        app.buttons[ja ? "ホーム" : "Home"].tap()
+        app.buttons[label("ホーム")].tap()
         sleep(1)
 
         // 名作（青空文庫・日本語のみ）
         if ja {
-            app.buttons["名作"].tap()
+            app.buttons[label("名作")].tap()
             sleep(4)
             snap("classics")
         }
@@ -123,21 +129,21 @@ final class AppStoreScreenshotTests: XCTestCase {
             sleep(3)
         }
         // メニューを開いたままだと一覧に重なって見づらいので、30分を選んで残り時間が出た状態を撮る
-        app.buttons[ja ? "スリープタイマー" : "Sleep timer"].firstMatch.tap()
+        app.buttons[label("スリープタイマー")].firstMatch.tap()
         sleep(2)
-        app.buttons[ja ? "30分後に停止" : "Stop in 30 min"].firstMatch.tap()
+        app.buttons[label("_sleep30")].firstMatch.tap()
         sleep(3)
         snap("sleeptimer")
     }
 
     private func captureSettings(ja: Bool) {
         // ユーザー辞書（デモの単語が入っている）。6枚目に使う
-        app.buttons[ja ? "設定" : "Settings"].tap()
+        app.buttons[label("設定")].tap()
         sleep(2)
         // 辞書の行がミニプレイヤーの下に隠れて、タップがミニプレイヤーに当たるのでスクロールしておく
         app.swipeUp()
         sleep(1)
-        app.buttons[ja ? "ユーザー辞書" : "User Dictionary"].firstMatch.tap()
+        app.buttons[label("ユーザー辞書")].firstMatch.tap()
         sleep(5)
         snap("dictionary")
         // 戻るボタンは辞書画面の「＋」と取り違えやすいので、左端からのスワイプで戻る
@@ -147,6 +153,11 @@ final class AppStoreScreenshotTests: XCTestCase {
     }
 
     // MARK: - helpers
+
+    /// その言語での文言。ラベルが無ければ日本語のまま
+    private func label(_ key: String) -> String {
+        labels[key] ?? key
+    }
 
     private func snap(_ name: String) {
         let data = XCUIScreen.main.screenshot().pngRepresentation

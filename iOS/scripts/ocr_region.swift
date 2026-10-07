@@ -1,7 +1,7 @@
 // ocr_region.swift
 // 画像の1行を Vision で読み、行の文字列と、横方向 hx0〜hx1 にかかる部分（読み上げ中のハイライト）を出す。
 // compose_screenshots.py の拡大カード用。
-// 使い方: xcrun swift ocr_region.swift <image> <x> <y> <w> <h> <hx0> <hx1> <ja|en>
+// 使い方: xcrun swift ocr_region.swift <image> <x> <y> <w> <h> <hx0> <hx1> <Vision の言語コード 例: ja-JP>
 // 出力: 1行目=行の文字列、2行目=ハイライト部分の文字列
 
 import AppKit
@@ -14,14 +14,15 @@ guard args.count == 9,
       let x = Int(args[2]), let y = Int(args[3]), let w = Int(args[4]), let h = Int(args[5]),
       let hx0 = Double(args[6]), let hx1 = Double(args[7]),
       let cropped = cgImage.cropping(to: CGRect(x: x, y: y, width: w, height: h)) else {
-    FileHandle.standardError.write("usage: ocr_region.swift <image> <x> <y> <w> <h> <hx0> <hx1> <ja|en>\n".data(using: .utf8)!)
+    FileHandle.standardError.write("usage: ocr_region.swift <image> <x> <y> <w> <h> <hx0> <hx1> <language>\n".data(using: .utf8)!)
     exit(1)
 }
 
 let request = VNRecognizeTextRequest()
 request.recognitionLevel = .accurate
-request.recognitionLanguages = args[8] == "ja" ? ["ja-JP", "en-US"] : ["en-US"]
-request.usesLanguageCorrection = args[8] != "ja"
+request.recognitionLanguages = args[8] == "en-US" ? ["en-US"] : [args[8], "en-US"]
+// 日本語は補正をかけると別の語に寄せられやすい
+request.usesLanguageCorrection = args[8] != "ja-JP"
 try VNImageRequestHandler(cgImage: cropped).perform([request])
 
 var line = ""
