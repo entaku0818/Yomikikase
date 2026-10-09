@@ -410,6 +410,11 @@ struct HomeView: View {
             .navigationDestination(isPresented: $showingAozoraTextView) {
                 TextInputView(store: store, initialText: aozoraText, fileId: nil, fileType: "aozora")
             }
+            // 「最近のファイル」（speechList）の読み込み。起動直後と、テキスト画面から戻ったときに再取得する。
+            // 旧 SpeechView だけが送っていたため、3タブ化後は起動直後に空のままだった（#156）
+            .onAppear {
+                store.send(.onAppear)
+            }
             .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
                 isPremium = UserDefaultsManager.shared.isPremiumUser
             }
