@@ -182,10 +182,12 @@ final class PDFReaderFeatureTests: XCTestCase {
             $0.highlightedText = "World"
         }
 
+        // 最後まで読んだので、次はページの先頭から
         await store.receive(.speechFinished) {
             $0.isReading = false
             $0.highlightedRange = nil
             $0.highlightedText = nil
+            $0.startCharacterIndex = 0
         }
 
         XCTAssertEqual(capturedUtteranceText, "World")

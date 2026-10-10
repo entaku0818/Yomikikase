@@ -16,8 +16,30 @@ struct PlayerControlView: View {
     let onStop: () -> Void
     let onSpeedTap: () -> Void
     let onTTSInfoTap: (() -> Void)?
+    /// 途中で止めているとき（次の再生が続きから始まるとき）だけ渡す。「最初から」ボタンになる
+    var onRestart: (() -> Void)? = nil
 
     var body: some View {
+        VStack(spacing: 0) {
+            if let onRestart, !isSpeaking {
+                HStack(spacing: 12) {
+                    Text("続きから再生します")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Button(action: onRestart) {
+                        Label("最初から", systemImage: "backward.end.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundColor(AppTheme.primary)
+                    }
+                }
+                .padding(.top, 12)
+            }
+            controls
+        }
+        .background(Color(.systemBackground))
+    }
+
+    private var controls: some View {
         ZStack {
             // TTS情報ボタン（左端）
             if let onTTSInfoTap = onTTSInfoTap {
@@ -70,7 +92,6 @@ struct PlayerControlView: View {
             }
         }
         .padding(.vertical, 16)
-        .background(Color(.systemBackground))
     }
 }
 
@@ -100,6 +121,22 @@ struct PlayerControlView: View {
             onStop: {},
             onSpeedTap: {},
             onTTSInfoTap: {}
+        )
+    }
+}
+
+#Preview("Resumable") {
+    VStack {
+        Spacer()
+        PlayerControlView(
+            isSpeaking: false,
+            isTextEmpty: false,
+            speechRate: 0.5,
+            onPlay: {},
+            onStop: {},
+            onSpeedTap: {},
+            onTTSInfoTap: {},
+            onRestart: {}
         )
     }
 }
