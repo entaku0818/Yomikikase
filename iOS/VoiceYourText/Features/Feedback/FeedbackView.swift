@@ -4,6 +4,7 @@ import Dependencies
 struct FeedbackView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var message: String = ""
+    @State private var email: String = ""
     @State private var isSubmitting: Bool = false
     @State private var submitted: Bool = false
     @Dependency(\.feedbackClient) var feedbackClient
@@ -33,6 +34,20 @@ struct FeedbackView: View {
                         }
                     )
 
+                VStack(alignment: .leading, spacing: 6) {
+                    TextField("返信先メールアドレス（任意）", text: $email)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.emailAddress)
+                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
+                        .padding(12)
+                        .background(Color(.systemGray6))
+                        .cornerRadius(8)
+                    Text(isEmailValid ? "返信が必要な場合のみご記入ください" : "メールアドレスの形式をご確認ください")
+                        .font(.caption)
+                        .foregroundColor(isEmailValid ? .secondary : .red)
+                }
+
                 Spacer()
 
                 Button(action: submit) {
@@ -48,11 +63,11 @@ struct FeedbackView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(message.isEmpty ? Color.gray : Color.blue)
+                    .background(canSubmit ? Color.blue : Color.gray)
                     .foregroundColor(.white)
                     .cornerRadius(12)
                 }
-                .disabled(message.isEmpty || isSubmitting)
+                .disabled(!canSubmit || isSubmitting)
             }
             .padding()
             .navigationTitle("フィードバック")
@@ -70,11 +85,14 @@ struct FeedbackView: View {
         }
     }
 
+    private var isEmailValid: Bool { FeedbackEmail.isAcceptable(email) }
+    private var canSubmit: Bool { !message.isEmpty && isEmailValid }
+
     private func submit() {
         isSubmitting = true
         Task {
             do {
-                try await feedbackClient.submit(message)
+                try await feedbackClient.submit(message, email)
                 await MainActor.run {
                     isSubmitting = false
                     submitted = true

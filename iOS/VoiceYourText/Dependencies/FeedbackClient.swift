@@ -4,12 +4,23 @@ import UIKit
 import FirebaseAppCheck
 
 struct FeedbackClient {
-    var submit: @Sendable (String) async throws -> Void
+    /// (本文, 返信先メール。空なら返信不要)
+    var submit: @Sendable (String, String) async throws -> Void
+}
+
+/// 返信先メール（任意）の入力チェック。空は OK（返信不要）。サーバ側でも同じ基準で捨てる
+enum FeedbackEmail {
+    static func isAcceptable(_ value: String) -> Bool {
+        let email = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        if email.isEmpty { return true }
+        guard email.count <= 254 else { return false }
+        return email.range(of: #"^[^\s@]+@[^\s@]+\.[^\s@]+$"#, options: .regularExpression) != nil
+    }
 }
 
 extension FeedbackClient: DependencyKey {
     static var liveValue: Self {
-        Self { message in
+        Self { message, email in
             let url = URL(string: "https://asia-northeast1-voiceyourtext.cloudfunctions.net/submitFeedback")!
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
             let osVersion = await UIDevice.current.systemVersion
@@ -30,6 +41,7 @@ extension FeedbackClient: DependencyKey {
                 "appVersion": appVersion,
                 "osVersion": osVersion,
                 "deviceModel": deviceModel,
+                "email": email.trimmingCharacters(in: .whitespacesAndNewlines),
             ])
 
             let (_, response) = try await URLSession.shared.data(for: request)
@@ -40,7 +52,7 @@ extension FeedbackClient: DependencyKey {
     }
 
     static var testValue: Self {
-        Self { _ in }
+        Self { _, _ in }
     }
 }
 

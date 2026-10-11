@@ -14,6 +14,19 @@ const MESSAGE_MAX_LENGTH = 2000;
 // 切り替えはコード変更不要（Cloud Functionsの環境変数 APP_CHECK_ENFORCED=true）。
 const APP_CHECK_ENFORCED = process.env.APP_CHECK_ENFORCED === "true";
 
+const EMAIL_MAX_LENGTH = 254;
+
+/**
+ * 返信先メール（任意）。形式が怪しいものは捨てて空にする（フィードバック本体は受け取る）。
+ * entaku HQ がこの email を返信先として読む。
+ */
+function normalizeEmail(value) {
+  if (typeof value !== "string") return "";
+  const email = value.trim();
+  if (!email || email.length > EMAIL_MAX_LENGTH) return "";
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : "";
+}
+
 function escapeSlackMrkdwn(text) {
   return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
@@ -59,6 +72,7 @@ exports.submitFeedback = onRequest(
     }
 
     const { message, appVersion, osVersion, deviceModel } = req.body;
+    const email = normalizeEmail(req.body.email);
 
     if (!message) {
       res.status(400).json({ error: "message is required" });
@@ -77,6 +91,7 @@ exports.submitFeedback = onRequest(
       appVersion: appVersion || "unknown",
       osVersion: osVersion || "unknown",
       deviceModel: deviceModel || "unknown",
+      email,
       // 必須化に切り替えて良いか判断するため、トークン付きリクエストの割合を記録する
       appCheck: appCheckResult,
       createdAt: FieldValue.serverTimestamp(),
@@ -107,6 +122,7 @@ exports.submitFeedback = onRequest(
             { type: "mrkdwn", text: `*アプリバージョン:*\n${appVersion || "-"}` },
             { type: "mrkdwn", text: `*iOS:*\n${osVersion || "-"}` },
             { type: "mrkdwn", text: `*デバイス:*\n${deviceModel || "-"}` },
+            { type: "mrkdwn", text: `*返信先:*\n${email ? escapeSlackMrkdwn(email) : "（なし）"}` },
           ],
         },
       ],
