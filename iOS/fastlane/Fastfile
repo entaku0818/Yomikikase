@@ -78,8 +78,9 @@ platform :ios do
     )
   end
 
-  # メタデータとスクリーンショットのアップロード、審査提出
-  desc "Upload metadata and screenshots to App Store Connect and submit for review"
+  # メタデータをアップロードして審査提出（スクリーンショットは対象外）。
+  # スクリーンショット更新時は、先に ios upload_screenshots_only を実行する。
+  desc "Upload metadata to App Store Connect and submit for review (without screenshots)"
   lane :upload_metadata do
     # Xcodeプロジェクトからバージョン番号・ビルド番号を取得
     version_number = get_version_number(

@@ -88,8 +88,8 @@ xcodebuild -exportArchive \
   -exportPath build/export \
   -allowProvisioningUpdates
 
-# 4. Clean up build folder
-rm -rf build
+# 4. Keep build artifacts for verification and reuse.
+# Do not delete build/: it also contains DerivedData and its build cache.
 ```
 
 ## Architecture Overview
