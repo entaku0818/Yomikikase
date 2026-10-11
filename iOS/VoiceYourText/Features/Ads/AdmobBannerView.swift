@@ -29,6 +29,13 @@ struct AdmobBannerView: UIViewRepresentable {
     let placement: AdBannerPlacement
 
     func makeUIView(context: Context) -> GADBannerView {
+        // テスト中は広告を読み込まない。ScreenshotGeneratorTests の ImageRenderer は
+        // 幅0高さ0で描くため、AdMob が "Invalid ad width or height" のあと約2分固まり、
+        // そのとき実行中のテストが時間超過で落ちる（CI の不定期な失敗の原因）
+        guard !AppDelegate.isRunningTests else {
+            return GADBannerView(adSize: GADAdSizeBanner)
+        }
+
         // 画面の幅を取得
         let screenWidth = UIScreen.main.bounds.width
 

@@ -167,16 +167,28 @@ struct VoiceYourTextApp: App {
 
     var body: some Scene {
         WindowGroup {
-            #if DEBUG
-            if UserDefaults.standard.bool(forKey: "screenshots") {
-                ScreenshotView()
+            // ユニットテストのホストとして起動したときは画面を出さない。
+            // ホーム等のバナー広告が読み込まれ、AdMob の WebContent が固まって
+            // 実行中のテストが3分近く止まる（CI で任意のテストが時間超過になる）ため。
+            if AppDelegate.isRunningTests {
+                Color.clear
             } else {
-                mainContent
+                appContent
             }
-            #else
-            mainContent
-            #endif
         }
+    }
+
+    @ViewBuilder
+    private var appContent: some View {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "screenshots") {
+            ScreenshotView()
+        } else {
+            mainContent
+        }
+        #else
+        mainContent
+        #endif
     }
 
     @ViewBuilder
