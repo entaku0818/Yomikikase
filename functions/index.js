@@ -8,6 +8,7 @@ initializeApp();
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 const MESSAGE_MAX_LENGTH = 2000;
+const SLACK_TIMEOUT_MS = 5000;
 
 // App Checkを必須にするか。既にストアに出ている旧クライアントはトークンを送らないため、
 // 新バージョンが浸透するまでは監視モード(false)で運用し、浸透後にtrueへ切り替える。
@@ -103,30 +104,34 @@ exports.submitFeedback = onRequest(
       return;
     }
 
-    // Slack通知
-    const escapedMessage = escapeSlackMrkdwn(message);
-    await postToSlack({
-      text: `:loudspeaker: *読み上げナレーター (VoiceYourText) フィードバックが届きました*`,
-      blocks: [
-        {
-          type: "header",
-          text: { type: "plain_text", text: "📩 読み上げナレーター - 新しいフィードバック" },
-        },
-        {
-          type: "section",
-          fields: [{ type: "mrkdwn", text: `*メッセージ:*\n${escapedMessage}` }],
-        },
-        {
-          type: "section",
-          fields: [
-            { type: "mrkdwn", text: `*アプリバージョン:*\n${appVersion || "-"}` },
-            { type: "mrkdwn", text: `*iOS:*\n${osVersion || "-"}` },
-            { type: "mrkdwn", text: `*デバイス:*\n${deviceModel || "-"}` },
-            { type: "mrkdwn", text: `*返信先:*\n${email ? escapeSlackMrkdwn(email) : "（なし）"}` },
-          ],
-        },
-      ],
-    });
+    // Slack通知（ベストエフォート）。保存は済んでいるので、通知が失敗してもアプリには成功を返す
+    try {
+      const escapedMessage = escapeSlackMrkdwn(message);
+      await postToSlack({
+        text: `:loudspeaker: *読み上げナレーター (VoiceYourText) フィードバックが届きました*`,
+        blocks: [
+          {
+            type: "header",
+            text: { type: "plain_text", text: "📩 読み上げナレーター - 新しいフィードバック" },
+          },
+          {
+            type: "section",
+            fields: [{ type: "mrkdwn", text: `*メッセージ:*\n${escapedMessage}` }],
+          },
+          {
+            type: "section",
+            fields: [
+              { type: "mrkdwn", text: `*アプリバージョン:*\n${appVersion || "-"}` },
+              { type: "mrkdwn", text: `*iOS:*\n${osVersion || "-"}` },
+              { type: "mrkdwn", text: `*デバイス:*\n${deviceModel || "-"}` },
+              { type: "mrkdwn", text: `*返信先:*\n${email ? escapeSlackMrkdwn(email) : "（なし）"}` },
+            ],
+          },
+        ],
+      });
+    } catch (err) {
+      console.error("Slack notification failed:", err.message);
+    }
 
     res.status(200).json({ success: true });
   }
@@ -154,8 +159,13 @@ function postToSlack(body) {
     };
     const req = https.request(options, (res) => {
       res.on("data", () => {});
-      res.on("end", resolve);
+      res.on("end", () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) resolve();
+        else reject(new Error(`Slack webhook responded ${res.statusCode}`));
+      });
     });
+    // 応答が無いまま関数のタイムアウトまで待たない
+    req.setTimeout(SLACK_TIMEOUT_MS, () => req.destroy(new Error("Slack webhook timed out")));
     req.on("error", reject);
     req.write(payload);
     req.end();
