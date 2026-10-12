@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import SwiftUI
+import PaywallAnalytics
 import UIKit
 import FirebaseCore
 import FirebaseAnalytics
@@ -151,6 +152,9 @@ struct VoiceYourTextApp: App {
     @StateObject private var adConfig = AdConfig.shared
     @State private var showReviewPrompt = false
     @State private var showFeedback = false
+    /// 自動の課金案内（オンボーディング直後のトライアル案内・月1の案内）。issue #159
+    @State private var showAutoPaywall = false
+    @State private var autoPaywallSource: PaywallSource = .unknown
     /// 起動時処理（起動回数・広告・レビュー依頼）を cold start ごとに1回だけ走らせる
     @MainActor private static var hasHandledColdStart = false
 
@@ -160,10 +164,15 @@ struct VoiceYourTextApp: App {
         #endif
     }
 
-    let initialState = Speeches.State(
-        speechList: IdentifiedArrayOf(uniqueElements: []),
-        currentText: ""
-    )
+    /// App の body が再評価されても作り直さないよう1つだけ持つ（読み上げ中かの判定にも使う）
+    private let speechesStore = Store(
+        initialState: Speeches.State(
+            speechList: IdentifiedArrayOf(uniqueElements: []),
+            currentText: ""
+        )
+    ) {
+        Speeches()
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -193,11 +202,7 @@ struct VoiceYourTextApp: App {
 
     @ViewBuilder
     private var mainContent: some View {
-        MainView(store:
-                    Store(initialState: initialState) {
-            Speeches()
-        }
-        )
+        MainView(store: speechesStore)
         .environmentObject(adConfig)
         .onAppear {
             if !isPremiumChecked && !AppDelegate.isRunningTests {
@@ -219,6 +224,17 @@ struct VoiceYourTextApp: App {
             // オンボーディング表示中は被せない。表示回でなければロード要求も行わない。
             guard !showOnboarding else { return }
             let didShowAppOpenAd = await AppOpenAdManager.shared.showAdOnColdStartIfEligible()
+            // 月1の課金案内（非課金・30日に1回）。出した起動ではレビュー依頼を重ねない
+            let speechesStore = speechesStore
+            if await AutoPaywallPrompt.promptMonthlyOnLaunch(
+                didShowAppOpenAd: didShowAppOpenAd,
+                isSpeaking: { speechesStore.withState { $0.nowPlaying.isPlaying } },
+                analytics: .liveValue
+            ) {
+                autoPaywallSource = .monthlyPrompt
+                showAutoPaywall = true
+                return
+            }
             // レビュー依頼（起動時判定）。2回目以降の起動で満足度を1問だけ聞く
             showReviewPrompt = await ReviewRequestPrompt.shouldPromptOnLaunch(
                 launchCount: launchCount,
@@ -240,8 +256,17 @@ struct VoiceYourTextApp: App {
         .sheet(isPresented: $showFeedback) {
             FeedbackView()
         }
-        .fullScreenCover(isPresented: $showOnboarding) {
+        .fullScreenCover(isPresented: $showOnboarding, onDismiss: {
+            // オンボーディング完了直後に1回だけトライアル案内
+            if AutoPaywallPrompt.promptAfterOnboarding(analytics: .liveValue) {
+                autoPaywallSource = .onboardingTrial
+                showAutoPaywall = true
+            }
+        }) {
             OnboardingSheetContainer(onComplete: { showOnboarding = false })
+        }
+        .sheet(isPresented: $showAutoPaywall) {
+            SubscriptionView(source: autoPaywallSource)
         }
     }
 }

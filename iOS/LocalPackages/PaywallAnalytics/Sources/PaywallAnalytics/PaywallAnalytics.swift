@@ -26,6 +26,10 @@ public enum PaywallSource: String, Sendable, CaseIterable {
     case voicevoxPicker = "voicevox_picker"
     /// キャラ音声: 設定画面のキャラ音声セクション
     case voicevoxSettings = "voicevox_settings"
+    /// 自動の課金案内: オンボーディング完了直後に1回だけ出すトライアル案内
+    case onboardingTrial = "onboarding_trial"
+    /// 自動の課金案内: 非課金ユーザーに30日に1回、起動時に出すもの
+    case monthlyPrompt = "monthly_prompt"
     /// 不明な導線（フォールバック）
     case unknown = "unknown"
 

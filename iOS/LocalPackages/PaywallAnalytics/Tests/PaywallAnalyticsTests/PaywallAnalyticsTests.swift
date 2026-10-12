@@ -21,6 +21,8 @@ final class PaywallAnalyticsTests: XCTestCase {
             .voicevoxQuota: "voicevox_quota",
             .voicevoxPicker: "voicevox_picker",
             .voicevoxSettings: "voicevox_settings",
+            .onboardingTrial: "onboarding_trial",
+            .monthlyPrompt: "monthly_prompt",
             .unknown: "unknown",
         ]
         for (source, raw) in expected {
@@ -41,7 +43,7 @@ final class PaywallAnalyticsTests: XCTestCase {
 
     func test_allSourcesCovered() {
         // 導線を追加したらこのテストが落ちて追従漏れに気づける
-        XCTAssertEqual(PaywallSource.allCases.count, 11)
+        XCTAssertEqual(PaywallSource.allCases.count, 13)
     }
 
     func test_rawSourceInit_voicevoxSourcesNoLongerFallBackToUnknown() {

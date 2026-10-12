@@ -160,6 +160,18 @@ class UserDefaultsManager {
         set { defaults.set(newValue, forKey: "LastReviewRequestDate") }
     }
 
+    // 自動の課金案内（オンボーディングのトライアル案内・月1の案内）を最後に出した日時
+    var autoPaywallLastShownAt: Date? {
+        get { defaults.object(forKey: "AutoPaywallLastShownAt") as? Date }
+        set { defaults.set(newValue, forKey: "AutoPaywallLastShownAt") }
+    }
+
+    // オンボーディング完了直後のトライアル案内を出したか（1回きり）
+    var hasShownOnboardingTrialPaywall: Bool {
+        get { defaults.bool(forKey: "HasShownOnboardingTrialPaywall") }
+        set { defaults.set(newValue, forKey: "HasShownOnboardingTrialPaywall") }
+    }
+
     // 「はい」ボタン押下済みフラグ
     var hasAnsweredReviewPositively: Bool {
         get { defaults.bool(forKey: "HasAnsweredReviewPositively") }
