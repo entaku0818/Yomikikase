@@ -1,2 +1,5 @@
 Improvements
-- Minor improvements and bug fixes
+- No more error message when you cancel a purchase
+- Added a close button to the plan screen
+- Restore Purchases now tells you when no previous purchase is found
+- Premium subscribers no longer see the upgrade card in Settings

@@ -1,2 +1,5 @@
 Cải tiến
-- Cải tiến nhỏ và sửa lỗi
+- Không còn hiện thông báo lỗi khi bạn hủy giao dịch mua
+- Thêm nút đóng vào màn hình gói
+- Khôi phục giao dịch mua giờ sẽ thông báo khi không tìm thấy giao dịch trước đó
+- Người dùng Premium không còn thấy lời mời nâng cấp trong Cài đặt

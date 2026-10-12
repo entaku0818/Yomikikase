@@ -1,2 +1,5 @@
 Melhorias
-- Pequenas melhorias e correções de bugs
+- Não aparece mais mensagem de erro ao cancelar uma compra
+- Adicionado um botão de fechar na tela de planos
+- Restaurar compras agora avisa quando nenhuma compra anterior é encontrada
+- Assinantes Premium não veem mais o convite para upgrade nos Ajustes

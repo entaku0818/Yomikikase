@@ -1,2 +1,5 @@
 Miglioramenti
-- Piccoli miglioramenti e correzioni di bug
+- Nessun messaggio di errore quando annulli un acquisto
+- Aggiunto un pulsante di chiusura alla schermata dei piani
+- Ripristina acquisti ora segnala quando non viene trovato alcun acquisto precedente
+- Gli abbonati Premium non vedono più l'invito all'upgrade nelle Impostazioni
