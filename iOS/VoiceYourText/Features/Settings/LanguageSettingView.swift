@@ -28,40 +28,48 @@ struct LanguageSettingView: View {
         VStack {
             Form {
 
-                Section(header: Text("プレミアム機能")) {
-                    VStack(spacing: 16) {
-                        HStack(spacing: 12) {
-                            Image(systemName: "crown.fill")
-                                .font(.title2)
-                                .foregroundColor(AppTheme.primary)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("プレミアムにアップグレード")
-                                    .font(.headline)
-                                Text("より快適な読み上げ体験を")
-                                    .font(.subheadline)
-                                    .foregroundColor(.gray)
-                            }
-                            Spacer()
-                        }
-
-
-                        Button(action: {
-                            send(.navigateToSubscription)
-                        }) {
-                            HStack {
-                                Text("今すぐアップグレード")
-                                    .fontWeight(.bold)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(AppTheme.primary)
-                            .foregroundColor(AppTheme.onPrimary)
-                            .cornerRadius(12)
-                        }
+                // 課金済みのユーザーにはアップグレードの訴求を出さない（issue #160）
+                if isPremium {
+                    Section(header: Text("プレミアム機能")) {
+                        Label("プレミアムプランをご利用中です", systemImage: "crown.fill")
+                            .foregroundColor(AppTheme.primary)
                     }
-                    .padding()
-                    .background(Color(UIColor.secondarySystemBackground))
-                    .cornerRadius(12)
+                } else {
+                    Section(header: Text("プレミアム機能")) {
+                        VStack(spacing: 16) {
+                            HStack(spacing: 12) {
+                                Image(systemName: "crown.fill")
+                                    .font(.title2)
+                                    .foregroundColor(AppTheme.primary)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("プレミアムにアップグレード")
+                                        .font(.headline)
+                                    Text("より快適な読み上げ体験を")
+                                        .font(.subheadline)
+                                        .foregroundColor(.gray)
+                                }
+                                Spacer()
+                            }
+
+
+                            Button(action: {
+                                send(.navigateToSubscription)
+                            }) {
+                                HStack {
+                                    Text("今すぐアップグレード")
+                                        .fontWeight(.bold)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(AppTheme.primary)
+                                .foregroundColor(AppTheme.onPrimary)
+                                .cornerRadius(12)
+                            }
+                        }
+                        .padding()
+                        .background(Color(UIColor.secondarySystemBackground))
+                        .cornerRadius(12)
+                    }
                 }
                 Section(header: Text("音声設定")) {
                     NavigationLink(destination: VoiceSettingView(store: store)) {
@@ -227,7 +235,7 @@ struct LanguageSettingView: View {
         .navigationDestination(
             isPresented: $store.showSubscriptionView
         ) {
-            SubscriptionView(source: .settings)
+            SubscriptionView(source: .settings, showsCloseButton: false)
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
             isPremium = UserDefaultsManager.shared.isPremiumUser

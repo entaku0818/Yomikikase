@@ -7,6 +7,8 @@ import PaywallAnalytics
 struct SubscriptionView: View {
     /// Paywall を開いた導線。GA4 `paywall_view` と購入結果イベントの source パラメータに使う。
     var source: PaywallSource = .unknown
+    /// sheet で開いたときの右上の閉じるボタン。設定から push したとき（戻るボタンがある）は false
+    var showsCloseButton: Bool = true
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = SubscriptionViewModel()
     @State private var isLoading = true
@@ -29,7 +31,8 @@ struct SubscriptionView: View {
                 Text("読み上げをもっと快適に")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                    .padding(.top)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, showsCloseButton ? 28 : 16)
 
                 // Features list
                 featuresSection
@@ -46,7 +49,7 @@ struct SubscriptionView: View {
                         await restorePurchases()
                     }
                 }) {
-                    Text("Restore Purchases")
+                    Text("購入を復元")
                         .foregroundColor(AppTheme.primary)
                 }
                 .padding(.top)
@@ -54,6 +57,21 @@ struct SubscriptionView: View {
                 Spacer()
             }
             .padding()
+        }
+        .overlay(alignment: .topTrailing) {
+            if showsCloseButton {
+                Button {
+                    viewModel.trackClose(source: source)
+                    dismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.system(size: 30))
+                        .symbolRenderingMode(.hierarchical)
+                        .foregroundColor(.secondary)
+                }
+                .padding(12)
+                .accessibilityLabel(Text("閉じる"))
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle("プレミアム")
@@ -459,6 +477,10 @@ class SubscriptionViewModel: ObservableObject {
     func trackPaywallView(source: PaywallSource) {
         let event = PaywallAnalyticsEvent.paywallView(source: source)
         analytics.logEvent(event.name, event.parameters)
+    }
+
+    func trackClose(source: PaywallSource) {
+        analytics.logEvent("paywall_close_tap", ["source": source.rawValue])
     }
 
     func fetchSubscriptionPlan() async {
