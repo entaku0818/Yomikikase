@@ -1,4 +1,4 @@
-Voice Narrator is the all-in-one text-to-speech (TTS) app that reads anything aloud — PDFs, web pages, EPUB books, Google Drive files, scanned documents, and more. No account needed. Everything stays on your device.
+Voice Narrator is the all-in-one text-to-speech (TTS) app that reads anything aloud — PDFs, web pages, EPUB books, Google Drive files, scanned documents, and more. No account needed. Standard voices run entirely on your device.
 
 7 WAYS TO ADD CONTENT
 - Text input: type or paste any text and listen instantly
@@ -20,6 +20,9 @@ PLAYBACK CONTROLS
 - Voice pitch adjustment
 - Background playback — keep listening while using other apps
 
+CHARACTER VOICES
+Listen in anime-style Japanese character voices such as Zundamon. Character voices are generated on our server, so they need an internet connection. Free plan: 5,000 characters/month. Premium: 200,000 characters/month.
+
 PERSONALIZATION
 - Custom dictionary: correct mispronounced names, technical terms, and brand names
 - 10+ languages supported
@@ -31,8 +34,17 @@ WHO IT'S FOR
 - Language learners improving listening comprehension
 - Anyone with dyslexia, low vision, or reading fatigue
 
-PREMIUM
-- Remove all ads
-- Unlimited PDF storage (free plan: 3 files)
+FREE PLAN
+- All core reading features: highlighting, speed and pitch, background playback
+- Up to 5 files in total (PDF, text, and more)
+- Up to 4,000 characters per text
+- Character voices: 5,000 characters/month
 
-Privacy: No account required. All content is processed on-device.
+PREMIUM — 7-DAY FREE TRIAL
+- Character voices: 200,000 characters/month
+- No ads
+- Unlimited files
+- Long texts over 4,000 characters read to the end
+Monthly and annual plans both start with a 7-day free trial. The subscription renews automatically unless cancelled at least 24 hours before the trial ends. Cancel anytime in the Settings app.
+
+Privacy: No account required. Standard voices are generated on-device. Only when you use character voices is the text sent to our server to generate the audio.
