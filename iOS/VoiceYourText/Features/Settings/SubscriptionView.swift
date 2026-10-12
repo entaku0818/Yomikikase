@@ -160,7 +160,8 @@ struct SubscriptionView: View {
     }
     
     private func purchaseMonthly() async {
-        let result = await viewModel.handlePurchase(planType: .monthly)
+        // キャンセルは nil（アラートを出さない）
+        guard let result = await viewModel.handlePurchase(planType: .monthly) else { return }
         alertTitle = result.title
         alertMessage = result.message
         shouldDismissAfterAlert = result.success
@@ -168,7 +169,7 @@ struct SubscriptionView: View {
     }
 
     private func purchaseAnnual() async {
-        let result = await viewModel.handlePurchase(planType: .annual)
+        guard let result = await viewModel.handlePurchase(planType: .annual) else { return }
         alertTitle = result.title
         alertMessage = result.message
         shouldDismissAfterAlert = result.success
@@ -449,6 +450,11 @@ class SubscriptionViewModel: ObservableObject {
     @Published var annualPlan: SubscriptionPlanInfo?
     @Published var isProcessing: Bool = false
     @Dependency(\.analytics) private var analytics
+    private let purchaseManager: PurchaseManagerProtocol
+
+    init(purchaseManager: PurchaseManagerProtocol = PurchaseManager.shared) {
+        self.purchaseManager = purchaseManager
+    }
 
     func trackPaywallView(source: String) {
         let event = PaywallAnalyticsEvent.paywallView(source: PaywallSource(rawSource: source))
@@ -457,7 +463,7 @@ class SubscriptionViewModel: ObservableObject {
 
     func fetchSubscriptionPlan() async {
         do {
-            let plans = try await PurchaseManager.shared.fetchAllPlans()
+            let plans = try await purchaseManager.fetchAllPlans()
             await MainActor.run {
                 self.monthlyPlan = plans.monthly
                 self.annualPlan = plans.annual
@@ -465,7 +471,7 @@ class SubscriptionViewModel: ObservableObject {
         } catch {
             // フォールバック: 月額のみ取得
             do {
-                let plan = try await PurchaseManager.shared.fetchProPlan()
+                let plan = try await purchaseManager.fetchProPlan()
                 await MainActor.run {
                     self.monthlyPlan = SubscriptionPlanInfo(
                         name: plan.name,
@@ -485,23 +491,25 @@ class SubscriptionViewModel: ObservableObject {
         }
     }
 
-    func handlePurchase(planType: PurchaseManager.PlanType = .monthly) async -> (success: Bool, title: String, message: String) {
+    /// 購入する。結果のアラート内容を返す。ユーザーがキャンセルしたときは nil（何も表示しない）。
+    @MainActor
+    func handlePurchase(planType: PurchaseManager.PlanType = .monthly) async -> (success: Bool, title: String, message: String)? {
         isProcessing = true
         defer { isProcessing = false }
 
         let planTypeString = planType == .annual ? "annual" : "monthly"
 
         do {
-            let success = try await PurchaseManager.shared.purchasePro(planType: planType)
-            if success {
+            switch try await purchaseManager.purchasePro(planType: planType) {
+            case .purchased:
                 analytics.logEvent("subscription_purchase_success", [
                     "plan_type": planTypeString,
                     "source": "subscription_view"
                 ])
                 return (true, String(localized: "購入完了"), String(localized: "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。"))
-            } else {
+            case .cancelled:
                 analytics.logEvent("subscription_purchase_cancelled", nil)
-                return (false, String(localized: "購入キャンセル"), String(localized: "購入がキャンセルされました。"))
+                return nil
             }
         } catch {
             analytics.logEvent("subscription_purchase_failed", [
@@ -511,21 +519,21 @@ class SubscriptionViewModel: ObservableObject {
             return handlePurchaseError(error)
         }
     }
-    
+
+    @MainActor
     func handleRestore() async -> (success: Bool, title: String, message: String) {
         isProcessing = true
         defer { isProcessing = false }
-        
+
         do {
-            let success = try await PurchaseManager.shared.restorePurchases()
-            if success {
+            if try await purchaseManager.restorePurchases() {
                 analytics.logEvent("subscription_restore_success", nil)
                 return (true, String(localized: "復元完了"), String(localized: "購入履歴の復元が完了しました。"))
             } else {
                 analytics.logEvent("subscription_restore_failed", [
                     "reason": "no_purchases_found"
                 ])
-                return (false, String(localized: "復元失敗"), String(localized: "復元可能な購入履歴が見つかりませんでした。"))
+                return (false, String(localized: "購入履歴が見つかりません"), String(localized: "このApple IDで購入されたプレミアムプランは見つかりませんでした。"))
             }
         } catch {
             analytics.logEvent("subscription_restore_failed", [
@@ -534,7 +542,7 @@ class SubscriptionViewModel: ObservableObject {
             return (false, String(localized: "復元失敗"), String(localized: "購入履歴を復元できませんでした。後ほど再度お試しください。"))
         }
     }
-    
+
     func trackPrivacyPolicyTap() {
         analytics.logEvent("privacy_policy_tap", [
             "source": "subscription_view"

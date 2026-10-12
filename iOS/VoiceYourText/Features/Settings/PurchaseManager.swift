@@ -5,10 +5,36 @@ import os.log
 protocol PurchaseManagerProtocol {
     func fetchProPlan() async throws -> (name: String, price: String)
     func fetchAllPlans() async throws -> (monthly: SubscriptionPlanInfo?, annual: SubscriptionPlanInfo?)
-    func purchasePro() async throws -> Bool
-    func purchasePro(planType: PurchaseManager.PlanType) async throws -> Bool
+    func purchasePro() async throws -> PurchaseOutcome
+    func purchasePro(planType: PurchaseManager.PlanType) async throws -> PurchaseOutcome
+    /// 有効な購入が見つかれば true、購入履歴が無ければ false（エラーにはしない）
     func restorePurchases() async throws -> Bool
     func checkPremiumStatus() async
+}
+
+/// 購入処理の結果。ユーザーが購入シートを閉じたのは失敗ではないので、エラーと分けて返す。issue #157
+enum PurchaseOutcome: Equatable {
+    case purchased
+    case cancelled
+
+    /// 購入時に投げられたエラーが「ユーザーのキャンセル」かどうか。
+    /// RevenueCat はキャンセルでも `ErrorCode.purchaseCancelledError` を投げる（userCancelled は true）。
+    static func isCancellation(_ error: Error) -> Bool {
+        if let code = error as? ErrorCode {
+            return code == .purchaseCancelledError
+        }
+        let nsError = error as NSError
+        if nsError.domain == ErrorCode.errorDomain {
+            return nsError.code == ErrorCode.purchaseCancelledError.rawValue
+        }
+        if let skError = error as? SKError {
+            return skError.code == .paymentCancelled
+        }
+        if let storeKitError = error as? StoreKitError, case .userCancelled = storeKitError {
+            return true
+        }
+        return false
+    }
 }
 
 class PurchaseManager: PurchaseManagerProtocol {
@@ -123,11 +149,11 @@ class PurchaseManager: PurchaseManagerProtocol {
         }
     }
 
-    func purchasePro() async throws -> Bool {
+    func purchasePro() async throws -> PurchaseOutcome {
         return try await purchasePro(planType: .monthly)
     }
 
-    func purchasePro(planType: PlanType) async throws -> Bool {
+    func purchasePro(planType: PlanType) async throws -> PurchaseOutcome {
         os_log("=== Purchase Pro Start (planType: %{public}@) ===", log: logger, type: .debug,
                planType == .annual ? "annual" : "monthly")
         let offerings = try await Purchases.shared.offerings()
@@ -140,18 +166,25 @@ class PurchaseManager: PurchaseManagerProtocol {
 
         do {
             os_log("Starting purchase for package: %{public}@", log: logger, type: .debug, package.identifier)
-            let (_, customerInfo, _) = try await Purchases.shared.purchase(package: package)
+            let (_, customerInfo, userCancelled) = try await Purchases.shared.purchase(package: package)
 
+            if userCancelled {
+                os_log("Purchase cancelled by user", log: logger, type: .debug)
+                return .cancelled
+            }
             if customerInfo.entitlements["premium"]?.isActive == true {
                 os_log("Purchase successful", log: logger, type: .debug)
                 UserDefaultsManager.shared.isPremiumUser = true
                 UserDefaultsManager.shared.premiumPurchaseDate = Date()
                 Analytics.setUserProperty("true", forName: "is_premium")
-                return true
+                return .purchased
             } else {
                 os_log("Purchase failed: premium not active", log: logger, type: .error)
                 throw PurchaseError.purchaseFailed
             }
+        } catch let error where PurchaseOutcome.isCancellation(error) {
+            os_log("Purchase cancelled by user", log: logger, type: .debug)
+            return .cancelled
         } catch {
             os_log("Purchase failed: %{public}@", log: logger, type: .error, error.localizedDescription)
             throw error
@@ -171,10 +204,10 @@ class PurchaseManager: PurchaseManagerProtocol {
                 Analytics.setUserProperty("true", forName: "is_premium")
                 return true
             } else {
-                os_log("Restore failed: no entitlements found", log: logger, type: .error)
-                UserDefaultsManager.shared.resetPremiumStatus()
-                Analytics.setUserProperty("false", forName: "is_premium")
-                throw PurchaseError.noEntitlements
+                // 購入履歴が無いのはエラーではない。端末のプレミアム状態もここでは消さない
+                // （復元の空振りで購入日まで消していた。状態の同期は起動時の checkPremiumStatus に任せる）
+                os_log("Restore finished: no entitlements found", log: logger, type: .debug)
+                return false
             }
         } catch {
             os_log("Restore failed: %{public}@", log: logger, type: .error, error.localizedDescription)
