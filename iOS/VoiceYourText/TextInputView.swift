@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 import AVFoundation
 import Dependencies
@@ -187,7 +188,7 @@ struct TextInputView: View {
             Text("4,000文字を超えるテキストはプレミアムプランでのみご利用いただけます。")
         }
         .sheet(isPresented: $showingSubscription) {
-            SubscriptionView(source: "text_char_limit")
+            SubscriptionView(source: .textCharLimit)
         }
         .alert(
             "今月のキャラ音声の上限に達しました",
@@ -211,7 +212,7 @@ struct TextInputView: View {
             }
         }
         .sheet(isPresented: $showingVoicevoxPaywall) {
-            SubscriptionView(source: "voicevox_quota")
+            SubscriptionView(source: .voicevoxQuota)
         }
         .sheet(isPresented: $showingVoicePicker, onDismiss: {
             // 試聴が残っていたら止める

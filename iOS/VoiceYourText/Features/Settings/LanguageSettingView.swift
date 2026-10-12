@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 import AVFAudio
 import Dependencies
@@ -226,7 +227,7 @@ struct LanguageSettingView: View {
         .navigationDestination(
             isPresented: $store.showSubscriptionView
         ) {
-            SubscriptionView(source: "settings")
+            SubscriptionView(source: .settings)
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("PremiumStatusDidChange"))) { _ in
             isPremium = UserDefaultsManager.shared.isPremiumUser

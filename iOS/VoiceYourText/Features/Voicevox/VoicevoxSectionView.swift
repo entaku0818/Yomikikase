@@ -1,4 +1,5 @@
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 
 /// 音声設定画面の「キャラ音声（VOICEVOX）」セクション。日本語の文章でだけ表示する。
@@ -61,7 +62,7 @@ struct VoicevoxSection: View {
         }
         .onAppear { send(.onAppear) }
         .sheet(isPresented: $store.showPaywall) {
-            SubscriptionView(source: "voicevox_settings")
+            SubscriptionView(source: .voicevoxSettings)
         }
     }
 

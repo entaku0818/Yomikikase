@@ -5,8 +5,8 @@ import Dependencies
 import PaywallAnalytics
 
 struct SubscriptionView: View {
-    /// Paywall を開いた導線。GA4 `paywall_view` イベントの source パラメータに使う。
-    var source: String = "unknown"
+    /// Paywall を開いた導線。GA4 `paywall_view` と購入結果イベントの source パラメータに使う。
+    var source: PaywallSource = .unknown
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = SubscriptionViewModel()
     @State private var isLoading = true
@@ -161,7 +161,7 @@ struct SubscriptionView: View {
     
     private func purchaseMonthly() async {
         // キャンセルは nil（アラートを出さない）
-        guard let result = await viewModel.handlePurchase(planType: .monthly) else { return }
+        guard let result = await viewModel.handlePurchase(planType: .monthly, source: source) else { return }
         alertTitle = result.title
         alertMessage = result.message
         shouldDismissAfterAlert = result.success
@@ -169,7 +169,7 @@ struct SubscriptionView: View {
     }
 
     private func purchaseAnnual() async {
-        guard let result = await viewModel.handlePurchase(planType: .annual) else { return }
+        guard let result = await viewModel.handlePurchase(planType: .annual, source: source) else { return }
         alertTitle = result.title
         alertMessage = result.message
         shouldDismissAfterAlert = result.success
@@ -456,8 +456,8 @@ class SubscriptionViewModel: ObservableObject {
         self.purchaseManager = purchaseManager
     }
 
-    func trackPaywallView(source: String) {
-        let event = PaywallAnalyticsEvent.paywallView(source: PaywallSource(rawSource: source))
+    func trackPaywallView(source: PaywallSource) {
+        let event = PaywallAnalyticsEvent.paywallView(source: source)
         analytics.logEvent(event.name, event.parameters)
     }
 
@@ -493,29 +493,38 @@ class SubscriptionViewModel: ObservableObject {
 
     /// 購入する。結果のアラート内容を返す。ユーザーがキャンセルしたときは nil（何も表示しない）。
     @MainActor
-    func handlePurchase(planType: PurchaseManager.PlanType = .monthly) async -> (success: Bool, title: String, message: String)? {
+    func handlePurchase(
+        planType: PurchaseManager.PlanType = .monthly,
+        source: PaywallSource = .unknown
+    ) async -> (success: Bool, title: String, message: String)? {
         isProcessing = true
         defer { isProcessing = false }
 
         let planTypeString = planType == .annual ? "annual" : "monthly"
+        let plan = planType == .annual ? annualPlan : monthlyPlan
+        let isTrialEligible = plan?.isTrialEligible == true && plan?.trialDays != nil
+        func log(_ result: PaywallAnalyticsEvent.PurchaseResult, error: String? = nil) {
+            let event = PaywallAnalyticsEvent.purchase(
+                result,
+                source: source,
+                planType: planTypeString,
+                isTrialEligible: isTrialEligible,
+                error: error
+            )
+            analytics.logEvent(event.name, event.parameters)
+        }
 
         do {
             switch try await purchaseManager.purchasePro(planType: planType) {
             case .purchased:
-                analytics.logEvent("subscription_purchase_success", [
-                    "plan_type": planTypeString,
-                    "source": "subscription_view"
-                ])
+                log(.success)
                 return (true, String(localized: "購入完了"), String(localized: "ご購入ありがとうございます！プレミアム機能がご利用いただけるようになりました。"))
             case .cancelled:
-                analytics.logEvent("subscription_purchase_cancelled", nil)
+                log(.cancelled)
                 return nil
             }
         } catch {
-            analytics.logEvent("subscription_purchase_failed", [
-                "plan_type": planTypeString,
-                "error": error.localizedDescription
-            ])
+            log(.failed, error: error.localizedDescription)
             return handlePurchaseError(error)
         }
     }

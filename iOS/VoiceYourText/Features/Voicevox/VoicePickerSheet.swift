@@ -1,4 +1,5 @@
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 
 /// 再生画面のプレイヤーの上に出す「今の声」の行。押すと声の一覧（VoicePickerSheet）を開く。
@@ -95,7 +96,7 @@ struct VoicePickerSheet: View {
             }
         }
         .sheet(isPresented: $store.showPaywall) {
-            SubscriptionView(source: "voicevox_picker")
+            SubscriptionView(source: .voicevoxPicker)
         }
     }
 

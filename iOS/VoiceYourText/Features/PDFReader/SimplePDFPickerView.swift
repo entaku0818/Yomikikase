@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 import UniformTypeIdentifiers
 import os.log
@@ -20,6 +21,8 @@ struct SimplePDFPickerView: View {
     @State private var showingFilePicker = false
     @State private var showingPremiumAlert = false
     @State private var showingSubscription = false
+    /// ペイウォールを開いた導線（リンクから自分で開いたのか、上限に当たって開いたのか）
+    @State private var subscriptionSource: PaywallSource = .pdfSimpleLimit
     @State private var isProcessing = false
     
     var body: some View {
@@ -83,6 +86,7 @@ struct SimplePDFPickerView: View {
                             .foregroundColor(.secondary)
 
                         Button("プレミアムにアップグレード") {
+                            subscriptionSource = .pdfSimpleUpgradeLink
                             showingSubscription = true
                         }
                         .font(.caption)
@@ -117,13 +121,14 @@ struct SimplePDFPickerView: View {
             .alert("プレミアム機能が必要です", isPresented: $showingPremiumAlert) {
                 Button("キャンセル", role: .cancel) { }
                 Button("詳細を見る") {
+                    subscriptionSource = .pdfSimpleLimit
                     showingSubscription = true
                 }
             } message: {
                 Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
             }
             .sheet(isPresented: $showingSubscription) {
-                SubscriptionView(source: "pdf_simple_limit")
+                SubscriptionView(source: subscriptionSource)
             }
         }
     }

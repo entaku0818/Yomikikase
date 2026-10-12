@@ -3,6 +3,7 @@
 //  VoiceYourTextTests
 //
 //  購入キャンセルをエラー扱いしないこと・復元で購入なしの文言（issue #157）
+//  購入結果イベントに導線(source)とトライアル対象かを載せること（issue #158）
 //
 
 import XCTest
@@ -38,11 +39,15 @@ final class SubscriptionPurchaseTests: XCTestCase {
 
     private func makeViewModel(
         _ purchaseManager: FakePurchaseManager,
-        events: LockIsolated<[String]>
+        events: LockIsolated<[String]>,
+        parameters: LockIsolated<[String: Any]?> = LockIsolated(nil)
     ) -> SubscriptionViewModel {
         withDependencies {
             $0.analytics = AnalyticsClient(
-                logEvent: { name, _ in events.withValue { $0.append(name) } },
+                logEvent: { name, params in
+                    events.withValue { $0.append(name) }
+                    parameters.setValue(params)
+                },
                 setUserProperty: { _, _ in }
             )
         } operation: {
@@ -59,6 +64,22 @@ final class SubscriptionPurchaseTests: XCTestCase {
         XCTAssertNil(result)
         XCTAssertEqual(events.value, ["subscription_purchase_cancelled"])
         XCTAssertFalse(viewModel.isProcessing)
+    }
+
+    func test_購入結果イベントに導線とトライアル対象かを載せること() async {
+        let events = LockIsolated<[String]>([])
+        let parameters = LockIsolated<[String: Any]?>(nil)
+        let viewModel = makeViewModel(FakePurchaseManager(purchase: { .cancelled }), events: events, parameters: parameters)
+        viewModel.annualPlan = SubscriptionPlanInfo(
+            name: "年額", price: "¥5,000", priceValue: 5000, period: .annual, trialDays: 7, isTrialEligible: true
+        )
+
+        _ = await viewModel.handlePurchase(planType: .annual, source: .voicevoxQuota)
+
+        XCTAssertEqual(events.value, ["subscription_purchase_cancelled"])
+        XCTAssertEqual(parameters.value?["source"] as? String, "voicevox_quota")
+        XCTAssertEqual(parameters.value?["plan_type"] as? String, "annual")
+        XCTAssertEqual(parameters.value?["trial_eligible"] as? String, "true")
     }
 
     func test_購入成功で完了のアラートを返すこと() async {

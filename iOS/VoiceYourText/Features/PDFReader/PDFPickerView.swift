@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PaywallAnalytics
 import ComposableArchitecture
 import UniformTypeIdentifiers
 
@@ -116,7 +117,7 @@ struct PDFPickerView: View {
             Text("無料版では最大\(FileLimitsManager.maxFreeFileCount)個までのファイル（PDF・テキスト合計）を登録できます。プレミアム版にアップグレードすると、無制限にファイルを登録できます。")
         }
         .sheet(isPresented: $showingSubscription) {
-            SubscriptionView(source: "pdf_picker_limit")
+            SubscriptionView(source: .pdfPickerLimit)
         }
         .onAppear {
             viewStore.send(.loadPDFFiles)
