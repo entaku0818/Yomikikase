@@ -14,9 +14,11 @@
 #    SKIP_CAPTURE=1 iOS/scripts/appstore_screenshots.sh   # 撮影済みの素材から合成だけやり直す
 #
 #    THEME=light|night iOS/scripts/appstore_screenshots.sh  # 背景トーンを変える（既定 indigo）
+#    VARIANTS="B C" iOS/scripts/appstore_screenshots.sh ja   # A/B テスト用の並べ替え案も出す（compose_screenshots.py の VARIANTS）
 #
 #  出力: iOS/build/appstore_screenshots/{raw,final}/<lang>/ と final/compare_<lang>.png（旧新比較）
 #    final/<lang>/APP_IPHONE_69_<n>.png (1320x2868) と APP_IPHONE_67_<n>.png (1290x2796)
+#    VARIANTS 指定時は final/<lang>_<案>/ にも同じ形式で出す
 #  アップロードはしない（fastlane/screenshots への配置も手動）。
 #
 
@@ -85,6 +87,12 @@ for lang in "${LANGS[@]}"; do
         --lang "$lang" --raw "${OUT_DIR}/raw/${lang}" --out "${OUT_DIR}/final/${lang}" \
         --theme "${THEME:-indigo}" --compare-old "${IOS_DIR}/fastlane/screenshots/${lang}" \
         || { echo "✗ ${lang} の合成に失敗" >&2; FAILED+=("$lang"); }
+    for variant in ${VARIANTS:-}; do
+        /usr/bin/env python3 "${IOS_DIR}/scripts/compose_screenshots.py" \
+            --lang "$lang" --raw "${OUT_DIR}/raw/${lang}" --out "${OUT_DIR}/final/${lang}_${variant}" \
+            --theme "${THEME:-indigo}" --variant "$variant" \
+            || { echo "✗ ${lang} 案${variant} の合成に失敗" >&2; FAILED+=("${lang}_${variant}"); }
+    done
 done
 if [ ${#FAILED[@]} -gt 0 ]; then
     echo "❌ 失敗: ${FAILED[*]}" >&2

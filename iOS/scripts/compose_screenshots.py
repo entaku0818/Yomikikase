@@ -105,6 +105,14 @@ SLIDES = {
     ],
 }
 
+# プロダクトページの最適化（A/B テスト）用の並べ替え案。SLIDES の何枚目を使うかを順に並べる（文言は同じ）
+VARIANTS = {
+    "ja": {
+        "B": [1, 2, 0],  # PDFも本もWebも → キャラ音声 → ながら聴き
+        "C": [2, 1, 0],  # キャラ音声 → PDFも本もWebも → ながら聴き
+    },
+}
+
 # fastlane のディレクトリ名 → (アプリの言語コード, AppleLocale, Vision の認識言語)
 LOCALES = {
     "ja": ("ja", "ja_JP", "ja-JP"), "en-US": ("en", "en_US", "en-US"), "de-DE": ("de", "de_DE", "de-DE"),
@@ -505,25 +513,32 @@ def main():
     p.add_argument("--out", required=True)
     p.add_argument("--theme", default="indigo", choices=sorted(THEMES))
     p.add_argument("--compare-old", help="旧スクショのディレクトリ。指定すると旧新比較の1枚も出す")
+    p.add_argument("--variant", help="A/B テスト用の並べ替え案（VARIANTS のキー）。指定した枚だけを出す")
     args = p.parse_args()
+    slides = SLIDES[args.lang]
+    if args.variant:
+        order = VARIANTS.get(args.lang, {}).get(args.variant)
+        if order is None:
+            sys.exit(f"{args.lang} に案 {args.variant} はありません")
+        slides = [slides[i] for i in order]
 
     os.makedirs(args.out, exist_ok=True)
     # 枚数が減ったときに古い画像が残らないよう、前回の出力を消してから書く
     for old in os.listdir(args.out):
         if old.startswith("APP_IPHONE_") and old.endswith(".png"):
             os.remove(os.path.join(args.out, old))
-    missing = [n for n, _, _ in SLIDES[args.lang] if not os.path.exists(os.path.join(args.raw, f"{n}.png"))]
+    missing = [n for n, _, _ in slides if not os.path.exists(os.path.join(args.raw, f"{n}.png"))]
     if missing:
         sys.exit(f"素材がありません: {', '.join(missing)}（{args.raw}）")
 
-    for i, (name, title, sub) in enumerate(SLIDES[args.lang]):
+    for i, (name, title, sub) in enumerate(slides):
         img = compose(args.lang, name, title, sub, args.raw, args.theme)
         for key, size in SIZES.items():
             out = img if size == CANVAS else img.resize(size, Image.LANCZOS)
             path = os.path.join(args.out, f"APP_IPHONE_{key}_{i}.png")
             out.convert("RGB").save(path, optimize=True)
         print(f"  {args.lang} {i}: {name}")
-    if args.compare_old:
+    if args.compare_old and not args.variant:
         compare(args.lang, args.compare_old, args.out, os.path.join(args.out, "..", f"compare_{args.lang}.png"))
 
 
