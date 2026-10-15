@@ -1,5 +1,2 @@
 Améliorations
-- Plus de message d'erreur lorsque vous annulez un achat
-- Ajout d'un bouton de fermeture sur l'écran des offres
-- Restaurer les achats indique désormais lorsqu'aucun achat précédent n'est trouvé
-- Les abonnés Premium ne voient plus l'invitation à passer à Premium dans les Réglages
+- Améliorations mineures et corrections de bugs

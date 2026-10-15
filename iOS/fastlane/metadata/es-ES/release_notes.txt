@@ -1,5 +1,2 @@
 Mejoras
-- Ya no aparece un mensaje de error al cancelar una compra
-- Se ha añadido un botón para cerrar la pantalla de planes
-- Restaurar compras ahora indica cuando no se encuentra ninguna compra anterior
-- Los suscriptores Premium ya no ven la invitación a mejorar en Ajustes
+- Pequeñas mejoras y corrección de errores

@@ -1,5 +1,2 @@
 Verbesserungen
-- Beim Abbrechen eines Kaufs wird keine Fehlermeldung mehr angezeigt
-- Schließen-Schaltfläche im Abo-Bildschirm hinzugefügt
-- „Käufe wiederherstellen“ zeigt jetzt an, wenn kein früherer Kauf gefunden wurde
-- Premium-Abonnenten sehen in den Einstellungen keinen Upgrade-Hinweis mehr
+- Kleinere Verbesserungen und Fehlerbehebungen

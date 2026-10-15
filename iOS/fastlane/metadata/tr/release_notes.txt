@@ -1,5 +1,2 @@
 İyileştirmeler
-- Bir satın alma işlemini iptal ettiğinizde artık hata mesajı gösterilmiyor
-- Plan ekranına kapat düğmesi eklendi
-- Satın alımları geri yükle, önceki bir satın alma bulunamadığında bunu bildiriyor
-- Premium aboneler artık Ayarlar'da yükseltme önerisini görmüyor
+- Küçük iyileştirmeler ve hata düzeltmeleri
