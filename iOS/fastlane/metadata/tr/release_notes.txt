@@ -1,2 +1,1 @@
-İyileştirmeler
-- Küçük iyileştirmeler ve hata düzeltmeleri
+Kısa bir kullanım anketi eklendi. Değerlendirme davetinden veya Ayarlar bölümündeki Destek menüsünden uygulamayı nasıl kullandığınızı ve önerilerinizi paylaşabilirsiniz.

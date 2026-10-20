@@ -176,6 +176,13 @@ struct LanguageSettingView: View {
                             Text("お問い合わせ・フィードバック")
                         }
                     }
+                    NavigationLink(destination: UsageSurveyView()) {
+                        HStack {
+                            Image(systemName: "list.clipboard")
+                                .foregroundColor(AppTheme.primary)
+                            Text("survey.title")
+                        }
+                    }
                     NavigationLink(destination: CreditsView()) {
                         HStack {
                             Image(systemName: "person.wave.2.fill")

@@ -152,6 +152,7 @@ struct VoiceYourTextApp: App {
     @StateObject private var adConfig = AdConfig.shared
     @State private var showReviewPrompt = false
     @State private var showFeedback = false
+    @State private var showUsageSurvey = false
     /// 自動の課金案内（オンボーディング直後のトライアル案内・月1の案内）。issue #159
     @State private var showAutoPaywall = false
     @State private var autoPaywallSource: PaywallSource = .unknown
@@ -246,12 +247,18 @@ struct VoiceYourTextApp: App {
             Button("review.button.yes") {
                 ReviewRequestPrompt.answerPrompt(satisfied: true, analytics: .liveValue)
             }
+            Button("survey.title") {
+                showUsageSurvey = true
+            }
             Button("review.button.no") {
                 ReviewRequestPrompt.answerPrompt(satisfied: false, analytics: .liveValue)
                 showFeedback = true
             }
         } message: {
             Text("review.message.reinstall")
+        }
+        .sheet(isPresented: $showUsageSurvey) {
+            NavigationStack { UsageSurveyView() }
         }
         .sheet(isPresented: $showFeedback) {
             FeedbackView()

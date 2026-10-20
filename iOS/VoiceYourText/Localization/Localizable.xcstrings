@@ -1,6 +1,295 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "survey.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "使い方アンケート"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usage survey"
+          }
+        }
+      }
+    },
+    "survey.introduction": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "読み上げナレーターの使い方を教えてください。いただいた声を今後の改善に役立てます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tell us how you use Voice Narrator. Your answers will help us improve the app."
+          }
+        }
+      }
+    },
+    "survey.optional": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "約1分・すべて任意です。答えたい項目だけご記入ください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About 1 minute. All questions are optional. Answer whichever you like."
+          }
+        }
+      }
+    },
+    "survey.content": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. 最近、どんな文章を読み上げましたか？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1. What have you listened to recently?"
+          }
+        }
+      }
+    },
+    "survey.content.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "例：勉強の資料、小説、Web記事。未使用の方は聴いてみたいものを教えてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For example: study notes, novels or web articles. If you have not used the app yet, what would you like to hear?"
+          }
+        }
+      }
+    },
+    "survey.situation": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. そのとき、どんな場面で使いましたか？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2. When and where did you use the app?"
+          }
+        }
+      }
+    },
+    "survey.situation.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "例：通勤中、家事中、机で勉強中、寝る前など。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For example: commuting, doing chores, studying at a desk or before bed."
+          }
+        }
+      }
+    },
+    "survey.suggestions": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. 困ったことや、もっとこうなったらいいと思うことは？"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3. What was difficult, or what would you like improved?"
+          }
+        }
+      }
+    },
+    "survey.suggestions.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気になったことがあれば教えてください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share anything that could be better."
+          }
+        }
+      }
+    },
+    "survey.tooLong": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回答が長すぎます。少し短くしてから送信してください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your answers are too long. Please shorten them before sending."
+          }
+        }
+      }
+    },
+    "survey.submit": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回答を送る"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send answers"
+          }
+        }
+      }
+    },
+    "survey.privacy": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "個人情報や文章の原文は記入しないでください。回答はアプリ・OSのバージョンと端末情報とともに送信されます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Please do not include personal information or original documents. Answers are sent with your app version, OS version and device information."
+          }
+        }
+      }
+    },
+    "survey.close": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "閉じる"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close"
+          }
+        }
+      }
+    },
+    "survey.thanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ご協力ありがとうございます"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thank you"
+          }
+        }
+      }
+    },
+    "survey.thanks.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いただいた声を、今後の改善に役立てます。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your answers will help us improve the app."
+          }
+        }
+      }
+    },
+    "survey.error": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "送信できませんでした"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Could not send answers"
+          }
+        }
+      }
+    },
+    "survey.error.message": {
+      "extractionState": "manual",
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回答はこの画面に残っています。通信状況を確認して、もう一度お試しください。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your answers are still on this screen. Check your connection and try again."
+          }
+        }
+      }
+    },
     "続きから再生します" : {
       "localizations" : {
         "de" : {

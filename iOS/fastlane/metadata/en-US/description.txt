@@ -1,16 +1,18 @@
-Voice Narrator is the all-in-one text-to-speech (TTS) app that reads anything aloud — PDFs, web pages, EPUB books, Google Drive files, scanned documents, and more. No account needed. Standard voices run entirely on your device.
+Turn reading time into listening time. Voice Narrator reads PDFs, EPUB ebooks and web articles aloud, so you can catch up on documents during your commute or study while doing chores. Import your content, choose a voice and listen at your own pace.
+
+Standard voices generate speech on your device and can read imported text offline. No Voice Narrator account is required.
 
 7 WAYS TO ADD CONTENT
 - Text input: type or paste any text and listen instantly
 - PDF: import documents, books, and reports
-- Web pages: paste a URL — any article read aloud
+- Web pages: paste a supported article URL and listen
 - EPUB: listen to ebooks from your library
-- Google Drive: stream files directly from cloud storage
+- Google Drive: select supported files through Google Drive in the Files app
 - Scanner: point your camera at printed text and listen
 - TXT files: import plain text from any source
 
 REAL-TIME TEXT HIGHLIGHTING
-See every word highlighted as it's read aloud. Auto-scroll keeps you in sync with the audio — great for studying, following along, or checking pronunciation. Works in PDFs too.
+Follow the text as standard voices read it aloud, including in PDFs. Highlighting helps you keep your place while studying or checking pronunciation. Highlighting availability depends on the voice you use.
 
 DESIGNED FOR ACCESSIBILITY
 Built for users with dyslexia, visual impairments, or reading fatigue. Adjustable speed, pitch, and multiple voice options help everyone find their ideal listening experience.
@@ -40,11 +42,11 @@ FREE PLAN
 - Up to 4,000 characters per text
 - Character voices: 5,000 characters/month
 
-PREMIUM — 7-DAY FREE TRIAL
+PREMIUM
 - Character voices: 200,000 characters/month
 - No ads
 - Unlimited files
 - Long texts over 4,000 characters read to the end
-Monthly and annual plans both start with a 7-day free trial. The subscription renews automatically unless cancelled at least 24 hours before the trial ends. Cancel anytime in the Settings app.
+Monthly and annual plans are available. Check the purchase screen for current pricing and any free trial offer. Trials are available to eligible users only. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel your subscription in the Settings app.
 
-Privacy: No account required. Standard voices are generated on-device. Only when you use character voices is the text sent to our server to generate the audio.
+Standard voices are generated on-device. Character voices send text to our server to generate audio. Fetching web articles and accessing Google Drive require an internet connection. Google Drive requires separate setup and sign-in. Some file formats and web pages may not support text extraction.

@@ -1,2 +1,1 @@
-Melhorias
-- Pequenas melhorias e correções de bugs
+Adicionamos uma breve pesquisa. Conte como você usa o app e o que gostaria de melhorar pelo convite de avaliação ou em Suporte nos Ajustes.

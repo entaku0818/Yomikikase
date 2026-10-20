@@ -1,2 +1,1 @@
-Mejoras
-- Pequeñas mejoras y corrección de errores
+Añadimos una breve encuesta de uso. Cuéntanos cómo utilizas la app y qué mejorarías desde la solicitud de valoración o Soporte en Ajustes.

@@ -1,2 +1,1 @@
-Improvements
-- Minor improvements and bug fixes
+Added a short usage survey. Share how you use the app and what you would like improved from the review prompt or Support in Settings.

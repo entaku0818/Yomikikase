@@ -37,7 +37,7 @@ Upload metadata and screenshots to App Store Connect only
 [bundle exec] fastlane ios upload_metadata
 ```
 
-Upload metadata and screenshots to App Store Connect and submit for review
+Upload metadata to App Store Connect and submit for review (without screenshots)
 
 ### ios upload_screenshots_only
 
