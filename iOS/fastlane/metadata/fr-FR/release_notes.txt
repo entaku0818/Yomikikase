@@ -1,1 +1,3 @@
 Ajout d’un court questionnaire. Dites-nous comment vous utilisez l’app et ce que vous aimeriez améliorer depuis la demande d’évaluation ou Assistance dans les réglages.
+
+Nous avons amélioré la première expérience d’écoute. Essayez la lecture à voix haute avec un court extrait.
