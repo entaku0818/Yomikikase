@@ -38,4 +38,56 @@ final class VoiceYourTextUITests: XCTestCase {
             }
         }
     }
+    func testOnboardingJapaneseCanStopAndSkip() {
+        verifyOnboarding(language: "ja", completeDemo: false)
+    }
+
+    func testOnboardingEnglishCanFinishDemo() {
+        verifyOnboarding(language: "en", completeDemo: true)
+    }
+
+    func testOnboardingJapaneseCanFinishDemo() {
+        verifyOnboarding(language: "ja", completeDemo: true)
+    }
+
+    func testOnboardingEnglishCanStopAndSkip() {
+        verifyOnboarding(language: "en", completeDemo: false)
+    }
+
+    private func verifyOnboarding(language: String, completeDemo: Bool) {
+        let app = XCUIApplication()
+        let japanese = language == "ja"
+        app.launchArguments = [
+            "-HasCompletedOnboarding", "NO",
+            "-AppleLanguages", "(\(language))",
+            "-AppleLocale", japanese ? "ja_JP" : "en_US"
+        ]
+        app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
+        app.launch()
+        let start = app.buttons[japanese ? "はじめる" : "Get Started"]
+        XCTAssertTrue(start.waitForExistence(timeout: 30))
+        start.tap()
+        let play = app.buttons[japanese ? "約10秒のサンプルを聴く" : "Listen to a 10-second sample"]
+        XCTAssertTrue(play.waitForExistence(timeout: 10))
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "onboarding-demo-\(language)"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        play.tap()
+        let stop = app.buttons[japanese ? "停止" : "Stop"]
+        XCTAssertTrue(stop.waitForExistence(timeout: 5))
+        if completeDemo {
+            XCTAssertTrue(app.staticTexts[japanese ? "体験完了！次へ進めます" : "Demo complete! You can proceed."].waitForExistence(timeout: 40))
+            app.buttons[japanese ? "次へ" : "Next"].tap()
+        } else {
+            stop.tap()
+            XCTAssertTrue(play.waitForExistence(timeout: 5))
+            app.buttons[japanese ? "スキップ" : "Skip"].tap()
+        }
+        let finish = app.buttons[japanese ? "使い始める" : "Start Using"]
+        XCTAssertTrue(finish.waitForExistence(timeout: 10))
+        finish.tap()
+        XCTAssertTrue(finish.waitForNonExistence(timeout: 10))
+    }
+
 }

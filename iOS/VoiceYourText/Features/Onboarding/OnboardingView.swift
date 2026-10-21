@@ -5,7 +5,7 @@ import ComposableArchitecture
 
 // MARK: - Sample PDF
 
-func makeSamplePDFData() -> Data {
+func makeSamplePDFData(sample: OnboardingSample = .current) -> Data {
     let pageRect = CGRect(x: 0, y: 0, width: 595, height: 842)
     let renderer = UIGraphicsPDFRenderer(bounds: pageRect)
     return renderer.pdfData { ctx in
@@ -22,20 +22,18 @@ func makeSamplePDFData() -> Data {
             .font: UIFont.systemFont(ofSize: 15),
             .foregroundColor: UIColor(white: 0.5, alpha: 1)
         ]
-        "読み上げナレーターの使い方".draw(at: CGPoint(x: 48, y: 60), withAttributes: titleAttrs)
+        sample.title.draw(at: CGPoint(x: 48, y: 60), withAttributes: titleAttrs)
         UIColor(white: 0.85, alpha: 1).setFill()
         UIRectFill(CGRect(x: 48, y: 100, width: 499, height: 1))
-        let body = "このアプリは、PDFや電子書籍、ウェブページを\n音声で読み上げます。\n\n使い方はとても簡単です。\nファイルを開いて、再生ボタンを押すだけ。\n\n通勤中、料理中、運動中など\nながら聴きに最適です。"
+        let body = sample.text
         (body as NSString).draw(
             in: CGRect(x: 48, y: 120, width: 499, height: 400),
             withAttributes: bodyAttrs
         )
-        let footer = "読み上げナレーター  |  ver 1.0"
+        let footer = "Narrator"
         (footer as NSString).draw(at: CGPoint(x: 48, y: 800), withAttributes: lineAttrs)
     }
 }
-
-private let sampleReadText = "読み上げナレーターの使い方。このアプリは、PDFや電子書籍、ウェブページを音声で読み上げます。使い方はとても簡単です。ファイルを開いて、再生ボタンを押すだけ。通勤中、料理中、運動中など、ながら聴きに最適です。"
 
 // MARK: - PDF UIViewRepresentable
 
@@ -65,6 +63,7 @@ private struct SamplePDFView: UIViewRepresentable {
 
 private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, ObservableObject {
     private let synthesizer = AVSpeechSynthesizer()
+    private var activeUtterance: AVSpeechUtterance?
     var speakStartTime: Date?
     var onCompleted: ((Double) -> Void)?
     var onCancelled: (() -> Void)?
@@ -74,9 +73,11 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
         synthesizer.delegate = self
     }
 
-    func speak(_ text: String) {
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        let utterance = AVSpeechUtterance(string: text)
+    func speak(_ sample: OnboardingSample) {
+        guard activeUtterance == nil else { return }
+        let utterance = AVSpeechUtterance(string: sample.text)
+        utterance.voice = AVSpeechSynthesisVoice(language: sample.voiceLanguage)
+        activeUtterance = utterance
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate
         utterance.volume = 1.0
         speakStartTime = Date()
@@ -84,11 +85,14 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
     }
 
     func stop() {
+        activeUtterance = nil
         synthesizer.stopSpeaking(at: .immediate)
     }
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
+            guard self.activeUtterance === utterance else { return }
+            self.activeUtterance = nil
             let duration = self.speakStartTime.map { Date().timeIntervalSince($0) } ?? 0
             self.onCompleted?(duration)
         }
@@ -96,6 +100,8 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
 
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
         DispatchQueue.main.async {
+            guard self.activeUtterance === utterance else { return }
+            self.activeUtterance = nil
             self.onCancelled?()
         }
     }
@@ -106,6 +112,7 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
 struct OnboardingView: View {
     @Bindable var store: StoreOf<OnboardingReducer>
     @StateObject private var speaker = OnboardingSpeaker()
+    private var sample: OnboardingSample { OnboardingSample(languageCode: store.sampleLanguage) }
 
     var body: some View {
         ZStack {
@@ -154,10 +161,18 @@ struct OnboardingView: View {
                 store.send(.speechCancelled)
             }
         }
+        .onChange(of: store.currentStep) { _, step in
+            store.send(.view(.stepViewAppeared(step)))
+        }
+        .onDisappear {
+            speaker.stop()
+            store.send(.view(.demoStopTapped))
+        }
         .task {
+            let sample = sample
             // PDF generation is CPU-bound; offload to avoid blocking the main thread
             let data = await Task.detached(priority: .utility) {
-                makeSamplePDFData()
+                makeSamplePDFData(sample: sample)
             }.value
             store.send(.samplePDFGenerated(data))
         }
@@ -211,7 +226,7 @@ struct OnboardingView: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("サンプルPDFで試してみよう")
+                Text("約10秒のサンプルで、読み上げを体験")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -246,13 +261,13 @@ struct OnboardingView: View {
                     store.send(.view(.demoStopTapped))
                 } else {
                     store.send(.view(.demoPlayTapped))
-                    speaker.speak(sampleReadText)
+                    speaker.speak(sample)
                 }
             } label: {
                 HStack(spacing: 12) {
                     Image(systemName: store.isSpeaking ? "stop.circle.fill" : "play.circle.fill")
                         .font(.system(size: 28))
-                    Text(store.isSpeaking ? "停止" : "▶ 読み上げる")
+                    Text(store.isSpeaking ? String(localized: "停止") : String(localized: "約10秒のサンプルを聴く"))
                         .font(.headline)
                 }
                 .foregroundColor(AppTheme.onPrimary)
@@ -355,12 +370,12 @@ struct OnboardingView: View {
                         store.send(.view(.skipTapped), animation: .easeInOut(duration: 0.3))
                     }
                 } label: {
-                    Text(store.hasPlayed ? "次へ" : "スキップ")
+                    Text(store.hasPlayed ? String(localized: "次へ") : String(localized: "スキップ"))
                         .font(.headline)
-                        .foregroundColor(AppTheme.onPrimary)
+                        .foregroundColor(store.hasPlayed ? AppTheme.onPrimary : .secondary)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(store.hasPlayed ? AppTheme.primary : Color.gray)
+                        .background(store.hasPlayed ? AppTheme.primary : Color.clear)
                         .cornerRadius(16)
                 }
             } else {

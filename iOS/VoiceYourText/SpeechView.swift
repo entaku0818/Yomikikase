@@ -97,7 +97,7 @@ struct Speeches: Reducer {
                 state.nowPlaying.progress = 1.0
                 let completedCount = UserDefaultsManager.shared.speechCompletedCount + 1
                 UserDefaultsManager.shared.speechCompletedCount = completedCount
-                analytics.logEvent("speech_completed", ["count": completedCount])
+                analytics.logEvent("speech_completed", ["count": completedCount, "source": "text"])
                 return .none
 
             case .nowPlaying(.stopPlaying):

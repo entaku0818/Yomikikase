@@ -1,6 +1,38 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "約10秒のサンプルで、読み上げを体験" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try text-to-speech with a sample of about 10 seconds"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "約10秒のサンプルで、読み上げを体験"
+          }
+        }
+      }
+    },
+    "約10秒のサンプルを聴く" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen to a 10-second sample"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "約10秒のサンプルを聴く"
+          }
+        }
+      }
+    },
     "survey.title": {
       "extractionState": "manual",
       "localizations": {
