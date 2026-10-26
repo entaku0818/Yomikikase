@@ -70,6 +70,7 @@ final class VoicevoxSpeechPlayer {
     }
 
     private func run(chunks: [VoicevoxTextChunker.Chunk], speakerId: Int, speedScale: Double, onEvent: @MainActor (Event) -> Void) async {
+        guard !Task.isCancelled else { return }
         guard !chunks.isEmpty else {
             onEvent(.finished)
             return
@@ -77,6 +78,7 @@ final class VoicevoxSpeechPlayer {
         prefetch = audio(for: chunks[0], speakerId: speakerId, speedScale: speedScale)
 
         for index in chunks.indices {
+            guard !Task.isCancelled else { return }
             guard let pending = prefetch else { return }
             let data: Data
             do {
@@ -84,6 +86,7 @@ final class VoicevoxSpeechPlayer {
             } catch is CancellationError {
                 return
             } catch VoicevoxError.quotaExceeded(let usage) {
+                if Task.isCancelled { return }
                 prefetch = nil
                 onEvent(.quotaExceeded(usage, resumeAt: chunks[index].range.location))
                 return
@@ -126,6 +129,7 @@ final class VoicevoxSpeechPlayer {
         let synthesize = synthesize
         let cache = cache
         return Task {
+            try Task.checkCancellation()
             if let cached = cache?.load(text: chunk.text, speakerId: speakerId, speedScale: speedScale) {
                 return cached
             }
@@ -142,9 +146,15 @@ final class VoicevoxSpeechPlayer {
 final class AVAudioPlayerOutput: NSObject, VoicevoxAudioOutput, AVAudioPlayerDelegate {
     private var player: AVAudioPlayer?
     private var continuation: CheckedContinuation<Void, Error>?
+    private var playbackID: UUID?
 
     func play(_ data: Data) async throws {
+        try Task.checkCancellation()
+        stop()
+        let id = UUID()
+        playbackID = id
         try await withTaskCancellationHandler {
+            try Task.checkCancellation()
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
                 do {
                     let player = try AVAudioPlayer(data: data)
@@ -159,7 +169,10 @@ final class AVAudioPlayerOutput: NSObject, VoicevoxAudioOutput, AVAudioPlayerDel
                 }
             }
         } onCancel: {
-            Task { @MainActor in self.finish(with: CancellationError()) }
+            Task { @MainActor in
+                guard self.playbackID == id else { return }
+                self.finish(with: CancellationError())
+            }
         }
     }
 
@@ -170,6 +183,7 @@ final class AVAudioPlayerOutput: NSObject, VoicevoxAudioOutput, AVAudioPlayerDel
     private func finish(with error: Error?) {
         player?.stop()
         player = nil
+        playbackID = nil
         guard let continuation else { return }
         self.continuation = nil
         if let error {

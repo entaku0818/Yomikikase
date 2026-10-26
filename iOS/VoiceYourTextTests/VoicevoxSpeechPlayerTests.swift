@@ -132,11 +132,70 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
         XCTAssertFalse(player.isPlaying)
     }
 
+    func testImmediateStopDoesNotStartSynthesis() async {
+        let log = SynthLog()
+        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+            await log.add(text)
+            return fakeAudio(text)
+        }, cache: nil, output: FakeOutput())
+        player.play(text: "停止する文章。", speakerId: 14, speedScale: 1) { _ in
+            XCTFail("Stopped playback must not emit events")
+        }
+        player.stop()
+        // The previous task is queued before the following playback on the main actor.
+        _ = await run(player, "新しい文章。")
+        let sent = await log.texts
+        XCTAssertEqual(sent, ["新しい文章。"])
+    }
+
+    func testLateQuotaFailureAfterStopDoesNotEmitOrCancelNewPlayback() async {
+        let gate = DelayedQuotaSynthesis()
+        let output = FakeOutput()
+        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+            if text == "古い文章。" { return try await gate.synthesize() }
+            return fakeAudio(text)
+        }, cache: nil, output: output)
+        var oldEvents: [VoicevoxSpeechPlayer.Event] = []
+        player.play(text: "古い文章。", speakerId: 14, speedScale: 1) { oldEvents.append($0) }
+        await gate.waitUntilStarted()
+        player.stop()
+        let newEvents = await run(player, "新しい文章。続き。")
+        await gate.fail()
+        // Drain the cancelled task's completion through the actor queue.
+        for _ in 0..<20 { await Task.yield() }
+        XCTAssertEqual(oldEvents, [])
+        XCTAssertEqual(newEvents.last, .finished)
+        XCTAssertEqual(output.played, ["新しい文章。", "続き。"])
+    }
+
     func testCacheKeyDependsOnVoiceAndSpeed() {
         let base = VoicevoxAudioCache.key(text: "こんにちは", speakerId: 14, speedScale: 1)
         XCTAssertEqual(base, VoicevoxAudioCache.key(text: "こんにちは", speakerId: 14, speedScale: 1.0001))
         XCTAssertNotEqual(base, VoicevoxAudioCache.key(text: "こんにちは", speakerId: 3, speedScale: 1))
         XCTAssertNotEqual(base, VoicevoxAudioCache.key(text: "こんにちは", speakerId: 14, speedScale: 1.5))
         XCTAssertNotEqual(base, VoicevoxAudioCache.key(text: "こんばんは", speakerId: 14, speedScale: 1))
+    }
+}
+
+private actor DelayedQuotaSynthesis {
+    private var pending: CheckedContinuation<VoicevoxAudio, Error>?
+    private var started: CheckedContinuation<Void, Never>?
+
+    func synthesize() async throws -> VoicevoxAudio {
+        try await withCheckedThrowingContinuation { continuation in
+            pending = continuation
+            started?.resume()
+            started = nil
+        }
+    }
+
+    func waitUntilStarted() async {
+        if pending != nil { return }
+        await withCheckedContinuation { started = $0 }
+    }
+
+    func fail() {
+        pending?.resume(throwing: VoicevoxError.quotaExceeded(exhaustedUsage))
+        pending = nil
     }
 }

@@ -556,9 +556,11 @@ struct TextInputView: View {
         // 残りの文章だけを渡し、返ってくる位置は元の文章に合わせてずらす
         let (remainingText, base) = PlaybackResumeStore.remainder(of: text, fromUTF16Offset: startOffset)
         voicevoxTask?.cancel()
+        let generation = playbackGeneration
         voicevoxTask = Task { @MainActor in
+            guard !Task.isCancelled, isSpeaking, generation == playbackGeneration else { return }
             for await event in await voicevoxPlayer.play(remainingText, speakerId, Double(speed)) {
-                guard isSpeaking else { return }
+                guard !Task.isCancelled, isSpeaking, generation == playbackGeneration else { return }
                 switch event {
                 case let .sentence(range):
                     highlightedRange = NSRange(location: range.location + base, length: range.length)
