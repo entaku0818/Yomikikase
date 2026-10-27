@@ -27,14 +27,6 @@ enum AppTheme {
     /// プライマリボタンのテキスト色（互換エイリアス）。
     static let primaryForeground = onPrimary
 
-    // MARK: - Surfaces（システムカラー：ダーク自動対応）
-
-    /// グループ背景。
-    static let groupedBg = Color(.systemGroupedBackground)
-
-    /// カード / セル。
-    static let card = Color(.secondarySystemGroupedBackground)
-
     // MARK: - Badge
 
     /// おすすめバッジ背景（アクセントに統一）。
