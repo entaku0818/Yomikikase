@@ -31,6 +31,7 @@ swift test
   - `YomikikaseTests.swift` - Core app functionality tests
 
 ### CI (GitHub Actions)
+- iOS / Android / Functions の実行条件・ローカル再現コマンド・xcconfig設定は [開発ガイド](docs/development.md) を参照。Functionsの環境変数とデプロイ手順は [functions/README.md](functions/README.md) を参照。
 - `.github/workflows/ios-ci.yml` — iOS の build / unit test。entaku の Mac に登録した **self-hosted runner**（labels: `self-hosted, macOS, xcode27`）で実行する
   - **GitHub-hosted の `macos-*` ランナーは課金されるため禁止**。iOS のジョブは self-hosted（ios-ci.yml）のみ可
   - フォークからの PR では実行しない（job の `if:` で制限）

@@ -31,6 +31,8 @@ swift test
   - `YomikikaseTests.swift` - Core app functionality tests
 
 ### Deployment (Fastlane)
+CIの実行条件・ローカル再現コマンド・xcconfig設定は [開発ガイド](docs/development.md)、Functionsの環境変数とデプロイ手順は [functions/README.md](functions/README.md) を参照。
+
 ```bash
 # Navigate to iOS directory
 cd iOS
