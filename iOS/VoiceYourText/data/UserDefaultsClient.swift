@@ -1,48 +1,79 @@
 import Foundation
 import ComposableArchitecture
 
+/// TCAから利用する設定保存の窓口。liveValueは標準UserDefaults、テストは専用suiteを注入できる。
 @DependencyClient
 struct UserDefaultsClient: Sendable {
     // 言語・音声
+    /// 読み上げ言語コード。未設定ならnil。
     var languageSetting: @Sendable () -> String? = { nil }
+    /// 対応する設定値を保存する。
     var setLanguageSetting: @Sendable (String?) -> Void
+    /// AVSpeechSynthesisVoiceの識別子。未選択ならnil。
     var selectedVoiceIdentifier: @Sendable () -> String? = { nil }
+    /// 対応する設定値を保存する。
     var setSelectedVoiceIdentifier: @Sendable (String?) -> Void
 
     // 音声パラメータ
+    /// 読み上げ速度。未設定または保存値0なら0.5。
     var speechRate: @Sendable () -> Float = { 0.5 }
+    /// 対応する設定値を保存する。
     var setSpeechRate: @Sendable (Float) -> Void
+    /// 声の高さ。未設定または保存値0なら1.0。
     var speechPitch: @Sendable () -> Float = { 1.0 }
+    /// 対応する設定値を保存する。
     var setSpeechPitch: @Sendable (Float) -> Void
 
     // プレミアム
+    /// 保存済みのプレミアム状態。購読の最新状態の検証は購入処理側で行う。
     var isPremiumUser: @Sendable () -> Bool = { false }
+    /// 状態を保存し、PremiumStatusDidChange通知で画面へ変更を伝える。
     var setIsPremiumUser: @Sendable (Bool) -> Void
+    /// 保存済みの購入日時。未記録ならnil。
     var premiumPurchaseDate: @Sendable () -> Date? = { nil }
+    /// 対応する設定値を保存する。
     var setPremiumPurchaseDate: @Sendable (Date?) -> Void
 
     // Kokoro TTS
+    /// 端末上のKokoro音声を使用する設定。モデルの有無は別途確認する。
     var kokoroEnabled: @Sendable () -> Bool = { false }
+    /// 対応する設定値を保存する。
     var setKokoroEnabled: @Sendable (Bool) -> Void
+    /// 選択したKokoroVoiceのrawValue。未設定ならnil。
     var kokoroVoice: @Sendable () -> String? = { nil }
+    /// 対応する設定値を保存する。
     var setKokoroVoice: @Sendable (String?) -> Void
 
     // オンボーディング
+    /// 初期案内が完了済みか。
     var hasCompletedOnboarding: @Sendable () -> Bool = { false }
+    /// 対応する設定値を保存する。
     var setHasCompletedOnboarding: @Sendable (Bool) -> Void
 
     // その他
+    /// 読み上げ完了の保存済み回数。
     var speechCompletedCount: @Sendable () -> Int = { 0 }
+    /// 対応する設定値を保存する。
     var setSpeechCompletedCount: @Sendable (Int) -> Void
+    /// アプリ起動の保存済み回数。
     var appLaunchCount: @Sendable () -> Int = { 0 }
+    /// 対応する設定値を保存する。
     var setAppLaunchCount: @Sendable (Int) -> Void
+    /// アプリが記録した初回起動日時。未記録ならnil。
     var installDate: @Sendable () -> Date? = { nil }
+    /// 対応する設定値を保存する。
     var setInstallDate: @Sendable (Date?) -> Void
+    /// レビュー依頼の保存済み回数。
     var reviewRequestCount: @Sendable () -> Int = { 0 }
+    /// 対応する設定値を保存する。
     var setReviewRequestCount: @Sendable (Int) -> Void
+    /// 前回レビュー依頼日時。未記録ならnil。
     var lastReviewRequestDate: @Sendable () -> Date? = { nil }
+    /// 対応する設定値を保存する。
     var setLastReviewRequestDate: @Sendable (Date?) -> Void
+    /// レビュー質問に肯定回答した記録。
     var hasAnsweredReviewPositively: @Sendable () -> Bool = { false }
+    /// 対応する設定値を保存する。
     var setHasAnsweredReviewPositively: @Sendable (Bool) -> Void
 }
 

@@ -199,9 +199,10 @@ enum KokoroVoice: String, CaseIterable, Identifiable {
 
 @DependencyClient
 struct KokoroTTSClient {
-    /// モデルDL済み + iOS 18+ のとき true
+    /// 保存済みモデルと音声埋め込みの利用可否を確認する。推論成功や音質は保証しない。
     var isAvailable: @Sendable () -> Bool = { false }
-    /// テキスト → WAV Data（24kHz mono）
+    /// テキストを24kHz・モノラルWAVへ合成する。speedは1.0が通常速度。
+    /// モデル未取得・読み込み失敗・合成失敗時はthrowする。AVSpeechのrateは変換して渡す。
     var synthesize: @Sendable (_ text: String, _ voice: KokoroVoice, _ speed: Float) async throws -> Data
 }
 
