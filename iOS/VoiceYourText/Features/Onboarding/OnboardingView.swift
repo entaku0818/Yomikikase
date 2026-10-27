@@ -200,7 +200,7 @@ struct OnboardingView: View {
 
                 HStack(spacing: 8) {
                     ForEach(["勉強", "読書", "仕事の資料"], id: \.self) { tag in
-                        Text(tag)
+                        Text(LocalizedStringKey(tag))
                             .font(.footnote)
                             .fontWeight(.medium)
                             .foregroundColor(AppTheme.primary)
@@ -320,7 +320,7 @@ struct OnboardingView: View {
         }
     }
 
-    private func featureRow(icon: String, title: String, description: String) -> some View {
+    private func featureRow(icon: String, title: LocalizedStringKey, description: LocalizedStringKey) -> some View {
         HStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.system(size: 20, weight: .semibold))

@@ -47,3 +47,11 @@ Xcode 27 / CI-VoiceYourText simulator:
 - Visual inspection: the sample-play button is prominent and Skip remains visible. Screenshots: [Japanese](screenshots/onboarding-demo-ja.png), [English](screenshots/onboarding-demo-en.png).
 
 UI tests verify the synthesizer completion callback and screen transitions; they are not acoustic-quality verification on a physical device. GA4 DebugView/processed-event evidence and post-publication results remain open follow-ups. Filter test-device traffic out of business evaluation.
+
+## Follow-up — onboarding localization, 2026-10-27
+
+The welcome tags and feature descriptions were passed to `Text` as runtime strings, so they were displayed literally instead of being looked up in the string catalog. The feature-row parameters now use `LocalizedStringKey`, and the tags explicitly convert their keys. Ten missing catalog entries now have Japanese and English translations; the existing Google Drive translation is reused.
+
+The four ja/en onboarding UI flows now assert the welcome tags and all feature titles/descriptions as well as stop, skip, demo completion and finishing onboarding. This follow-up preserves the sample text, playback behavior and event names. It does not complete the pending GA4 or post-publication evaluation requirements of #162.
+
+Validation: Xcode 27.1 / iOS 27.0 Simulator build passed; 14 OnboardingReducerTests and all four ja/en UI flows passed (0 failures). Changed-file SwiftLint passed with existing style warnings; diff whitespace check passed.

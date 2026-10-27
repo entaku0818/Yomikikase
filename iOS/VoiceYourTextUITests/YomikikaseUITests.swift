@@ -66,6 +66,9 @@ final class VoiceYourTextUITests: XCTestCase {
         app.launch()
         let start = app.buttons[japanese ? "はじめる" : "Get Started"]
         XCTAssertTrue(start.waitForExistence(timeout: 30))
+        for label in japanese ? ["勉強", "読書", "仕事の資料"] : ["Study", "Reading", "Work documents"] {
+            XCTAssertTrue(app.staticTexts[label].exists, "Missing localized onboarding tag: \(label)")
+        }
         start.tap()
         let play = app.buttons[japanese ? "約10秒のサンプルを聴く" : "Listen to a 10-second sample"]
         XCTAssertTrue(play.waitForExistence(timeout: 10))
@@ -86,6 +89,14 @@ final class VoiceYourTextUITests: XCTestCase {
         }
         let finish = app.buttons[japanese ? "使い始める" : "Start Using"]
         XCTAssertTrue(finish.waitForExistence(timeout: 10))
+        let featureLabels = japanese
+            ? ["PDF・書類", "PDFやスキャン書類を読み上げ", "ウェブページ", "URLを貼るだけで本文を読み上げ",
+               "電子書籍", "EPUBファイルをそのまま読み上げ", "Googleドライブ", "クラウドのファイルに直接アクセス"]
+            : ["PDFs & documents", "Listen to PDFs and scanned documents", "Web pages", "Paste a URL to listen to the article",
+               "E-books", "Listen to EPUB books", "Google Drive", "Access your files in the cloud"]
+        for label in featureLabels {
+            XCTAssertTrue(app.staticTexts[label].exists, "Missing localized onboarding feature: \(label)")
+        }
         finish.tap()
         XCTAssertTrue(finish.waitForNonExistence(timeout: 10))
     }
