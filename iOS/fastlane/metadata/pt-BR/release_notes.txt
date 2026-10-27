@@ -1,3 +1,2 @@
-Adicionamos uma breve pesquisa. Conte como você usa o app e o que gostaria de melhorar pelo convite de avaliação ou em Suporte nos Ajustes.
-
-Melhoramos a primeira experiência de escuta. Experimente a leitura em voz alta com uma amostra curta.
+Melhoramos a estabilidade ao parar e reiniciar a leitura em voz alta.
+Melhoramos os textos em inglês da apresentação inicial.

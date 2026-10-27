@@ -1,3 +1,2 @@
-Đã thêm khảo sát ngắn. Hãy chia sẻ cách bạn sử dụng ứng dụng và điều muốn cải thiện từ lời mời đánh giá hoặc mục Hỗ trợ trong Cài đặt.
-
-Cải thiện trải nghiệm nghe lần đầu. Dùng thử tính năng đọc văn bản với một đoạn mẫu ngắn.
+Cải thiện độ ổn định khi dừng và bắt đầu đọc lại.
+Cải thiện nội dung tiếng Anh trong phần hướng dẫn ban đầu.

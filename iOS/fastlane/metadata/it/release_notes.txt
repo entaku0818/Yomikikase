@@ -1,3 +1,2 @@
-Abbiamo aggiunto un breve sondaggio. Raccontaci come usi l’app e cosa vorresti migliorare dalla richiesta di valutazione o da Supporto nelle impostazioni.
-
-Abbiamo migliorato la prima esperienza di ascolto. Prova la lettura ad alta voce con un breve esempio.
+Migliorata la stabilità quando si interrompe e si riavvia la lettura vocale.
+Migliorati i testi in inglese della guida iniziale.

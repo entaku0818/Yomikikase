@@ -1,3 +1,2 @@
-Kısa bir kullanım anketi eklendi. Değerlendirme davetinden veya Ayarlar bölümündeki Destek menüsünden uygulamayı nasıl kullandığınızı ve önerilerinizi paylaşabilirsiniz.
-
-İlk dinleme deneyimi iyileştirildi. Kısa bir örnekle sesli okumayı deneyin.
+Sesli okumayı durdurup yeniden başlatırken kararlılık iyileştirildi.
+Başlangıç rehberindeki İngilizce metinler iyileştirildi.

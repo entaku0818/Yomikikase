@@ -1,3 +1,2 @@
-Eine kurze Umfrage wurde hinzugefügt. Teilen Sie uns über die Bewertungsanfrage oder den Support in den Einstellungen mit, wie Sie die App nutzen und was wir verbessern können.
-
-Das erste Hörerlebnis wurde verbessert. Testen Sie die Vorlesefunktion mit einer kurzen Hörprobe.
+Die Stabilität beim Stoppen und erneuten Starten der Sprachausgabe wurde verbessert.
+Englische Texte in der Einführung wurden verbessert.
