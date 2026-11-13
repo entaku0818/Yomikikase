@@ -1,0 +1,14 @@
+Voice Narrator leser tekst, PDF-er, nettsider og DRM-frie EPUB-bøker høyt. Lytt mens du pendler, gjør oppgaver eller hviler øynene.
+
+LEGG TIL INNHOLDET DITT
+Lim inn tekst, importer PDF- eller TXT-filer, åpne EPUB-bøker, lim inn nettlenker, skann trykte dokumenter eller koble til Google Disk. Noen filer og nettsider støtter kanskje ikke tekstutvinning. Google Disk krever separat oppsett og pålogging.
+
+LYTT DEG
+Juster lesehastighet og stemmehøyde. Følg den uthevede teksten, bruk dvaletimeren og lagre innhold i Mine filer. Legg til ord i ordboken din for å tilpasse uttalen. Tilgjengelige stemmer avhenger av språket og enheten din. Japanske karakterstemmer bruker VOICEVOX; Kokoro AI-stemmer støtter japansk og engelsk.
+
+PREMIUM
+Lytt uten annonser, lagre ubegrensede filer og les tekster som er lengre enn 4000 tegn til slutten. Premium inkluderer også opptil 200 000 tegn med japanske karakterstemmer per måned.
+
+Månedlige og årlige abonnementer er tilgjengelige. Priser og kvalifiserte gratis prøveversjoner vises på kjøpsskjermen. Abonnementer fornyes automatisk med mindre de kanselleres minst 24 timer før gjeldende periode slutter. Administrer eller avbryt i Innstillinger > Abonnementer.
+
+Standardstemmer genereres på enheten din. Karakterstemmer sender tekst til serveren vår for å generere lyd. Nettartikler og Google Disk krever internettforbindelse.

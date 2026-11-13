@@ -1,2 +1,2 @@
-Cải thiện độ ổn định khi dừng và bắt đầu đọc lại.
-Cải thiện nội dung tiếng Anh trong phần hướng dẫn ban đầu.
+Cải thiện tính năng phát giọng nói và cập nhật thông tin trên cửa hàng.
+Cải thiện tính bảo mật và độ tin cậy của việc xác minh giao dịch mua, tự động thử lại khi không thể hoàn tất xác minh.

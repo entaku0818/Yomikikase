@@ -32,6 +32,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.runtime.collectAsState
+import com.entaku.VoiceYourText.file.SavedFileRepository
+import androidx.compose.ui.text.style.TextOverflow
+import java.text.DateFormat
+import java.util.Date
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -87,6 +93,8 @@ fun HomeScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val recentFiles by remember { SavedFileRepository(context).getAll() }
+        .collectAsState(initial = emptyList())
     val analytics = remember { AnalyticsClient.get(context) }
     var showLinkImport by remember { mutableStateOf(false) }
     var importError by remember { mutableStateOf<String?>(null) }
@@ -201,6 +209,21 @@ fun HomeScreen(
                 HomeButton(action) {
                     analytics.logEvent("home_button_tapped", mapOf("button" to action.key))
                     action.onClick()
+                }
+            }
+            if (recentFiles.isNotEmpty()) {
+                item(span = { GridItemSpan(maxLineSpan) }) {
+                    Text(stringResource(R.string.home_recent_files), style = MaterialTheme.typography.titleLarge)
+                }
+                items(recentFiles.take(3), key = { "recent_${it.id}" }, span = { GridItemSpan(maxLineSpan) }) { file ->
+                    Card(onClick = { onOpenText(file.content) }, modifier = Modifier.fillMaxWidth()) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text(file.title, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.titleMedium)
+                            Text(DateFormat.getDateInstance().format(Date(file.updatedAt)),
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                    }
                 }
             }
         }

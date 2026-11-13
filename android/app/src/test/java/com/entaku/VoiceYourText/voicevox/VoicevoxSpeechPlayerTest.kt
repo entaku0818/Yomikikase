@@ -30,6 +30,8 @@ class VoicevoxSpeechPlayerTest {
     private fun runPlayer(
         text: String,
         offset: Int = 0,
+        chunkText: suspend (String) -> List<VoicevoxTextChunker.Chunk> = { VoicevoxTextChunker.chunks(it, 300) },
+        resolveSpeaker: suspend (Int) -> Int = { it },
         synthesize: suspend (String, Int, Double) -> ByteArray,
     ): Pair<List<VoicevoxSpeechPlayer.Event>, FakeOutput> = runBlocking {
         val output = FakeOutput()
@@ -41,6 +43,8 @@ class VoicevoxSpeechPlayerTest {
             cache = VoicevoxAudioCache(temp.newFolder()),
             output = output,
             tempDir = temp.root,
+            chunkText = chunkText,
+            resolveSpeaker = resolveSpeaker,
             log = { _, _ -> },
         )
         player.play(text, 14, 1.0, offset) { event ->
@@ -49,6 +53,34 @@ class VoicevoxSpeechPlayerTest {
         }
         withTimeout(5_000) { done.await() }
         events to output
+    }
+
+    @Test
+    fun serverSelectedVoiceIsUsedForGeneration() {
+        val selected = mutableListOf<Int>()
+        val (events, _) = runPlayer("本文。", resolveSpeaker = { 401 }) { text, id, _ ->
+            selected += id
+            text.toByteArray()
+        }
+        assertEquals(listOf(401), selected)
+        assertEquals(VoicevoxSpeechPlayer.Event.Finished, events.last())
+    }
+
+    @Test
+    fun unavailableCatalogStopsBeforeGeneration() {
+        val (events, _) = runPlayer("本文。", offset = 10, resolveSpeaker = { throw IOException("no catalog") }) { _, _, _ ->
+            error("Must not generate without catalog")
+        }
+        assertEquals(listOf(VoicevoxSpeechPlayer.Event.Failed(10)), events)
+    }
+
+    @Test
+    fun configurationFailureStopsBeforeSynthesisAndPreservesOffset() {
+        val (events, output) = runPlayer("本文", offset = 15, chunkText = { throw IOException("policy unavailable") }) { _, _, _ ->
+            error("must not synthesize without configuration")
+        }
+        assertEquals(listOf(VoicevoxSpeechPlayer.Event.Failed(15)), events)
+        assertEquals(emptyList<String>(), output.played)
     }
 
     @Test
@@ -91,7 +123,7 @@ class VoicevoxSpeechPlayerTest {
             val output = FakeOutput()
             val done = CompletableDeferred<Unit>()
             VoicevoxSpeechPlayer(CoroutineScope(coroutineContext), { t, _, _ -> calls += t; t.toByteArray() },
-                VoicevoxAudioCache(cacheDir), output, temp.root, log = { _, _ -> })
+                VoicevoxAudioCache(cacheDir), output, temp.root, chunkText = { VoicevoxTextChunker.chunks(it, 300) }, log = { _, _ -> })
                 .play("一。", 14, 1.0) { if (it == VoicevoxSpeechPlayer.Event.Finished) done.complete(Unit) }
             withTimeout(5_000) { done.await() }
             assertEquals(listOf("cached"), output.played)

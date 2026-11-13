@@ -1,0 +1,14 @@
+Voice Narrator čte nahlas text, soubory PDF, webové stránky a knihy EPUB bez DRM. Poslouchejte při dojíždění, domácích pracích nebo při odpočinku očí.
+
+PŘIDEJTE SVŮJ OBSAH
+Vkládání textu, import souborů PDF nebo TXT, otevírání knih EPUB, vkládání webových odkazů, skenování tištěných dokumentů nebo připojení Disku Google. Některé soubory a webové stránky nemusí podporovat extrakci textu. Disk Google vyžaduje samostatné nastavení a přihlášení.
+
+POSLOUCHEJTE SVŮJ CESTU
+Upravte rychlost čtení a výšku hlasu. Postupujte podle zvýrazněného textu, použijte časovač vypnutí a uložte obsah do složky Moje soubory. Přidejte slova do svého slovníku a přizpůsobte si výslovnost. Dostupné hlasy závisí na jazyku a vašem zařízení. Japonské znakové hlasy používají VOICEVOX; Hlasy Kokoro AI podporují japonštinu a angličtinu.
+
+PREMIUM
+Poslouchejte bez reklam, ukládejte neomezené množství souborů a čtěte texty delší než 4 000 znaků až do konce. Premium také zahrnuje až 200 000 znaků japonských znakových hlasů za měsíc.
+
+K dispozici je měsíční a roční předplatné. Ceny a způsobilé bezplatné zkušební verze se zobrazí na obrazovce nákupu. Předplatné se automaticky obnovuje, pokud není zrušeno alespoň 24 hodin před koncem aktuálního období. Spravujte nebo zrušte v Nastavení > Předplatné.
+
+Na vašem zařízení se generují standardní hlasy. Hlasy postav odesílají text na náš server, aby vygeneroval zvuk. Webové články a Disk Google vyžadují připojení k internetu.

@@ -14,6 +14,7 @@ data class VoiceInfo(
     val quality: Int,
     val requiresNetwork: Boolean,
     val notInstalled: Boolean,
+    val localeTag: String = language,
 )
 
 /** 声の選択肢として画面に出す1件。number は「声 1」「声 2」の番号 */
@@ -28,6 +29,24 @@ data class VoiceOption(
 }
 
 object VoiceOptions {
+    /** Respect a saved choice; otherwise improve offline quality within the default accent. */
+    fun resolve(voices: List<VoiceInfo>, language: String, savedName: String?, defaultName: String?): String? {
+        val available = voices.filter { it.language == language && !it.notInstalled }
+        available.firstOrNull { it.name == savedName }?.let { return it.name }
+        val default = available.firstOrNull { it.name == defaultName }
+        return available.asSequence()
+            .filter { !it.requiresNetwork && (default == null || it.localeTag == default.localeTag) }
+            .sortedWith(compareByDescending<VoiceInfo> { it.quality }
+                .thenBy { it.name != defaultName }
+                .thenBy { it.name })
+            .firstOrNull()?.name ?: default?.name
+    }
+
+    /** Keep the existing quality ordering and prefer an installed offline voice. */
+    fun recommended(options: List<VoiceOption>): VoiceOption? =
+        options.firstOrNull { it.selectable && !it.requiresNetwork }
+            ?: options.firstOrNull { it.selectable }
+
 
     /**
      * language の声を、品質が高い順・端末内のものを先に並べ、「声 1」「声 2」…と名前を付ける
@@ -55,6 +74,7 @@ object VoiceOptions {
     fun from(voice: Voice): VoiceInfo = VoiceInfo(
         name = voice.name,
         language = voice.locale.language,
+        localeTag = voice.locale.toLanguageTag(),
         quality = voice.quality,
         requiresNetwork = voice.isNetworkConnectionRequired,
         notInstalled = voice.features?.contains(TextToSpeech.Engine.KEY_FEATURE_NOT_INSTALLED) == true,

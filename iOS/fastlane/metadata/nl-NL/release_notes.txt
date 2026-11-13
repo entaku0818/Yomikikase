@@ -1,0 +1,2 @@
+Spraakweergave verbeterd en de informatie in de winkel bijgewerkt.
+De beveiliging en betrouwbaarheid van aankoopverificatie zijn verbeterd, met automatische nieuwe pogingen als de verificatie niet kan worden voltooid.

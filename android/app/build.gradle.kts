@@ -91,6 +91,16 @@ android {
         compose = true
         buildConfig = true
     }
+    // Voice previews follow the reading language, which may differ from the device language.
+    // Keep every translation available offline in Play-distributed builds as well.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
+    packaging {
+        resources.merges += setOf("META-INF/CONTRIBUTORS.md", "META-INF/LICENSE.md")
+    }
     lint {
         // 既存コードの指摘は baseline に凍結し、新規エラーのみ CI で落とす
         baseline = file("lint-baseline.xml")
@@ -134,6 +144,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.onnxruntime.android)
+    implementation(libs.kuromoji.ipadic)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }

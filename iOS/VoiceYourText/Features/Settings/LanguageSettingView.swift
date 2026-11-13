@@ -77,8 +77,9 @@ struct LanguageSettingView: View {
                             HStack {
                                 Text("音声の選択")
                                 Spacer()
-                                if let identifier = store.selectedVoiceIdentifier,
-                                   let voice = AVSpeechSynthesisVoice(identifier: identifier) {
+                                if let voice = VoiceResolver.voice(
+                                    savedIdentifier: store.selectedVoiceIdentifier
+                                ) {
                                     Text(voice.name)
                                         .foregroundColor(.gray)
                                 }
@@ -201,6 +202,7 @@ struct LanguageSettingView: View {
 
                 // デバッグセクション（DEBUGビルドのみ表示）
                 #if DEBUG
+                if !UserDefaults.standard.bool(forKey: "ScreenshotBatch") {
                 Section(header: Text("デバッグ")) {
                     NavigationLink(destination: DebugLogView()) {
                         HStack {
@@ -227,6 +229,7 @@ struct LanguageSettingView: View {
                         }
                     }
                     .foregroundColor(.primary)
+                }
                 }
                 #endif
             }

@@ -55,7 +55,7 @@
     <string name="open_text_file">Metin dosyası aç</string>
     <string name="language_select">Dil seç</string>
     <string name="voice_select">Ses seç</string>
-    <string name="voice_default_note">Cihazın varsayılan sesi</string>
+    <string name="voice_default_note">Yüksek kaliteli çevrimdışı sesi otomatik olarak tercih eder</string>
     <string name="voice_label">Ses %1$d</string>
     <string name="voice_high_quality">Yüksek kalite</string>
     <string name="voice_requires_network">İnternet gerekir</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">VOICEVOX kullanım koşulları</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">Bu dosya okunamıyor. Desteklenenler: metin, Markdown, PDF ve Google Dokümanlar.</string>
+    <string name="home_recent_files">Son dosyalar</string>
+    <string name="voice_recommended">Önerilen ses</string>
+    <string name="voice_preview">Dinle</string>
+    <string name="voice_use">Bu sesi kullan</string>
+    <string name="my_voice_title">Sesim (%1$s)</string>
+    <string name="my_voice_hint">Her dil için bir ses ve ayarlarını kaydedin.</string>
+    <string name="my_voice_save">Geçerli ayarları kaydet</string>
+    <string name="my_voice_update">Kayıtlı ayarları değiştir</string>
+    <string name="my_voice_apply">Kayıtlı sesi kullan</string>
+    <string name="my_voice_delete">Kayıtlı sesi sil</string>
+    <string name="my_voice_unavailable">Kayıtlı ses kullanılamıyor.</string>
+    <string name="voice_preview_sample">Merhaba. Bu, okuma sesinin bir örneğidir.</string>
+    <string name="kokoro_title">Kokoro AI sesleri · Beta</string>
+    <string name="kokoro_note">5 Japonca ses. Model indirildikten sonra (92 MB) konuşma cihazda API ücreti olmadan oluşturulur. Ses perdesi ayarlanamaz.</string>
+    <string name="kokoro_download">Ses modelini indir (92 MB)</string>
+    <string name="kokoro_downloading">İndiriliyor… %1$d%%</string>
+    <string name="kokoro_download_failed">İndirilemedi. Bağlantıyı ve boş alanı kontrol edip yeniden deneyin.</string>
+    <string name="kokoro_failed">AI konuşması oluşturulamadı. Başka metin veya cihaz sesi deneyin.</string>
+    <string name="kokoro_generating">Konuşma oluşturuluyor… İstediğiniz zaman durdurabilirsiniz.</string>
+    <string name="kokoro_stop_preview">Önizlemeyi durdur</string>
+    <string name="voicevox_catalog_unavailable">Ses bulunamadı</string>
 </resources>

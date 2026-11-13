@@ -45,6 +45,10 @@ struct VoiceSettingView: View {
     }
 
     var body: some View {
+        let effectiveVoiceIdentifier = VoiceResolver.voice(
+            savedIdentifier: store.selectedVoiceIdentifier,
+            languageCode: selectedLanguageCode
+        )?.identifier
         Form {
             Section {
                 HighQualityVoicePrompt(
@@ -61,7 +65,7 @@ struct VoiceSettingView: View {
                     ForEach(availableVoices, id: \.identifier) { voice in
                         VoiceSettingRow(
                             voice: voice,
-                            isSelected: voice.identifier == store.selectedVoiceIdentifier,
+                            isSelected: voice.identifier == effectiveVoiceIdentifier,
                             onTap: { selectAndPreview(voice) }
                         )
                     }
@@ -85,8 +89,14 @@ struct VoiceSettingView: View {
                     kokoroEnabled: store.kokoroEnabled,
                     kokoroVoice: store.kokoroVoice,
                     isJapanese: selectedLanguageCode.starts(with: "ja"),
-                    onToggle: { send(.setKokoroEnabled($0)) },
-                    onSelectVoice: { send(.setKokoroVoice($0)) }
+                    onToggle: { enabled in
+                        if enabled { voicevoxStore.send(.view(.enabledChanged(false))) }
+                        send(.setKokoroEnabled(enabled))
+                    },
+                    onSelectVoice: { voice in
+                        voicevoxStore.send(.view(.enabledChanged(false)))
+                        send(.setKokoroVoice(voice))
+                    }
                 )
             }
         }
@@ -94,6 +104,9 @@ struct VoiceSettingView: View {
             if UserDefaultsManager.shared.languageSetting == nil {
                 UserDefaultsManager.shared.languageSetting = "ja"
             }
+        }
+        .onChange(of: voicevoxStore.isEnabled) { _, enabled in
+            if enabled { send(.setKokoroEnabled(false)) }
         }
         .onChange(of: scenePhase) { _, newPhase in
             // 設定アプリで高品質音声を落として戻ってきたケースを拾う
@@ -109,6 +122,7 @@ struct VoiceSettingView: View {
     }
 
     private func selectAndPreview(_ voice: AVSpeechSynthesisVoice) {
+        voicevoxStore.send(.view(.enabledChanged(false)))
         send(.setVoiceIdentifier(voice.identifier))
         let synthesizer = AVSpeechSynthesizer()
         let utterance = AVSpeechUtterance(string: previewText())

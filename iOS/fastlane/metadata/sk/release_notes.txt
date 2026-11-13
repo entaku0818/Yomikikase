@@ -1,0 +1,2 @@
+Vylepšili sme prehrávanie hlasu a aktualizovali informácie v obchode.
+Zlepšili sme bezpečnosť a spoľahlivosť overovania nákupov. Ak overenie nemožno dokončiť, automaticky sa zopakuje.

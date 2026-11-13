@@ -1,52 +1,14 @@
-Turn reading time into listening time. Voice Narrator reads PDFs, EPUB ebooks and web articles aloud, so you can catch up on documents during your commute or study while doing chores. Import your content, choose a voice and listen at your own pace.
+Turn PDFs, web articles and ebooks into listening time. Voice Narrator reads your text and DRM-free EPUB books aloud while you commute, do chores or rest your eyes.
 
-Standard voices generate speech on your device and can read imported text offline. No Voice Narrator account is required.
+ADD YOUR CONTENT
+Paste text, import PDF or TXT files, open EPUB books, paste web links, scan printed documents or import supported Google Drive files through the Files app. Some files and web pages may not support text extraction. Google Drive requires its app to be set up and signed in.
 
-7 WAYS TO ADD CONTENT
-- Text input: type or paste any text and listen instantly
-- PDF: import documents, books, and reports
-- Web pages: paste a supported article URL and listen
-- EPUB: listen to ebooks from your library
-- Google Drive: select supported files through Google Drive in the Files app
-- Scanner: point your camera at printed text and listen
-- TXT files: import plain text from any source
-
-REAL-TIME TEXT HIGHLIGHTING
-Follow the text as standard voices read it aloud, including in PDFs. Highlighting helps you keep your place while studying or checking pronunciation. Highlighting availability depends on the voice you use.
-
-DESIGNED FOR ACCESSIBILITY
-Built for users with dyslexia, visual impairments, or reading fatigue. Adjustable speed, pitch, and multiple voice options help everyone find their ideal listening experience.
-
-PLAYBACK CONTROLS
-- Reading speed: 0.5x to 2x
-- Voice pitch adjustment
-- Background playback — keep listening while using other apps
-
-CHARACTER VOICES
-Listen in anime-style Japanese character voices such as Zundamon. Character voices are generated on our server, so they need an internet connection. Free plan: 5,000 characters/month. Premium: 200,000 characters/month.
-
-PERSONALIZATION
-- Custom dictionary: correct mispronounced names, technical terms, and brand names
-- 10+ languages supported
-- Save frequently used texts for quick replay
-
-WHO IT'S FOR
-- Students reviewing notes or textbooks hands-free
-- Professionals catching up on documents during commutes
-- Language learners improving listening comprehension
-- Anyone with dyslexia, low vision, or reading fatigue
-
-FREE PLAN
-- All core reading features: highlighting, speed and pitch, background playback
-- Up to 5 files in total (PDF, text, and more)
-- Up to 4,000 characters per text
-- Character voices: 5,000 characters/month
+LISTEN YOUR WAY
+Adjust reading speed and voice pitch. Follow highlighted text with standard voices, use the sleep timer and save content in My Files. Add words to your dictionary to customize pronunciation. Available voices depend on the language and your device. Japanese character voices use VOICEVOX; Kokoro AI voices support Japanese and English.
 
 PREMIUM
-- Character voices: 200,000 characters/month
-- No ads
-- Unlimited files
-- Long texts over 4,000 characters read to the end
-Monthly and annual plans are available. Check the purchase screen for current pricing and any free trial offer. Trials are available to eligible users only. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel your subscription in the Settings app.
+Listen without ads, save unlimited files and read texts longer than 4,000 characters to the end. Premium also includes up to 200,000 characters of Japanese character voices per month.
 
-Standard voices are generated on-device. Character voices send text to our server to generate audio. Fetching web articles and accessing Google Drive require an internet connection. Google Drive requires separate setup and sign-in. Some file formats and web pages may not support text extraction.
+Monthly and annual subscriptions are available. Prices and eligible free trials appear on the purchase screen. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel in Settings > Subscriptions.
+
+Standard voices are generated on your device. Character voices send text to our server to generate audio. Web articles and Google Drive require an internet connection.

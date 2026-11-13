@@ -1,2 +1,2 @@
-Die Stabilität beim Stoppen und erneuten Starten der Sprachausgabe wurde verbessert.
-Englische Texte in der Einführung wurden verbessert.
+Sprachwiedergabe verbessert und Store-Informationen aktualisiert.
+Die Sicherheit und Zuverlässigkeit der Kaufprüfung wurden verbessert. Wenn die Prüfung nicht abgeschlossen werden kann, wird sie automatisch wiederholt.

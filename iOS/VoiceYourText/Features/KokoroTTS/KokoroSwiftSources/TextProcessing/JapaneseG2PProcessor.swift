@@ -42,15 +42,24 @@ final class JapaneseG2PProcessor: G2PProcessor {
         // kCFStringTokenizerAttributeLatinTranscription (0x08) returns hiragana for Japanese
         var tokenType = CFStringTokenizerAdvanceToNextToken(tokenizer)
         while !tokenType.isEmpty {
-            if let attr = CFStringTokenizerCopyCurrentTokenAttribute(tokenizer, 0x08) {
-                result += (attr as? String) ?? ""
-            } else {
-                let r = CFStringTokenizerGetCurrentTokenRange(tokenizer)
-                result += nsText.substring(with: NSRange(location: r.location, length: r.length))
-            }
+            let tokenRange = CFStringTokenizerGetCurrentTokenRange(tokenizer)
+            let surface = nsText.substring(with: NSRange(location: tokenRange.location, length: tokenRange.length))
+            let reading = (CFStringTokenizerCopyCurrentTokenAttribute(tokenizer, 0x08) as? String) ?? surface
+            let previous = tokenRange.location > 0 ? nsText.substring(to: tokenRange.location).last : nil
+            result += Self.contextualReading(surface: surface, reading: reading, previous: previous)
             tokenType = CFStringTokenizerAdvanceToNextToken(tokenizer)
         }
         return result
+    }
+
+    /// CFStringTokenizer supplies word boundaries, but not Japanese part-of-speech tags.
+    /// Only change a standalone は immediately following a word; quoted letters and
+    /// words containing は (母 / 葉 / はじめ) keep their original readings.
+    static func contextualReading(surface: String, reading: String, previous: Character?) -> String {
+        if surface == "こんにちは" { return "こんにちわ" }
+        if surface == "こんばんは" { return "こんばんわ" }
+        if surface == "は", previous?.isLetter == true { return "わ" }
+        return reading
     }
 
     // MARK: - 読みの正規化

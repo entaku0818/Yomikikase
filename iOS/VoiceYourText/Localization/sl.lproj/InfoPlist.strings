@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Uporablja se za skeniranje dokumentov in branje besedila na glas.";
+
+NSPersonalVoiceUsageDescription = "Uporablja osebni glas za branje na glas z vašim glasom.";

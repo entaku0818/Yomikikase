@@ -1,2 +1,2 @@
-Sesli okumayı durdurup yeniden başlatırken kararlılık iyileştirildi.
-Başlangıç rehberindeki İngilizce metinler iyileştirildi.
+Sesli oynatma iyileştirildi ve mağaza bilgileri güncellendi.
+Satın alma doğrulamasının güvenliği ve güvenilirliği iyileştirildi. Doğrulama tamamlanamazsa otomatik olarak yeniden denenir.

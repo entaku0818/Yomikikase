@@ -55,7 +55,7 @@
     <string name="open_text_file">Ouvrir un fichier texte</string>
     <string name="language_select">Choisir la langue</string>
     <string name="voice_select">Choisir une voix</string>
-    <string name="voice_default_note">La voix par défaut de l\'appareil</string>
+    <string name="voice_default_note">Privilégie automatiquement une voix hors ligne de haute qualité</string>
     <string name="voice_label">Voix %1$d</string>
     <string name="voice_high_quality">Haute qualité</string>
     <string name="voice_requires_network">Connexion internet requise</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">Conditions d’utilisation de VOICEVOX</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">Impossible de lire ce fichier. Formats pris en charge : texte, Markdown, PDF et Google Docs.</string>
+    <string name="home_recent_files">Fichiers récents</string>
+    <string name="voice_recommended">Voix recommandée</string>
+    <string name="voice_preview">Écouter</string>
+    <string name="voice_use">Utiliser cette voix</string>
+    <string name="my_voice_title">Ma voix (%1$s)</string>
+    <string name="my_voice_hint">Enregistrez une voix et ses réglages par langue.</string>
+    <string name="my_voice_save">Enregistrer les réglages actuels</string>
+    <string name="my_voice_update">Remplacer les réglages enregistrés</string>
+    <string name="my_voice_apply">Utiliser la voix enregistrée</string>
+    <string name="my_voice_delete">Supprimer la voix enregistrée</string>
+    <string name="my_voice_unavailable">La voix enregistrée est indisponible.</string>
+    <string name="voice_preview_sample">Bonjour. Voici un aperçu de la voix de lecture.</string>
+    <string name="kokoro_title">Voix IA Kokoro · Bêta</string>
+    <string name="kokoro_note">5 voix japonaises. Après téléchargement du modèle (92 Mo), la voix est générée sur cet appareil sans frais API. Réglage de hauteur indisponible.</string>
+    <string name="kokoro_download">Télécharger le modèle vocal (92 Mo)</string>
+    <string name="kokoro_downloading">Téléchargement… %1$d%%</string>
+    <string name="kokoro_download_failed">Échec du téléchargement. Vérifiez la connexion et le stockage, puis réessayez.</string>
+    <string name="kokoro_failed">Impossible de générer la voix. Essayez un autre texte ou une voix de cet appareil.</string>
+    <string name="kokoro_generating">Génération vocale… Arrêt possible à tout moment.</string>
+    <string name="kokoro_stop_preview">Arrêter la démo</string>
+    <string name="voicevox_catalog_unavailable">Aucune voix trouvée</string>
 </resources>

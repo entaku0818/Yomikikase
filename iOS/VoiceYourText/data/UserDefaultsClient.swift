@@ -78,13 +78,14 @@ struct UserDefaultsClient: Sendable {
 }
 
 extension UserDefaultsClient: DependencyKey {
-    static var liveValue: Self { live(store: .standard) }
+    static var liveValue: Self { live(store: .standard, premiumStorage: .shared) }
 
     /// 保存先を差し替えられる live 実装。
     /// 本番は `liveValue`（= UserDefaults.standard）。テストは専用スイートを渡して
     /// `UserDefaults.standard` の状態（テストホストのアプリが書き込むもの・
     /// 検索ドメインに残る値）から切り離す。挙動は store 以外まったく同じ。
-    static func live(store d: UserDefaults) -> Self {
+    static func live(store d: UserDefaults, premiumStorage: UserDefaultsManager? = nil) -> Self {
+        let premiumStorage = premiumStorage ?? UserDefaultsManager(defaults: d)
         return Self(
             languageSetting: { d.string(forKey: "LanguageSetting") },
             setLanguageSetting: { d.set($0, forKey: "LanguageSetting") },
@@ -95,16 +96,8 @@ extension UserDefaultsClient: DependencyKey {
             setSpeechRate: { d.set($0, forKey: "SpeechRate") },
             speechPitch: { let v = d.float(forKey: "SpeechPitch"); return v == 0 ? 1.0 : v },
             setSpeechPitch: { d.set($0, forKey: "SpeechPitch") },
-            isPremiumUser: { d.bool(forKey: "IsPremiumUser") },
-            setIsPremiumUser: { newValue in
-                d.set(newValue, forKey: "IsPremiumUser")
-                d.synchronize()
-                NotificationCenter.default.post(
-                    name: Notification.Name("PremiumStatusDidChange"),
-                    object: nil,
-                    userInfo: ["isPremium": newValue]
-                )
-            },
+            isPremiumUser: { premiumStorage.isPremiumUser },
+            setIsPremiumUser: { premiumStorage.isPremiumUser = $0 },
             premiumPurchaseDate: { d.object(forKey: "PremiumPurchaseDate") as? Date },
             setPremiumPurchaseDate: { d.set($0, forKey: "PremiumPurchaseDate") },
             kokoroEnabled: { d.bool(forKey: "KokoroEnabled") },

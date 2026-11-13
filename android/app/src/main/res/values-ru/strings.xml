@@ -55,7 +55,7 @@
     <string name="open_text_file">Открыть текстовый файл</string>
     <string name="language_select">Выбрать язык</string>
     <string name="voice_select">Выбрать голос</string>
-    <string name="voice_default_note">Голос устройства по умолчанию</string>
+    <string name="voice_default_note">Автоматически предпочитает качественный голос без интернета</string>
     <string name="voice_label">Голос %1$d</string>
     <string name="voice_high_quality">Высокое качество</string>
     <string name="voice_requires_network">Требуется интернет</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">Условия использования VOICEVOX</string>
     <string name="drive_title">Google Диск</string>
     <string name="drive_unsupported">Не удалось прочитать файл. Поддерживаются текст, Markdown, PDF и Google Документы.</string>
+    <string name="home_recent_files">Недавние файлы</string>
+    <string name="voice_recommended">Рекомендуемый голос</string>
+    <string name="voice_preview">Прослушать</string>
+    <string name="voice_use">Выбрать этот голос</string>
+    <string name="my_voice_title">Мой голос (%1$s)</string>
+    <string name="my_voice_hint">Сохраните один голос и его настройки для каждого языка.</string>
+    <string name="my_voice_save">Сохранить текущие настройки</string>
+    <string name="my_voice_update">Заменить сохранённые настройки</string>
+    <string name="my_voice_apply">Использовать сохранённый голос</string>
+    <string name="my_voice_delete">Удалить сохранённый голос</string>
+    <string name="my_voice_unavailable">Сохранённый голос недоступен.</string>
+    <string name="voice_preview_sample">Здравствуйте. Это пример голоса для чтения.</string>
+    <string name="kokoro_title">Голоса ИИ Kokoro · Бета</string>
+    <string name="kokoro_note">5 японских голосов. После загрузки модели (92 МБ) речь создаётся на устройстве без платы за API. Изменение высоты тона недоступно.</string>
+    <string name="kokoro_download">Скачать голосовую модель (92 МБ)</string>
+    <string name="kokoro_downloading">Загрузка… %1$d%%</string>
+    <string name="kokoro_download_failed">Не удалось скачать. Проверьте соединение и свободное место и повторите попытку.</string>
+    <string name="kokoro_failed">Не удалось создать речь. Попробуйте другой текст или голос устройства.</string>
+    <string name="kokoro_generating">Создание речи… Можно остановить в любой момент.</string>
+    <string name="kokoro_stop_preview">Остановить пример</string>
+    <string name="voicevox_catalog_unavailable">Голос не найден</string>
 </resources>

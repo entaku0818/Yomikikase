@@ -1,0 +1,2 @@
+Paransimme puheen toistoa ja päivitimme kaupan tiedot.
+Ostosten vahvistuksen turvallisuutta ja luotettavuutta parannettiin. Vahvistusta yritetään automaattisesti uudelleen, jos se ei onnistu.

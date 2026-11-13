@@ -61,8 +61,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // 環境変数から取得したAPIキーを使用
         let apiKey = getRevenueCatAPIKey()
         infoLog("RevenueCat API key source: \(apiKey.isEmpty ? "NOT FOUND" : "Found")")
-        Purchases.configure(withAPIKey: apiKey)
+        Purchases.configure(
+            with: Configuration.Builder(withAPIKey: apiKey)
+                .with(entitlementVerificationMode: .informational)
+        )
         infoLog("RevenueCat configured successfully")
+        SubscriptionAnalyticsIdentity.synchronize()
 
         // アプリ起動時にプレミアムステータスを確認・GA4ユーザープロパティを設定
         Task {
@@ -205,6 +209,12 @@ struct VoiceYourTextApp: App {
     private var mainContent: some View {
         MainView(store: speechesStore)
         .environmentObject(adConfig)
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            guard !AppDelegate.isRunningTests else { return }
+            Task {
+                await PurchaseManager.shared.checkPremiumStatus()
+            }
+        }
         .onAppear {
             if !isPremiumChecked && !AppDelegate.isRunningTests {
                 isPremiumChecked = true

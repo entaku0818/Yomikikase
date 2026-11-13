@@ -105,6 +105,8 @@ SLIDES = {
     ],
 }
 
+SLIDES.update({'pt-BR': [('playing', 'Ouça enquanto\nfaz outras coisas', 'Cada palavra é destacada durante a leitura'), ('home', 'PDFs, livros e web\nem voz alta', 'Texto, PDF, ePub, links e documentos digitalizados'), ('speed', 'Ouça no\nseu ritmo', 'Velocidade de 0,7x a 2x'), ('sleeptimer', 'Adormeça\nouvindo', 'Para automaticamente ao fim do tempo'), ('dictionary', 'Ajuste a\npronúncia', 'Adicione nomes e termos ao seu dicionário')], 'ru': [('playing', 'Слушайте, занимаясь\nсвоими делами', 'Каждое слово подсвечивается при чтении'), ('home', 'PDF, книги и сайты —\nвсё вслух', 'Текст, PDF, ePub, ссылки и сканы'), ('speed', 'Слушайте в\nсвоём темпе', 'Скорость от 0,7x до 2x'), ('sleeptimer', 'Засыпайте\nпод чтение', 'Воспроизведение остановится по таймеру'), ('dictionary', 'Настройте\nпроизношение', 'Добавьте имена и термины в свой словарь')], 'zh-Hans': [('playing', '做家务、通勤时，\n随时听。', '朗读时逐字高亮，轻松跟上进度'), ('home', 'PDF、书籍和网页，\n都能朗读。', '文本、PDF、ePub、链接和扫描文档'), ('speed', '按自己的\n节奏收听', '播放速度可调：0.7倍至2倍'), ('sleeptimer', '睡前听一会儿，\n定时自动停', '时间一到，自动停止播放'), ('dictionary', '读音不对？\n用词典修正', '自定义人名和专业术语的读音')]})
+
 # プロダクトページの最適化（A/B テスト）用の並べ替え案。SLIDES の何枚目を使うかを順に並べる（文言は同じ）
 VARIANTS = {
     "ja": {
@@ -118,7 +120,9 @@ LOCALES = {
     "ja": ("ja", "ja_JP", "ja-JP"), "en-US": ("en", "en_US", "en-US"), "de-DE": ("de", "de_DE", "de-DE"),
     "es-ES": ("es", "es_ES", "es-ES"), "fr-FR": ("fr", "fr_FR", "fr-FR"), "it": ("it", "it_IT", "it-IT"),
     "ko": ("ko", "ko_KR", "ko-KR"), "th": ("th", "th_TH", "th-TH"), "tr": ("tr", "tr_TR", "tr-TR"),
-    "vi": ("vi", "vi_VN", "vi-VT"),
+    "vi": ("vi", "vi_VN", "vi-VN"),
+    "pt-BR": ("pt-BR", "pt_BR", "pt-BR"), "ru": ("ru", "ru_RU", "ru-RU"),
+    "zh-Hans": ("zh-Hans", "zh_CN", "zh-Hans"),
 }
 
 FONT_DIR = "/System/Library/Fonts"
@@ -134,6 +138,8 @@ TH_FONT = os.path.join(FONT_DIR, "Supplemental", "SukhumvitSet.ttc")  # index 5=
 def load_font(lang, size, bold, regular=False):
     if lang == "ja":
         return ImageFont.truetype(JA_REGULAR if regular else JA_BOLD if bold else JA_MEDIUM, size)
+    if lang == "zh-Hans":
+        return ImageFont.truetype(os.path.join(FONT_DIR, "STHeiti Medium.ttc"), size)
     if lang == "ko":
         return ImageFont.truetype(KO_FONT, size, index=0 if regular else 6 if bold else 4)
     if lang == "th":
@@ -205,6 +211,7 @@ PLAYING_TITLE = {
     "es-ES": "Don Quijote de la Mancha", "fr-FR": "Du côté de chez Swann", "it": "Le avventure di Pinocchio",
     "ko": "서시", "th": "ฟังระหว่างเดินทาง", "tr": "Yolda Dinlemek", "vi": "Truyện Kiều",
 }
+PLAYING_TITLE.update({"pt-BR": "Ouvir no caminho", "ru": "Слушать в дороге", "zh-Hans": "在路上听故事"})
 JA_REGULAR = os.path.join(FONT_DIR, "ヒラギノ角ゴシック W4.ttc")
 # 拡大して見せる部分（実画面 1320x2868 の座標）。スリープタイマーはミニプレイヤーの帯（残り時間つき）
 ZOOM = {"sleeptimer": (20, 2384, 1300, 2616)}
@@ -262,7 +269,7 @@ def locate(text, needle, lo=0, hi=None):
 def excerpt(text, pos, end, lang, limit=150):
     """pos〜end を含む文を返す。長すぎる文は節（；：、，）の区切りで切り、途中なら … を付ける"""
     import re
-    levels = ([r"。|\n", r"、"] if lang == "ja"
+    levels = ([r"。|\n", r"、"] if lang == "ja" or lang.startswith("zh")
               else [r'[.!?](?:["”]|\s?»)?(?=\s|$)|\n', r"[;:]", r",(?=\s)"])
     lo, hi = 0, len(text)
     for level, pattern in enumerate(levels):
@@ -313,7 +320,7 @@ def render_callout(sentence, start, end, lang, width):
     probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
     # 折り返しの単位: 日本語は1文字、英語は単語（後ろの空白込み）
     import re
-    units = list(sentence) if lang == "ja" else re.findall(r"\S+\s*", sentence)
+    units = list(sentence) if lang == "ja" or lang.startswith("zh") else re.findall(r"\S+\s*", sentence)
     # 1語で幅を超える塊（空白の少ない言語）は文字単位に崩す
     units = [c for u in units for c in ([u] if probe.textlength(u, font=font) <= max_w else list(u))]
     # ハイライト中の語は途中で折り返さず、1つの塊として扱う

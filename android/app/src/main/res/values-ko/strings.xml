@@ -55,7 +55,7 @@
     <string name="open_text_file">텍스트 파일 열기</string>
     <string name="language_select">언어 선택</string>
     <string name="voice_select">음성 선택</string>
-    <string name="voice_default_note">기기의 기본 음성</string>
+    <string name="voice_default_note">고품질 오프라인 음성을 우선하여 자동으로 선택합니다</string>
     <string name="voice_label">음성 %1$d</string>
     <string name="voice_high_quality">고품질</string>
     <string name="voice_requires_network">인터넷 필요</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">VOICEVOX 이용 약관</string>
     <string name="drive_title">Google 드라이브</string>
     <string name="drive_unsupported">이 파일은 읽을 수 없습니다. 텍스트, Markdown, PDF, Google 문서를 지원합니다.</string>
+    <string name="home_recent_files">최근 파일</string>
+    <string name="voice_recommended">추천 음성</string>
+    <string name="voice_preview">미리 듣기</string>
+    <string name="voice_use">이 음성 사용</string>
+    <string name="my_voice_title">내 음성 (%1$s)</string>
+    <string name="my_voice_hint">언어마다 음성과 설정을 하나씩 저장할 수 있습니다.</string>
+    <string name="my_voice_save">현재 설정 저장</string>
+    <string name="my_voice_update">저장된 설정 덮어쓰기</string>
+    <string name="my_voice_apply">저장된 음성 사용</string>
+    <string name="my_voice_delete">저장된 음성 삭제</string>
+    <string name="my_voice_unavailable">저장된 음성을 사용할 수 없습니다.</string>
+    <string name="voice_preview_sample">안녕하세요. 이 음성으로 글을 읽어 드립니다.</string>
+    <string name="kokoro_title">Kokoro AI 음성 · 베타</string>
+    <string name="kokoro_note">일본어 음성 5종. 모델(92MB)을 한 번 다운로드하면 기기에서 생성하며 API 요금이 없습니다. 음높이 조절은 지원하지 않습니다.</string>
+    <string name="kokoro_download">음성 모델 다운로드(92MB)</string>
+    <string name="kokoro_downloading">다운로드 중… %1$d%%</string>
+    <string name="kokoro_download_failed">다운로드하지 못했습니다. 연결과 저장 공간을 확인한 후 다시 시도하세요.</string>
+    <string name="kokoro_failed">AI 음성을 생성하지 못했습니다. 다른 글이나 기기 음성을 선택하세요.</string>
+    <string name="kokoro_generating">음성 생성 중… 언제든 중지할 수 있습니다.</string>
+    <string name="kokoro_stop_preview">미리 듣기 중지</string>
+    <string name="voicevox_catalog_unavailable">음성을 찾을 수 없습니다</string>
 </resources>

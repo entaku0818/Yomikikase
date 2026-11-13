@@ -7,17 +7,22 @@ struct VoicevoxSettingsFeature {
     @ObservableState
     struct State: Equatable {
         var isEnabled = false
-        var selectedSpeakerId = VoicevoxCatalog.defaultSpeakerId
+        var selectedSpeakerId = VoicevoxCatalog.unselectedSpeakerId
         var usage: VoicevoxUsage?
         var isUsageUnavailable = false
         var previewingSpeakerId: Int?
         var showPaywall = false
-        var voices = VoicevoxCatalog.voices
+        var catalog: VoicevoxCatalog?
+        var isCatalogLoading = false
+        var isCatalogUnavailable = false
+        var voices: [VoicevoxVoice] { catalog?.voices ?? [] }
     }
 
     enum Action: ViewAction, BindableAction {
         case binding(BindingAction<State>)
         case view(View)
+        case catalogLoaded(VoicevoxCatalog)
+        case catalogFailed
         case usageLoaded(VoicevoxUsage)
         case usageFailed
         case previewFinished
@@ -25,13 +30,14 @@ struct VoicevoxSettingsFeature {
 
         enum View {
             case onAppear
+            case loadCatalog
             case enabledChanged(Bool)
             case voiceTapped(Int)
             case upgradeTapped
         }
     }
 
-    private enum CancelID { case preview }
+    private enum CancelID { case preview, catalog }
 
     @Dependency(\.voicevox) var voicevox
     @Dependency(\.voicevoxSettings) var settings
@@ -52,16 +58,43 @@ struct VoicevoxSettingsFeature {
             case .view(.onAppear):
                 state.isEnabled = settings.isEnabled()
                 state.selectedSpeakerId = settings.speakerId()
-                // オフの人のためにサーバーを起こさない（使われていないと0台で、起動のたびに費用がかかる）
-                return state.isEnabled ? loadUsage() : .none
+                state.catalog = voicevox.cachedCatalog()
+                // オフのまま通常画面を表示しただけではサーバーを起こさない。
+                state.isCatalogLoading = state.isEnabled
+                return state.isEnabled ? loadCatalog(includeUsage: true) : .none
+
+            case .view(.loadCatalog):
+                state.isCatalogLoading = true
+                state.isCatalogUnavailable = false
+                return loadCatalog(includeUsage: state.isEnabled)
+
+            case let .catalogLoaded(catalog):
+                state.catalog = catalog
+                state.isCatalogLoading = false
+                state.isCatalogUnavailable = false
+                let selected = catalog.selection(for: state.selectedSpeakerId) ?? VoicevoxCatalog.unselectedSpeakerId
+                if selected != state.selectedSpeakerId {
+                    state.selectedSpeakerId = selected
+                    settings.setSpeakerId(selected)
+                }
+                return .none
+
+            case .catalogFailed:
+                state.catalog = nil
+                state.isCatalogLoading = false
+                state.isCatalogUnavailable = true
+                return .none
 
             case let .view(.enabledChanged(enabled)):
                 state.isEnabled = enabled
                 settings.setEnabled(enabled)
                 analytics.logEvent("voicevox_toggle", ["enabled": enabled ? "true" : "false"])
-                return enabled ? loadUsage() : .none
+                state.isCatalogLoading = enabled
+                return enabled ? loadCatalog(includeUsage: true) : .cancel(id: CancelID.catalog)
 
             case let .view(.voiceTapped(speakerId)):
+                guard !state.isCatalogLoading, !state.isCatalogUnavailable,
+                      let voice = state.catalog?.voice(for: speakerId) else { return .none }
                 // 再生画面の声の一覧からキャラを選んだときは、キャラ音声もオンにする
                 if !state.isEnabled {
                     state.isEnabled = true
@@ -70,7 +103,7 @@ struct VoicevoxSettingsFeature {
                 state.selectedSpeakerId = speakerId
                 settings.setSpeakerId(speakerId)
                 state.previewingSpeakerId = speakerId
-                let text = Self.previewText(for: VoicevoxCatalog.voice(for: speakerId))
+                let text = Self.previewText(for: voice)
                 return .run { send in
                     await player.stop()
                     for await event in await player.play(text, speakerId, 1.0) {
@@ -109,6 +142,26 @@ struct VoicevoxSettingsFeature {
                 return .none
             }
         }
+    }
+
+    private func loadCatalog(includeUsage: Bool) -> Effect<Action> {
+        .run { send in
+            do {
+                let catalog = try await voicevox.catalog().validated()
+                try Task.checkCancellation()
+                await send(.catalogLoaded(catalog))
+            } catch is CancellationError {
+                return
+            } catch {
+                guard !Task.isCancelled else { return }
+                await send(.catalogFailed)
+            }
+            if includeUsage {
+                do { await send(.usageLoaded(try await voicevox.quota())) }
+                catch { if !Task.isCancelled { await send(.usageFailed) } }
+            }
+        }
+        .cancellable(id: CancelID.catalog, cancelInFlight: true)
     }
 
     private func loadUsage() -> Effect<Action> {

@@ -49,12 +49,9 @@ spec:
                 secretKeyRef:
                   name: voicevox-revenuecat-secret-key
                   key: latest
-            - name: FREE_MONTHLY_CHARS
-              value: "5000"
-            - name: PREMIUM_MONTHLY_CHARS
-              value: "200000"
-            - name: MAX_REQUEST_CHARS
-              value: "300"
+            # Limits are owned by internal/policy/default.json.
+            # To hot-update, set TTS_POLICY_DOCUMENT=tts_policy/current after
+            # creating and validating the server-only Firestore document.
           resources:
             limits:
               cpu: "1"

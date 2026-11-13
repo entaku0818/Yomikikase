@@ -11,6 +11,16 @@ struct VoicevoxPlayerClient: Sendable {
 extension VoicevoxPlayerClient: DependencyKey {
     @MainActor
     private static let player = VoicevoxSpeechPlayer(
+        resolveSpeaker: { savedId in
+            let catalog = try await VoicevoxClient.liveValue.catalog()
+            try Task.checkCancellation()
+            guard let selected = catalog.selection(for: savedId) else {
+                throw VoicevoxError.server(status: 503, code: "no_voices_available")
+            }
+            VoicevoxSettingsClient.liveValue.setSpeakerId(selected)
+            return selected
+        },
+        configuration: { try await VoicevoxClient.liveValue.configuration() },
         synthesize: { text, speakerId, speedScale in
             try await VoicevoxClient.liveValue.synthesize(text, speakerId, speedScale)
         },

@@ -1,0 +1,14 @@
+A Voice Narrator szöveget, PDF-eket, weboldalakat és DRM-mentes EPUB-könyveket olvas fel hangosan. Hallgassa ingázás közben, házimunkák végzése közben vagy pihenteti a szemét.
+
+HOZZÁ HOZZÁ A TARTALMAT
+Illesszen be szöveget, importáljon PDF- vagy TXT-fájlokat, nyisson meg EPUB-könyveket, illesszen be internetes hivatkozásokat, szkenneljen be nyomtatott dokumentumokat vagy csatlakoztassa a Google Drive-ot. Előfordulhat, hogy egyes fájlok és weboldalak nem támogatják a szövegkivonást. A Google Drive külön beállítást és bejelentkezést igényel.
+
+HALLGASSA MEG AZ ÚTJÁT
+Állítsa be az olvasási sebességet és a hangmagasságot. Kövesse a kiemelt szöveget, használja az elalváskapcsolót, és mentse el a tartalmat a Saját fájlok mappába. Adjon hozzá szavakat a szótárhoz a kiejtés testreszabásához. Az elérhető hangok a nyelvtől és az eszköztől függenek. A japán karakterhangok VOICEVOX-ot használnak; A Kokoro AI hangjai támogatják a japán és az angol nyelvet.
+
+PREMIUM
+Hallgassa hirdetések nélkül, mentsen el korlátlan számú fájlt, és olvassa el a 4000 karakternél hosszabb szövegeket a végéig. A Premium havonta akár 200 000 karakter japán karakterhangot is tartalmaz.
+
+Havi és éves előfizetések állnak rendelkezésre. Az árak és a jogosult ingyenes próbaverziók megjelennek a vásárlási képernyőn. Az előfizetések automatikusan megújulnak, hacsak nem mondják le legalább 24 órával az aktuális időszak vége előtt. Kezelheti vagy törölheti a Beállítások > Előfizetések menüpontban.
+
+Szabványos hangok generálódnak az eszközön. A karakterhangok szöveget küldenek a szerverünkre hang generálására. A webes cikkekhez és a Google Drive-hoz internetkapcsolat szükséges.

@@ -1,0 +1,13 @@
+Kokoro-82M voice embeddings (unmodified float32 values; repacked from voices-v1.npz).
+https://huggingface.co/hexgrad/Kokoro-82M
+Apache License 2.0 — see LICENSE.txt.
+ONNX tokenizer and downloaded quantized model: onnx-community/Kokoro-82M-v1.0-ONNX
+Pinned revision: 1939ad2a8e416c0acfeecc08a694d14ef25f2231
+The names 凛/狐/雪/芽/雲 are application display names.
+{
+  "jf_alpha": "56b479360aad9f367aeb8cef908f9201cf48b4555e488c5f4590c9dfcd978bb6",
+  "jf_gongitsune": "0f1181f3772d27b7c12aaf4bcd71e31b186c4146e330d074a3dc64ee392af396",
+  "jf_tebukuro": "29c6c0561b4288d59639677bebe7533c919743d5ea68d0d2ae992644beea6696",
+  "jf_nezumi": "13cb71eebb0b48739d444558322aa35a8c9a489b80e1e631f14d2e6aea93026b",
+  "jm_kumo": "09e959d239724c734d65661f06f14cdabcddfd476bfaaad905a937099ae9e64f"
+}

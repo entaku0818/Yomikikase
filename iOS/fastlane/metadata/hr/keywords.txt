@@ -1,0 +1,1 @@
+čitač,govor,tekst,PDF,knjige,glas,slušanje,učenje

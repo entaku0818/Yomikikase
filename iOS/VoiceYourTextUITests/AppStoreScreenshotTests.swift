@@ -18,6 +18,7 @@ final class AppStoreScreenshotTests: XCTestCase {
 
     override func setUpWithError() throws {
         let env = ProcessInfo.processInfo.environment
+        if env["SHOT_MANIFEST"] != nil { return }
         guard let dir = env["SHOT_DIR"], !dir.isEmpty else {
             throw XCTSkip("SHOT_DIR が無いので撮影しない（appstore_screenshots.sh 専用）")
         }
@@ -42,6 +43,54 @@ final class AppStoreScreenshotTests: XCTestCase {
         // UI テストから起動したアプリは TCA が「テスト中」と判定して testValue を使いうる。
         // 本番と同じ依存で撮るため live に固定する
         app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
+    }
+
+    /// Capture the real app in every requested locale on either iPhone or iPad.
+    func testCaptureAllLocales() throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let manifestPath = env["SHOT_MANIFEST"], let output = env["SHOT_OUTPUT"] else {
+            throw XCTSkip("Batch screenshot manifest not provided")
+        }
+        struct CaptureLocale: Decodable {
+            let store: String
+            let ui: String
+            let home: String
+            let myfiles: String
+            let settings: String
+            let sampleTitle: String
+        }
+        let data = try Data(contentsOf: URL(fileURLWithPath: manifestPath))
+        let locales = try JSONDecoder().decode([CaptureLocale].self, from: data)
+        continueAfterFailure = false
+        for locale in locales {
+            let application = XCUIApplication()
+            application.launchArguments = [
+                "-ScreenshotBatch", "YES", "-ScreenshotSeed", locale.ui,
+                "-IsPremiumUser", "YES", "-HasCompletedOnboarding", "YES",
+                "-AppleLanguages", "(\(locale.ui))", "-AppleLocale", locale.store.replacingOccurrences(of: "-", with: "_")
+            ]
+            application.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
+            application.launch()
+            let directory = URL(fileURLWithPath: output).appendingPathComponent(locale.store)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+            for (index, title) in [locale.home, locale.myfiles, locale.settings].enumerated() {
+                let tab = application.buttons[title].firstMatch
+                XCTAssertTrue(tab.waitForExistence(timeout: 20), "Missing tab: \(locale.store) / \(title)")
+                tab.tap()
+                if index == 1 {
+                    XCTAssertTrue(application.staticTexts[locale.sampleTitle].firstMatch.waitForExistence(timeout: 10),
+                                  "Localized sample missing for \(locale.store)")
+                }
+                if index == 2 {
+                    XCTAssertTrue(application.sliders.firstMatch.waitForExistence(timeout: 30), "Settings did not appear for \(locale.store)")
+                }
+                sleep(2) // Allow the tab transition to finish before capturing pixels.
+                let filename = "\(index)_\(env["SHOT_DEVICE"] ?? "IPHONE").png"
+                try XCUIScreen.main.screenshot().pngRepresentation.write(to: directory.appendingPathComponent(filename))
+            }
+            application.terminate()
+            print("CAPTURED \(locale.store)")
+        }
     }
 
     /// 撮る画面（素材名）。どれを何枚目に使うかは compose_screenshots.py が決める

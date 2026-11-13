@@ -165,7 +165,7 @@ final class KokoroEngineTests: XCTestCase {
     }
 
     func test_selectVoice_validStoredVoice_isRespected() {
-        let voice = KokoroPlaybackParams.selectVoice(languageCode: "ja-JP", storedVoiceRaw: "am_adam")
+        let voice = KokoroPlaybackParams.selectVoice(languageCode: "en-US", storedVoiceRaw: "am_adam")
         XCTAssertEqual(voice, .amAdam)
     }
 

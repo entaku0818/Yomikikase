@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Digunakan untuk mengimbas dokumen dan membaca teks dengan kuat.";
+
+NSPersonalVoiceUsageDescription = "Menggunakan Suara Peribadi untuk membaca dengan kuat dalam suara anda.";

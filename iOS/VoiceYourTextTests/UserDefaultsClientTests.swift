@@ -143,7 +143,8 @@ final class UserDefaultsClientTests: XCTestCase {
 
     // MARK: - PremiumStatusDidChange 通知
 
-    func test_setIsPremiumUser_persistsAndPostsNotification() {
+    func test_setIsPremiumUser_updatesSessionAndPostsNotification() {
+        let client = self.client
         let expectation = expectation(
             forNotification: Notification.Name("PremiumStatusDidChange"),
             object: nil

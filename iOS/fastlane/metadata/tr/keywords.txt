@@ -1,1 +1,1 @@
-metinden sese,TTS,PDF,EPUB,sesli kitap,Google Drive,erişilebilirlik,disleksi
+okuyucu,konuşma,metin,PDF,kitaplar,ses,dinle,çalışma

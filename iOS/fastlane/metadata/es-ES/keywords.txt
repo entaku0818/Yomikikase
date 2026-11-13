@@ -1,1 +1,1 @@
-texto a voz,lector PDF,lectura rápida,epub,escuchar,dislexia,escáner,lector web,voz
+lector,habla,texto,PDF,libros,voz,escuchar,estudiar

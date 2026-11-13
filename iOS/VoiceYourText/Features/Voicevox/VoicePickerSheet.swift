@@ -9,7 +9,7 @@ struct VoicePickerRow: View {
 
     private var voiceName: String {
         store.isEnabled
-            ? VoicevoxCatalog.voice(for: store.selectedSpeakerId).character
+            ? (store.catalog?.voice(for: store.selectedSpeakerId)?.character ?? String(localized: "キャラ音声"))
             : String(localized: "端末の音声")
     }
 
@@ -39,7 +39,7 @@ struct VoicePickerRow: View {
     }
 }
 
-/// 再生画面から開く声の一覧。端末の音声とキャラ音声6声から選べる。キャラは選ぶと試聴する。
+/// 再生画面から開く声の一覧。端末の音声とサーバーのキャラ音声から選べる。キャラは選ぶと試聴する。
 @ViewAction(for: VoicevoxSettingsFeature.self)
 struct VoicePickerSheet: View {
     @Bindable var store: StoreOf<VoicevoxSettingsFeature>
@@ -58,6 +58,11 @@ struct VoicePickerSheet: View {
                 }
 
                 Section {
+                    if store.isCatalogLoading { ProgressView() }
+                    if store.isCatalogUnavailable || (!store.isCatalogLoading && store.voices.isEmpty) {
+                        Text("音声が見つかりません")
+                        Button("再試行") { send(.loadCatalog) }
+                    }
                     ForEach(store.voices) { voice in
                         Button {
                             send(.voiceTapped(voice.speakerId))
@@ -66,6 +71,7 @@ struct VoicePickerSheet: View {
                                 isSelected: store.isEnabled && store.selectedSpeakerId == voice.speakerId,
                                 isLoading: store.previewingSpeakerId == voice.speakerId)
                         }
+                        .disabled(store.isCatalogLoading)
                     }
                 } header: {
                     Text("キャラ音声（VOICEVOX）")
@@ -81,7 +87,7 @@ struct VoicePickerSheet: View {
                             Button {
                                 send(.upgradeTapped)
                             } label: {
-                                Text("プレミアムなら月20万字まで")
+                                Text("プレミアムを見る")
                             }
                         }
                     }
@@ -95,6 +101,7 @@ struct VoicePickerSheet: View {
                 }
             }
         }
+        .onAppear { send(.loadCatalog) }
         .sheet(isPresented: $store.showPaywall) {
             SubscriptionView(source: .voicevoxPicker)
         }

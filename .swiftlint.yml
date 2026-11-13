@@ -176,6 +176,7 @@ included:
 
 # 対象外のファイル・フォルダ
 excluded:
+  - iOS/LocalPackages/PaywallAnalytics/.build
   - Pods
   - Carthage
   - SourcePackages

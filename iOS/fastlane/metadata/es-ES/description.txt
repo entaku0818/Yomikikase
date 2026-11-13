@@ -1,35 +1,14 @@
-Convierte cualquier texto en voz — PDFs, páginas web, libros EPUB, archivos de Google Drive, documentos escaneados y más. Voice Narrator es la app de texto a voz todo en uno que se adapta a tu vida diaria.
+Voice Narrator lee en voz alta textos, archivos PDF, páginas web y libros EPUB sin DRM. Escuche mientras viaja, hace las tareas del hogar o descansa la vista.
 
-FUNCIONES PRINCIPALES
+AGREGA TU CONTENIDO
+Pegue texto, importe archivos PDF o TXT, abra libros EPUB, pegue enlaces web, escanee documentos impresos o conecte Google Drive. Es posible que algunos archivos y páginas web no admitan la extracción de texto. Google Drive requiere una configuración e inicio de sesión por separado.
 
-Lee en voz alta cualquier contenido
-- Archivos PDF: importa y escucha documentos, informes y libros
-- Páginas web: pega una URL y escucha cualquier artículo
-- EPUB: escucha libros electrónicos de tu biblioteca
-- Google Drive: abre archivos directamente desde la nube
-- Escáner de documentos: apunta la cámara a cualquier texto impreso y escúchalo al instante
-- Archivos TXT: importa texto plano desde cualquier fuente
+ESCUCHA A TU MANERA
+Ajuste la velocidad de lectura y el tono de la voz. Siga el texto resaltado, use el temporizador de apagado y guarde el contenido en Mis archivos. Agregue palabras a su diccionario para personalizar la pronunciación. Las voces disponibles dependen del idioma y de su dispositivo. Las voces de los personajes japoneses utilizan VOICEVOX; Las voces de Kokoro AI admiten japonés e inglés.
 
-Controles de reproducción avanzados
-- Ajusta la velocidad de lectura de 0,5x a 2x (o más rápido)
-- Controla el tono para encontrar la voz más cómoda
-- Reproducción en segundo plano — sigue escuchando mientras usas otras apps
-- Minireproductor para acceso rápido durante el multitasking
+PREMIUM
+Escuche sin anuncios, guarde archivos ilimitados y lea textos de más de 4000 caracteres hasta el final. Premium también incluye hasta 200.000 caracteres de voces de personajes japoneses por mes.
 
-Personalización
-- Diccionario personalizado: corrige nombres, términos técnicos o marcas mal pronunciados
-- Soporte multilingüe: cambia de idioma para contenido en varios idiomas
-- Guarda textos de uso frecuente para reproducirlos al instante
+Hay suscripciones mensuales y anuales disponibles. Los precios y las pruebas gratuitas elegibles aparecen en la pantalla de compra. Las suscripciones se renuevan automáticamente a menos que se cancelen al menos 24 horas antes de que finalice el período actual. Administrar o cancelar en Configuración > Suscripciones.
 
-Accesibilidad primero
-- Diseñado para personas con dislexia, discapacidad visual o fatiga lectora
-- Sin cuenta requerida — solo abre y escucha
-- Todo el procesamiento se realiza en el dispositivo para proteger tu privacidad
-
-PARA QUIÉN ES
-- Estudiantes que repasan apuntes o libros de texto con las manos libres
-- Profesionales que escuchan informes y documentos durante el trayecto
-- Estudiantes de idiomas que mejoran su comprensión auditiva
-- Cualquiera que prefiera escuchar antes que leer
-
-Privacidad: Sin cuenta requerida. Tu contenido permanece en tu dispositivo.
+Las voces estándar se generan en su dispositivo. Las voces de los personajes envían texto a nuestro servidor para generar audio. Los artículos web y Google Drive requieren una conexión a Internet.

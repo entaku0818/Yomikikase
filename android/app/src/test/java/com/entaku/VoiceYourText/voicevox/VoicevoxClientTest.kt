@@ -34,6 +34,67 @@ class VoicevoxClientTest {
     }
 
     @Test
+    fun catalogComesFromServerAndCanChangeWithoutAppUpdate() = runBlocking {
+        fun entry(id: Int) = """{"speakerId":$id,"character":"server character $id","style":"normal","credit":"credit $id","termsUrl":"https://example.com/voice"}"""
+        fun catalog(id: Int) = """{"schemaVersion":1,"revision":"r$id","defaultSpeakerId":$id,"termsUrl":"https://example.com/terms","voices":[${entry(id)}],"credits":[${entry(id)},${entry(999)}]}"""
+        server.enqueue(MockResponse().setBody(catalog(401)))
+        server.enqueue(MockResponse().setBody(catalog(402)))
+        val first = client.catalog()
+        assertEquals("server character 401", first.voices.single().character)
+        assertEquals(401, first.selection(-1))
+        assertEquals(401, first.selection(401))
+        assertEquals(2, first.credits.size)
+        val next = client.catalog()
+        assertEquals(402, next.selection(401))
+        assertEquals("/v1/voices", server.takeRequest().path)
+        assertEquals("/v1/voices", server.takeRequest().path)
+        server.enqueue(MockResponse().setResponseCode(503).setBody("""{"error":"policy_unavailable"}"""))
+        try { client.catalog(); fail("Must not silently restore a stale catalog") }
+        catch (e: VoicevoxException.Server) { assertEquals(503, e.status) }
+    }
+
+    @Test
+    fun emptyCatalogHasNoDefaultAndInvalidMetadataIsRejected() {
+        val empty = """{"schemaVersion":1,"revision":"r","defaultSpeakerId":null,"termsUrl":"https://example.com/terms","voices":[],"credits":[]}"""
+        val catalog = VoicevoxClient.parseCatalog(JSONObject(empty))
+        assertEquals(null, catalog.selection(14))
+        for (invalid in listOf(empty.replace(":null", ":14"), empty.replace("https:", "javascript:"), "{}")) {
+            try { VoicevoxClient.parseCatalog(JSONObject(invalid)); fail("Invalid catalog accepted") }
+            catch (_: Exception) { }
+        }
+    }
+
+    @Test
+    fun configurationChangesChunkSizeOnNextRead() = runBlocking {
+        fun config(limit: Int) = """{"schemaVersion":1,"revision":"r$limit","voicevox":{"enabled":true,"freeMonthlyChars":120,"premiumMonthlyChars":800,"maxRequestChars":$limit}}"""
+        server.enqueue(MockResponse().setBody(config(5)))
+        server.enqueue(MockResponse().setBody(config(2)))
+        assertEquals(listOf("あいうえお"), client.chunks("あいうえお").map { it.text })
+        assertEquals(listOf("あい", "うえ", "お"), client.chunks("あいうえお").map { it.text })
+        assertEquals("/v1/config", server.takeRequest().path)
+        assertEquals("/v1/config", server.takeRequest().path)
+    }
+
+    @Test
+    fun invalidDisabledOrUnavailableConfigurationDoesNotFallback() = runBlocking {
+        val valid = """{"schemaVersion":1,"revision":"r1","voicevox":{"enabled":true,"freeMonthlyChars":120,"premiumMonthlyChars":800,"maxRequestChars":40}}"""
+        for (body in listOf(valid.replace("true", "false"), valid.replace(":40", ":0"), valid.replace(":1,", ":2,"), "{}")) {
+            server.enqueue(MockResponse().setBody(body))
+            try {
+                client.chunks("本文")
+                fail("Invalid config must stop generation")
+            } catch (_: Exception) { }
+        }
+        server.enqueue(MockResponse().setResponseCode(503).setBody("""{"error":"policy_unavailable"}"""))
+        try {
+            client.chunks("本文")
+            fail("Unavailable config must stop generation")
+        } catch (e: VoicevoxException.Server) {
+            assertEquals("policy_unavailable", e.code)
+        }
+    }
+
+    @Test
     fun quotaSendsAuthHeadersAndParsesUsage() = runBlocking {
         server.enqueue(MockResponse().setBody(usageJson))
         val usage = client.quota()

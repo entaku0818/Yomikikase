@@ -5,11 +5,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"sync"
 	"time"
+
+	"golang.org/x/sync/singleflight"
 )
+
+const maxCachedCustomers = 4096
+const maxResponseBytes = 1 << 20
 
 // Checker はプレミアム会員かを返す。
 type Checker interface {
@@ -26,8 +32,9 @@ type RevenueCat struct {
 	HTTP          *http.Client
 	BaseURL       string
 
-	mu    sync.Mutex
-	cache map[string]cached
+	mu      sync.Mutex
+	cache   map[string]cached
+	lookups singleflight.Group
 }
 
 type cached struct {
@@ -37,30 +44,61 @@ type cached struct {
 
 // IsPremium は entitlement が有効なら true。RevenueCat に顧客がいない（404）場合は無料扱い。
 func (r *RevenueCat) IsPremium(ctx context.Context, userID string) (bool, error) {
-	now := time.Now()
-	r.mu.Lock()
-	if c, ok := r.cache[userID]; ok && now.Before(c.until) {
-		r.mu.Unlock()
-		return c.premium, nil
+	if premium, ok := r.cachedPremium(userID); ok {
+		return premium, nil
 	}
-	r.mu.Unlock()
-
-	premium, err := r.fetch(ctx, userID)
+	value, err, _ := r.lookups.Do(userID, func() (any, error) {
+		if premium, ok := r.cachedPremium(userID); ok {
+			return premium, nil
+		}
+		premium, err := r.fetch(ctx, userID)
+		if err != nil {
+			return false, err
+		}
+		r.remember(userID, premium)
+		return premium, nil
+	})
 	if err != nil {
 		return false, err
 	}
+	return value.(bool), nil
+}
 
+func (r *RevenueCat) cachedPremium(userID string) (bool, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if c, ok := r.cache[userID]; ok && time.Now().Before(c.until) {
+		return c.premium, true
+	}
+	return false, false
+}
+
+func (r *RevenueCat) remember(userID string, premium bool) {
+	now := time.Now()
 	ttl := r.TTL
 	if ttl == 0 {
 		ttl = 5 * time.Minute
 	}
 	r.mu.Lock()
+	defer r.mu.Unlock()
 	if r.cache == nil {
 		r.cache = map[string]cached{}
 	}
+	if len(r.cache) >= maxCachedCustomers {
+		for id, c := range r.cache {
+			if !now.Before(c.until) {
+				delete(r.cache, id)
+			}
+		}
+		if len(r.cache) >= maxCachedCustomers {
+			// Any cached entry can be safely refetched; never grow without a bound.
+			for id := range r.cache {
+				delete(r.cache, id)
+				break
+			}
+		}
+	}
 	r.cache[userID] = cached{premium: premium, until: now.Add(ttl)}
-	r.mu.Unlock()
-	return premium, nil
 }
 
 func (r *RevenueCat) fetch(ctx context.Context, userID string) (bool, error) {
@@ -100,7 +138,14 @@ func (r *RevenueCat) fetch(ctx context.Context, userID string) (bool, error) {
 			ExpiresAt     *int64 `json:"expires_at"`
 		} `json:"items"`
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes+1))
+	if err != nil {
+		return false, err
+	}
+	if len(data) > maxResponseBytes {
+		return false, fmt.Errorf("revenuecat response too large")
+	}
+	if err := json.Unmarshal(data, &body); err != nil {
 		return false, err
 	}
 	for _, item := range body.Items {

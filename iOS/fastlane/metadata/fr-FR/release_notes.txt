@@ -1,2 +1,2 @@
-Stabilité améliorée lors de l’arrêt et du redémarrage de la lecture vocale.
-Textes anglais du parcours de découverte améliorés.
+Amélioration de la lecture vocale et mise à jour de la présentation sur le Store.
+La vérification des achats est plus sûre et plus fiable, avec de nouvelles tentatives automatiques si elle ne peut pas aboutir.

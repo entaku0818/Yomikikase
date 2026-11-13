@@ -55,7 +55,7 @@
     <string name="open_text_file">เปิดไฟล์ข้อความ</string>
     <string name="language_select">เลือกภาษา</string>
     <string name="voice_select">เลือกเสียง</string>
-    <string name="voice_default_note">เสียงเริ่มต้นของอุปกรณ์</string>
+    <string name="voice_default_note">เลือกเสียงคุณภาพสูงแบบออฟไลน์ก่อนโดยอัตโนมัติ</string>
     <string name="voice_label">เสียงที่ %1$d</string>
     <string name="voice_high_quality">คุณภาพสูง</string>
     <string name="voice_requires_network">ต้องใช้อินเทอร์เน็ต</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">ข้อกำหนดการใช้งาน VOICEVOX</string>
     <string name="drive_title">Google ไดรฟ์</string>
     <string name="drive_unsupported">อ่านไฟล์นี้ไม่ได้ รองรับข้อความ, Markdown, PDF และ Google เอกสาร</string>
+    <string name="home_recent_files">ไฟล์ล่าสุด</string>
+    <string name="voice_recommended">เสียงแนะนำ</string>
+    <string name="voice_preview">ฟังตัวอย่าง</string>
+    <string name="voice_use">ใช้เสียงนี้</string>
+    <string name="my_voice_title">เสียงของฉัน (%1$s)</string>
+    <string name="my_voice_hint">บันทึกเสียงและการตั้งค่าได้หนึ่งชุดต่อภาษา</string>
+    <string name="my_voice_save">บันทึกการตั้งค่าปัจจุบัน</string>
+    <string name="my_voice_update">แทนที่การตั้งค่าที่บันทึก</string>
+    <string name="my_voice_apply">ใช้เสียงที่บันทึก</string>
+    <string name="my_voice_delete">ลบเสียงที่บันทึก</string>
+    <string name="my_voice_unavailable">ไม่สามารถใช้เสียงที่บันทึกได้</string>
+    <string name="voice_preview_sample">สวัสดี นี่คือตัวอย่างเสียงอ่าน</string>
+    <string name="kokoro_title">เสียง AI Kokoro · เบต้า</string>
+    <string name="kokoro_note">เสียงภาษาญี่ปุ่น 5 แบบ หลังดาวน์โหลดโมเดล (92 MB) ครั้งแรก จะสร้างเสียงบนอุปกรณ์โดยไม่มีค่า API ไม่รองรับการปรับระดับเสียงสูงต่ำ</string>
+    <string name="kokoro_download">ดาวน์โหลดโมเดลเสียง (92 MB)</string>
+    <string name="kokoro_downloading">กำลังดาวน์โหลด… %1$d%%</string>
+    <string name="kokoro_download_failed">ดาวน์โหลดไม่สำเร็จ ตรวจสอบการเชื่อมต่อและพื้นที่ว่างแล้วลองอีกครั้ง</string>
+    <string name="kokoro_failed">สร้างเสียง AI ไม่สำเร็จ ลองข้อความอื่นหรือเลือกเสียงของอุปกรณ์</string>
+    <string name="kokoro_generating">กำลังสร้างเสียง… หยุดได้ทุกเมื่อ</string>
+    <string name="kokoro_stop_preview">หยุดฟังตัวอย่าง</string>
+    <string name="voicevox_catalog_unavailable">ไม่พบเสียง</string>
 </resources>

@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Wordt gebruikt om documenten te scannen en tekst voor te lezen.";
+
+NSPersonalVoiceUsageDescription = "Gebruikt persoonlijke stem om met uw stem voor te lezen.";

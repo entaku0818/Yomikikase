@@ -12,7 +12,7 @@
 
 # Load environment variables from .env file
 require 'dotenv'
-Dotenv.load
+Dotenv.load(File.expand_path("../../.env", __dir__))
 
 default_platform(:ios)
 
@@ -116,6 +116,24 @@ platform :ios do
       build_number: build_number
     )
   end
+  desc "Prepare all localized metadata and screenshots without submitting"
+  lane :prepare_localized_release do
+    version_number = get_version_number(xcodeproj: "VoiceYourText.xcodeproj", target: "VoiceYourText")
+    deliver(
+      app_version: version_number,
+      skip_binary_upload: true,
+      skip_app_version_update: false,
+      skip_metadata: false,
+      skip_screenshots: false,
+      overwrite_screenshots: true,
+      force: true,
+      submit_for_review: false,
+      automatic_release: false,
+      run_precheck_before_submit: false,
+      precheck_include_in_app_purchases: false
+    )
+  end
+
   # スクリーンショットのみアップロード
   desc "Upload screenshots to App Store Connect only"
   lane :upload_screenshots_only do

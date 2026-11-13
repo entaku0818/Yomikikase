@@ -1,4 +1,6 @@
 [versions]
+onnxRuntime = "1.22.0"
+kuromoji = "0.9.0"
 agp = "8.11.2"
 kotlin = "2.0.21"
 ksp = "2.0.21-1.0.28"
@@ -25,6 +27,8 @@ googleServices = "4.4.3"
 firebaseCrashlyticsPlugin = "3.0.4"
 
 [libraries]
+onnxruntime-android = { group = "com.microsoft.onnxruntime", name = "onnxruntime-android", version.ref = "onnxRuntime" }
+kuromoji-ipadic = { group = "com.atilika.kuromoji", name = "kuromoji-ipadic", version.ref = "kuromoji" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

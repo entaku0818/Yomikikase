@@ -116,3 +116,19 @@ func TestInitializeSpeakerAccepts204(t *testing.T) {
 		t.Errorf("request = %s", got)
 	}
 }
+
+// A broken upstream must not keep growing the gateway's response buffer.
+func TestOversizedEngineResponseIsRejected(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		chunk := strings.Repeat("x", 1<<20)
+		for i := 0; i <= 32; i++ {
+			if _, err := w.Write([]byte(chunk)); err != nil {
+				return
+			}
+		}
+	}))
+	defer srv.Close()
+	if _, err := NewClient(srv.URL).post(context.Background(), "/synthesis", nil); err == nil || !strings.Contains(err.Error(), "too large") {
+		t.Fatal(err)
+	}
+}

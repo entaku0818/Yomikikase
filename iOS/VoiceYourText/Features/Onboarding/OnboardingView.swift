@@ -76,7 +76,7 @@ private final class OnboardingSpeaker: NSObject, AVSpeechSynthesizerDelegate, Ob
     func speak(_ sample: OnboardingSample) {
         guard activeUtterance == nil else { return }
         let utterance = AVSpeechUtterance(string: sample.text)
-        utterance.voice = AVSpeechSynthesisVoice(language: sample.voiceLanguage)
+        utterance.voice = VoiceResolver.voice(languageCode: sample.voiceLanguage)
         activeUtterance = utterance
         utterance.rate = AVSpeechUtteranceDefaultSpeechRate
         utterance.volume = 1.0

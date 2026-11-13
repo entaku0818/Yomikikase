@@ -32,9 +32,7 @@ enum VoiceQualityStatus: Equatable {
             fallback: AVSpeechSynthesisVoice.currentLanguageCode()
         )
 
-        if let identifier = selectedIdentifier,
-           let voice = AVSpeechSynthesisVoice(identifier: identifier),
-           VoiceResolver.languagesMatch(voice.language, target),
+        if let voice = VoiceResolver.voice(savedIdentifier: selectedIdentifier, languageCode: target),
            let label = voice.quality.displayLabel {
             return .usingHighQuality(name: voice.name, label: label)
         }

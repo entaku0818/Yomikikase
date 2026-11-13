@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "ਦਸਤਾਵੇਜ਼ਾਂ ਨੂੰ ਸਕੈਨ ਕਰਨ ਅਤੇ ਟੈਕਸਟ ਨੂੰ ਉੱਚੀ ਆਵਾਜ਼ ਵਿੱਚ ਪੜ੍ਹਨ ਲਈ ਵਰਤਿਆ ਜਾਂਦਾ ਹੈ।";
+
+NSPersonalVoiceUsageDescription = "ਤੁਹਾਡੀ ਆਵਾਜ਼ ਵਿੱਚ ਉੱਚੀ ਆਵਾਜ਼ ਵਿੱਚ ਪੜ੍ਹਨ ਲਈ ਨਿੱਜੀ ਆਵਾਜ਼ ਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ।";

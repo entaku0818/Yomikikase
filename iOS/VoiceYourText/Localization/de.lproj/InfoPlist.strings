@@ -7,4 +7,6 @@
 */
 CFBundleDisplayName = "Voice Narrator";
 
-NSCameraUsageDescription = "Wird verwendet, um Dokumente zu scannen und Text vorzulesen.";
+NSCameraUsageDescription = "Wird zum Scannen von Dokumenten und zum Vorlesen von Texten verwendet.";
+
+NSPersonalVoiceUsageDescription = "Verwendet Personal Voice, um mit Ihrer Stimme vorzulesen.";

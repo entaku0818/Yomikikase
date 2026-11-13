@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Dokumentumok beolvasására és szöveg hangos felolvasására szolgál.";
+
+NSPersonalVoiceUsageDescription = "A Personal Voice használatával hangosan olvas az Ön hangjában.";

@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Bruges til at scanne dokumenter og læse tekst højt.";
+
+NSPersonalVoiceUsageDescription = "Bruger personlig stemme til at læse højt med din stemme.";

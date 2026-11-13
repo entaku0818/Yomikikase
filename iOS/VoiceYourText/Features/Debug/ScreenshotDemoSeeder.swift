@@ -18,17 +18,18 @@ enum ScreenshotDemoSeeder {
     /// 起動引数で言語が指定されていれば、初回だけデモデータを入れる
     static func seedIfRequested() {
         guard let code = UserDefaults.standard.string(forKey: launchArgument),
-              let content = ScreenshotDemoContent.all[code] else {
+              let content = ScreenshotDemoContent.localized(code) else {
             return
         }
         let defaults = UserDefaults.standard
-        guard !defaults.bool(forKey: seededKey) else {
+        guard defaults.bool(forKey: "ScreenshotBatch") || !defaults.bool(forKey: seededKey) else {
             return
         }
 
-        defaults.set(code, forKey: "LanguageSetting")
+        let speechCode = ["pt-BR": "pt", "zh-Hans": "zh"][code] ?? code
+        defaults.set(speechCode, forKey: "LanguageSetting")
         let repository = SpeechTextRepository.shared
-        let language = SpeechTextRepository.LanguageSetting(rawValue: code) ?? .english
+        let language = SpeechTextRepository.LanguageSetting(rawValue: speechCode) ?? .english
         // 一覧は新しい順に並ぶので、見せたい順の逆から入れる
         for item in content.texts.reversed() {
             repository.insert(title: item.title, text: item.text, languageSetting: language, fileType: item.fileType)
@@ -46,7 +47,9 @@ enum ScreenshotDemoSeeder {
         guard let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
             return
         }
-        let url = documents.appendingPathComponent(pdf.fileName)
+        // Reuse one sample file during a locale batch instead of accumulating files in other languages.
+        let filename = UserDefaults.standard.bool(forKey: "ScreenshotBatch") ? "PDF.pdf" : pdf.fileName
+        let url = documents.appendingPathComponent(filename)
         let page = CGRect(x: 0, y: 0, width: 595, height: 842) // A4
         let renderer = UIGraphicsPDFRenderer(bounds: page)
         let margin: CGFloat = 56
@@ -89,7 +92,7 @@ struct ScreenshotDemoContent {
     let dictionary: [(String, String)]
 
     static let all: [String: ScreenshotDemoContent] = [
-        "ja": ja, "en": en, "de": de, "es": es, "fr": fr, "it": it, "ko": ko, "th": th, "tr": tr, "vi": vi
+        "ja": ja, "en": en, "de": de, "es": es, "fr": fr, "it": it, "ko": ko, "th": th, "tr": tr, "vi": vi, "pt-BR": ptBR, "ru": ru, "zh-Hans": zhHans
     ]
 
     static let ja = ScreenshotDemoContent(

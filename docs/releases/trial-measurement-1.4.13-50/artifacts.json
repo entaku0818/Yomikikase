@@ -1,0 +1,9 @@
+{
+  "version": "1.4.13",
+  "build": "50",
+  "sha256": {
+    "iOS/build/export-1.4.13-50/VoiceYourText.ipa": "9d31554235b0afc8bfeb7e36881318be7b3411c3d3a51a1222642f8660861bec",
+    "iOS/build/source-1.4.13-50.tar.gz": "0fc0d86c903728ab4480b48dc2d4ac2eb2edfa167567015244f0ca70de85eb3c",
+    "iOS/build/source-1.4.13-50.json": "66fa1642c0ae9d6c45a10e9f662393e78af1c70d0172a9266f8e8c94fc1da9b5"
+  }
+}

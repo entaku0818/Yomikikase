@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Utilisé pour numériser des documents et lire du texte à voix haute.";
+
+NSPersonalVoiceUsageDescription = "Utilisez la voix personnelle pour lire à voix haute avec votre voix.";

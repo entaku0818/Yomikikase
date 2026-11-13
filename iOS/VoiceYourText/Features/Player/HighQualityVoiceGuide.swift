@@ -21,11 +21,11 @@ enum HighQualityVoiceGuide {
     /// （日本語を読み上げるなら、声の一覧でも日本語を選ぶ必要がある）。
     static func steps(languageCode: String?) -> [String] {
         [
-            "「設定」アプリを開く",
-            "アクセシビリティ → 読み上げコンテンツ → 声",
-            "\(languageName(languageCode)) を選ぶ",
+            String(localized: "「設定」アプリを開く"),
+            String(localized: "アクセシビリティ → 読み上げコンテンツ → 声"),
+            String(format: String(localized: "%@ を選ぶ"), languageName(languageCode)),
             downloadStep(languageCode: languageCode),
-            "このアプリに戻り、下の一覧から選ぶ"
+            String(localized: "このアプリに戻り、下の一覧から選ぶ")
         ]
     }
 
@@ -33,9 +33,9 @@ enum HighQualityVoiceGuide {
     /// 名前が分かっていた方が一覧の中から見つけやすい。
     static func downloadStep(languageCode: String?) -> String {
         if let examples = voiceExamples(languageCode: languageCode) {
-            return "\(examples) などの「高品質」をダウンロード"
+            return String(format: String(localized: "%@ などの「高品質」をダウンロード"), examples)
         }
-        return "「高品質」と付いた音声をダウンロード"
+        return String(localized: "「高品質」と付いた音声をダウンロード")
     }
 
     /// その言語で代表的な音声名。分からない言語では nil。
@@ -48,18 +48,18 @@ enum HighQualityVoiceGuide {
     }
 
     /// 設定アプリの「声」の一覧で選ぶ言語の名前。
-    static func languageName(_ languageCode: String?) -> String {
+    static func languageName(_ languageCode: String?, locale: Locale = .current) -> String {
         let subtag = VoiceResolver.primarySubtag(languageCode ?? "")
-        guard !subtag.isEmpty else { return "読み上げたい言語" }
-        return Locale(identifier: "ja_JP").localizedString(forLanguageCode: subtag)
-            ?? "読み上げたい言語"
+        guard !subtag.isEmpty else { return String(localized: "読み上げたい言語") }
+        return locale.localizedString(forLanguageCode: subtag)
+            ?? String(localized: "読み上げたい言語")
     }
 
     /// ダウンロードで得られるもの。誘導の理由として出す。
-    static let benefit = "iOS標準の音声より自然に読み上げられます。一度入れればオフラインでも使えます。"
+    static let benefit = String(localized: "iOS標準の音声より自然に読み上げられます。一度入れればオフラインでも使えます。")
 
     /// 「設定を開く」ボタンの但し書き。
     /// 開けるのはこのアプリの設定ページまでで、そこから自力でたどる必要がある。
     /// ボタンを押した先が期待と違うと迷子になるため、事前に明示する。
-    static let openSettingsCaveat = "ボタンでは「設定」アプリが開きます。そこから上の手順でたどってください。"
+    static let openSettingsCaveat = String(localized: "ボタンでは「設定」アプリが開きます。そこから上の手順でたどってください。")
 }

@@ -27,6 +27,8 @@ public final class KokoroTTS {
   public enum KokoroTTSError: Error {
     /// Thrown when input text exceeds maximum token count
     case tooManyTokens
+    /// Thrown when G2P produced no supported phonemes.
+    case emptyInput
   }
   
   /// BERT model for encoding phoneme sequences
@@ -174,10 +176,27 @@ public final class KokoroTTS {
     // Start performance timing
     BenchmarkTimer.reset()
     BenchmarkTimer.startTimer(Constants.bm_TTS)
+    defer { BenchmarkTimer.stopTimer(Constants.bm_TTS) }
 
     // Step 1: Convert text to phonemes
     let (phonemizedText, tokenArray) = try phonemizeText(text)
-    
+    guard !phonemizedText.isEmpty else { throw KokoroTTSError.emptyInput }
+
+    // Japanese G2P returns no word timestamps. Split only after phonemizing the
+    // entire text, preserving readings and all punctuation across chunk boundaries.
+    if language == .ja {
+      let samples = try KokoroPhonemeChunker.synthesize(phonemizedText) { chunk in
+        try generatePhonemeAudio(voice: voice, phonemes: chunk, tokens: nil, speed: speed).0
+      }
+      return (samples, nil)
+    }
+    // Keep English token timestamps and its existing inference path intact.
+    return try generatePhonemeAudio(voice: voice, phonemes: phonemizedText, tokens: tokenArray, speed: speed)
+  }
+
+  private func generatePhonemeAudio(
+    voice: MLXArray, phonemes phonemizedText: String, tokens tokenArray: [MToken]?, speed: Float
+  ) throws -> ([Float], [MToken]?) {
     // Step 2: Tokenize and prepare input
     let (paddedInputIds, attentionMask, inputLengths, textMask, inputIds) = try prepareInputTensors(phonemizedText)
     
@@ -223,9 +242,6 @@ public final class KokoroTTS {
       TimestampPredictor.preditTimestamps(tokens: tokenArray, predictionDuration: predictedDurations)
     }
     
-    // Stop performance timing
-    BenchmarkTimer.stopTimer(Constants.bm_TTS)
-
     return (audio[0].asArray(Float.self), tokenArray)
   }
   
@@ -260,6 +276,7 @@ public final class KokoroTTS {
   private func prepareInputTensors(_ phonemizedText: String) throws -> (MLXArray, MLXArray, MLXArray, MLXArray, [Int]) {
     // Tokenize phonemized text
     let inputIds = Tokenizer.tokenize(phonemizedText: phonemizedText)
+    guard !inputIds.isEmpty else { throw KokoroTTSError.emptyInput }
     
     // Check token count limit
     guard inputIds.count <= Constants.maxTokenCount else {

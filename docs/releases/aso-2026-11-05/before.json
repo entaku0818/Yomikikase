@@ -1,0 +1,14 @@
+{
+  "ja": {
+    "description": "読む時間が取れないときも、PDFの資料やWeb記事を耳で。\n読み上げアプリ「ナレーター」は、テキスト、PDF、Webページ、DRMフリーのEPUB書籍を音声で読み上げます。通勤・通学や家事の合間に、自分のペースで読書や学習を進められます。\n\n■ 聴きたい文章を取り込む\n文章の貼り付け、PDF・TXT・EPUBファイルの読み込み、WebページのURL入力、印刷物のスキャンに対応。Googleドライブの対応ファイルも取り込めます。\nファイルの形式やWebページの構成によっては、文章を取り込めない場合があります。Googleドライブの利用には別途設定とログインが必要です。\n\n■ 自分のペースで聴く\n読み上げ速度や声の高さを調整できます。標準音声では、読み上げ中の箇所をハイライト表示。スリープタイマーやファイル保存も利用できます。専門用語や固有名詞は、ユーザー辞書で読み方を登録できます。\n利用できる音声は言語や端末によって異なります。日本語のキャラクターボイスにはVOICEVOXを使用し、Kokoroの音声は日本語と英語に対応しています。\n\n■ プレミアムプラン\n広告なしでの利用、ファイルの無制限保存、4,000文字を超える長文の読み上げに対応。日本語のキャラクターボイスは月20万文字まで利用できます。\n月額・年額プランがあります。価格と無料トライアルの対象条件は、アプリ内の購入画面でご確認ください。サブスクリプションは自動更新されます。更新を希望しない場合は、現在の期間が終了する24時間前までに「設定」アプリのサブスクリプションから解約してください。\n\n■ 音声生成と通信について\n標準音声は端末内で生成します。VOICEVOXのキャラクターボイスでは、音声生成のために文章をサーバーへ送信します。Web記事の取得やGoogleドライブの利用にはインターネット接続が必要です。",
+    "keywords": "テキスト,TTS,EPUB,音読,記事,資料,倍速,辞書,スキャン,オフライン",
+    "whats_new": null,
+    "subtitle": "通勤・家事中に、資料や記事を耳で読む"
+  },
+  "en-US": {
+    "description": "Voice Narrator reads text, PDFs, web pages and DRM-free EPUB books aloud. Listen while commuting, doing chores or resting your eyes.\n\nADD YOUR CONTENT\nPaste text, import PDF or TXT files, open EPUB books, paste web links, scan printed documents or connect Google Drive. Some files and web pages may not support text extraction. Google Drive requires separate setup and sign-in.\n\nLISTEN YOUR WAY\nAdjust reading speed and voice pitch. Follow the highlighted text, use the sleep timer and save content in My Files. Add words to your dictionary to customize pronunciation. Available voices depend on the language and your device. Japanese character voices use VOICEVOX; Kokoro AI voices support Japanese and English.\n\nPREMIUM\nListen without ads, save unlimited files and read texts longer than 4,000 characters to the end. Premium also includes up to 200,000 characters of Japanese character voices per month.\n\nMonthly and annual subscriptions are available. Prices and eligible free trials appear on the purchase screen. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel in Settings > Subscriptions.\n\nStandard voices are generated on your device. Character voices send text to our server to generate audio. Web articles and Google Drive require an internet connection.",
+    "keywords": "tts,reader,ebook,books,listen,study,notes,articles,scanner,offline,dyslexia,pronunciation,documents",
+    "whats_new": null,
+    "subtitle": "Read text and PDFs aloud"
+  }
+}

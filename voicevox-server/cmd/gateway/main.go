@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -22,8 +21,8 @@ import (
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/appcheck"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/audio"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/entitlement"
+	"github.com/entaku0818/voiceyourtext-voicevox/internal/policy"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/quota"
-	"github.com/entaku0818/voiceyourtext-voicevox/internal/voices"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/voicevox"
 )
 
@@ -45,16 +44,27 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	h := &api.Handler{
-		Engine: voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")),
-		Limits: api.Limits{
-			FreeMonthly:     envInt("FREE_MONTHLY_CHARS", 5000),
-			PremiumMonthly:  envInt("PREMIUM_MONTHLY_CHARS", 200000),
-			MaxRequestChars: envInt("MAX_REQUEST_CHARS", 300),
-		},
-		Log: log,
+	if os.Getenv("LOCAL_DEV") == "1" && os.Getenv("K_SERVICE") != "" {
+		fatal(log, "LOCAL_DEV must never run on Cloud Run", nil)
 	}
 
+	h := &api.Handler{
+		Engine: voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")),
+		Policy: policy.Static{Policy: policy.Default()},
+		Log:    log,
+	}
+
+	policyFile := os.Getenv("TTS_POLICY_FILE")
+	policyDocument := os.Getenv("TTS_POLICY_DOCUMENT")
+	if policyFile != "" && policyDocument != "" {
+		fatal(log, "set only one policy source", nil)
+	}
+	if policyFile != "" {
+		h.Policy = policy.File{Path: policyFile}
+	}
+	if policyDocument != "" && os.Getenv("LOCAL_DEV") == "1" {
+		fatal(log, "Firestore policy requires production authentication", nil)
+	}
 	if os.Getenv("LOCAL_DEV") == "1" {
 		// 手元で VOICEVOX エンジンだけ動かして試すとき。認証・課金判定・永続化は偽物にする
 		log.Warn("LOCAL_DEV: App Check を検証せず、使用量はメモリに持つ")
@@ -86,16 +96,28 @@ func main() {
 			EntitlementID: mustEnv("REVENUECAT_ENTITLEMENT_ID"),
 		}
 		h.Quota = quota.Firestore{Client: fs}
+		if policyDocument != "" {
+			h.Policy = policy.Firestore{Client: fs, Document: policyDocument}
+		}
 		h.Encoder = audio.FFmpegAAC{}
 	}
 
+	initialPolicy, err := h.Policy.Load(ctx)
+	if err != nil {
+		fatal(log, "invalid initial policy", err)
+	}
+
 	// 最初の利用者が声の読み込みを待たないよう、起動したら裏で6声を読み込んでおく
-	go warmUp(ctx, log, voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")))
+	go warmUp(ctx, log, voicevox.NewClient(env("ENGINE_URL", "http://127.0.0.1:50021")), initialPolicy)
 
 	srv := &http.Server{
 		Addr:              ":" + env("PORT", "8080"),
 		Handler:           h.Routes(),
 		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       15 * time.Second,
+		WriteTimeout:      115 * time.Second,
+		IdleTimeout:       60 * time.Second,
+		MaxHeaderBytes:    16 << 10,
 	}
 	go func() {
 		<-ctx.Done()
@@ -104,14 +126,17 @@ func main() {
 		_ = srv.Shutdown(shutdown)
 	}()
 
-	log.Info("listening", "addr", srv.Addr, "limits", h.Limits)
+	log.Info("listening", "addr", srv.Addr, "policyRevision", initialPolicy.Revision)
 	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		fatal(log, "serve", err)
 	}
 }
 
 // warmUp はエンジンの起動を待ってから、許可リストの声を全部読み込む。
-func warmUp(ctx context.Context, log *slog.Logger, engine *voicevox.Client) {
+func warmUp(ctx context.Context, log *slog.Logger, engine *voicevox.Client, p policy.Policy) {
+	if !p.Voicevox.Enabled {
+		return
+	}
 	start := time.Now()
 	for engine.Ready(ctx) != nil {
 		select {
@@ -120,7 +145,10 @@ func warmUp(ctx context.Context, log *slog.Logger, engine *voicevox.Client) {
 		case <-time.After(time.Second):
 		}
 	}
-	for _, v := range voices.All {
+	for _, v := range p.Catalog.Voices {
+		if !v.Enabled {
+			continue
+		}
 		t := time.Now()
 		if err := engine.InitializeSpeaker(ctx, v.SpeakerID); err != nil {
 			log.Warn("warm up failed", "speaker", v.SpeakerID, "err", err)
@@ -136,14 +164,6 @@ func env(key, fallback string) string {
 		return v
 	}
 	return fallback
-}
-
-func envInt(key string, fallback int) int {
-	v, err := strconv.Atoi(os.Getenv(key))
-	if err != nil {
-		return fallback
-	}
-	return v
 }
 
 func mustEnv(key string) string {

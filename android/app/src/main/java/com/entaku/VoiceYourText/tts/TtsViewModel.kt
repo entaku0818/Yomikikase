@@ -1,5 +1,11 @@
 package com.entaku.VoiceYourText.tts
 
+import com.entaku.VoiceYourText.kokoro.KokoroVoice
+import com.entaku.VoiceYourText.kokoro.KokoroModelStore
+import com.entaku.VoiceYourText.kokoro.KokoroSynthesizer
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import android.app.Application
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -19,6 +25,7 @@ import com.entaku.VoiceYourText.file.SourceType
 import com.entaku.VoiceYourText.voicevox.MediaPlayerOutput
 import com.entaku.VoiceYourText.voicevox.VoicevoxAudioCache
 import com.entaku.VoiceYourText.voicevox.VoicevoxCatalog
+import com.entaku.VoiceYourText.voicevox.VoicevoxCatalogCache
 import com.entaku.VoiceYourText.voicevox.VoicevoxClient
 import com.entaku.VoiceYourText.voicevox.VoicevoxSettings
 import com.entaku.VoiceYourText.voicevox.VoicevoxSpeechPlayer
@@ -75,7 +82,7 @@ data class NowPlaying(val title: String, val source: String)
 data class SpeechHighlight(val text: String, val range: TextRange, val source: String)
 
 /** キャラ音声が今月の上限で止まった。resumeAt（元のテキスト上の位置）から先は読めていない */
-data class VoicevoxQuotaStop(val usage: VoicevoxUsage, val text: String, val resumeAt: Int)
+data class VoicevoxQuotaStop(val usage: VoicevoxUsage, val text: String, val resumeAt: Int, val rememberPosition: Boolean = false)
 
 class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -98,7 +105,163 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLanguageUnavailable = MutableStateFlow(false)
     val isLanguageUnavailable: StateFlow<Boolean> = _isLanguageUnavailable.asStateFlow()
 
+    private val presetStore = VoicePresetStore(application.getSharedPreferences("voice_presets", Context.MODE_PRIVATE))
+    private val _voicePreset = MutableStateFlow<VoicePreset?>(null)
+    val voicePreset = _voicePreset.asStateFlow()
+    private var devicePreviewId: String? = null
+    private var previewSequence = 0
+
+    fun saveVoicePreset() {
+        val preset = VoicePreset(_selectedVoiceName.value,
+            _voicevoxSpeakerId.value.takeIf { isVoicevoxActive() }, _speechRate.value, _pitch.value,
+            _kokoroVoice.value.voiceId.takeIf { isKokoroActive() })
+        presetStore.save(_selectedLanguage.value.code, preset)
+        _voicePreset.value = preset
+    }
+
+    fun deleteVoicePreset() {
+        presetStore.delete(_selectedLanguage.value.code)
+        _voicePreset.value = null
+    }
+
+    fun canApplyPreset(preset: VoicePreset): Boolean = if (preset.kokoroVoice != null) {
+        _selectedLanguage.value.code == "ja" && kokoroDownload.value.ready && KokoroVoice.fromId(preset.kokoroVoice) != null
+    } else if (preset.speakerId != null) {
+        VoicevoxCatalog.isAvailable(_selectedLanguage.value.code) &&
+            _voicevoxCatalog.value?.voice(preset.speakerId) != null
+    } else preset.voiceName == null || _voiceOptions.value.any { it.name == preset.voiceName && it.selectable }
+
+    fun applyVoicePreset() {
+        val preset = _voicePreset.value ?: return
+        if (!canApplyPreset(preset)) return
+        stop()
+        setSpeechRate(preset.rate)
+        setPitch(preset.pitch)
+        setVoice(preset.voiceName)
+        preset.kokoroVoice?.let { id ->
+            KokoroVoice.fromId(id)?.let(::selectKokoroVoice)
+            return
+        }
+        setVoicevoxEnabled(preset.speakerId != null)
+        preset.speakerId?.let {
+            voicevoxSettings.speakerId = it
+            _voicevoxSpeakerId.value = it
+        }
+    }
+
+    /** Preview without changing the saved voice, history, or file playback position. */
+    fun previewDeviceVoice(name: String) {
+        val engine = tts ?: return
+        if (!_isInitialized.value) return
+        val voice = engine.voices?.firstOrNull { it.name == name } ?: return
+        if (!_voiceOptions.value.any { it.name == name && it.selectable }) return
+        stop()
+        engine.voice = voice
+        engine.setSpeechRate(_speechRate.value)
+        engine.setPitch(_pitch.value)
+        val configuration = android.content.res.Configuration(getApplication<Application>().resources.configuration)
+        configuration.setLocale(_selectedLanguage.value.locale)
+        val sample = getApplication<Application>().createConfigurationContext(configuration)
+            .getString(com.entaku.VoiceYourText.R.string.voice_preview_sample)
+        val id = "preview:${++previewSequence}"
+        devicePreviewId = id
+        if (engine.speak(sample, TextToSpeech.QUEUE_FLUSH, null, id) == TextToSpeech.ERROR) stopPreview()
+    }
+
     private val settingsPrefs = application.getSharedPreferences(SETTINGS_PREFS, Context.MODE_PRIVATE)
+    private val kokoroModels = KokoroModelStore(File(application.noBackupFilesDir, "kokoro-v1"))
+    private val kokoroSynthesizer = KokoroSynthesizer(kokoroModels, application.assets)
+    private val _kokoroEnabled = MutableStateFlow(settingsPrefs.getBoolean("kokoro_enabled", false))
+    val kokoroEnabled = _kokoroEnabled.asStateFlow()
+    private val _kokoroVoice = MutableStateFlow(KokoroVoice.fromId(settingsPrefs.getString("kokoro_voice", null)) ?: KokoroVoice.RIN)
+    val kokoroVoice = _kokoroVoice.asStateFlow()
+    val kokoroDownload = kokoroModels.state
+    private val _kokoroPreview = MutableStateFlow<KokoroVoice?>(null)
+    val kokoroPreview = _kokoroPreview.asStateFlow()
+    private val _kokoroError = MutableStateFlow(false)
+    val kokoroError = _kokoroError.asStateFlow()
+    private val _kokoroGenerating = MutableStateFlow(false)
+    val kokoroGenerating = _kokoroGenerating.asStateFlow()
+    private var kokoroDownloadJob: Job? = null
+    private var kokoroText: String? = null
+    private var kokoroResumeAt = 0
+    private val kokoroPlayer = VoicevoxSpeechPlayer(
+        scope = viewModelScope,
+        synthesize = { text, voiceId, speed ->
+            val preparedText = SpeechTextPreprocessor.prepare(text, "ja", readings = UserDictionaryStore.get(application).readings)
+            kokoroSynthesizer.synthesize(preparedText.spoken, KokoroVoice.entries.first { it.cacheId == voiceId }, speed.toFloat())
+        },
+        cache = VoicevoxAudioCache(File(application.cacheDir, "kokoro-audio-v1"), "wav"),
+        chunkText = com.entaku.VoiceYourText.kokoro.KokoroTextChunker::chunks,
+        output = MediaPlayerOutput(),
+        tempDir = application.cacheDir,
+    )
+
+    fun downloadKokoro() {
+        if (kokoroDownloadJob?.isActive == true) return
+        kokoroDownloadJob = viewModelScope.launch {
+            try { kokoroModels.download() }
+            catch (e: CancellationException) { throw e }
+            catch (_: Exception) { /* Download state exposes a retryable error. */ }
+        }
+    }
+
+    fun cancelKokoroDownload() { kokoroDownloadJob?.cancel() }
+
+    private fun isKokoroActive() = _kokoroEnabled.value && _selectedLanguage.value.code == "ja"
+
+    private fun setKokoroEnabled(enabled: Boolean) {
+        _kokoroEnabled.value = enabled
+        settingsPrefs.edit { putBoolean("kokoro_enabled", enabled) }
+    }
+
+    fun selectKokoroVoice(voice: KokoroVoice) {
+        if (!kokoroDownload.value.ready || _selectedLanguage.value.code != "ja") return
+        stop()
+        setVoicevoxEnabled(false)
+        _kokoroError.value = false
+        _kokoroVoice.value = voice
+        settingsPrefs.edit { putString("kokoro_voice", voice.voiceId) }
+        setKokoroEnabled(true)
+    }
+
+    fun previewKokoroVoice(voice: KokoroVoice) {
+        if (!kokoroDownload.value.ready) return
+        stop()
+        _kokoroError.value = false
+        _kokoroPreview.value = voice
+        kokoroPlayer.play(KokoroVoice.PREVIEW_TEXT, voice.cacheId, 1.0) { event ->
+            if (event !is VoicevoxSpeechPlayer.Event.Sentence) {
+                _kokoroPreview.value = null
+                _kokoroError.value = event is VoicevoxSpeechPlayer.Event.Failed
+            }
+        }
+    }
+
+    private fun playWithKokoro(text: String, offset: Int) {
+        synchronized(queue) { queue.clear() }
+        tts?.stop()
+        kokoroText = text
+        kokoroResumeAt = offset
+        _kokoroError.value = false
+        _kokoroGenerating.value = true
+        _state.value = TtsState.SPEAKING
+        kokoroPlayer.play(text.substring(offset), _kokoroVoice.value.cacheId, _speechRate.value.toDouble(), offset) { event ->
+            when (event) {
+                is VoicevoxSpeechPlayer.Event.Sentence -> {
+                    _kokoroGenerating.value = false
+                    kokoroResumeAt = event.range.start
+                    rememberPosition(event.range.start)
+                    _highlight.value = SpeechHighlight(text, event.range, currentSource)
+                }
+                VoicevoxSpeechPlayer.Event.Finished -> onSpeechFinished()
+                else -> {
+                    stop()
+                    _kokoroError.value = true
+                }
+            }
+        }
+    }
 
     /** 選んでいる言語の声の一覧と、選んでいる声（null なら端末の既定） */
     private val _voiceOptions = MutableStateFlow<List<VoiceOption>>(emptyList())
@@ -108,10 +271,13 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     /** 声を選ぶ（null で既定に戻す）。言語ごとに保存する */
     fun setVoice(name: String?) {
+        if (_kokoroEnabled.value) stop()
+        setKokoroEnabled(false)
         val language = _selectedLanguage.value
         settingsPrefs.edit {
             if (name == null) remove(voiceKey(language)) else putString(voiceKey(language), name)
         }
+        stopPreview()
         _selectedVoiceName.value = name
         applyLanguage(language)
     }
@@ -152,15 +318,32 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     // キャラ音声（VOICEVOX）。日本語の文章だけで使う
     private val voicevoxSettings = VoicevoxSettings(application)
-    private val voicevoxClient = VoicevoxClient()
+    private val voicevoxClient = VoicevoxClient(catalogCache = VoicevoxCatalogCache(application))
     private val voicevoxPlayer = VoicevoxSpeechPlayer(
         scope = viewModelScope,
         synthesize = voicevoxClient::synthesize,
+        chunkText = voicevoxClient::chunks,
+        resolveSpeaker = { savedId ->
+            val catalog = voicevoxClient.catalog()
+            val selected = catalog.selection(savedId) ?: throw java.io.IOException("no voices available")
+            applyVoicevoxCatalog(catalog)
+            voicevoxSettings.speakerId = selected
+            _voicevoxSpeakerId.value = selected
+            selected
+        },
         cache = VoicevoxAudioCache(File(application.cacheDir, "voicevox")),
         output = MediaPlayerOutput(),
         tempDir = application.cacheDir,
     )
     private val analytics = AnalyticsClient.get(application)
+
+    private val _voicevoxCatalog = MutableStateFlow(voicevoxClient.cachedCatalog())
+    val voicevoxCatalog = _voicevoxCatalog.asStateFlow()
+    private val _voicevoxCatalogLoading = MutableStateFlow(false)
+    val voicevoxCatalogLoading = _voicevoxCatalogLoading.asStateFlow()
+    private val _voicevoxCatalogUnavailable = MutableStateFlow(false)
+    val voicevoxCatalogUnavailable = _voicevoxCatalogUnavailable.asStateFlow()
+    private var catalogJob: kotlinx.coroutines.Job? = null
 
     private val _voicevoxEnabled = MutableStateFlow(voicevoxSettings.isEnabled)
     val voicevoxEnabled: StateFlow<Boolean> = _voicevoxEnabled.asStateFlow()
@@ -189,6 +372,14 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     private var tts: TextToSpeech? = null
     private val savedFileRepository = SavedFileRepository(application)
+    private val resumeStore = PlaybackResumeStore(
+        application.getSharedPreferences(PlaybackResumeStore.PREFS_NAME, Context.MODE_PRIVATE)
+    )
+    @Volatile private var resumableText: String? = null
+
+    private fun rememberPosition(offset: Int) {
+        resumableText?.let { resumeStore.save(it, offset) }
+    }
     private val completionTracker = SpeechCompletionTracker(
         application.getSharedPreferences(SpeechCompletionTracker.PREFS_NAME, Context.MODE_PRIVATE),
         AnalyticsClient.get(application),
@@ -218,6 +409,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         _selectedLanguage.value = SpeechLanguage.fromCode(settingsPrefs.getString(KEY_LANGUAGE, null))
             ?: SpeechLanguage.fromCode(Locale.getDefault().language)
             ?: SpeechLanguage.ENGLISH
+        _voicePreset.value = presetStore.load(_selectedLanguage.value.code)
         initTts()
         registerStopReceiver()
     }
@@ -252,42 +444,64 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
                 tts?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                     override fun onStart(utteranceId: String?) {
                         // 一時停止・停止の後に古い文のコールバックが来ても状態を戻さない
-                        if (synchronized(queue) { queue.onChunkStarted(utteranceId) }) {
-                            _state.value = TtsState.SPEAKING
+                        viewModelScope.launch {
+                            if (synchronized(queue) { queue.onChunkStarted(utteranceId) }) {
+                                val range = synchronized(queue) { queue.spokenRange(utteranceId, 0, 1) }
+                                val original = range?.let { prepared?.originalRange(it) }
+                                original?.let { rememberPosition(it.start + highlightOffset) }
+                                _state.value = TtsState.SPEAKING
+                            }
                         }
                     }
 
                     override fun onRangeStart(utteranceId: String?, start: Int, end: Int, frame: Int) {
-                        val spoken = synchronized(queue) { queue.spokenRange(utteranceId, start, end) } ?: return
-                        val current = prepared ?: return
-                        val range = current.originalRange(spoken) ?: return
-                        _highlight.value = SpeechHighlight(
-                            highlightBase,
-                            TextRange(range.start + highlightOffset, range.length),
-                            currentSource,
-                        )
+                        viewModelScope.launch {
+                            val spoken = synchronized(queue) { queue.spokenRange(utteranceId, start, end) } ?: return@launch
+                            val current = prepared ?: return@launch
+                            val range = current.originalRange(spoken) ?: return@launch
+                            rememberPosition(range.start + highlightOffset)
+                            _highlight.value = SpeechHighlight(
+                                highlightBase,
+                                TextRange(range.start + highlightOffset, range.length),
+                                currentSource,
+                            )
+                        }
                     }
 
                     override fun onDone(utteranceId: String?) {
+                        if (utteranceId?.startsWith("preview:") == true) {
+                            viewModelScope.launch { if (devicePreviewId == utteranceId) stopPreview() }
+                            return
+                        }
                         // 最後の文を読み終えたときだけ完了。stop()/pause() で止めた場合は onStop が呼ばれここには来ない
-                        if (synchronized(queue) { queue.isFinished(utteranceId) }) {
-                            synchronized(queue) { queue.clear() }
-                            viewModelScope.launch { onSpeechFinished() }
+                        viewModelScope.launch {
+                            if (synchronized(queue) { queue.isFinished(utteranceId) }) {
+                                synchronized(queue) { queue.clear() }
+                                onSpeechFinished()
+                            }
                         }
                     }
 
                     @Deprecated("Deprecated in Java")
                     override fun onError(utteranceId: String?) {
-                        _state.value = TtsState.ERROR
+                        onError(utteranceId, TextToSpeech.ERROR)
                     }
 
                     override fun onError(utteranceId: String?, errorCode: Int) {
-                        _state.value = TtsState.ERROR
+                        if (utteranceId?.startsWith("preview:") == true) {
+                            viewModelScope.launch { if (devicePreviewId == utteranceId) stopPreview() }
+                            return
+                        }
+                        viewModelScope.launch {
+                            if (synchronized(queue) { queue.spokenRange(utteranceId, 0, 1) } != null) {
+                                _state.value = TtsState.ERROR
+                            }
+                        }
                     }
                 })
                 applyLanguage(_selectedLanguage.value)
                 _isInitialized.value = true
-            } else {
+            } else if (!isKokoroActive()) {
                 _state.value = TtsState.ERROR
             }
         }
@@ -307,19 +521,27 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         saveText: String = text,
         saveToMyFiles: Boolean = true,
     ) {
-        if (text.isBlank() || !_isInitialized.value) return
+        if (text.isBlank() || (!_isInitialized.value && !isKokoroActive())) return
+        stopPlayback(clearTimer = false)
+        // Partial PDF selections and voice previews must not inherit a full file's position.
+        resumableText = text.takeIf { saveToMyFiles && text == saveText }
+        val resumeOffset = resumableText?.let(resumeStore::position) ?: 0
         currentSource = source
         currentTitle = text.take(60)
         _highlight.value = null
         _voicevoxQuotaStop.value = null
         _nowPlaying.value = NowPlaying(title ?: currentTitle.lineSequence().first().take(40), source)
-        if (isVoicevoxActive()) {
-            playWithVoicevox(text, 0)
+        // An empty/punctuation-only synthesis can finish synchronously; create the
+        // notification first so its completion can always dismiss it.
+        startNotificationService(title ?: currentTitle, isPlaying = true)
+        if (isKokoroActive()) {
+            playWithKokoro(text, resumeOffset)
+        } else if (isVoicevoxActive()) {
+            playWithVoicevox(text, resumeOffset)
         } else {
-            speakWithDevice(text, 0)
+            speakWithDevice(text, resumeOffset)
         }
         if (saveToMyFiles) saveToHistory(saveText, title, saveAs)
-        startNotificationService(title ?: currentTitle, isPlaying = true)
     }
 
     /**
@@ -361,14 +583,17 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
             when (event) {
                 is VoicevoxSpeechPlayer.Event.Sentence -> {
                     voicevoxResumeAt = event.range.start
+                    rememberPosition(event.range.start)
                     _highlight.value = SpeechHighlight(text, event.range, currentSource)
                 }
                 VoicevoxSpeechPlayer.Event.Finished -> onSpeechFinished()
                 is VoicevoxSpeechPlayer.Event.QuotaExceeded -> {
                     _voicevoxUsage.value = event.usage
                     analytics.logEvent("voicevox_quota_exceeded", mapOf("plan" to event.usage.plan))
+                    val remember = resumableText != null
+                    rememberPosition(event.resumeAt)
                     stop()
-                    _voicevoxQuotaStop.value = VoicevoxQuotaStop(event.usage, text, event.resumeAt)
+                    _voicevoxQuotaStop.value = VoicevoxQuotaStop(event.usage, text, event.resumeAt, remember)
                 }
                 is VoicevoxSpeechPlayer.Event.Failed -> {
                     // 通信できない等。止まった文から端末の音声で読み続ける
@@ -383,6 +608,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     fun continueWithDeviceVoice() {
         val stop = _voicevoxQuotaStop.value ?: return
         _voicevoxQuotaStop.value = null
+        resumableText = stop.text.takeIf { stop.rememberPosition }
         _nowPlaying.value = NowPlaying(currentTitle.lineSequence().first().take(40), currentSource)
         _state.value = TtsState.SPEAKING
         speakWithDevice(stop.text, stop.resumeAt)
@@ -403,6 +629,10 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     /** 最後まで読み終えた */
     private fun onSpeechFinished() {
+        kokoroText = null
+        _kokoroGenerating.value = false
+        resumableText?.let(resumeStore::clear)
+        resumableText = null
         voicevoxText = null
         _state.value = TtsState.IDLE
         _highlight.value = null
@@ -415,6 +645,7 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     /** キャラ音声のオン・オフ（声の一覧の「端末の音声」を選ぶとオフ） */
     fun setVoicevoxEnabled(enabled: Boolean) {
+        if (enabled) setKokoroEnabled(false)
         if (_voicevoxEnabled.value == enabled) return
         voicevoxSettings.isEnabled = enabled
         _voicevoxEnabled.value = enabled
@@ -424,12 +655,14 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     /** キャラを選ぶ。キャラ音声もオンにして試聴する */
     fun selectVoicevoxVoice(speakerId: Int) {
+        if (_voicevoxCatalogLoading.value || _voicevoxCatalogUnavailable.value) return
+        val voice = _voicevoxCatalog.value?.voice(speakerId) ?: return
         stop()
         setVoicevoxEnabled(true)
         voicevoxSettings.speakerId = speakerId
         _voicevoxSpeakerId.value = speakerId
         _previewingSpeakerId.value = speakerId
-        voicevoxPlayer.play(VoicevoxCatalog.previewText(VoicevoxCatalog.voice(speakerId)), speakerId, 1.0) { event ->
+        voicevoxPlayer.play(VoicevoxCatalog.previewText(voice), speakerId, 1.0) { event ->
             when (event) {
                 is VoicevoxSpeechPlayer.Event.Sentence -> Unit
                 is VoicevoxSpeechPlayer.Event.QuotaExceeded -> {
@@ -447,9 +680,47 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     /** 試聴を止める（声の一覧を閉じたとき） */
     fun stopPreview() {
+        if (_kokoroPreview.value != null) {
+            _kokoroPreview.value = null
+            kokoroPlayer.stop()
+        }
+        if (devicePreviewId != null) {
+            devicePreviewId = null
+            tts?.stop()
+            applyLanguage(_selectedLanguage.value)
+        }
         if (_previewingSpeakerId.value == null) return
         _previewingSpeakerId.value = null
         voicevoxPlayer.stop()
+    }
+
+    private fun applyVoicevoxCatalog(catalog: VoicevoxCatalog) {
+        _voicevoxCatalog.value = catalog
+        _voicevoxCatalogUnavailable.value = false
+        val selected = catalog.selection(_voicevoxSpeakerId.value) ?: VoicevoxCatalog.UNSELECTED_SPEAKER_ID
+        if (selected != _voicevoxSpeakerId.value) {
+            voicevoxSettings.speakerId = selected
+            _voicevoxSpeakerId.value = selected
+        }
+    }
+
+    /** キャラの一覧を開いたときに取得。無効になったIDはサーバーの既定へ移行する。 */
+    fun refreshVoicevoxCatalog() {
+        catalogJob?.cancel()
+        _voicevoxCatalogLoading.value = true
+        _voicevoxCatalogUnavailable.value = false
+        catalogJob = viewModelScope.launch {
+            try {
+                applyVoicevoxCatalog(voicevoxClient.catalog())
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _voicevoxCatalog.value = null
+                _voicevoxCatalogUnavailable.value = true
+            } finally {
+                if (kotlinx.coroutines.currentCoroutineContext()[kotlinx.coroutines.Job]?.isActive == true) _voicevoxCatalogLoading.value = false
+            }
+        }
     }
 
     /** 今月の残り文字数を取り直す。オフの人のためにはサーバーを起こさない（使われていないと0台で、起動のたびに費用がかかる） */
@@ -476,11 +747,18 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         _state.value = TtsState.PAUSED
         tts?.stop()
         voicevoxPlayer.stop()
+        kokoroPlayer.stop()
+        _kokoroGenerating.value = false
         startNotificationService(currentTitle, isPlaying = false)
     }
 
     fun resume() {
         if (_state.value != TtsState.PAUSED) return
+        kokoroText?.let { text ->
+            playWithKokoro(text, kokoroResumeAt)
+            startNotificationService(currentTitle, isPlaying = true)
+            return
+        }
         voicevoxText?.let { text ->
             playWithVoicevox(text, voicevoxResumeAt)
             startNotificationService(currentTitle, isPlaying = true)
@@ -524,11 +802,18 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun stop() {
-        setSleepTimer(null)
+    fun stop() = stopPlayback(clearTimer = true)
+
+    private fun stopPlayback(clearTimer: Boolean) {
+        stopPreview()
+        resumableText = null
+        if (clearTimer) setSleepTimer(null)
         synchronized(queue) { queue.clear() }
         tts?.stop()
         voicevoxPlayer.stop()
+        kokoroPlayer.stop()
+        kokoroText = null
+        _kokoroGenerating.value = false
         voicevoxText = null
         _previewingSpeakerId.value = null
         _state.value = TtsState.IDLE
@@ -548,17 +833,26 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     private fun maxChunkLength(): Int =
         minOf(SpeechChunker.DEFAULT_MAX_LENGTH, TextToSpeech.getMaxSpeechInputLength())
 
+    private var notificationServiceRequested = false
+
     private fun startNotificationService(title: String, isPlaying: Boolean) {
         val intent = Intent(getApplication(), TtsNotificationService::class.java).apply {
             putExtra(TtsNotificationService.EXTRA_TITLE, title)
             putExtra(TtsNotificationService.EXTRA_IS_PLAYING, isPlaying)
         }
         ContextCompat.startForegroundService(getApplication(), intent)
+        notificationServiceRequested = true
     }
 
     private fun stopNotificationService() {
-        getApplication<Application>().stopService(
-            Intent(getApplication(), TtsNotificationService::class.java)
+        if (!notificationServiceRequested) return
+        notificationServiceRequested = false
+        // Queue dismissal after the start intent. stopService() can tear down a new
+        // foreground service before onStartCommand promotes it, causing a crash.
+        getApplication<Application>().startService(
+            Intent(getApplication(), TtsNotificationService::class.java).apply {
+                action = TtsNotificationService.ACTION_DISMISS
+            }
         )
     }
 
@@ -573,7 +867,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun setLanguage(language: SpeechLanguage) {
+        stop()
         _selectedLanguage.value = language
+        _voicePreset.value = presetStore.load(language.code)
         settingsPrefs.edit { putString(KEY_LANGUAGE, language.code) }
         applyLanguage(language)
     }
@@ -603,9 +899,11 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
         val voices = runCatching { engine.voices.orEmpty().toList() }.getOrDefault(emptyList())
         _voiceOptions.value = VoiceOptions.build(voices.map(VoiceOptions::from), language.code)
         val saved = settingsPrefs.getString(voiceKey(language), null)
-        val voice = voices.firstOrNull { it.name == saved && VoiceOptions.from(it).let { info -> !info.notInstalled } }
-        _selectedVoiceName.value = voice?.name
-        if (voice != null && !unavailable) engine.voice = voice
+        val resolved = VoiceOptions.resolve(voices.map(VoiceOptions::from), language.code, saved, engine.voice?.name)
+        val voice = voices.firstOrNull { it.name == resolved }
+        val applied = if (voice != null && !unavailable && engine.setVoice(voice) == TextToSpeech.SUCCESS) voice.name else null
+        // Keep null for automatic selection; do not persist an automatic upgrade as a user choice.
+        _selectedVoiceName.value = applied?.takeIf { it == saved }
     }
 
     companion object {
@@ -617,6 +915,9 @@ class TtsViewModel(application: Application) : AndroidViewModel(application) {
 
     override fun onCleared() {
         super.onCleared()
+        kokoroPlayer.stop()
+        // Inference may still be finishing a native chunk; close after it leaves the mutex.
+        CoroutineScope(Dispatchers.Default).launch { kokoroSynthesizer.close() }
         runCatching { getApplication<Application>().unregisterReceiver(controlReceiver) }
         voicevoxPlayer.stop()
         tts?.stop()

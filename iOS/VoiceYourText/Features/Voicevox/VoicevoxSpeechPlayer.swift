@@ -28,14 +28,19 @@ final class VoicevoxSpeechPlayer {
     }
 
     typealias Synthesize = @Sendable (_ text: String, _ speakerId: Int, _ speedScale: Double) async throws -> VoicevoxAudio
+    typealias Configuration = @Sendable () async throws -> VoicevoxConfiguration
 
+    private let resolveSpeaker: @Sendable (Int) async throws -> Int
     private let synthesize: Synthesize
+    private let configuration: Configuration
     private let cache: VoicevoxAudioCache?
     private let output: VoicevoxAudioOutput
     private var task: Task<Void, Never>?
     private var prefetch: Task<Data, Error>?
 
-    init(synthesize: @escaping Synthesize, cache: VoicevoxAudioCache?, output: VoicevoxAudioOutput) {
+    init(resolveSpeaker: @escaping @Sendable (Int) async throws -> Int = { $0 }, configuration: @escaping Configuration, synthesize: @escaping Synthesize, cache: VoicevoxAudioCache?, output: VoicevoxAudioOutput) {
+        self.resolveSpeaker = resolveSpeaker
+        self.configuration = configuration
         self.synthesize = synthesize
         self.cache = cache
         self.output = output
@@ -50,11 +55,27 @@ final class VoicevoxSpeechPlayer {
         stop()
         generation += 1
         let current = generation
-        let chunks = VoicevoxTextChunker.chunks(from: text)
         task = Task { [weak self] in
-            await self?.run(chunks: chunks, speakerId: speakerId, speedScale: speedScale, onEvent: onEvent)
-            if self?.generation == current {
-                self?.task = nil
+            guard let self, !Task.isCancelled else { return }
+            defer { if self.generation == current { self.task = nil } }
+            // 読む内容がなければ設定・生成のネットワーク呼び出しも不要。
+            guard text.contains(where: { $0.isLetter || $0.isNumber }) else {
+                onEvent(.finished)
+                return
+            }
+            do {
+                let config = try await configuration().validated()
+                try Task.checkCancellation()
+                guard config.voicevox.enabled else {
+                    throw VoicevoxError.server(status: 503, code: "generation_disabled")
+                }
+                let resolvedSpeaker = try await resolveSpeaker(speakerId)
+                try Task.checkCancellation()
+                let chunks = VoicevoxTextChunker.chunks(from: text, maxChars: config.voicevox.maxRequestChars)
+                await run(chunks: chunks, speakerId: resolvedSpeaker, speedScale: speedScale, onEvent: onEvent)
+            } catch {
+                guard !Task.isCancelled else { return }
+                onEvent(.failed(resumeAt: 0))
             }
         }
     }

@@ -2,62 +2,63 @@ package com.entaku.VoiceYourText.voicevox
 
 import android.content.Context
 import androidx.core.content.edit
+import org.json.JSONObject
+import java.net.URI
 
-/** キャラ音声（VOICEVOX）の声。credit はアプリ内に表記する文言（各キャラの規約どおり） */
-data class VoicevoxVoice(
-    val speakerId: Int,
-    val character: String,
-    val style: String,
-    val credit: String,
+/** キャラ情報はサーバーから取得し、固定の名前・ID一覧をアプリに持たない。 */
+data class VoicevoxVoice(val speakerId: Int, val character: String, val style: String, val credit: String, val termsUrl: String)
+
+data class VoicevoxCatalog(
+    val schemaVersion: Int,
+    val revision: String,
+    val defaultSpeakerId: Int?,
     val termsUrl: String,
-)
+    val voices: List<VoicevoxVoice>,
+    val credits: List<VoicevoxVoice>,
+) {
+    fun voice(speakerId: Int): VoicevoxVoice? = voices.firstOrNull { it.speakerId == speakerId }
+    fun selection(savedId: Int): Int? = voice(savedId)?.speakerId ?: defaultSpeakerId
 
-/**
- * アプリで選べるキャラ音声。iOS（VoicevoxCatalog.swift）とサーバーの許可リスト
- * （voicevox-server/internal/voices）と同じ内容にする。
- *
- * 有料アプリで申請なしに使えることを各キャラの利用規約で確認した声だけを載せている（2026-09-27）。
- * 声を足すときは、キャラの規約とクレジット書式を確認し、サーバー側の許可リストにも追加すること。
- */
-object VoicevoxCatalog {
-    val voices = listOf(
-        VoicevoxVoice(14, "冥鳴ひまり", "ノーマル", "VOICEVOX:冥鳴ひまり", "https://meimeihimari.wixsite.com/himari/terms-of-use"),
-        VoicevoxVoice(3, "ずんだもん", "ノーマル", "VOICEVOX:ずんだもん", "https://zunko.jp/con_ongen_kiyaku.html"),
-        VoicevoxVoice(2, "四国めたん", "ノーマル", "VOICEVOX:四国めたん", "https://zunko.jp/con_ongen_kiyaku.html"),
-        VoicevoxVoice(11, "玄野武宏", "ノーマル", "VOICEVOX:玄野武宏(CV:ガロ)", "https://www.virvoxproject.com/voicevoxの利用規約"),
-        VoicevoxVoice(12, "白上虎太郎", "ふつう", "VOICEVOX:白上虎太郎(CV:可愛ユウ)", "https://www.virvoxproject.com/voicevoxの利用規約"),
-        VoicevoxVoice(9, "波音リツ", "ノーマル", "VOICEVOX:波音リツ", "https://www.canon-voice.com/terms"),
-    )
+    fun validated(): VoicevoxCatalog {
+        require(schemaVersion == 1 && revision.isNotBlank() && isHttps(termsUrl))
+        require(voices.map { it.speakerId }.distinct().size == voices.size)
+        require(credits.map { it.speakerId }.distinct().size == credits.size)
+        require((voices + credits).all { it.speakerId >= 0 && it.character.isNotBlank() && it.style.isNotBlank() && it.credit.isNotBlank() && isHttps(it.termsUrl) })
+        require(voices.all { voice -> credits.any { it.speakerId == voice.speakerId } })
+        require(if (voices.isEmpty()) defaultSpeakerId == null else defaultSpeakerId != null && voice(defaultSpeakerId) != null)
+        return this
+    }
 
-    const val DEFAULT_SPEAKER_ID = 14
-    const val VOICEVOX_TERMS_URL = "https://voicevox.hiroshiba.jp/term/"
-
-    fun voice(speakerId: Int): VoicevoxVoice = voices.firstOrNull { it.speakerId == speakerId } ?: voices[0]
-
-    /** キャラ音声は日本語の文章だけに使う */
-    fun isAvailable(languageCode: String): Boolean = languageCode.startsWith("ja")
-
-    fun previewText(voice: VoicevoxVoice): String = "こんにちは、${voice.character}です。この声で読み上げます。"
+    companion object {
+        const val UNSELECTED_SPEAKER_ID = -1
+        fun isAvailable(languageCode: String): Boolean = languageCode.startsWith("ja")
+        fun previewText(voice: VoicevoxVoice): String = "こんにちは、${voice.character}です。この声で読み上げます。"
+        private fun isHttps(raw: String): Boolean = runCatching {
+            val uri = URI(raw)
+            uri.scheme == "https" && !uri.host.isNullOrBlank() && uri.userInfo == null
+        }.getOrDefault(false)
+    }
 }
 
-/** キャラ音声のオン・オフと選んだ声（端末に保存） */
-class VoicevoxSettings(context: Context) {
-    private val prefs = context.applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-
-    var isEnabled: Boolean
-        get() = prefs.getBoolean(KEY_ENABLED, false)
-        set(value) = prefs.edit { putBoolean(KEY_ENABLED, value) }
-
-    var speakerId: Int
-        // 許可リストから外れた声が保存されていたら既定に戻す
-        get() = prefs.getInt(KEY_SPEAKER, VoicevoxCatalog.DEFAULT_SPEAKER_ID)
-            .takeIf { id -> VoicevoxCatalog.voices.any { it.speakerId == id } }
-            ?: VoicevoxCatalog.DEFAULT_SPEAKER_ID
-        set(value) = prefs.edit { putInt(KEY_SPEAKER, value) }
-
-    private companion object {
-        const val PREFS = "voicevox"
-        const val KEY_ENABLED = "enabled"
-        const val KEY_SPEAKER = "speaker_id"
+/** クレジットは通信できないときも最後に検証済みの一覧を表示できる。 */
+class VoicevoxCatalogCache(context: Context) {
+    private val prefs = context.applicationContext.getSharedPreferences("voicevox_catalog_v1", Context.MODE_PRIVATE)
+    fun load(): VoicevoxCatalog? = runCatching {
+        prefs.getString("json", null)?.let { VoicevoxClient.parseCatalog(JSONObject(it)) }
+    }.getOrNull()
+    fun store(json: String) {
+        VoicevoxClient.parseCatalog(JSONObject(json))
+        prefs.edit { putString("json", json) }
     }
+}
+
+/** 選んだ声はIDだけを保存する。新しいサーバーIDも既存の値も固定一覧で丸めない。 */
+class VoicevoxSettings(context: Context) {
+    private val prefs = context.applicationContext.getSharedPreferences("voicevox", Context.MODE_PRIVATE)
+    var isEnabled: Boolean
+        get() = prefs.getBoolean("enabled", false)
+        set(value) = prefs.edit { putBoolean("enabled", value) }
+    var speakerId: Int
+        get() = prefs.getInt("speaker_id", VoicevoxCatalog.UNSELECTED_SPEAKER_ID)
+        set(value) = prefs.edit { putInt("speaker_id", value) }
 }

@@ -55,7 +55,7 @@
     <string name="open_text_file">テキストファイルを開く</string>
     <string name="language_select">言語を選択</string>
     <string name="voice_select">声を選択</string>
-    <string name="voice_default_note">端末の既定の声</string>
+    <string name="voice_default_note">高品質な端末内音声を優先して自動で選びます</string>
     <string name="voice_label">声 %1$d</string>
     <string name="voice_high_quality">高品質</string>
     <string name="voice_requires_network">ネット接続が必要</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">VOICEVOX 利用規約</string>
     <string name="drive_title">Google ドライブ</string>
     <string name="drive_unsupported">このファイルは読み込めません。テキスト・Markdown・PDF・Google ドキュメントに対応しています。</string>
+    <string name="home_recent_files">最近のファイル</string>
+    <string name="voice_recommended">おすすめ音声</string>
+    <string name="voice_preview">試聴</string>
+    <string name="voice_use">この声を使う</string>
+    <string name="my_voice_title">マイ音声（%1$s）</string>
+    <string name="my_voice_hint">言語ごとに声と読み上げ設定を1件保存できます。</string>
+    <string name="my_voice_save">現在の設定を保存</string>
+    <string name="my_voice_update">保存した設定を上書き</string>
+    <string name="my_voice_apply">マイ音声を使う</string>
+    <string name="my_voice_delete">マイ音声を削除</string>
+    <string name="my_voice_unavailable">保存した音声を利用できません。</string>
+    <string name="voice_preview_sample">こんにちは。この声で文章を読み上げます。</string>
+    <string name="kokoro_title">Kokoro AI音声・ベータ</string>
+    <string name="kokoro_note">日本語の5つの声。初回にモデル（92MB）をダウンロードすると、端末内で生成でき、API料金はかかりません。声の高さの調整には対応していません。</string>
+    <string name="kokoro_download">音声モデルをダウンロード（92MB）</string>
+    <string name="kokoro_downloading">ダウンロード中… %1$d%%</string>
+    <string name="kokoro_download_failed">ダウンロードできませんでした。通信と空き容量を確認して再試行してください。</string>
+    <string name="kokoro_failed">AI音声を生成できませんでした。文章を変えるか、端末の音声を選んでください。</string>
+    <string name="kokoro_generating">音声を生成中… 停止できます。</string>
+    <string name="kokoro_stop_preview">試聴を停止</string>
+    <string name="voicevox_catalog_unavailable">音声が見つかりません</string>
 </resources>

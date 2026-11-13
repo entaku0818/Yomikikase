@@ -7,6 +7,7 @@
 //  identifier 優先とフォールバック条件をここで固定する。
 //
 
+import AVFoundation
 import XCTest
 @testable import VoiceYourText
 
@@ -172,6 +173,73 @@ final class VoiceResolverTests: XCTestCase {
             voiceLanguage: lookup
         )
         XCTAssertEqual(fallbackEvaluations, 1)
+    }
+
+    // MARK: - ダウンロード済み音声の自動選択
+
+    private func candidate(_ id: String, language: String = "ja-JP",
+                           quality: AVSpeechSynthesisVoiceQuality = .default,
+                           explicit: Bool = false) -> VoiceResolver.Candidate {
+        .init(identifier: id, language: language, quality: quality, requiresExplicitSelection: explicit)
+    }
+
+    func test_未選択なら同じ地域の最も高品質な音声を使う() {
+        let voices = [candidate("enhanced", quality: .enhanced), candidate("premium", quality: .premium)]
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("compact"), availableVoices: voices
+        ), "premium")
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("compact"), availableVoices: [voices[0]]
+        ), "enhanced")
+    }
+
+    func test_高品質音声がなくても既定の声で再生できる() {
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("compact"), availableVoices: []
+        ), "compact")
+    }
+
+    func test_自動選択では品質のために地域や文字体系を変えない() {
+        for (target, other) in [("en-GB", "en-US"), ("zh-CN", "zh-TW"), ("ja-JP", "en-US")] {
+            XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+                defaultVoice: candidate("default", language: target),
+                availableVoices: [candidate("other", language: other, quality: .premium)]
+            ), "default")
+        }
+    }
+
+    func test_自動選択でも言語タグの表記揺れを許容する() {
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("default", language: "en_US"),
+            availableVoices: [candidate("enhanced", language: "EN-us", quality: .enhanced)]
+        ), "enhanced")
+    }
+
+    func test_同品質の声へは勝手に切り替えず品質も下げない() {
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("system", quality: .premium),
+            availableVoices: [candidate("a", quality: .premium), candidate("b", quality: .enhanced)]
+        ), "system")
+    }
+
+    func test_複数の高品質音声は一覧の順序に依存しない() {
+        let voices = [candidate("b", quality: .premium), candidate("a", quality: .premium)]
+        for ordered in [voices, Array(voices.reversed())] {
+            XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+                defaultVoice: candidate("default"), availableVoices: ordered
+            ), "a")
+        }
+    }
+
+    func test_個人の声や特殊な声は自動選択しない() {
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("default"),
+            availableVoices: [candidate("personal", quality: .premium, explicit: true)]
+        ), "default")
+        XCTAssertEqual(VoiceResolver.automaticVoiceIdentifier(
+            defaultVoice: candidate("personal", explicit: true),
+            availableVoices: [candidate("premium", quality: .premium)]
+        ), "personal")
     }
 
     // MARK: - 言語コードの比較

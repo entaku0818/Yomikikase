@@ -8,9 +8,33 @@ import RevenueCat
 /// サーバーは App Check で本物のアプリからの呼び出しかを確かめ、RevenueCat の App User ID で
 /// プレミアム判定と月の文字数を数える（voicevox-server/README.md）。
 struct VoicevoxClient {
-    var voices: @Sendable () async throws -> [VoicevoxVoice]
+    var catalog: @Sendable () async throws -> VoicevoxCatalog
+    var cachedCatalog: @Sendable () -> VoicevoxCatalog?
     var quota: @Sendable () async throws -> VoicevoxUsage
     var synthesize: @Sendable (_ text: String, _ speakerId: Int, _ speedScale: Double) async throws -> VoicevoxAudio
+    var configuration: @Sendable () async throws -> VoicevoxConfiguration
+}
+
+/// 表示とリクエスト分割用。購入状態・残量・生成可否の最終判断はサーバーが行う。
+struct VoicevoxConfiguration: Codable, Equatable, Sendable {
+    struct Rules: Codable, Equatable, Sendable {
+        let enabled: Bool
+        let freeMonthlyChars: Int
+        let premiumMonthlyChars: Int
+        let maxRequestChars: Int
+    }
+    let schemaVersion: Int
+    let revision: String
+    let voicevox: Rules
+
+    func validated() throws -> Self {
+        guard schemaVersion == 1, !revision.isEmpty,
+              voicevox.maxRequestChars > 0,
+              voicevox.freeMonthlyChars >= 0, voicevox.premiumMonthlyChars >= 0 else {
+            throw VoicevoxError.invalidResponse
+        }
+        return self
+    }
 }
 
 struct VoicevoxVoice: Codable, Equatable, Identifiable, Sendable {
@@ -94,10 +118,16 @@ extension VoicevoxClient: DependencyKey {
         }
 
         return Self(
-            voices: {
-                let data = try await send(URLRequest(url: baseURL.appendingPathComponent("v1/voices")))
-                return try decoder.decode(VoicesBody.self, from: data).voices
+            catalog: {
+                var request = URLRequest(url: baseURL.appendingPathComponent("v1/voices"))
+                request.cachePolicy = .reloadIgnoringLocalCacheData
+                request.timeoutInterval = 15
+                let data = try await send(request)
+                let catalog = try decoder.decode(VoicevoxCatalog.self, from: data).validated()
+                try VoicevoxCatalogCache.store(catalog)
+                return catalog
             },
+            cachedCatalog: { VoicevoxCatalogCache.load() },
             quota: {
                 let data = try await send(try await authorizedRequest("v1/quota", method: "GET"))
                 return try decoder.decode(VoicevoxUsage.self, from: data)
@@ -111,21 +141,29 @@ extension VoicevoxClient: DependencyKey {
                     throw VoicevoxError.invalidResponse
                 }
                 return VoicevoxAudio(data: audio, format: body.format, duration: body.duration, phrases: body.phrases, usage: body.usage)
+            },
+            configuration: {
+                var request = URLRequest(url: baseURL.appendingPathComponent("v1/config"))
+                request.cachePolicy = .reloadIgnoringLocalCacheData
+                request.timeoutInterval = 15
+                let data = try await send(request)
+                return try decoder.decode(VoicevoxConfiguration.self, from: data).validated()
             }
         )
     }()
 
     static let testValue = Self(
-        voices: unimplemented("VoicevoxClient.voices", placeholder: []),
+        catalog: unimplemented("VoicevoxClient.catalog"),
+        cachedCatalog: { nil },
         quota: unimplemented("VoicevoxClient.quota", placeholder: VoicevoxUsage(plan: "free", used: 0, limit: 5000, remaining: 5000, resetAt: .distantFuture)),
         synthesize: unimplemented("VoicevoxClient.synthesize", placeholder: VoicevoxAudio(
             data: Data(), format: "m4a", duration: 0, phrases: [],
             usage: VoicevoxUsage(plan: "free", used: 0, limit: 5000, remaining: 5000, resetAt: .distantFuture)
-        ))
+        )),
+        configuration: unimplemented("VoicevoxClient.configuration")
     )
 }
 
-private struct VoicesBody: Decodable { let voices: [VoicevoxVoice] }
 private struct ErrorBody: Decodable { let error: String }
 private struct QuotaExceededBody: Decodable { let usage: VoicevoxUsage }
 private struct SynthesizeBody: Encodable {

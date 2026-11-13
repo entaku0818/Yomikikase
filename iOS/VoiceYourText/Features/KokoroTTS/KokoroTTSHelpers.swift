@@ -136,8 +136,9 @@ enum MisakiLexicon {
 enum KokoroPlaybackParams {
 
     /// Kokoro should be used only when the model is available AND the user enabled it.
-    static func shouldUseKokoro(available: Bool, enabled: Bool) -> Bool {
-        available && enabled
+    static func shouldUseKokoro(available: Bool, enabled: Bool, languageCode: String? = "ja") -> Bool {
+        let language = languageCode ?? "ja"
+        return available && enabled && (language.hasPrefix("ja") || language.hasPrefix("en"))
     }
 
     /// Default voice for a language code ("ja*" → Japanese default, otherwise US default),
@@ -146,7 +147,8 @@ enum KokoroPlaybackParams {
         let isJapanese = (languageCode ?? "ja").hasPrefix("ja")
         let defaultVoice: KokoroVoice = isJapanese ? .defaultJapanese : .default
         guard let raw = storedVoiceRaw else { return defaultVoice }
-        return KokoroVoice(rawValue: raw) ?? defaultVoice
+        guard let voice = KokoroVoice(rawValue: raw), voice.isJapanese == isJapanese else { return defaultVoice }
+        return voice
     }
 
     /// AVSpeechSynthesizer rate (0.5 = normal) → Kokoro speed (1.0 = normal),
@@ -158,8 +160,9 @@ enum KokoroPlaybackParams {
     /// AVSpeechSynthesizer rate (0.5 = normal) → AVAudioPlayer rate (1.0 = normal),
     /// clamped to AVAudioPlayer's supported [0.5, 2.0] range.
     /// Kokoro・保存済み音声の再生速度計算を一元化するための共通ヘルパー。
-    static func avPlaybackRate(fromSpeechRate speechRate: Float) -> Float {
-        max(0.5, min(2.0, speechRate * 2.0))
+    static func avPlaybackRate(fromSpeechRate speechRate: Float, synthesisApplied: Bool = false) -> Float {
+        if synthesisApplied { return 1.0 }
+        return max(0.5, min(2.0, speechRate * 2.0))
     }
 }
 

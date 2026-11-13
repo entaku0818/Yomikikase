@@ -1,0 +1,252 @@
+[
+  {
+    "store": "ar-SA",
+    "ui": "ar",
+    "rtl": true
+  },
+  {
+    "store": "bn-BD",
+    "ui": "bn",
+    "rtl": false
+  },
+  {
+    "store": "ca",
+    "ui": "ca",
+    "rtl": false
+  },
+  {
+    "store": "zh-Hans",
+    "ui": "zh-Hans",
+    "rtl": false
+  },
+  {
+    "store": "zh-Hant",
+    "ui": "zh-Hant",
+    "rtl": false
+  },
+  {
+    "store": "hr",
+    "ui": "hr",
+    "rtl": false
+  },
+  {
+    "store": "cs",
+    "ui": "cs",
+    "rtl": false
+  },
+  {
+    "store": "da",
+    "ui": "da",
+    "rtl": false
+  },
+  {
+    "store": "nl-NL",
+    "ui": "nl",
+    "rtl": false
+  },
+  {
+    "store": "en-AU",
+    "ui": "en-AU",
+    "rtl": false
+  },
+  {
+    "store": "en-CA",
+    "ui": "en-CA",
+    "rtl": false
+  },
+  {
+    "store": "en-GB",
+    "ui": "en-GB",
+    "rtl": false
+  },
+  {
+    "store": "en-US",
+    "ui": "en",
+    "rtl": false
+  },
+  {
+    "store": "fi",
+    "ui": "fi",
+    "rtl": false
+  },
+  {
+    "store": "fr-FR",
+    "ui": "fr",
+    "rtl": false
+  },
+  {
+    "store": "fr-CA",
+    "ui": "fr-CA",
+    "rtl": false
+  },
+  {
+    "store": "de-DE",
+    "ui": "de",
+    "rtl": false
+  },
+  {
+    "store": "el",
+    "ui": "el",
+    "rtl": false
+  },
+  {
+    "store": "gu-IN",
+    "ui": "gu",
+    "rtl": false
+  },
+  {
+    "store": "he",
+    "ui": "he",
+    "rtl": true
+  },
+  {
+    "store": "hi",
+    "ui": "hi",
+    "rtl": false
+  },
+  {
+    "store": "hu",
+    "ui": "hu",
+    "rtl": false
+  },
+  {
+    "store": "id",
+    "ui": "id",
+    "rtl": false
+  },
+  {
+    "store": "it",
+    "ui": "it",
+    "rtl": false
+  },
+  {
+    "store": "ja",
+    "ui": "ja",
+    "rtl": false
+  },
+  {
+    "store": "kn-IN",
+    "ui": "kn",
+    "rtl": false
+  },
+  {
+    "store": "ko",
+    "ui": "ko",
+    "rtl": false
+  },
+  {
+    "store": "ms",
+    "ui": "ms",
+    "rtl": false
+  },
+  {
+    "store": "ml-IN",
+    "ui": "ml",
+    "rtl": false
+  },
+  {
+    "store": "mr-IN",
+    "ui": "mr",
+    "rtl": false
+  },
+  {
+    "store": "no",
+    "ui": "nb",
+    "rtl": false
+  },
+  {
+    "store": "or-IN",
+    "ui": "or",
+    "rtl": false
+  },
+  {
+    "store": "pl",
+    "ui": "pl",
+    "rtl": false
+  },
+  {
+    "store": "pt-BR",
+    "ui": "pt-BR",
+    "rtl": false
+  },
+  {
+    "store": "pt-PT",
+    "ui": "pt-PT",
+    "rtl": false
+  },
+  {
+    "store": "pa-IN",
+    "ui": "pa",
+    "rtl": false
+  },
+  {
+    "store": "ro",
+    "ui": "ro",
+    "rtl": false
+  },
+  {
+    "store": "ru",
+    "ui": "ru",
+    "rtl": false
+  },
+  {
+    "store": "sk",
+    "ui": "sk",
+    "rtl": false
+  },
+  {
+    "store": "sl-SI",
+    "ui": "sl",
+    "rtl": false
+  },
+  {
+    "store": "es-MX",
+    "ui": "es-MX",
+    "rtl": false
+  },
+  {
+    "store": "es-ES",
+    "ui": "es",
+    "rtl": false
+  },
+  {
+    "store": "sv",
+    "ui": "sv",
+    "rtl": false
+  },
+  {
+    "store": "ta-IN",
+    "ui": "ta",
+    "rtl": false
+  },
+  {
+    "store": "te-IN",
+    "ui": "te",
+    "rtl": false
+  },
+  {
+    "store": "th",
+    "ui": "th",
+    "rtl": false
+  },
+  {
+    "store": "tr",
+    "ui": "tr",
+    "rtl": false
+  },
+  {
+    "store": "uk",
+    "ui": "uk",
+    "rtl": false
+  },
+  {
+    "store": "ur-PK",
+    "ui": "ur",
+    "rtl": true
+  },
+  {
+    "store": "vi",
+    "ui": "vi",
+    "rtl": false
+  }
+]

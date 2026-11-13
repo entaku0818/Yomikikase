@@ -1,0 +1,452 @@
+[
+  {
+    "store": "ar-SA",
+    "ui": "ar",
+    "rtl": true,
+    "home": "الرئيسية",
+    "myfiles": "ملفاتي",
+    "settings": "الإعدادات",
+    "sampleTitle": "المشي عبر الحديقة"
+  },
+  {
+    "store": "bn-BD",
+    "ui": "bn",
+    "rtl": false,
+    "home": "হোম",
+    "myfiles": "আমার ফাইল",
+    "settings": "সেটিংস",
+    "sampleTitle": "পার্ক মাধ্যমে একটি হাঁটা"
+  },
+  {
+    "store": "ca",
+    "ui": "ca",
+    "rtl": false,
+    "home": "Inici",
+    "myfiles": "Els meus fitxers",
+    "settings": "Configuració",
+    "sampleTitle": "Un passeig pel parc"
+  },
+  {
+    "store": "zh-Hans",
+    "ui": "zh-Hans",
+    "rtl": false,
+    "home": "首页",
+    "myfiles": "我的文件",
+    "settings": "设置",
+    "sampleTitle": "在路上听故事"
+  },
+  {
+    "store": "zh-Hant",
+    "ui": "zh-Hant",
+    "rtl": false,
+    "home": "首頁",
+    "myfiles": "我的文件",
+    "settings": "設定",
+    "sampleTitle": "穿過公園散步"
+  },
+  {
+    "store": "hr",
+    "ui": "hr",
+    "rtl": false,
+    "home": "Početna",
+    "myfiles": "Moje datoteke",
+    "settings": "postavke",
+    "sampleTitle": "Šetnja parkom"
+  },
+  {
+    "store": "cs",
+    "ui": "cs",
+    "rtl": false,
+    "home": "Domů",
+    "myfiles": "Moje soubory",
+    "settings": "Nastavení",
+    "sampleTitle": "Procházka parkem"
+  },
+  {
+    "store": "da",
+    "ui": "da",
+    "rtl": false,
+    "home": "Hjem",
+    "myfiles": "Mine filer",
+    "settings": "Indstillinger",
+    "sampleTitle": "En tur gennem parken"
+  },
+  {
+    "store": "nl-NL",
+    "ui": "nl",
+    "rtl": false,
+    "home": "Start",
+    "myfiles": "Mijn bestanden",
+    "settings": "Instellingen",
+    "sampleTitle": "Een wandeling door het park"
+  },
+  {
+    "store": "en-AU",
+    "ui": "en-AU",
+    "rtl": false,
+    "home": "Home",
+    "myfiles": "My Files",
+    "settings": "Settings",
+    "sampleTitle": "A walk through the park"
+  },
+  {
+    "store": "en-CA",
+    "ui": "en-CA",
+    "rtl": false,
+    "home": "Home",
+    "myfiles": "My Files",
+    "settings": "Settings",
+    "sampleTitle": "A walk through the park"
+  },
+  {
+    "store": "en-GB",
+    "ui": "en-GB",
+    "rtl": false,
+    "home": "Home",
+    "myfiles": "My Files",
+    "settings": "Settings",
+    "sampleTitle": "A walk through the park"
+  },
+  {
+    "store": "en-US",
+    "ui": "en",
+    "rtl": false,
+    "home": "Home",
+    "myfiles": "My Files",
+    "settings": "Settings",
+    "sampleTitle": "Alice's Adventures in Wonderland"
+  },
+  {
+    "store": "fi",
+    "ui": "fi",
+    "rtl": false,
+    "home": "Koti",
+    "myfiles": "Omat tiedostot",
+    "settings": "Asetukset",
+    "sampleTitle": "Kävely puiston läpi"
+  },
+  {
+    "store": "fr-FR",
+    "ui": "fr",
+    "rtl": false,
+    "home": "Accueil",
+    "myfiles": "Mes fichiers",
+    "settings": "Paramètres",
+    "sampleTitle": "Du côté de chez Swann"
+  },
+  {
+    "store": "fr-CA",
+    "ui": "fr-CA",
+    "rtl": false,
+    "home": "Accueil",
+    "myfiles": "Mes fichiers",
+    "settings": "Paramètres",
+    "sampleTitle": "Une promenade dans le parc"
+  },
+  {
+    "store": "de-DE",
+    "ui": "de",
+    "rtl": false,
+    "home": "Startseite",
+    "myfiles": "Meine Dateien",
+    "settings": "Einstellungen",
+    "sampleTitle": "Die Verwandlung"
+  },
+  {
+    "store": "el",
+    "ui": "el",
+    "rtl": false,
+    "home": "Αρχική",
+    "myfiles": "Τα αρχεία μου",
+    "settings": "Ρυθμίσεις",
+    "sampleTitle": "Μια βόλτα στο πάρκο"
+  },
+  {
+    "store": "gu-IN",
+    "ui": "gu",
+    "rtl": false,
+    "home": "હોમ",
+    "myfiles": "મારી ફાઇલો",
+    "settings": "સેટિંગ્સ",
+    "sampleTitle": "પાર્ક મારફતે વોક"
+  },
+  {
+    "store": "he",
+    "ui": "he",
+    "rtl": true,
+    "home": "בית",
+    "myfiles": "הקבצים שלי",
+    "settings": "הגדרות",
+    "sampleTitle": "טיול רגלי בפארק"
+  },
+  {
+    "store": "hi",
+    "ui": "hi",
+    "rtl": false,
+    "home": "होम",
+    "myfiles": "मेरी फ़ाइलें",
+    "settings": "सेटिंग्स",
+    "sampleTitle": "पार्क में टहलें"
+  },
+  {
+    "store": "hu",
+    "ui": "hu",
+    "rtl": false,
+    "home": "Kezdőlap",
+    "myfiles": "Saját fájlok",
+    "settings": "Beállítások elemre",
+    "sampleTitle": "Séta a parkban"
+  },
+  {
+    "store": "id",
+    "ui": "id",
+    "rtl": false,
+    "home": "Beranda",
+    "myfiles": "File Saya",
+    "settings": "Pengaturan",
+    "sampleTitle": "Berjalan-jalan melewati taman"
+  },
+  {
+    "store": "it",
+    "ui": "it",
+    "rtl": false,
+    "home": "Home",
+    "myfiles": "I miei file",
+    "settings": "Impostazioni",
+    "sampleTitle": "Le avventure di Pinocchio"
+  },
+  {
+    "store": "ja",
+    "ui": "ja",
+    "rtl": false,
+    "home": "ホーム",
+    "myfiles": "マイファイル",
+    "settings": "設定",
+    "sampleTitle": "吾輩は猫である"
+  },
+  {
+    "store": "kn-IN",
+    "ui": "kn",
+    "rtl": false,
+    "home": "ಮುಖಪುಟ",
+    "myfiles": "ನನ್ನ ಫೈಲ್‌ಗಳು",
+    "settings": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
+    "sampleTitle": "ಉದ್ಯಾನವನದ ಮೂಲಕ ಒಂದು ವಾಕ್"
+  },
+  {
+    "store": "ko",
+    "ui": "ko",
+    "rtl": false,
+    "home": "홈",
+    "myfiles": "내 파일",
+    "settings": "설정",
+    "sampleTitle": "서시"
+  },
+  {
+    "store": "ms",
+    "ui": "ms",
+    "rtl": false,
+    "home": "Utama",
+    "myfiles": "Fail Saya",
+    "settings": "tetapan",
+    "sampleTitle": "Berjalan melalui taman"
+  },
+  {
+    "store": "ml-IN",
+    "ui": "ml",
+    "rtl": false,
+    "home": "ഹോം",
+    "myfiles": "എൻ്റെ ഫയലുകൾ",
+    "settings": "ക്രമീകരണങ്ങൾ",
+    "sampleTitle": "പാർക്കിലൂടെ ഒരു നടത്തം"
+  },
+  {
+    "store": "mr-IN",
+    "ui": "mr",
+    "rtl": false,
+    "home": "मुख्यपृष्ठ",
+    "myfiles": "माझ्या फायली",
+    "settings": "सेटिंग्ज",
+    "sampleTitle": "उद्यानातून एक फेरफटका"
+  },
+  {
+    "store": "no",
+    "ui": "nb",
+    "rtl": false,
+    "home": "Hjem",
+    "myfiles": "Mine filer",
+    "settings": "Innstillinger",
+    "sampleTitle": "En spasertur gjennom parken"
+  },
+  {
+    "store": "or-IN",
+    "ui": "or",
+    "rtl": false,
+    "home": "ମୁଖ୍ୟପୃଷ୍ଠା",
+    "myfiles": "ମୋର ଫାଇଲଗୁଡିକ",
+    "settings": "ସେଟିଂସମୂହ",
+    "sampleTitle": "ପାର୍କ ଦେଇ ବୁଲିବା |"
+  },
+  {
+    "store": "pl",
+    "ui": "pl",
+    "rtl": false,
+    "home": "Strona główna",
+    "myfiles": "Moje pliki",
+    "settings": "Ustawienia",
+    "sampleTitle": "Spacer po parku"
+  },
+  {
+    "store": "pt-BR",
+    "ui": "pt-BR",
+    "rtl": false,
+    "home": "Início",
+    "myfiles": "Meus arquivos",
+    "settings": "Ajustes",
+    "sampleTitle": "Ouvir no caminho"
+  },
+  {
+    "store": "pt-PT",
+    "ui": "pt-PT",
+    "rtl": false,
+    "home": "Início",
+    "myfiles": "Os meus ficheiros",
+    "settings": "Definições",
+    "sampleTitle": "Um passeio pelo parque"
+  },
+  {
+    "store": "pa-IN",
+    "ui": "pa",
+    "rtl": false,
+    "home": "ਮੁੱਖ ਪੰਨਾ",
+    "myfiles": "ਮੇਰੀਆਂ ਫਾਈਲਾਂ",
+    "settings": "ਸੈਟਿੰਗਾਂ",
+    "sampleTitle": "ਪਾਰਕ ਦੁਆਰਾ ਇੱਕ ਸੈਰ"
+  },
+  {
+    "store": "ro",
+    "ui": "ro",
+    "rtl": false,
+    "home": "Acasă",
+    "myfiles": "Fișierele mele",
+    "settings": "Setări",
+    "sampleTitle": "O plimbare prin parc"
+  },
+  {
+    "store": "ru",
+    "ui": "ru",
+    "rtl": false,
+    "home": "Главная",
+    "myfiles": "Мои файлы",
+    "settings": "Настройки",
+    "sampleTitle": "Слушать в дороге"
+  },
+  {
+    "store": "sk",
+    "ui": "sk",
+    "rtl": false,
+    "home": "Domov",
+    "myfiles": "Moje súbory",
+    "settings": "Nastavenia",
+    "sampleTitle": "Prechádzka parkom"
+  },
+  {
+    "store": "sl-SI",
+    "ui": "sl",
+    "rtl": false,
+    "home": "Domov",
+    "myfiles": "Moje datoteke",
+    "settings": "nastavitve",
+    "sampleTitle": "Sprehod po parku"
+  },
+  {
+    "store": "es-MX",
+    "ui": "es-MX",
+    "rtl": false,
+    "home": "Inicio",
+    "myfiles": "Mis archivos",
+    "settings": "Configuración",
+    "sampleTitle": "Un paseo por el parque"
+  },
+  {
+    "store": "es-ES",
+    "ui": "es",
+    "rtl": false,
+    "home": "Inicio",
+    "myfiles": "Mis archivos",
+    "settings": "Configuración",
+    "sampleTitle": "Don Quijote de la Mancha"
+  },
+  {
+    "store": "sv",
+    "ui": "sv",
+    "rtl": false,
+    "home": "Hem",
+    "myfiles": "Mina filer",
+    "settings": "Inställningar",
+    "sampleTitle": "En promenad genom parken"
+  },
+  {
+    "store": "ta-IN",
+    "ui": "ta",
+    "rtl": false,
+    "home": "முகப்பு",
+    "myfiles": "எனது கோப்புகள்",
+    "settings": "அமைப்புகள்",
+    "sampleTitle": "பூங்கா வழியாக ஒரு நடை"
+  },
+  {
+    "store": "te-IN",
+    "ui": "te",
+    "rtl": false,
+    "home": "హోమ్",
+    "myfiles": "నా ఫైల్స్",
+    "settings": "సెట్టింగ్‌లు",
+    "sampleTitle": "పార్క్ గుండా ఒక నడక"
+  },
+  {
+    "store": "th",
+    "ui": "th",
+    "rtl": false,
+    "home": "หน้าแรก",
+    "myfiles": "ไฟล์ของฉัน",
+    "settings": "การตั้งค่า",
+    "sampleTitle": "ฟังระหว่างเดินทาง"
+  },
+  {
+    "store": "tr",
+    "ui": "tr",
+    "rtl": false,
+    "home": "Ana Sayfa",
+    "myfiles": "Dosyalarım",
+    "settings": "Ayarlar",
+    "sampleTitle": "Yolda Dinlemek"
+  },
+  {
+    "store": "uk",
+    "ui": "uk",
+    "rtl": false,
+    "home": "Головна",
+    "myfiles": "Мої файли",
+    "settings": "Налаштування",
+    "sampleTitle": "Прогулянка по парку"
+  },
+  {
+    "store": "ur-PK",
+    "ui": "ur",
+    "rtl": true,
+    "home": "ہوم",
+    "myfiles": "میری فائلیں",
+    "settings": "ترتیبات",
+    "sampleTitle": "پارک کے ذریعے ایک واک"
+  },
+  {
+    "store": "vi",
+    "ui": "vi",
+    "rtl": false,
+    "home": "Trang chủ",
+    "myfiles": "Tệp của tôi",
+    "settings": "Cài đặt",
+    "sampleTitle": "Truyện Kiều"
+  }
+]

@@ -55,7 +55,7 @@
     <string name="open_text_file">Open a text file</string>
     <string name="language_select">Select language</string>
     <string name="voice_select">Select voice</string>
-    <string name="voice_default_note">The device\'s default voice</string>
+    <string name="voice_default_note">Automatically prefer a high-quality offline voice</string>
     <string name="voice_label">Voice %1$d</string>
     <string name="voice_high_quality">High quality</string>
     <string name="voice_requires_network">Needs internet</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">VOICEVOX terms of use</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">This file can’t be read. Supported: text, Markdown, PDF and Google Docs.</string>
+    <string name="home_recent_files">Recent files</string>
+    <string name="voice_recommended">Recommended voice</string>
+    <string name="voice_preview">Preview</string>
+    <string name="voice_use">Use this voice</string>
+    <string name="my_voice_title">My voice (%1$s)</string>
+    <string name="my_voice_hint">Save one voice and its settings for each language.</string>
+    <string name="my_voice_save">Save current settings</string>
+    <string name="my_voice_update">Replace saved settings</string>
+    <string name="my_voice_apply">Use saved voice</string>
+    <string name="my_voice_delete">Delete saved voice</string>
+    <string name="my_voice_unavailable">Saved voice is unavailable.</string>
+    <string name="voice_preview_sample">Hello. This is a preview of the reading voice.</string>
+    <string name="kokoro_title">Kokoro AI voices · Beta</string>
+    <string name="kokoro_note">5 Japanese voices. After the first model download (92 MB), speech is generated on this device with no API fees. Pitch adjustment is unavailable.</string>
+    <string name="kokoro_download">Download voice model (92 MB)</string>
+    <string name="kokoro_downloading">Downloading… %1$d%%</string>
+    <string name="kokoro_download_failed">Download failed. Check your connection and free space, then try again.</string>
+    <string name="kokoro_failed">Could not generate AI speech. Try another text or select a device voice.</string>
+    <string name="kokoro_generating">Generating speech… You can stop at any time.</string>
+    <string name="kokoro_stop_preview">Stop preview</string>
+    <string name="voicevox_catalog_unavailable">No voice found</string>
 </resources>

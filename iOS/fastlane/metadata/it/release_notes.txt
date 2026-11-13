@@ -1,2 +1,2 @@
-Migliorata la stabilità quando si interrompe e si riavvia la lettura vocale.
-Migliorati i testi in inglese della guida iniziale.
+Migliorata la riproduzione vocale e aggiornata la presentazione nello store.
+Migliorate la sicurezza e l’affidabilità della verifica degli acquisti, con nuovi tentativi automatici quando non può essere completata.

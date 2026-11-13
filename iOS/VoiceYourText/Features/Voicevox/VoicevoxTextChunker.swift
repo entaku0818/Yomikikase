@@ -2,7 +2,7 @@ import Foundation
 
 /// キャラ音声（VOICEVOX）用に文章を文ごとに分ける。
 ///
-/// サーバーは1回300字までしか受け付けず、1文ずつ作って最初の文ができたら再生を始めるため、
+/// サーバーから取得した1回の上限に収め、最初の文ができたら再生を始めるため、
 /// 文末（。！？ など）と改行で区切る。元の文章の中の位置（UTF-16 の NSRange）を持たせて、
 /// 再生中のハイライトに使う。
 enum VoicevoxTextChunker {
@@ -13,16 +13,14 @@ enum VoicevoxTextChunker {
         let range: NSRange
     }
 
-    /// サーバー側の MAX_REQUEST_CHARS と合わせる
-    static let defaultMaxChars = 300
-
     private static let terminators: Set<Character> = ["。", "！", "？", "!", "?", "…", "\n"]
     /// 文末の直後に続く閉じ括弧は前の文に含める（「〜です。」の 」 など）
     private static let trailingClosers: Set<Character> = ["」", "』", "）", ")", "】", "〉", "》", "\"", "”", "’"]
     /// 長すぎる文を途中で切るときの候補
     private static let softBreaks: Set<Character> = ["、", "，", ",", "；", ";", "：", ":", " ", "　"]
 
-    static func chunks(from text: String, maxChars: Int = defaultMaxChars) -> [Chunk] {
+    static func chunks(from text: String, maxChars: Int) -> [Chunk] {
+        precondition(maxChars > 0)
         var result: [Chunk] = []
         var sentenceStart = text.startIndex
         var index = text.startIndex
@@ -61,12 +59,13 @@ enum VoicevoxTextChunker {
         var hardLimit = start
         var lastSoft: String.Index?
         var index = start
+        let view = text.unicodeScalars
         while index < limit {
-            let next = text.index(after: index)
-            scalars += text[index].unicodeScalars.count
+            let next = view.index(after: index)
+            scalars += 1
             if scalars > maxChars { break }
             hardLimit = next
-            if softBreaks.contains(text[index]) { lastSoft = next }
+            if softBreaks.contains(Character(String(view[index]))) { lastSoft = next }
             index = next
         }
         return lastSoft ?? hardLimit
@@ -75,12 +74,16 @@ enum VoicevoxTextChunker {
     private static func appendTrimmed(_ text: String, _ range: Range<String.Index>, into result: inout [Chunk]) {
         var lower = range.lowerBound
         var upper = range.upperBound
-        while lower < upper, text[lower].isWhitespace { lower = text.index(after: lower) }
-        while upper > lower, text[text.index(before: upper)].isWhitespace { upper = text.index(before: upper) }
+        // 分割点は結合文字の途中にもなり得るため、ここもサーバーと同じscalar単位で扱う。
+        let view = text.unicodeScalars
+        while lower < upper, CharacterSet.whitespacesAndNewlines.contains(view[lower]) { lower = view.index(after: lower) }
+        while upper > lower, CharacterSet.whitespacesAndNewlines.contains(view[view.index(before: upper)]) { upper = view.index(before: upper) }
         guard lower < upper else { return }
         let piece = text[lower..<upper]
         // 記号だけの行（「――」「・・・」など）は読む内容がないので送らない（文字数を使わせない）
-        guard piece.contains(where: { $0.isLetter || $0.isNumber }) else { return }
+        guard piece.unicodeScalars.contains(where: {
+            CharacterSet.alphanumerics.contains($0) || CharacterSet.nonBaseCharacters.contains($0)
+        }) else { return }
         result.append(Chunk(text: String(piece), range: NSRange(lower..<upper, in: text)))
     }
 }

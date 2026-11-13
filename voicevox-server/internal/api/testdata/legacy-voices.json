@@ -1,0 +1,46 @@
+{
+  "voices": [
+    {
+      "speakerId": 14,
+      "character": "冥鳴ひまり",
+      "style": "ノーマル",
+      "credit": "VOICEVOX:冥鳴ひまり",
+      "termsUrl": "https://meimeihimari.wixsite.com/himari/terms-of-use"
+    },
+    {
+      "speakerId": 3,
+      "character": "ずんだもん",
+      "style": "ノーマル",
+      "credit": "VOICEVOX:ずんだもん",
+      "termsUrl": "https://zunko.jp/con_ongen_kiyaku.html"
+    },
+    {
+      "speakerId": 2,
+      "character": "四国めたん",
+      "style": "ノーマル",
+      "credit": "VOICEVOX:四国めたん",
+      "termsUrl": "https://zunko.jp/con_ongen_kiyaku.html"
+    },
+    {
+      "speakerId": 11,
+      "character": "玄野武宏",
+      "style": "ノーマル",
+      "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
+      "termsUrl": "https://www.virvoxproject.com/voicevoxの利用規約"
+    },
+    {
+      "speakerId": 12,
+      "character": "白上虎太郎",
+      "style": "ふつう",
+      "credit": "VOICEVOX:白上虎太郎(CV:可愛ユウ)",
+      "termsUrl": "https://www.virvoxproject.com/voicevoxの利用規約"
+    },
+    {
+      "speakerId": 9,
+      "character": "波音リツ",
+      "style": "ノーマル",
+      "credit": "VOICEVOX:波音リツ",
+      "termsUrl": "https://www.canon-voice.com/terms"
+    }
+  ]
+}

@@ -1,35 +1,14 @@
-Transformez n'importe quel texte en voix — PDFs, pages web, livres EPUB, fichiers Google Drive, documents numérisés et plus encore. Voice Narrator est l'app de synthèse vocale tout-en-un qui s'adapte à votre quotidien.
+Voice Narrator lit à haute voix les textes, les PDF, les pages Web et les livres EPUB sans DRM. Écoutez pendant les déplacements, en faisant des tâches ménagères ou en reposant vos yeux.
 
-FONCTIONNALITÉS PRINCIPALES
+AJOUTEZ VOTRE CONTENU
+Collez du texte, importez des fichiers PDF ou TXT, ouvrez des livres EPUB, collez des liens Web, numérisez des documents imprimés ou connectez Google Drive. Certains fichiers et pages Web peuvent ne pas prendre en charge l'extraction de texte. Google Drive nécessite une configuration et une connexion distinctes.
 
-Lisez n'importe quel contenu à voix haute
-- Fichiers PDF : importez et écoutez des documents, rapports et livres
-- Pages web : collez une URL et écoutez n'importe quel article
-- EPUB : écoutez des livres numériques de votre bibliothèque
-- Google Drive : ouvrez des fichiers directement depuis votre cloud
-- Scanner de documents : pointez la caméra sur un texte imprimé et écoutez-le instantanément
-- Fichiers TXT : importez du texte brut depuis n'importe quelle source
+ÉCOUTEZ À VOTRE FAÇON
+Ajustez la vitesse de lecture et la hauteur de la voix. Suivez le texte en surbrillance, utilisez la minuterie de mise en veille et enregistrez le contenu dans Mes fichiers. Ajoutez des mots à votre dictionnaire pour personnaliser la prononciation. Les voix disponibles dépendent de la langue et de votre appareil. Les voix de caractères japonais utilisent VOICEVOX ; Les voix Kokoro AI prennent en charge le japonais et l'anglais.
 
-Contrôles de lecture avancés
-- Ajustez la vitesse de lecture de 0,5x à 2x (ou plus rapide)
-- Contrôlez la tonalité pour trouver la voix la plus confortable
-- Lecture en arrière-plan — continuez à écouter en utilisant d'autres apps
-- Mini-lecteur pour un accès rapide en multitâche
+PREMIÈRE
+Écoutez sans publicité, enregistrez un nombre illimité de fichiers et lisez jusqu'à la fin des textes de plus de 4 000 caractères. Premium comprend également jusqu'à 200 000 caractères de voix de caractères japonais par mois.
 
-Personnalisation
-- Dictionnaire personnalisé : corrigez les noms, termes techniques ou marques mal prononcés
-- Support multilingue : changez de langue pour le contenu en plusieurs langues
-- Sauvegardez les textes fréquemment utilisés pour une lecture instantanée
+Des abonnements mensuels et annuels sont disponibles. Les prix et les essais gratuits éligibles apparaissent sur l'écran d'achat. Les abonnements se renouvellent automatiquement sauf annulation au moins 24 heures avant la fin de la période en cours. Gérez ou annulez dans Paramètres > Abonnements.
 
-L'accessibilité avant tout
-- Conçu pour les personnes dyslexiques, malvoyantes ou souffrant de fatigue de lecture
-- Sans compte requis — ouvrez et écoutez simplement
-- Tout le traitement s'effectue sur l'appareil pour protéger votre vie privée
-
-POUR QUI EST-CE ?
-- Les étudiants qui révisent leurs notes ou manuels en mode mains libres
-- Les professionnels qui écoutent rapports et documents pendant les trajets
-- Les apprenants en langues qui améliorent leur compréhension orale
-- Toute personne qui préfère écouter plutôt que lire
-
-Confidentialité : Sans compte requis. Votre contenu reste sur votre appareil.
+Les voix standard sont générées sur votre appareil. Les voix des personnages envoient du texte à notre serveur pour générer de l'audio. Les articles Web et Google Drive nécessitent une connexion Internet.

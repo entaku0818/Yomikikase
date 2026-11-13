@@ -4,170 +4,145 @@ import XCTest
 
 @MainActor
 final class VoicevoxSettingsFeatureTests: XCTestCase {
-    private let freeUsage = VoicevoxUsage(plan: "free", used: 120, limit: 5000, remaining: 4880,
-                                          resetAt: Date(timeIntervalSince1970: 1_790_780_400))
-    private let exhausted = VoicevoxUsage(plan: "free", used: 5000, limit: 5000, remaining: 0,
-                                          resetAt: Date(timeIntervalSince1970: 1_790_780_400))
+    private let freeUsage = VoicevoxUsage(plan: "free", used: 120, limit: 5000, remaining: 4880, resetAt: .distantFuture)
+    private let exhausted = VoicevoxUsage(plan: "free", used: 5000, limit: 5000, remaining: 0, resetAt: .distantFuture)
 
+    nonisolated private var catalog: VoicevoxCatalog {
+        let voices = [voice(14, "既定"), voice(3, "ずんだもん"), voice(11, "テスト")]
+        return VoicevoxCatalog(schemaVersion: 1, revision: "test.1", defaultSpeakerId: 14,
+                               termsUrl: "https://example.com/terms", voices: voices, credits: voices)
+    }
+    nonisolated private func voice(_ id: Int, _ name: String) -> VoicevoxVoice {
+        VoicevoxVoice(speakerId: id, character: name, style: "ノーマル", credit: "VOICEVOX:\(name)", termsUrl: "https://example.com/voice")
+    }
     private func settings(enabled: Bool, speakerId: Int, saved: LockIsolated<[String]>) -> VoicevoxSettingsClient {
-        VoicevoxSettingsClient(
-            isEnabled: { enabled },
-            setEnabled: { value in saved.withValue { $0.append("enabled=\(value)") } },
-            speakerId: { speakerId },
-            setSpeakerId: { value in saved.withValue { $0.append("speaker=\(value)") } }
-        )
+        VoicevoxSettingsClient(isEnabled: { enabled }, setEnabled: { value in saved.withValue { $0.append("enabled=\(value)") } },
+            speakerId: { speakerId }, setSpeakerId: { value in saved.withValue { $0.append("speaker=\(value)") } })
     }
 
-    func testOnAppearLoadsSavedSettingsAndUsage() async {
+    func testOnAppearLoadsServerCatalogAndUsage() async {
         let saved = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) { VoicevoxSettingsFeature() } withDependencies: {
             $0.voicevoxSettings = settings(enabled: true, speakerId: 3, saved: saved)
+            $0.voicevox.catalog = { self.catalog }
             $0.voicevox.quota = { self.freeUsage }
         }
-        await store.send(.view(.onAppear)) {
-            $0.isEnabled = true
-            $0.selectedSpeakerId = 3
-        }
-        await store.receive(\.usageLoaded) {
-            $0.usage = self.freeUsage
-        }
+        await store.send(.view(.onAppear)) { $0.isEnabled = true; $0.selectedSpeakerId = 3; $0.isCatalogLoading = true }
+        await store.receive(\.catalogLoaded) { $0.catalog = self.catalog; $0.isCatalogLoading = false }
+        await store.receive(\.usageLoaded) { $0.usage = self.freeUsage }
+        XCTAssertEqual(saved.value, [])
     }
 
-    func testUsageFailureIsShownWithoutBreakingSettings() async {
+    func testFailedCatalogDoesNotRestoreHardcodedChoices() async {
         let saved = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) { VoicevoxSettingsFeature() } withDependencies: {
             $0.voicevoxSettings = settings(enabled: true, speakerId: 14, saved: saved)
+            $0.voicevox.cachedCatalog = { self.catalog }
+            $0.voicevox.catalog = { throw VoicevoxError.invalidResponse }
             $0.voicevox.quota = { throw VoicevoxError.appCheckUnavailable }
         }
         await store.send(.view(.onAppear)) {
-            $0.isEnabled = true
+            $0.isEnabled = true; $0.selectedSpeakerId = 14; $0.catalog = self.catalog; $0.isCatalogLoading = true
         }
-        await store.receive(\.usageFailed) {
-            $0.isUsageUnavailable = true
-        }
+        await store.receive(\.catalogFailed) { $0.catalog = nil; $0.isCatalogLoading = false; $0.isCatalogUnavailable = true }
+        await store.receive(\.usageFailed) { $0.isUsageUnavailable = true }
+        await store.send(.view(.voiceTapped(14)))
+        XCTAssertTrue(store.state.voices.isEmpty)
     }
 
     func testOnAppearWhileOffDoesNotWakeServer() async {
-        let saved = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
-            $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
-            // quota は未実装のまま（呼ばれたらテストが落ちる）
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) { VoicevoxSettingsFeature() } withDependencies: {
+            $0.voicevoxSettings = settings(enabled: false, speakerId: 401, saved: LockIsolated([]))
         }
-        await store.send(.view(.onAppear))
+        await store.send(.view(.onAppear)) { $0.selectedSpeakerId = 401 }
     }
 
-    func testPickingVoiceWhileOffTurnsCharacterVoiceOn() async {
+    func testOpeningPickerWhileOffLoadsNewCharactersAndServerDefault() async {
         let saved = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
+        let remote = VoicevoxCatalog(schemaVersion: 1, revision: "new", defaultSpeakerId: 401, termsUrl: "https://example.com/terms",
+                                    voices: [voice(401, "追加キャラ")], credits: [voice(401, "追加キャラ")])
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) { VoicevoxSettingsFeature() } withDependencies: {
+            $0.voicevoxSettings.setSpeakerId = { id in saved.withValue { $0.append("\(id)") } }
+            $0.voicevox.catalog = { remote }
+        }
+        await store.send(.view(.loadCatalog)) { $0.isCatalogLoading = true }
+        await store.receive(\.catalogLoaded) { $0.catalog = remote; $0.isCatalogLoading = false; $0.selectedSpeakerId = 401 }
+        XCTAssertEqual(saved.value, ["401"])
+        XCTAssertEqual(store.state.voices.first?.character, "追加キャラ")
+    }
+
+    func testRetiredSelectionMovesToServerDefaultAndEmptyCatalogHasNoSelection() async {
+        let saved = LockIsolated<[String]>([])
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State(selectedSpeakerId: 999)) { VoicevoxSettingsFeature() } withDependencies: {
+            $0.voicevoxSettings.setSpeakerId = { id in saved.withValue { $0.append("\(id)") } }
+        }
+        await store.send(.catalogLoaded(catalog)) { $0.catalog = self.catalog; $0.selectedSpeakerId = 14 }
+        let empty = VoicevoxCatalog(schemaVersion: 1, revision: "disabled", defaultSpeakerId: nil,
+                                   termsUrl: catalog.termsUrl, voices: [], credits: catalog.credits)
+        await store.send(.catalogLoaded(empty)) { $0.catalog = empty; $0.selectedSpeakerId = -1 }
+        XCTAssertEqual(saved.value, ["14", "-1"])
+        XCTAssertNoThrow(try empty.validated())
+        XCTAssertNil(empty.selection(for: 14))
+    }
+
+    func testPickingVoiceWhileOffTurnsOnAndPreviewsServerName() async {
+        let saved = LockIsolated<[String]>([])
+        let played = LockIsolated<[String]>([])
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State(catalog: catalog)) { VoicevoxSettingsFeature() } withDependencies: {
             $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
             $0.voicevox.quota = { self.freeUsage }
             $0.voicevoxPlayer.stop = {}
-            $0.voicevoxPlayer.play = { _, _, _ in AsyncStream { $0.yield(.finished); $0.finish() } }
+            $0.voicevoxPlayer.play = { text, id, _ in
+                played.withValue { $0.append("\(id):\(text)") }
+                return AsyncStream { $0.yield(.finished); $0.finish() }
+            }
         }
-        await store.send(.view(.voiceTapped(11))) {
-            $0.isEnabled = true
-            $0.selectedSpeakerId = 11
-            $0.previewingSpeakerId = 11
-        }
-        await store.receive(\.previewFinished) {
-            $0.previewingSpeakerId = nil
-        }
-        await store.receive(\.usageLoaded) {
-            $0.usage = self.freeUsage
-        }
-        XCTAssertEqual(saved.value, ["enabled=true", "speaker=11"])
+        await store.send(.view(.voiceTapped(3))) { $0.isEnabled = true; $0.selectedSpeakerId = 3; $0.previewingSpeakerId = 3 }
+        await store.receive(\.previewFinished) { $0.previewingSpeakerId = nil }
+        await store.receive(\.usageLoaded) { $0.usage = self.freeUsage }
+        XCTAssertEqual(saved.value, ["enabled=true", "speaker=3"])
+        XCTAssertEqual(played.value, ["3:こんにちは、ずんだもんです。この声で読み上げます。"])
     }
 
-    func testTurningOnSavesAndLogs() async {
+    func testUnknownVoiceCannotStartPreviewOrConsumeQuota() async {
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State(catalog: catalog)) { VoicevoxSettingsFeature() }
+        await store.send(.view(.voiceTapped(401)))
+    }
+
+    func testTurningOnLoadsCatalogAndLogs() async {
         let saved = LockIsolated<[String]>([])
         let events = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State()) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State(selectedSpeakerId: 14)) { VoicevoxSettingsFeature() } withDependencies: {
             $0.voicevoxSettings = settings(enabled: false, speakerId: 14, saved: saved)
+            $0.voicevox.catalog = { self.catalog }
             $0.voicevox.quota = { self.freeUsage }
             $0.analytics.logEvent = { name, _ in events.withValue { $0.append(name) } }
         }
-        await store.send(.view(.enabledChanged(true))) {
-            $0.isEnabled = true
-        }
-        await store.receive(\.usageLoaded) {
-            $0.usage = self.freeUsage
-        }
+        await store.send(.view(.enabledChanged(true))) { $0.isEnabled = true; $0.isCatalogLoading = true }
+        await store.receive(\.catalogLoaded) { $0.catalog = self.catalog; $0.isCatalogLoading = false }
+        await store.receive(\.usageLoaded) { $0.usage = self.freeUsage }
         XCTAssertEqual(saved.value, ["enabled=true"])
         XCTAssertEqual(events.value, ["voicevox_toggle"])
     }
 
-    func testTappingVoiceSelectsSavesAndPreviews() async {
-        let saved = LockIsolated<[String]>([])
-        let played = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State(isEnabled: true)) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
-            $0.voicevoxSettings = settings(enabled: true, speakerId: 14, saved: saved)
-            $0.voicevox.quota = { self.freeUsage }
-            $0.voicevoxPlayer.stop = {}
-            $0.voicevoxPlayer.play = { text, speakerId, _ in
-                played.withValue { $0.append("\(speakerId):\(text)") }
-                return AsyncStream { continuation in
-                    continuation.yield(.sentence(NSRange(location: 0, length: 5)))
-                    continuation.yield(.finished)
-                    continuation.finish()
-                }
-            }
-        }
-        await store.send(.view(.voiceTapped(3))) {
-            $0.selectedSpeakerId = 3
-            $0.previewingSpeakerId = 3
-        }
-        await store.receive(\.previewFinished) {
-            $0.previewingSpeakerId = nil
-        }
-        await store.receive(\.usageLoaded) {
-            $0.usage = self.freeUsage
-        }
-        XCTAssertEqual(saved.value, ["speaker=3"])
-        XCTAssertEqual(played.value, ["3:こんにちは、ずんだもんです。この声で読み上げます。"])
-    }
-
     func testPreviewOverQuotaShowsPaywallForFreeUser() async {
-        let saved = LockIsolated<[String]>([])
-        let store = TestStore(initialState: VoicevoxSettingsFeature.State(isEnabled: true)) {
-            VoicevoxSettingsFeature()
-        } withDependencies: {
-            $0.voicevoxSettings = settings(enabled: true, speakerId: 14, saved: saved)
+        let store = TestStore(initialState: VoicevoxSettingsFeature.State(isEnabled: true, selectedSpeakerId: 14, catalog: catalog)) { VoicevoxSettingsFeature() } withDependencies: {
+            $0.voicevoxSettings.setSpeakerId = { _ in }
             $0.voicevoxPlayer.stop = {}
-            $0.voicevoxPlayer.play = { _, _, _ in
-                AsyncStream { continuation in
-                    continuation.yield(.quotaExceeded(self.exhausted, resumeAt: 0))
-                    continuation.finish()
-                }
-            }
+            $0.voicevoxPlayer.play = { _, _, _ in AsyncStream { $0.yield(.quotaExceeded(self.exhausted, resumeAt: 0)); $0.finish() } }
         }
-        await store.send(.view(.voiceTapped(14))) {
-            $0.previewingSpeakerId = 14
-        }
-        await store.receive(\.previewQuotaExceeded) {
-            $0.previewingSpeakerId = nil
-            $0.usage = self.exhausted
-            $0.showPaywall = true
-        }
+        await store.send(.view(.voiceTapped(14))) { $0.previewingSpeakerId = 14 }
+        await store.receive(\.previewQuotaExceeded) { $0.previewingSpeakerId = nil; $0.usage = self.exhausted; $0.showPaywall = true }
     }
 
-    func testCatalogMatchesServerAllowList() {
-        // サーバー側 voicevox-server/internal/voices と同じ6声（規約を確認済みの声だけ）
-        XCTAssertEqual(VoicevoxCatalog.voices.map(\.speakerId), [14, 3, 2, 11, 12, 9])
-        XCTAssertTrue(VoicevoxCatalog.voices.allSatisfy { $0.credit.hasPrefix("VOICEVOX:") })
-        XCTAssertFalse(VoicevoxCatalog.voices.contains { [30, 31, 13, 20, 10].contains($0.speakerId) },
-                       "No.7・青山龍星・もち子さん・雨晴はうは要許可")
+    func testCatalogRejectsUnsafeLinksAndMissingDefaultAndKeepsCreditsInCacheEncoding() throws {
+        var data = try JSONEncoder().encode(catalog)
+        XCTAssertEqual(try JSONDecoder().decode(VoicevoxCatalog.self, from: data).validated(), catalog)
+        let unsafe = String(decoding: data, as: UTF8.self).replacingOccurrences(of: "https:", with: "javascript:")
+        data = Data(unsafe.utf8)
+        XCTAssertThrowsError(try JSONDecoder().decode(VoicevoxCatalog.self, from: data).validated())
+        let missing = VoicevoxCatalog(schemaVersion: 1, revision: "r", defaultSpeakerId: 999, termsUrl: catalog.termsUrl, voices: catalog.voices, credits: catalog.credits)
+        XCTAssertThrowsError(try missing.validated())
     }
 
     func testOnlyJapaneseUsesCharacterVoices() {

@@ -61,6 +61,9 @@ func (f Firestore) doc(userID string, now time.Time) *firestore.DocumentRef {
 
 // Reserve はトランザクションで上限を確認してから加算する。
 func (f Firestore) Reserve(ctx context.Context, userID string, chars, limit int, now time.Time) (Usage, error) {
+	if chars <= 0 || limit < 0 {
+		return Usage{}, errors.New("invalid quota reservation")
+	}
 	ref := f.doc(userID, now)
 	var used int
 	err := f.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
@@ -68,7 +71,7 @@ func (f Firestore) Reserve(ctx context.Context, userID string, chars, limit int,
 		if err != nil {
 			return err
 		}
-		if current+chars > limit {
+		if current > limit || chars > limit-current {
 			used = current
 			return ErrExceeded
 		}
@@ -89,10 +92,20 @@ func (f Firestore) Reserve(ctx context.Context, userID string, chars, limit int,
 
 // Refund は加算した分を差し引く。
 func (f Firestore) Refund(ctx context.Context, userID string, chars int, now time.Time) error {
-	_, err := f.doc(userID, now).Update(ctx, []firestore.Update{
-		{Path: "chars", Value: firestore.Increment(-chars)},
+	if chars <= 0 {
+		return errors.New("invalid quota refund")
+	}
+	ref := f.doc(userID, now)
+	return f.Client.RunTransaction(ctx, func(ctx context.Context, tx *firestore.Transaction) error {
+		current, err := readChars(tx.Get(ref))
+		if err != nil {
+			return err
+		}
+		if chars > current {
+			return errors.New("quota refund exceeds usage")
+		}
+		return tx.Update(ref, []firestore.Update{{Path: "chars", Value: current - chars}})
 	})
-	return err
 }
 
 // Get は今月の使用量を読む。
@@ -110,9 +123,16 @@ func readChars(snap *firestore.DocumentSnapshot, err error) (int, error) {
 	}
 	v, err := snap.DataAt("chars")
 	if err != nil {
-		return 0, nil
+		return 0, errors.New("quota counter missing")
 	}
-	n, _ := v.(int64)
+	return decodeChars(v)
+}
+
+func decodeChars(v any) (int, error) {
+	n, ok := v.(int64)
+	if !ok || n < 0 || int64(int(n)) != n {
+		return 0, errors.New("invalid quota counter")
+	}
 	return int(n), nil
 }
 
@@ -131,10 +151,13 @@ func (m *Memory) key(userID string, now time.Time) string {
 
 // Reserve は上限を確認してから加算する。
 func (m *Memory) Reserve(_ context.Context, userID string, chars, limit int, now time.Time) (Usage, error) {
+	if chars <= 0 || limit < 0 {
+		return Usage{}, errors.New("invalid quota reservation")
+	}
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	k := m.key(userID, now)
-	if m.used[k]+chars > limit {
+	if m.used[k] > limit || chars > limit-m.used[k] {
 		return Usage{Used: m.used[k], Limit: limit, ResetAt: resetAt(now)}, ErrExceeded
 	}
 	m.used[k] += chars
@@ -145,7 +168,11 @@ func (m *Memory) Reserve(_ context.Context, userID string, chars, limit int, now
 func (m *Memory) Refund(_ context.Context, userID string, chars int, now time.Time) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
-	m.used[m.key(userID, now)] -= chars
+	k := m.key(userID, now)
+	if chars <= 0 || chars > m.used[k] {
+		return errors.New("invalid quota refund")
+	}
+	m.used[k] -= chars
 	return nil
 }
 

@@ -284,6 +284,7 @@ actor KokoroEngine {
     private var voicesLoadTask: Task<[String: MLXArray], Error>?
 
     func synthesize(text: String, voice: KokoroVoice, speed: Float) async throws -> Data {
+        try Task.checkCancellation()
         guard KokoroModelManager.checkDownloaded(),
               let modelURL  = await KokoroModelManager.shared.modelFileURL(),
               let voicesURL = await KokoroModelManager.shared.voicesFileURL()
@@ -306,6 +307,7 @@ actor KokoroEngine {
 
         let language: Language = voice.isJapanese ? .ja : .enUS
 
+        try Task.checkCancellation()
         let (samples, _) = try tts.generateAudio(
             voice: voiceEmbedding,
             language: language,

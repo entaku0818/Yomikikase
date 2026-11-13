@@ -20,6 +20,9 @@ type Client struct {
 	HTTP    *http.Client
 }
 
+// Bounds memory even if an upstream engine malfunctions (well above a 300-character WAV).
+const maxResponseBytes = 32 << 20
+
 // NewClient は baseURL（例: http://127.0.0.1:50021）のエンジンを呼ぶクライアントを作る。
 func NewClient(baseURL string) *Client {
 	return &Client{BaseURL: baseURL, HTTP: &http.Client{Timeout: 120 * time.Second}}
@@ -121,14 +124,17 @@ func (c *Client) post(ctx context.Context, path string, body []byte) ([]byte, er
 		return nil, err
 	}
 	defer resp.Body.Close()
-	data, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
 	// initialize_speaker は 204 を返すので 2xx を成功とする
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		// エンジンのエラー本文は入力（文章）を含むことがあるので、ステータスだけ返す
 		return nil, fmt.Errorf("engine returned %d for %s", resp.StatusCode, req.URL.Path)
+	}
+	data, err := io.ReadAll(io.LimitReader(resp.Body, maxResponseBytes+1))
+	if err != nil {
+		return nil, err
+	}
+	if len(data) > maxResponseBytes {
+		return nil, errors.New("engine response too large")
 	}
 	return data, nil
 }

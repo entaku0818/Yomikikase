@@ -81,7 +81,15 @@ fun SpeechScreen(
     val speechRate by viewModel.speechRate.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     val isLanguageUnavailable by viewModel.isLanguageUnavailable.collectAsState()
-    val isInitialized by viewModel.isInitialized.collectAsState()
+    val deviceInitialized by viewModel.isInitialized.collectAsState()
+    val kokoroEnabled by viewModel.kokoroEnabled.collectAsState()
+    val kokoroVoice by viewModel.kokoroVoice.collectAsState()
+    val kokoroDownload by viewModel.kokoroDownload.collectAsState()
+    val kokoroError by viewModel.kokoroError.collectAsState()
+    val kokoroGenerating by viewModel.kokoroGenerating.collectAsState()
+
+    val kokoroActive = kokoroEnabled && selectedLanguage.code == "ja"
+    val isInitialized = deviceInitialized || (kokoroActive && kokoroDownload.ready)
 
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -93,6 +101,9 @@ fun SpeechScreen(
     val selectedVoiceName by viewModel.selectedVoiceName.collectAsState()
     val voicevoxEnabled by viewModel.voicevoxEnabled.collectAsState()
     val voicevoxSpeakerId by viewModel.voicevoxSpeakerId.collectAsState()
+    val voicevoxCatalog by viewModel.voicevoxCatalog.collectAsState()
+    val voicevoxCatalogLoading by viewModel.voicevoxCatalogLoading.collectAsState()
+    val voicevoxCatalogUnavailable by viewModel.voicevoxCatalogUnavailable.collectAsState()
     val voicevoxUsage by viewModel.voicevoxUsage.collectAsState()
     val voicevoxUsageUnavailable by viewModel.voicevoxUsageUnavailable.collectAsState()
     val previewingSpeakerId by viewModel.previewingSpeakerId.collectAsState()
@@ -190,8 +201,10 @@ fun SpeechScreen(
                 )
                 SettingChip(
                     label = stringResource(R.string.speech_voice),
-                    value = if (voicevoxAvailable && voicevoxEnabled) {
-                        VoicevoxCatalog.voice(voicevoxSpeakerId).character
+                    value = if (kokoroActive) {
+                        kokoroVoice.displayName
+                    } else if (voicevoxAvailable && voicevoxEnabled) {
+                        voicevoxCatalog?.voice(voicevoxSpeakerId)?.character ?: stringResource(R.string.voicevox_section_title)
                     } else {
                         voiceOptions.firstOrNull { it.name == selectedVoiceName }?.let { voiceLabel(it) } ?: stringResource(R.string.speech_voice_default)
                     },
@@ -199,6 +212,7 @@ fun SpeechScreen(
                         // 試聴と本編の読み上げが重ならないよう、一覧を開く前に止める
                         if (voicevoxAvailable) {
                             viewModel.stop()
+                            viewModel.refreshVoicevoxCatalog()
                             viewModel.refreshVoicevoxUsage()
                         }
                         showVoiceSheet = true
@@ -208,9 +222,23 @@ fun SpeechScreen(
             }
 
             if (showVoiceSheet) {
+                androidx.compose.runtime.DisposableEffect(viewModel) {
+                    onDispose { viewModel.stopPreview() }
+                }
                 VoiceBottomSheet(
                     options = voiceOptions,
                     selectedName = selectedVoiceName,
+                    onPreview = viewModel::previewDeviceVoice,
+                    kokoroEnabled = kokoroActive,
+                    kokoroContent = {
+                        if (selectedLanguage.code == "ja") com.entaku.VoiceYourText.kokoro.KokoroVoiceSection(viewModel)
+                    },
+                    myVoiceContent = {
+                        MyVoiceSection(viewModel, onApplied = {
+                            viewModel.stopPreview()
+                            showVoiceSheet = false
+                        })
+                    },
                     onSelect = { name ->
                         viewModel.setVoicevoxEnabled(false)
                         viewModel.setVoice(name)
@@ -230,6 +258,10 @@ fun SpeechScreen(
                         VoicevoxPicker(
                             enabled = voicevoxEnabled,
                             speakerId = voicevoxSpeakerId,
+                            voices = voicevoxCatalog?.voices.orEmpty(),
+                            catalogLoading = voicevoxCatalogLoading,
+                            catalogUnavailable = voicevoxCatalogUnavailable,
+                            onRetry = viewModel::refreshVoicevoxCatalog,
                             previewingSpeakerId = previewingSpeakerId,
                             usage = voicevoxUsage,
                             usageUnavailable = voicevoxUsageUnavailable,
@@ -244,7 +276,9 @@ fun SpeechScreen(
                 )
             }
 
-            if (isLanguageUnavailable) {
+            if (kokoroError) Text(stringResource(R.string.kokoro_failed), color = MaterialTheme.colorScheme.error)
+            if (kokoroGenerating) Text(stringResource(R.string.kokoro_generating), style = MaterialTheme.typography.bodySmall)
+            if (isLanguageUnavailable && !kokoroActive) {
                 // 端末に音声データが無い言語は既定の言語で読まれてしまうので、追加方法を案内する
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(

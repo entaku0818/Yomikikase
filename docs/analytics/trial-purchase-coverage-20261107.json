@@ -1,0 +1,59 @@
+{
+  "estimated_bytes": 2795796,
+  "rows": [
+    {
+      "app_version": "1.4.10",
+      "source": "unknown",
+      "plan_type": "monthly",
+      "trial_eligible": "true",
+      "debug_mode": null,
+      "events": "1",
+      "installations": "1"
+    },
+    {
+      "app_version": "1.4.1",
+      "source": "subscription_view",
+      "plan_type": "annual",
+      "trial_eligible": null,
+      "debug_mode": null,
+      "events": "1",
+      "installations": "1"
+    },
+    {
+      "app_version": "1.4.8",
+      "source": "pdf_simple_upgrade_link",
+      "plan_type": "monthly",
+      "trial_eligible": "true",
+      "debug_mode": null,
+      "events": "1",
+      "installations": "1"
+    },
+    {
+      "app_version": "1.4.9",
+      "source": "unknown",
+      "plan_type": "monthly",
+      "trial_eligible": "true",
+      "debug_mode": null,
+      "events": "2",
+      "installations": "2"
+    },
+    {
+      "app_version": "1.4.8",
+      "source": "unknown",
+      "plan_type": "annual",
+      "trial_eligible": "true",
+      "debug_mode": null,
+      "events": "1",
+      "installations": "1"
+    },
+    {
+      "app_version": "1.4.1",
+      "source": "subscription_view",
+      "plan_type": "monthly",
+      "trial_eligible": null,
+      "debug_mode": null,
+      "events": "1",
+      "installations": "1"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+Improved voice playback and updated the store information.
+Improved the security and reliability of purchase verification, with automatic retries when verification cannot be completed.

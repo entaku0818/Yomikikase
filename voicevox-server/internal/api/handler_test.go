@@ -12,7 +12,9 @@ import (
 
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/audio"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/entitlement"
+	"github.com/entaku0818/voiceyourtext-voicevox/internal/policy"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/quota"
+	"github.com/entaku0818/voiceyourtext-voicevox/internal/voices"
 	"github.com/entaku0818/voiceyourtext-voicevox/internal/voicevox"
 )
 
@@ -49,13 +51,15 @@ var now = time.Date(2026, 9, 27, 12, 0, 0, 0, time.UTC)
 func newHandler() (*Handler, *fakeEngine, *quota.Memory) {
 	engine := &fakeEngine{}
 	store := &quota.Memory{}
+	p := policy.Default()
+	p.Voicevox = policy.Voicevox{Enabled: true, FreeMonthly: 10, PremiumMonthly: 100, MaxRequestChars: 50}
 	return &Handler{
 		AppCheck:    fakeAppCheck{valid: "ok"},
 		Entitlement: entitlement.Static{Premium: map[string]bool{"premium": true}},
 		Quota:       store,
 		Engine:      engine,
 		Encoder:     audio.Passthrough{},
-		Limits:      Limits{FreeMonthly: 10, PremiumMonthly: 100, MaxRequestChars: 50},
+		Policy:      policy.Static{Policy: p},
 		Now:         func() time.Time { return now },
 	}, engine, store
 }
@@ -243,5 +247,114 @@ func TestVoicesAreListedWithCredits(t *testing.T) {
 		if c := v.(map[string]any)["credit"].(string); !strings.HasPrefix(c, "VOICEVOX:") {
 			t.Errorf("credit %q must start with VOICEVOX:", c)
 		}
+	}
+}
+
+type changingPolicy struct {
+	current policy.Policy
+	err     error
+}
+
+func TestCatalogChangesApplyToListAndGenerationTogether(t *testing.T) {
+	h, engine, store := newHandler()
+	p, _ := h.Policy.Load(context.Background())
+	source := &changingPolicy{current: p}
+	h.Policy = source
+	id := 401
+	source.current.Revision = "catalog.2"
+	source.current.Catalog.DefaultSpeakerID = &id
+	source.current.Catalog.Voices[0].Enabled = false
+	source.current.Catalog.Voices = append([]voices.Voice{{SpeakerID: id, Character: "new server character", Style: "normal", Credit: "test credit", TermsURL: "https://example.com/terms", Enabled: true}}, source.current.Catalog.Voices...)
+	rec := httptest.NewRecorder()
+	h.Routes().ServeHTTP(rec, httptest.NewRequest("GET", "/v1/voices", nil))
+	body := decode(t, rec)
+	list := body["voices"].([]any)
+	if rec.Code != 200 || body["defaultSpeakerId"] != float64(id) || list[0].(map[string]any)["speakerId"] != float64(id) || len(list) != 6 || len(body["credits"].([]any)) != 7 || rec.Header().Get("Cache-Control") != "no-store" {
+		t.Fatal(body)
+	}
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":14}`); rec.Code != 400 || engine.calls != 0 {
+		t.Fatal(rec.Code, engine.calls)
+	}
+	u, _ := store.Get(context.Background(), "premium", 100, now)
+	if u.Used != 0 {
+		t.Fatal("disabled voice consumed quota")
+	}
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":401}`); rec.Code != 200 || engine.calls != 1 {
+		t.Fatal(rec.Code, engine.calls)
+	}
+	source.err = errors.New("unavailable")
+	rec = httptest.NewRecorder()
+	h.Routes().ServeHTTP(rec, httptest.NewRequest("GET", "/v1/voices", nil))
+	if rec.Code != 503 {
+		t.Fatal("must not return a stale/default list")
+	}
+}
+
+func (s *changingPolicy) Load(context.Context) (policy.Policy, error) { return s.current, s.err }
+
+func TestPolicyChangeAppliesToNextRequestWithoutRestart(t *testing.T) {
+	h, engine, _ := newHandler()
+	p, _ := h.Policy.Load(context.Background())
+	source := &changingPolicy{current: p}
+	h.Policy = source
+	if rec := synth(t, h, "premium", "ok", `{"text":"あいうえお","speakerId":14}`); rec.Code != 200 {
+		t.Fatal(rec.Body)
+	}
+	source.current.Revision = "lowered"
+	source.current.Voicevox.PremiumMonthly = 5
+	rec := synth(t, h, "premium", "ok", `{"text":"か","speakerId":14}`)
+	if rec.Code != 429 || engine.calls != 1 {
+		t.Fatalf("not enforced: %d calls=%d", rec.Code, engine.calls)
+	}
+	u := decode(t, rec)["usage"].(map[string]any)
+	if u["policyRevision"] != "lowered" || u["limit"] != float64(5) {
+		t.Fatalf("stale response: %v", u)
+	}
+	source.current.Voicevox.PremiumMonthly = 100
+	source.current.Voicevox.MaxRequestChars = 1
+	if rec := synth(t, h, "premium", "ok", `{"text":"あい","speakerId":14}`); rec.Code != 413 {
+		t.Fatalf("request cap not enforced: %d", rec.Code)
+	}
+}
+
+func TestDisabledMissingAndInvalidPolicyDoNotGenerate(t *testing.T) {
+	h, engine, store := newHandler()
+	p, _ := h.Policy.Load(context.Background())
+	source := &changingPolicy{current: p}
+	h.Policy = source
+	source.current.Voicevox.Enabled = false
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":14}`); rec.Code != 503 {
+		t.Fatal(rec.Code)
+	}
+	source.current.Voicevox.Enabled = true
+	source.err = errors.New("unavailable")
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":14}`); rec.Code != 503 {
+		t.Fatal(rec.Code)
+	}
+	source.err = nil
+	source.current.Voicevox.MaxRequestChars = 0
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":14}`); rec.Code != 503 {
+		t.Fatal(rec.Code)
+	}
+	h.Policy = nil
+	if rec := synth(t, h, "premium", "ok", `{"text":"あ","speakerId":14}`); rec.Code != 503 {
+		t.Fatal(rec.Code)
+	}
+	u, _ := store.Get(context.Background(), "premium", 100, now)
+	if engine.calls != 0 || u.Used != 0 {
+		t.Fatalf("failed closed incorrectly: calls=%d used=%d", engine.calls, u.Used)
+	}
+}
+
+func TestPublicConfigAndQuotaSharePolicy(t *testing.T) {
+	h, _, _ := newHandler()
+	rec := httptest.NewRecorder()
+	h.Routes().ServeHTTP(rec, httptest.NewRequest("GET", "/v1/config", nil))
+	p := decode(t, rec)
+	if rec.Code != 200 || rec.Header().Get("Cache-Control") != "no-store" || p["voicevox"].(map[string]any)["maxRequestChars"] != float64(50) {
+		t.Fatal(rec.Body)
+	}
+	if strings.Contains(rec.Body.String(), "gemini") || strings.Contains(rec.Body.String(), "Budget") {
+		t.Fatal("unreleased/private config exposed")
 	}
 }

@@ -139,6 +139,19 @@ final class KokoroTTSClientTests: XCTestCase {
         }
     }
 
+    func test_cancelledEngineRequestStopsBeforeModelLookup() async {
+        let task = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            do {
+                _ = try await KokoroEngine.shared.synthesize(text: "こんにちは", voice: .jfAlpha, speed: 1)
+                XCTFail("A cancelled request must not load the model")
+            } catch {
+                XCTAssertTrue(error is CancellationError)
+            }
+        }
+        await task.value
+    }
+
     // MARK: - Helpers
 
     private func assertThrowsKokoroError(

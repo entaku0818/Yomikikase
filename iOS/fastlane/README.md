@@ -39,6 +39,14 @@ Upload metadata and screenshots to App Store Connect only
 
 Upload metadata to App Store Connect and submit for review (without screenshots)
 
+### ios prepare_localized_release
+
+```sh
+[bundle exec] fastlane ios prepare_localized_release
+```
+
+Prepare all localized metadata and screenshots without submitting
+
 ### ios upload_screenshots_only
 
 ```sh

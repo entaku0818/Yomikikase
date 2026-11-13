@@ -1,0 +1,14 @@
+Voice Narrator lit à voix haute les textes, les PDF, les pages Web et les livres EPUB sans DRM. Écoutez pendant les déplacements, en faisant des tâches ménagères ou en reposant vos yeux.
+
+AJOUTEZ VOTRE CONTENU
+Collez du texte, importez des fichiers PDF ou TXT, ouvrez des livres EPUB, collez des liens Web, numérisez des documents imprimés ou connectez Google Drive. Certains fichiers et pages Web pourraient ne pas prendre en charge l'extraction de texte. Google Drive nécessite une configuration et une connexion distinctes.
+
+ÉCOUTEZ À VOTRE FAÇON
+Ajustez la vitesse de lecture et la hauteur de la voix. Suivez le texte en surbrillance, utilisez la minuterie de mise en veille et enregistrez le contenu dans Mes fichiers. Ajoutez des mots à votre dictionnaire pour personnaliser la prononciation. Les voix disponibles dépendent de la langue et de votre appareil. Les voix de caractères japonais utilisent VOICEVOX ; Les voix Kokoro AI prennent en charge le japonais et l'anglais.
+
+PREMIÈRE
+Écoutez sans publicité, enregistrez un nombre illimité de fichiers et lisez jusqu'à la fin des textes de plus de 4 000 caractères. Premium comprend également jusqu'à 200 000 caractères de voix de caractères japonais par mois.
+
+Des abonnements mensuels et annuels sont disponibles. Les prix et les essais gratuits admissibles apparaissent sur l'écran d'achat. Les abonnements se renouvellent automatiquement, sauf annulation au moins 24 heures avant la fin de la période en cours. Gérez ou annulez dans Réglages > Abonnements.
+
+Les voix standards sont générées sur votre appareil. Les voix des personnages envoient du texte à notre serveur pour générer de l'audio. Les articles Web et Google Drive nécessitent une connexion Internet.

@@ -32,7 +32,7 @@ OUT_DIR="${OUT_DIR:-${IOS_DIR}/build/appstore_screenshots}"
 SIMULATOR_NAME="${SIMULATOR_NAME:-iPhone 18 Pro Max}"
 BUNDLE_ID="com.entaku.VoiceYourText"
 LANGS=("$@")
-[ ${#LANGS[@]} -eq 0 ] && LANGS=(ja en-US de-DE es-ES fr-FR it ko th tr vi)
+[ ${#LANGS[@]} -eq 0 ] && LANGS=(ja en-US de-DE es-ES fr-FR it ko th tr vi pt-BR ru zh-Hans)
 
 udid=$(xcrun simctl list devices available -j | /usr/bin/python3 -c '
 import json, sys

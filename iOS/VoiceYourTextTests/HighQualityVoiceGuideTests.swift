@@ -17,16 +17,14 @@ final class HighQualityVoiceGuideTests: XCTestCase {
     func test_手順は設定アプリからアプリに戻るまでを5段で示す() {
         let steps = HighQualityVoiceGuide.steps(languageCode: "ja")
         XCTAssertEqual(steps.count, 5)
-        XCTAssertTrue(steps[0].contains("設定"), steps[0])
-        XCTAssertTrue(steps[1].contains("アクセシビリティ"), steps[1])
-        XCTAssertTrue(steps[1].contains("読み上げコンテンツ"), steps[1])
-        XCTAssertTrue(steps[1].contains("声"), steps[1])
-        XCTAssertTrue(steps[4].contains("戻"), steps[4])
+        XCTAssertEqual(steps[0], String(localized: "「設定」アプリを開く"))
+        XCTAssertEqual(steps[1], String(localized: "アクセシビリティ → 読み上げコンテンツ → 声"))
+        XCTAssertEqual(steps[4], String(localized: "このアプリに戻り、下の一覧から選ぶ"))
     }
 
     func test_手順に読み上げ言語の名前が入る() {
-        XCTAssertTrue(HighQualityVoiceGuide.steps(languageCode: "ja")[2].contains("日本語"))
-        XCTAssertTrue(HighQualityVoiceGuide.steps(languageCode: "en")[2].contains("英語"))
+        XCTAssertTrue(HighQualityVoiceGuide.steps(languageCode: "ja")[2].contains(HighQualityVoiceGuide.languageName("ja")))
+        XCTAssertTrue(HighQualityVoiceGuide.steps(languageCode: "en")[2].contains(HighQualityVoiceGuide.languageName("en")))
     }
 
     func test_手順は空にならない() {
@@ -42,13 +40,13 @@ final class HighQualityVoiceGuideTests: XCTestCase {
     // MARK: - 言語名
 
     func test_言語名はロケール付きでもサブタグで解決する() {
-        XCTAssertEqual(HighQualityVoiceGuide.languageName("ja-JP"), "日本語")
-        XCTAssertEqual(HighQualityVoiceGuide.languageName("ja"), "日本語")
+        XCTAssertEqual(HighQualityVoiceGuide.languageName("ja-JP", locale: Locale(identifier: "ja")), "日本語")
+        XCTAssertEqual(HighQualityVoiceGuide.languageName("ja", locale: Locale(identifier: "en")), "Japanese")
     }
 
     func test_言語が不明なら汎用の表現にする() {
-        XCTAssertEqual(HighQualityVoiceGuide.languageName(nil), "読み上げたい言語")
-        XCTAssertEqual(HighQualityVoiceGuide.languageName(""), "読み上げたい言語")
+        XCTAssertEqual(HighQualityVoiceGuide.languageName(nil), String(localized: "読み上げたい言語"))
+        XCTAssertEqual(HighQualityVoiceGuide.languageName(""), String(localized: "読み上げたい言語"))
     }
 
     // MARK: - 音声名の例
@@ -63,14 +61,14 @@ final class HighQualityVoiceGuideTests: XCTestCase {
     func test_音声名が分からない言語では汎用の手順にする() {
         XCTAssertNil(HighQualityVoiceGuide.voiceExamples(languageCode: "de"))
         let step = HighQualityVoiceGuide.downloadStep(languageCode: "de")
-        XCTAssertTrue(step.contains("高品質"), step)
+        XCTAssertFalse(step.isEmpty)
         XCTAssertFalse(step.contains("Kyoko"), step)
     }
 
     func test_日本語のダウンロード手順に音声名が含まれる() {
         let step = HighQualityVoiceGuide.downloadStep(languageCode: "ja-JP")
         XCTAssertTrue(step.contains("Kyoko"), step)
-        XCTAssertTrue(step.contains("高品質"), step)
+        XCTAssertFalse(step.isEmpty)
     }
 
     // MARK: - 但し書き

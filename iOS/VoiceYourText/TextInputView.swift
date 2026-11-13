@@ -22,6 +22,8 @@ struct TextInputView: View {
     @State private var resumePoint: ResumePoint?
     /// 再生ごとに増やす。止めた後に前の再生の完了・失敗が遅れて届いても、今の状態を壊さないため
     @State private var playbackGeneration = 0
+    @State private var playbackTracker = ContentPlaybackTracker()
+    @Dependency(\.analytics) var analytics
     @State private var showingSpeedPicker = false
     @State private var showingTTSInfo = false
     @State private var audioPlayer: AVAudioPlayer?
@@ -42,6 +44,9 @@ struct TextInputView: View {
     @Dependency(\.voicevoxSettings) var voicevoxSettings
     /// キャラ音声（VOICEVOX）の再生を受け取るタスク。停止時にキャンセルする
     @State private var voicevoxTask: Task<Void, Never>?
+    /// 長文合成を停止したら、次のまとまりの推論を始めない
+    @State private var audioHasSynthesisSpeed = false
+    @State private var kokoroSynthesisTask: Task<Void, Never>?
     /// 月の上限に達したときの案内。resumeAt から先を端末の音声で続けられる
     @State private var voicevoxQuotaStop: VoicevoxQuotaStop?
     @State private var showingVoicevoxPaywall = false
@@ -81,14 +86,7 @@ struct TextInputView: View {
 
                 Spacer()
 
-                if isEditMode {
-                    // 保存ボタン（文字数が多い場合は保存せず再生）
-                    Button(text.count > 4_000 ? "再生" : "保存") {
-                        handleSaveButtonTap()
-                    }
-                    .disabled(text.isEmpty)
-                    .padding(.trailing, 16)
-                } else {
+                if !isEditMode {
                     // プレイヤーモードでは編集ボタンを表示
                     Button(action: {
                         stopSpeaking()
@@ -161,7 +159,7 @@ struct TextInputView: View {
         }
         .onDisappear {
             // Viewが閉じられる時も念のため停止
-            stopSpeaking()
+            stopSpeaking(reason: .viewClosed)
         }
         .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {
             ForEach(SpeechSettings.speedOptions, id: \.self) { speed in
@@ -205,11 +203,7 @@ struct TextInputView: View {
             }
             Button("やめる", role: .cancel) {}
         } message: { stop in
-            if stop.usage.isPremium {
-                Text("\(stop.usage.resetAt.formatted(.dateTime.month().day()))にリセットされます。続きは端末の音声で読み上げられます。")
-            } else {
-                Text("無料プランのキャラ音声は月\(stop.usage.limit.formatted())字までです。プレミアムなら月20万字まで使えます。")
-            }
+            Text("\(stop.usage.resetAt.formatted(.dateTime.month().day()))にリセットされます。続きは端末の音声で読み上げられます。")
         }
         .sheet(isPresented: $showingVoicevoxPaywall) {
             SubscriptionView(source: .voicevoxQuota)
@@ -229,12 +223,25 @@ struct TextInputView: View {
     // MARK: - 編集モード
     private var editModeContent: some View {
         VStack(spacing: 0) {
+            HStack {
+                PasteButton(payloadType: String.self) { values in
+                    text = TextInputDraft.appending(values, to: text)
+                    isTextEditorFocused = true
+                }
+                .tint(AppTheme.primary)
+                .accessibilityIdentifier("textInput.paste")
+                Spacer()
+            }
+            .padding(.horizontal)
+            .padding(.top, 12)
+
             ZStack(alignment: .topLeading) {
                 TextEditor(text: $text)
                     .font(.system(size: 20))
                     .padding(.horizontal)
                     .padding(.top, 8)
                     .focused($isTextEditorFocused)
+                    .accessibilityIdentifier("textInput.editor")
 
                 // プレースホルダー
                 if text.isEmpty {
@@ -260,6 +267,17 @@ struct TextInputView: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
+
+                Button(action: handleSaveButtonTap) {
+                    Label(text.count > 4_000 ? String(localized: "再生") : String(localized: "保存して聴く"), systemImage: "play.fill")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(AppTheme.primary)
+                .disabled(!TextInputDraft.hasReadableText(text))
+                .accessibilityIdentifier("textInput.listen")
             }
             .padding(.horizontal)
             .padding(.bottom, 16)
@@ -376,7 +394,7 @@ struct TextInputView: View {
     }
 
     private func speakWithHighlight() {
-        guard !text.isEmpty else {
+        guard TextInputDraft.hasReadableText(text) else {
             warningLog("TextInputView: Cannot speak - text is empty")
             return
         }
@@ -385,6 +403,9 @@ struct TextInputView: View {
         guard !isSpeaking else { return }
         isSpeaking = true
         playbackGeneration += 1
+        playbackTracker.request(
+            generation: playbackGeneration, contentType: fileType, analytics: analytics, characterCount: text.count
+        )
 
         // 前回止めた位置から読む。文章が変わっていたら最初から
         let resumeOffset = resumePoint?.text == text ? resumePoint?.offset ?? 0 : 0
@@ -394,6 +415,8 @@ struct TextInputView: View {
         // 既存の再生を停止（isSpeaking は変えない）
         voicevoxTask?.cancel()
         voicevoxTask = nil
+        kokoroSynthesisTask?.cancel()
+        kokoroSynthesisTask = nil
         removeAudioFinishObserver()
         if pausedPlayer == nil {
             audioPlayer?.stop()
@@ -413,10 +436,13 @@ struct TextInputView: View {
             try audioSession.setActive(true)
         } catch {
             errorLog("Failed to set audio session category: \(error)")
+            playbackTracker.failure(.audioSession, generation: playbackGeneration, recovering: false, analytics: analytics)
+            finishSpeaking()
             return
         }
 
         if let pausedPlayer {
+            playbackTracker.select(.resumedAudio, generation: playbackGeneration, analytics: analytics)
             infoLog("[TTS] Resuming paused audio at \(pausedPlayer.currentTime)s")
             setupAndPlayAudioPlayer(pausedPlayer) {
                 self.completeSpeaking()
@@ -444,7 +470,10 @@ struct TextInputView: View {
         let kokoroAvailable = KokoroTTSClient.liveValue.isAvailable()
         let kokoroEnabled = UserDefaultsManager.shared.kokoroEnabled
         print("🔊 [TTS] kokoroAvailable=\(kokoroAvailable) kokoroEnabled=\(kokoroEnabled) textLen=\(text.count)")
-        if KokoroPlaybackParams.shouldUseKokoro(available: kokoroAvailable, enabled: kokoroEnabled) {
+        if KokoroPlaybackParams.shouldUseKokoro(
+            available: kokoroAvailable, enabled: kokoroEnabled,
+            languageCode: UserDefaultsManager.shared.languageSetting
+        ) {
             print("🤖 [TTS] → Kokoro AI (local MLX)")
             playWithKokoroTTS(fromUTF16Offset: resumeOffset)
         } else {
@@ -456,6 +485,8 @@ struct TextInputView: View {
     /// 撤去前のクラウドTTSで生成され、端末に保存済みの音声ファイルを再生する。
     /// ワード単位のタイムポイントはサーバー由来だったため撤去済みで、この経路にハイライトは無い。
     private func playGeneratedAudio(url: URL) {
+        playbackTracker.select(.savedAudio, generation: playbackGeneration, analytics: analytics)
+        audioHasSynthesisSpeed = false
         // 既存のaudioPlayerを停止
         audioPlayer?.stop()
         audioPlayer = nil
@@ -469,6 +500,7 @@ struct TextInputView: View {
             }
         } catch {
             errorLog("Failed to play saved audio: \(error)")
+            playbackTracker.failure(.audioPlayer, generation: playbackGeneration, recovering: true, analytics: analytics)
             // Fallback to device TTS
             playWithDeviceTTS()
         }
@@ -484,21 +516,35 @@ struct TextInputView: View {
         // speechRate 0.5 = 通常速度なので、AVAudioPlayer rate 1.0に対応
         // speechRate 1.0 = 2倍速なので、AVAudioPlayer rate 2.0に対応
         player.enableRate = true
-        player.rate = KokoroPlaybackParams.avPlaybackRate(fromSpeechRate: UserDefaultsManager.shared.speechRate)
+        player.rate = KokoroPlaybackParams.avPlaybackRate(
+            fromSpeechRate: UserDefaultsManager.shared.speechRate, synthesisApplied: audioHasSynthesisSpeed
+        )
 
         // 既存の observer を解放してから再登録する（再生の度に積み重なるのを防ぐ）
         removeAudioFinishObserver()
+        let generation = playbackGeneration
         audioFinishObserver = NotificationCenter.default.addObserver(
             forName: NSNotification.Name("AudioPlayerFinished"),
-            object: nil,
+            object: player,
             queue: .main
-        ) { [weak player] _ in
-            guard player != nil else { return }
+        ) { [weak player] notification in
+            guard player != nil, self.isSpeaking, generation == self.playbackGeneration else { return }
             self.removeAudioFinishObserver()
-            onFinish()
+            if notification.userInfo?["successfully"] as? Bool == true {
+                onFinish()
+            } else {
+                self.playbackTracker.failure(.audioPlayer, generation: generation, recovering: false, analytics: self.analytics)
+                self.finishSpeaking()
+            }
         }
         player.delegate = LocalAudioPlayerDelegate.shared
-        player.play()
+        if player.play() {
+            playbackTracker.progress(generation: generation, evidence: .playerAccepted, analytics: analytics)
+        } else {
+            playbackTracker.failure(.audioPlayer, generation: generation, recovering: false, analytics: analytics)
+            removeAudioFinishObserver()
+            finishSpeaking()
+        }
     }
 
     /// 保持している AudioPlayerFinished observer を解放する。
@@ -511,6 +557,7 @@ struct TextInputView: View {
 
     /// Kokoro は文の位置が取れないので、続きから読むときは残りの文章だけを合成する
     private func playWithKokoroTTS(fromUTF16Offset startOffset: Int = 0) {
+        playbackTracker.select(.kokoro, generation: playbackGeneration, analytics: analytics)
         let voice = KokoroPlaybackParams.selectVoice(
             languageCode: UserDefaultsManager.shared.languageSetting,
             storedVoiceRaw: UserDefaultsManager.shared.kokoroVoice
@@ -520,7 +567,8 @@ struct TextInputView: View {
         let remainingText = PlaybackResumeStore.remainder(of: text, fromUTF16Offset: startOffset).text
         let generation = playbackGeneration
 
-        Task {
+        kokoroSynthesisTask?.cancel()
+        kokoroSynthesisTask = Task {
             do {
                 let data = try await KokoroTTSClient.liveValue.synthesize(remainingText, voice, speed)
                 await MainActor.run {
@@ -529,19 +577,24 @@ struct TextInputView: View {
                     do {
                         audioPlayer?.stop()
                         let player = try AVAudioPlayer(data: data)
+                        audioHasSynthesisSpeed = true
                         audioPlayer = player
                         setupAndPlayAudioPlayer(player) {
                             self.completeSpeaking()
                         }
                     } catch {
                         errorLog("[Kokoro] AVAudioPlayer init failed: \(error), falling back to device TTS")
+                        playbackTracker.failure(.audioPlayer, generation: generation, recovering: true, analytics: analytics)
                         playWithDeviceTTS(fromUTF16Offset: startOffset)
                     }
                 }
+            } catch is CancellationError {
+                return
             } catch {
                 errorLog("[Kokoro] Synthesis failed: \(error), falling back to device TTS")
                 await MainActor.run {
                     guard isSpeaking, generation == playbackGeneration else { return }
+                    playbackTracker.failure(.synthesis, generation: generation, recovering: true, analytics: analytics)
                     playWithDeviceTTS(fromUTF16Offset: startOffset)
                 }
             }
@@ -550,6 +603,7 @@ struct TextInputView: View {
 
     /// fromUTF16Offset は元の文章の中の位置。止めた続きから読むときに使う
     private func playWithVoicevox(fromUTF16Offset startOffset: Int = 0) {
+        playbackTracker.select(.voicevox, generation: playbackGeneration, analytics: analytics)
         let speakerId = voicevoxSettings.speakerId()
         // VOICEVOX の speedScale 1.0 = 通常。Kokoro と同じ換算（speechRate 0.5 = 通常）
         let speed = KokoroPlaybackParams.kokoroSpeed(fromSpeechRate: UserDefaultsManager.shared.speechRate)
@@ -563,16 +617,19 @@ struct TextInputView: View {
                 guard !Task.isCancelled, isSpeaking, generation == playbackGeneration else { return }
                 switch event {
                 case let .sentence(range):
+                    playbackTracker.progress(generation: generation, evidence: .sentenceScheduled, analytics: analytics)
                     highlightedRange = NSRange(location: range.location + base, length: range.length)
                 case .finished:
                     completeSpeaking()
                 case let .quotaExceeded(usage, resumeAt):
+                    playbackTracker.failure(.quota, generation: generation, recovering: false, analytics: analytics)
                     // 読めなかったところから、次の再生で続きを読めるようにしておく
                     highlightedRange = NSRange(location: resumeAt + base, length: 0)
                     rememberResumePoint()
                     finishSpeaking()
                     voicevoxQuotaStop = VoicevoxQuotaStop(usage: usage, resumeAt: resumeAt + base)
                 case let .failed(resumeAt):
+                    playbackTracker.failure(.synthesis, generation: generation, recovering: true, analytics: analytics)
                     // 通信できない等。止まった文から端末の音声で読み続ける
                     warningLog("[VOICEVOX] failed, continuing with device TTS from \(resumeAt + base)")
                     playWithDeviceTTS(fromUTF16Offset: resumeAt + base)
@@ -586,6 +643,9 @@ struct TextInputView: View {
         guard !isSpeaking else { return }
         isSpeaking = true
         playbackGeneration += 1
+        playbackTracker.request(
+            generation: playbackGeneration, contentType: fileType, analytics: analytics, characterCount: text.count
+        )
         let title = String(text.prefix(30)) + (text.count > 30 ? "..." : "")
         store.send(.nowPlaying(.startPlaying(title: title, text: text, source: .textInput(fileId: fileId, text: text))))
         playWithDeviceTTS(fromUTF16Offset: offset)
@@ -593,12 +653,15 @@ struct TextInputView: View {
 
     /// 再生を終える。止めた位置はそのまま見せておく
     private func finishSpeaking() {
+        playbackTracker.stop(.interrupted, analytics: analytics)
         isSpeaking = false
         store.send(.nowPlaying(.stopPlaying))
     }
 
     /// 最後まで読み終えたとき。次は最初から読む
     private func completeSpeaking() {
+        guard isSpeaking else { return }
+        playbackTracker.complete(generation: playbackGeneration, analytics: analytics)
         isSpeaking = false
         highlightedRange = nil
         audioPlayer = nil
@@ -608,6 +671,7 @@ struct TextInputView: View {
 
     /// fromUTF16Offset は元の文章の中の位置。止めた続きや、キャラ音声が途中で止まった続きから読むのに使う
     private func playWithDeviceTTS(fromUTF16Offset startOffset: Int = 0) {
+        playbackTracker.select(.device, generation: playbackGeneration, analytics: analytics)
         infoLog("[Highlight] playWithDeviceTTS called")
         let language = UserDefaultsManager.shared.languageSetting ?? AVSpeechSynthesisVoice.currentLanguageCode()
         let rate = UserDefaultsManager.shared.speechRate
@@ -641,6 +705,7 @@ struct TextInputView: View {
                             DispatchQueue.main.async {
                                 // 止めた後に遅れて届いたハイライトで、止めた位置を上書きしない
                                 guard self.isSpeaking, generation == self.playbackGeneration else { return }
+                                self.playbackTracker.progress(generation: generation, evidence: .textHighlight, analytics: self.analytics)
                                 self.highlightedRange = offsetRange
                             }
                         },
@@ -657,6 +722,7 @@ struct TextInputView: View {
                 DispatchQueue.main.async {
                     guard self.isSpeaking, generation == self.playbackGeneration else { return }
                     errorLog("[Highlight] Speech synthesis failed: \(error)")
+                    self.playbackTracker.failure(.synthesis, generation: generation, recovering: false, analytics: self.analytics)
                     self.rememberResumePoint()
                     self.finishSpeaking()
                 }
@@ -704,10 +770,13 @@ struct TextInputView: View {
     }
 
     /// 停止ボタン・画面を閉じるとき。止めた位置を覚えて、次の再生をそこから始める
-    private func stopSpeaking() {
+    private func stopSpeaking(reason: ContentPlaybackTracker.StopReason = .user) {
+        playbackTracker.stop(reason, analytics: analytics)
         // 受け取り側をキャンセルすると、その再生だけが止まる（VoicevoxPlayerClient）
         voicevoxTask?.cancel()
         voicevoxTask = nil
+        kokoroSynthesisTask?.cancel()
+        kokoroSynthesisTask = nil
         removeAudioFinishObserver()
         // Kokoro・保存済み音声は捨てずに一時停止しておき、次の再生で続きから鳴らす
         audioPlayer?.pause()
@@ -720,6 +789,7 @@ struct TextInputView: View {
     }
 
     private func handleSaveButtonTap() {
+        guard TextInputDraft.hasReadableText(text) else { return }
         // 非課金ユーザーの4000文字制限チェック
         if !UserDefaultsManager.shared.isPremiumUser && text.count > 4_000 {
             showingTextLimitAlert = true
@@ -788,7 +858,9 @@ class LocalAudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
     static let shared = LocalAudioPlayerDelegate()
 
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        NotificationCenter.default.post(name: NSNotification.Name("AudioPlayerFinished"), object: nil)
+        NotificationCenter.default.post(
+            name: NSNotification.Name("AudioPlayerFinished"), object: player, userInfo: ["successfully": flag]
+        )
     }
 }
 

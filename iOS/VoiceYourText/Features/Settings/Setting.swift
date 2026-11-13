@@ -92,6 +92,7 @@ struct SettingsReducer {
     @Dependency(\.speechSynthesizer) var speechSynthesizer
     @Dependency(\.analytics) var analytics
     @Dependency(\.userDefaults) var userDefaults
+    @Dependency(\.voicevoxSettings) var voicevoxSettings
 
     var body: some Reducer<State, Action> {
         BindingReducer()
@@ -109,6 +110,9 @@ struct SettingsReducer {
                 return .none
 
             case .view(.setVoiceIdentifier(let identifier)):
+                state.kokoroEnabled = false
+                userDefaults.setKokoroEnabled(false)
+                voicevoxSettings.setEnabled(false)
                 state.selectedVoiceIdentifier = identifier
                 userDefaults.setSelectedVoiceIdentifier(identifier)
                 // パーソナルボイスを選んだら記録し、次回起動時に認可を取り直せるようにする
@@ -149,7 +153,9 @@ struct SettingsReducer {
                 state.speechRate = userDefaults.speechRate()
                 state.selectedVoiceIdentifier = userDefaults.selectedVoiceIdentifier()
                 state.kokoroEnabled = userDefaults.kokoroEnabled()
-                state.kokoroVoice = userDefaults.kokoroVoice() ?? KokoroVoice.default.rawValue
+                state.kokoroVoice = KokoroPlaybackParams.selectVoice(
+                    languageCode: userDefaults.languageSetting(), storedVoiceRaw: userDefaults.kokoroVoice()
+                ).rawValue
                 return .none
 
             case .view(.setTitle(let title)):
@@ -225,11 +231,18 @@ struct SettingsReducer {
             case .view(.setKokoroEnabled(let enabled)):
                 state.kokoroEnabled = enabled
                 userDefaults.setKokoroEnabled(enabled)
+                if enabled { voicevoxSettings.setEnabled(false) }
                 return .none
 
             case .view(.setKokoroVoice(let voice)):
+                guard let selected = KokoroVoice(rawValue: voice),
+                      selected.isJapanese == (userDefaults.languageSetting() ?? "ja").hasPrefix("ja")
+                else { return .none }
                 state.kokoroVoice = voice
+                state.kokoroEnabled = true
                 userDefaults.setKokoroVoice(voice)
+                userDefaults.setKokoroEnabled(true)
+                voicevoxSettings.setEnabled(false)
                 return .none
 
             case .view(.insert):

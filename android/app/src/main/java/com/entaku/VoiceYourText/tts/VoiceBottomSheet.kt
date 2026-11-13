@@ -27,7 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import com.entaku.VoiceYourText.ui.localizedMonthDayFormat
-import com.entaku.VoiceYourText.voicevox.VoicevoxCatalog
+import com.entaku.VoiceYourText.voicevox.VoicevoxVoice
 import com.entaku.VoiceYourText.voicevox.VoicevoxUsage
 import java.text.NumberFormat
 import java.util.Date
@@ -36,6 +36,10 @@ import java.util.Date
 data class VoicevoxPicker(
     val enabled: Boolean,
     val speakerId: Int,
+    val voices: List<VoicevoxVoice>,
+    val catalogLoading: Boolean,
+    val catalogUnavailable: Boolean,
+    val onRetry: () -> Unit,
     val previewingSpeakerId: Int?,
     val usage: VoicevoxUsage?,
     val usageUnavailable: Boolean,
@@ -53,9 +57,13 @@ fun VoiceBottomSheet(
     onAddVoices: () -> Unit,
     onDismiss: () -> Unit,
     voicevox: VoicevoxPicker? = null,
+    kokoroEnabled: Boolean = false,
+    kokoroContent: @Composable () -> Unit = {},
+    onPreview: ((String) -> Unit)? = null,
+    myVoiceContent: @Composable () -> Unit = {},
 ) {
     // キャラ音声を使っているときは端末の声にチェックを付けない
-    val deviceSelected = voicevox?.enabled != true
+    val deviceSelected = voicevox?.enabled != true && !kokoroEnabled
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState()) {
         Column(
             modifier = Modifier
@@ -69,6 +77,23 @@ fun VoiceBottomSheet(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(horizontal = 24.dp, vertical = 16.dp)
             )
+            HorizontalDivider()
+            VoiceOptions.recommended(options)?.let { recommended ->
+                SectionHeader(stringResource(R.string.voice_recommended))
+                Text(voiceLabel(recommended), modifier = Modifier.padding(horizontal = 24.dp))
+                voiceNote(recommended)?.let { Text(it, modifier = Modifier.padding(horizontal = 24.dp)) }
+                Row(modifier = Modifier.padding(horizontal = 12.dp)) {
+                    if (onPreview != null) TextButton(onClick = { onPreview(recommended.name) }) {
+                        Text(stringResource(R.string.voice_preview))
+                    }
+                    TextButton(onClick = { onSelect(recommended.name); onDismiss() }) {
+                        Text(stringResource(R.string.voice_use))
+                    }
+                }
+                HorizontalDivider()
+            }
+            kokoroContent()
+            myVoiceContent()
             HorizontalDivider()
             if (voicevox != null) {
                 VoicevoxSection(voicevox)
@@ -112,14 +137,19 @@ private fun SectionHeader(text: String) {
 @Composable
 private fun VoicevoxSection(picker: VoicevoxPicker) {
     SectionHeader(stringResource(R.string.voicevox_section_title))
-    VoicevoxCatalog.voices.forEach { voice ->
+    if (picker.catalogLoading) CircularProgressIndicator(modifier = Modifier.padding(24.dp).size(20.dp))
+    if (picker.catalogUnavailable || (!picker.catalogLoading && picker.voices.isEmpty())) {
+        Text(stringResource(R.string.voicevox_catalog_unavailable), modifier = Modifier.padding(horizontal = 24.dp))
+        TextButton(onClick = picker.onRetry) { Text(stringResource(R.string.common_retry)) }
+    }
+    picker.voices.forEach { voice ->
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 VoiceRow(
                     label = voice.character,
                     note = voice.style,
                     selected = picker.enabled && picker.speakerId == voice.speakerId,
-                    enabled = true,
+                    enabled = !picker.catalogLoading && !picker.catalogUnavailable,
                 ) { picker.onSelectVoice(voice.speakerId) }
             }
             if (picker.previewingSpeakerId == voice.speakerId) {
@@ -161,7 +191,7 @@ private fun VoicevoxSection(picker: VoicevoxPicker) {
         )
         if (usage?.isPremium != true) {
             TextButton(onClick = picker.onUpgrade, contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp)) {
-                Text(stringResource(R.string.voicevox_upgrade))
+                Text(stringResource(R.string.voicevox_see_premium))
             }
         }
     }

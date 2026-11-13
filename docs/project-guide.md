@@ -149,7 +149,7 @@ Custom dependencies are implemented for:
 - **Core Data**: `SpeechText.xcdatamodeld` for persistent speech content
 - **Repository Pattern**: `SpeechTextRepository` for data access
 - **UserDefaults**: Managed via `UserDefaultsManager` for app settings
-- **Multi-language Support**: 13 speech-language choices in `Setting.State.availableLanguages`; the app string catalog currently contains 10 translation locales (de/en/es/fr/it/ja/ko/th/tr/vi). Speech language support does not imply UI translation coverage.
+- **Multi-language Support**: 13 speech-language choices in `Setting.State.availableLanguages`; the app string catalog contains 50 App Store translation locales (including regional variants); see `iOS/fastlane/locales.json`. Speech language support does not imply UI translation coverage.
 
 ### External Integrations
 - **Firebase**: Analytics and backend services
@@ -174,7 +174,7 @@ Use `iOS/VoiceYourText/Templates/ModernReducerTemplate.swift` as a starting poin
 ### Localization
 - Primary localizations in `iOS/VoiceYourText/Localization/Localizable.xcstrings`
 - Per-language InfoPlist.strings in language-specific .lproj folders
-- Fastlane metadata has 13 locale directories for App Store submissions: de-DE, en-US, es-ES, fr-FR, it, ja, ko, pt-BR, ru, th, tr, vi, zh-Hans (`review_information` is not a locale).
+- Fastlane metadata covers all 50 App Store locales. `iOS/fastlane/locales.json` maps each store locale to its app locale (`review_information` is not a locale). Run `python3 iOS/scripts/validate_localizations.py --screenshots` to validate coverage and assets. See [localization workflow](localization/all-app-store-locales.md).
 
 ### Testing Strategy
 - Unit tests for reducers and business logic

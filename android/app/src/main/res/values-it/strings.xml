@@ -55,7 +55,7 @@
     <string name="open_text_file">Apri un file di testo</string>
     <string name="language_select">Seleziona lingua</string>
     <string name="voice_select">Seleziona voce</string>
-    <string name="voice_default_note">La voce predefinita del dispositivo</string>
+    <string name="voice_default_note">Preferisce automaticamente una voce offline di alta qualità</string>
     <string name="voice_label">Voce %1$d</string>
     <string name="voice_high_quality">Alta qualità</string>
     <string name="voice_requires_network">Richiede internet</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">Termini d’uso di VOICEVOX</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">Impossibile leggere questo file. Supportati: testo, Markdown, PDF e Documenti Google.</string>
+    <string name="home_recent_files">File recenti</string>
+    <string name="voice_recommended">Voce consigliata</string>
+    <string name="voice_preview">Ascolta</string>
+    <string name="voice_use">Usa questa voce</string>
+    <string name="my_voice_title">La mia voce (%1$s)</string>
+    <string name="my_voice_hint">Salva una voce e le sue impostazioni per lingua.</string>
+    <string name="my_voice_save">Salva impostazioni attuali</string>
+    <string name="my_voice_update">Sostituisci impostazioni salvate</string>
+    <string name="my_voice_apply">Usa voce salvata</string>
+    <string name="my_voice_delete">Elimina voce salvata</string>
+    <string name="my_voice_unavailable">La voce salvata non è disponibile.</string>
+    <string name="voice_preview_sample">Ciao. Questa è una prova della voce di lettura.</string>
+    <string name="kokoro_title">Voci IA Kokoro · Beta</string>
+    <string name="kokoro_note">5 voci giapponesi. Dopo aver scaricato il modello (92 MB), la voce viene generata sul dispositivo senza costi API. Regolazione del tono non disponibile.</string>
+    <string name="kokoro_download">Scarica il modello vocale (92 MB)</string>
+    <string name="kokoro_downloading">Download… %1$d%%</string>
+    <string name="kokoro_download_failed">Download non riuscito. Controlla connessione e spazio libero e riprova.</string>
+    <string name="kokoro_failed">Impossibile generare la voce. Prova un altro testo o una voce del dispositivo.</string>
+    <string name="kokoro_generating">Generazione vocale… Puoi interromperla in qualsiasi momento.</string>
+    <string name="kokoro_stop_preview">Ferma anteprima</string>
+    <string name="voicevox_catalog_unavailable">Nessuna voce trovata</string>
 </resources>

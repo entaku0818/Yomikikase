@@ -64,6 +64,7 @@ class PurchaseManager: PurchaseManagerProtocol {
         case productNotFound
         case purchaseFailed
         case noEntitlements
+        case unverifiedEntitlements
     }
 
     func fetchProPlan() async throws -> (name: String, price: String) {
@@ -172,11 +173,9 @@ class PurchaseManager: PurchaseManagerProtocol {
                 os_log("Purchase cancelled by user", log: logger, type: .debug)
                 return .cancelled
             }
-            if customerInfo.entitlements["premium"]?.isActive == true {
+            if try applyPremiumStatus(customerInfo) {
                 os_log("Purchase successful", log: logger, type: .debug)
-                UserDefaultsManager.shared.isPremiumUser = true
                 UserDefaultsManager.shared.premiumPurchaseDate = Date()
-                Analytics.setUserProperty("true", forName: "is_premium")
                 return .purchased
             } else {
                 os_log("Purchase failed: premium not active", log: logger, type: .error)
@@ -195,17 +194,14 @@ class PurchaseManager: PurchaseManagerProtocol {
         os_log("=== Restore Purchases Start ===", log: logger, type: .debug)
         do {
             let customerInfo = try await Purchases.shared.restorePurchases()
-            if customerInfo.entitlements["premium"]?.isActive == true {
+            if try applyPremiumStatus(customerInfo) {
                 os_log("Restore successful", log: logger, type: .debug)
-                UserDefaultsManager.shared.isPremiumUser = true
                 if UserDefaultsManager.shared.premiumPurchaseDate == nil {
                     UserDefaultsManager.shared.premiumPurchaseDate = Date()
                 }
-                Analytics.setUserProperty("true", forName: "is_premium")
                 return true
             } else {
-                // 購入履歴が無いのはエラーではない。端末のプレミアム状態もここでは消さない
-                // （復元の空振りで購入日まで消していた。状態の同期は起動時の checkPremiumStatus に任せる）
+                // 検証済みの応答に有効な権限がなければ、保存済みの権限も解除する。
                 os_log("Restore finished: no entitlements found", log: logger, type: .debug)
                 return false
             }
@@ -215,22 +211,81 @@ class PurchaseManager: PurchaseManagerProtocol {
         }
     }
 
-    func checkPremiumStatus() async {
+    /// All CustomerInfo entry points must pass through the same verification gate.
+    private func applyPremiumStatus(_ customerInfo: CustomerInfo) throws -> Bool {
+        SubscriptionAnalyticsIdentity.synchronize()
         do {
-            let customerInfo = try await Purchases.shared.customerInfo()
-            let isPremium = customerInfo.entitlements["premium"]?.isActive == true
-            
+            let isPremium = try Self.applyPremiumStatus(
+                isActive: customerInfo.entitlements["premium"]?.isActive == true,
+                verification: customerInfo.entitlements.verification,
+                storage: .shared
+            )
             Analytics.setUserProperty(isPremium ? "true" : "false", forName: "is_premium")
-            if isPremium != UserDefaultsManager.shared.isPremiumUser {
-                UserDefaultsManager.shared.isPremiumUser = isPremium
-                if isPremium && UserDefaultsManager.shared.premiumPurchaseDate == nil {
-                    UserDefaultsManager.shared.premiumPurchaseDate = Date()
-                }
+            // Observation at app use, not a purchase/cancellation lifecycle event.
+            // A non-returning customer's outcome must still come from RevenueCat server history.
+            let entitlement = customerInfo.entitlements["premium"]
+            let period: String
+            switch entitlement?.periodType {
+            case .trial: period = "trial"
+            case .intro: period = "intro"
+            case .normal: period = "normal"
+            default: period = "unknown"
             }
+            Analytics.logEvent("subscription_status_observed", parameters: [
+                "active": isPremium ? 1 : 0,
+                "period_type": period,
+                "will_renew": entitlement?.willRenew == true ? 1 : 0,
+                "billing_issue": entitlement?.billingIssueDetectedAt != nil ? 1 : 0,
+                "unsubscribe_detected": entitlement?.unsubscribeDetectedAt != nil ? 1 : 0,
+                "store_environment": entitlement.map { $0.isSandbox ? "sandbox" : "production" } ?? "unknown",
+                "measurement_version": 1
+            ])
+            return isPremium
         } catch {
-            os_log("Failed to check premium status: %{public}@", log: logger, type: .error, error.localizedDescription)
+            Analytics.setUserProperty("false", forName: "is_premium")
+            throw error
         }
     }
+
+    static func applyPremiumStatus(
+        isActive: Bool,
+        verification: RevenueCat.VerificationResult,
+        storage: UserDefaultsManager
+    ) throws -> Bool {
+        switch verification {
+        case .verified, .verifiedOnDevice:
+            storage.isPremiumUser = isActive
+            if isActive && storage.premiumPurchaseDate == nil {
+                storage.premiumPurchaseDate = Date()
+            }
+            return isActive
+        case .failed, .notRequested:
+            storage.isPremiumUser = false
+            throw PurchaseError.unverifiedEntitlements
+        @unknown default:
+            storage.isPremiumUser = false
+            throw PurchaseError.unverifiedEntitlements
+        }
+    }
+
+    @MainActor private static let statusRefresh = PremiumStatusRefresh()
+
+    @MainActor
+    func checkPremiumStatus() async {
+        await Self.statusRefresh.run { forceRefresh in
+            do {
+                let customerInfo = try await Purchases.shared.customerInfo(
+                    fetchPolicy: forceRefresh ? .fetchCurrent : .cachedOrFetched
+                )
+                _ = try self.applyPremiumStatus(customerInfo)
+            } catch {
+                os_log("Failed to check premium status: %{public}@", log: self.logger,
+                       type: .error, error.localizedDescription)
+                throw error
+            }
+        }
+    }
+
 }
 
 extension SKProduct {

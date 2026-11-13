@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "ஆவணங்களை ஸ்கேன் செய்யவும், உரையை உரக்கப் படிக்கவும் பயன்படுகிறது.";
+
+NSPersonalVoiceUsageDescription = "உங்கள் குரலில் உரக்கப் படிக்க தனிப்பட்ட குரலைப் பயன்படுத்துகிறது.";

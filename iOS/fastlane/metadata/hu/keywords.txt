@@ -1,0 +1,1 @@
+olvasó,beszéd,szöveg,PDF,könyvek,hang,hallgatás,tanulmányozás

@@ -26,6 +26,11 @@ struct VoicevoxSection: View {
             .padding(.vertical, 4)
 
             if store.isEnabled {
+                if store.isCatalogLoading { ProgressView() }
+                if store.isCatalogUnavailable || (!store.isCatalogLoading && store.voices.isEmpty) {
+                    Text("音声が見つかりません")
+                    Button("再試行") { send(.loadCatalog) }
+                }
                 ForEach(store.voices) { voice in
                     Button {
                         send(.voiceTapped(voice.speakerId))
@@ -48,6 +53,7 @@ struct VoicevoxSection: View {
                         }
                         .contentShape(Rectangle())
                     }
+                    .disabled(store.isCatalogLoading)
                     .accessibilityHint(Text("選ぶと試聴します"))
                 }
 
@@ -81,7 +87,7 @@ struct VoicevoxSection: View {
                     Button {
                         send(.upgradeTapped)
                     } label: {
-                        Text("プレミアムなら月20万字まで")
+                        Text("プレミアムを見る")
                             .font(.caption)
                     }
                 }

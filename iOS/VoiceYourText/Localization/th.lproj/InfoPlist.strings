@@ -7,4 +7,6 @@
 */
 CFBundleDisplayName = "Voice Narrator";
 
-NSCameraUsageDescription = "ใช้สำหรับสแกนเอกสารและอ่านข้อความออกเสียง";
+NSCameraUsageDescription = "ใช้ในการสแกนเอกสารและอ่านออกเสียงข้อความ";
+
+NSPersonalVoiceUsageDescription = "ใช้เสียงส่วนตัวเพื่ออ่านออกเสียงของคุณ";

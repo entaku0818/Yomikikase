@@ -2,6 +2,13 @@ import XCTest
 @testable import VoiceYourText
 
 final class VoicevoxTextChunkerTests: XCTestCase {
+    func testSmallServerLimitMakesProgressThroughCombinedCharacters() {
+        let chunks = VoicevoxTextChunker.chunks(from: "か\u{3099}く", maxChars: 1)
+        XCTAssertFalse(chunks.isEmpty)
+        XCTAssertTrue(chunks.allSatisfy { $0.text.unicodeScalars.count <= 1 })
+        XCTAssertEqual(chunks.map(\.text).joined(), "か\u{3099}く")
+    }
+
     private func texts(_ text: String, maxChars: Int = 300) -> [String] {
         VoicevoxTextChunker.chunks(from: text, maxChars: maxChars).map(\.text)
     }
@@ -30,14 +37,14 @@ final class VoicevoxTextChunkerTests: XCTestCase {
 
     func testRangesPointAtOriginalText() {
         let text = "  前書き。\n本文です。"
-        let chunks = VoicevoxTextChunker.chunks(from: text)
+        let chunks = VoicevoxTextChunker.chunks(from: text, maxChars: 300)
         let ns = text as NSString
         XCTAssertEqual(chunks.map { ns.substring(with: $0.range) }, ["前書き。", "本文です。"])
     }
 
     func testRangesAreUTF16ForEmoji() {
         let text = "😀です。次。"
-        let chunks = VoicevoxTextChunker.chunks(from: text)
+        let chunks = VoicevoxTextChunker.chunks(from: text, maxChars: 300)
         XCTAssertEqual(chunks.map(\.range), [NSRange(location: 0, length: 5), NSRange(location: 5, length: 2)])
     }
 
@@ -57,8 +64,8 @@ final class VoicevoxTextChunkerTests: XCTestCase {
 
     func testEveryChunkFitsServerLimit() {
         let text = String(repeating: "長い文章が続きます、", count: 80) + "終わり。"
-        let chunks = VoicevoxTextChunker.chunks(from: text)
-        XCTAssertTrue(chunks.allSatisfy { $0.text.unicodeScalars.count <= VoicevoxTextChunker.defaultMaxChars })
+        let chunks = VoicevoxTextChunker.chunks(from: text, maxChars: 300)
+        XCTAssertTrue(chunks.allSatisfy { $0.text.unicodeScalars.count <= 300 })
         XCTAssertEqual(chunks.map(\.text).joined(), text)
     }
 }

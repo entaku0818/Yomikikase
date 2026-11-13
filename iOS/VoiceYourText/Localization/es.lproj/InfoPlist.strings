@@ -7,4 +7,6 @@
 */
 CFBundleDisplayName = "Voice Narrator";
 
-NSCameraUsageDescription = "Se usa para escanear documentos y leer texto en voz alta.";
+NSCameraUsageDescription = "Se utiliza para escanear documentos y leer texto en voz alta.";
+
+NSPersonalVoiceUsageDescription = "Utiliza Personal Voice para leer en voz alta con su voz.";

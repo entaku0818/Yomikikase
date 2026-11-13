@@ -5,14 +5,11 @@ import com.entaku.VoiceYourText.tts.TextRange
 /**
  * キャラ音声（VOICEVOX）用に文章を文ごとに分ける（iOS VoicevoxTextChunker と同じ規則）。
  *
- * サーバーは1回300字までしか受け付けず、1文ずつ作って最初の文ができたら再生を始めるため、
+ * サーバーから取得した1回の上限に収め、最初の文ができたら再生を始めるため、
  * 文末（。！？ など）と改行で区切る。元の文章の中の位置を持たせて、再生中のハイライトに使う。
  */
 object VoicevoxTextChunker {
     data class Chunk(val text: String, val range: TextRange)
-
-    /** サーバー側の MAX_REQUEST_CHARS と合わせる */
-    const val DEFAULT_MAX_CHARS = 300
 
     private val terminators = setOf('。', '！', '？', '!', '?', '…', '\n')
     /** 文末の直後に続く閉じ括弧は前の文に含める（「〜です。」の 」 など） */
@@ -20,7 +17,8 @@ object VoicevoxTextChunker {
     /** 長すぎる文を途中で切るときの候補 */
     private val softBreaks = setOf('、', '，', ',', '；', ';', '：', ':', ' ', '　')
 
-    fun chunks(text: String, maxChars: Int = DEFAULT_MAX_CHARS): List<Chunk> {
+    fun chunks(text: String, maxChars: Int): List<Chunk> {
+        require(maxChars > 0)
         val result = mutableListOf<Chunk>()
         var sentenceStart = 0
         var index = 0
@@ -75,7 +73,11 @@ object VoicevoxTextChunker {
         if (lower >= upper) return
         val piece = text.substring(lower, upper)
         // 記号だけの行（「――」「・・・」など）は読む内容がないので送らない（文字数を使わせない）
-        if (piece.codePoints().noneMatch(Character::isLetterOrDigit)) return
+        if (piece.codePoints().noneMatch {
+            Character.isLetterOrDigit(it) || Character.getType(it) in setOf(
+                Character.NON_SPACING_MARK.toInt(), Character.COMBINING_SPACING_MARK.toInt(), Character.ENCLOSING_MARK.toInt(),
+            )
+        }) return
         result += Chunk(piece, TextRange(lower, upper - lower))
     }
 }

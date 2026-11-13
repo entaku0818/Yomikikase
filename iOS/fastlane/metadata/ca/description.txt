@@ -1,0 +1,14 @@
+El Narrador de veu llegeix en veu alta text, PDF, pàgines web i llibres EPUB sense DRM. Escolteu mentre viatgeu, feu les tasques o descanseu els ulls.
+
+AFEGEIX EL TEU CONTINGUT
+Enganxeu text, importeu fitxers PDF o TXT, obriu llibres EPUB, enganxeu enllaços web, escanegeu documents impresos o connecteu Google Drive. És possible que alguns fitxers i pàgines web no admetin l'extracció de text. Google Drive requereix una configuració i un inici de sessió separats.
+
+ESCOLTA EL TEU CAMÍ
+Ajusteu la velocitat de lectura i el to de la veu. Seguiu el text ressaltat, utilitzeu el temporitzador de repòs i deseu contingut a Els meus fitxers. Afegiu paraules al vostre diccionari per personalitzar la pronunciació. Les veus disponibles depenen de l'idioma i del dispositiu. Les veus de caràcters japonesos utilitzen VOICEVOX; Les veus de Kokoro AI admeten el japonès i l'anglès.
+
+PREMIUM
+Escolteu sense anuncis, deseu fitxers il·limitats i llegiu textos de més de 4.000 caràcters fins al final. Premium també inclou fins a 200.000 caràcters de veus de caràcters japonesos al mes.
+
+Hi ha subscripcions mensuals i anuals disponibles. Els preus i les proves gratuïtes elegibles apareixen a la pantalla de compra. Les subscripcions es renoven automàticament tret que es cancel·lin almenys 24 hores abans que finalitzi el període actual. Gestioneu o cancel·leu a Configuració > Subscripcions.
+
+Les veus estàndard es generen al vostre dispositiu. Les veus dels personatges envien text al nostre servidor per generar àudio. Els articles web i Google Drive requereixen una connexió a Internet.

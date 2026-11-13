@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Used to scan documents and read text aloud.";
+
+NSPersonalVoiceUsageDescription = "Uses Personal Voice to read aloud in your voice.";

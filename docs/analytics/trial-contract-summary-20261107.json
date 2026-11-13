@@ -1,0 +1,43 @@
+{
+  "fetched_at": "2026-11-07T14:46:49.331613+00:00",
+  "cohort_start_inclusive_utc": "2026-09-01T00:00:00Z",
+  "cohort_end_exclusive_utc": "2026-11-07T00:00:00Z",
+  "environment": "PRODUCTION",
+  "store": "APP_STORE",
+  "enumerated_customers": 3537,
+  "candidates_seen_since_sep1_and_first_seen_before_nov7": 499,
+  "trial_customers": 14,
+  "customers_with_firebase_attribute": 0,
+  "months": {
+    "2026-09": {
+      "trial_starts": 3,
+      "explicit_trial_conversions": 0,
+      "expiration_events": 3,
+      "billing_issue_events": 0,
+      "cancellation_events": 3,
+      "first_cancellation_record_1_to_24h": 1,
+      "first_cancellation_record_after_24h": 2,
+      "expiration_reason_UNSUBSCRIBE": 3
+    },
+    "2026-10": {
+      "trial_starts": 7,
+      "explicit_trial_conversions": 0,
+      "expiration_events": 7,
+      "billing_issue_events": 1,
+      "cancellation_events": 7,
+      "first_cancellation_record_after_24h": 7,
+      "expiration_reason_UNSUBSCRIBE": 6,
+      "expiration_reason_BILLING_ERROR": 1
+    },
+    "2026-11": {
+      "trial_starts": 4,
+      "explicit_trial_conversions": 0,
+      "expiration_events": 0,
+      "billing_issue_events": 0,
+      "cancellation_events": 4,
+      "first_cancellation_record_after_24h": 4,
+      "first_cancel_reason_UNSUBSCRIBE": 4,
+      "initial_trial_end_in_future": 4
+    }
+  }
+}

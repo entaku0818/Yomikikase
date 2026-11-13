@@ -7,4 +7,6 @@
 */
 CFBundleDisplayName = "Voice Narrator";
 
-NSCameraUsageDescription = "문서를 스캔하고 텍스트를 소리 내어 읽기 위해 사용됩니다.";
+NSCameraUsageDescription = "문서를 스캔하고 텍스트를 소리내어 읽는 데 사용됩니다.";
+
+NSPersonalVoiceUsageDescription = "개인 음성을 사용하여 음성으로 큰 소리로 읽어줍니다.";

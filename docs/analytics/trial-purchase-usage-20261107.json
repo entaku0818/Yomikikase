@@ -1,0 +1,19 @@
+{
+  "estimated_bytes": 2564136,
+  "rows": [
+    {
+      "purchase_success_installations": "6",
+      "installations_with_any_event_after_24h": "0",
+      "returned_after_24h_within_8d": "0",
+      "d1_observable": "6",
+      "d1_returned": "0",
+      "d3_observable": "6",
+      "d3_returned": "0",
+      "d7_observable": "5",
+      "d7_returned": "0",
+      "installations_with_completion_signal": "2",
+      "installations_with_new_request_signal": "0",
+      "installations_enabling_voicevox": "2"
+    }
+  ]
+}

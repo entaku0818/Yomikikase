@@ -55,7 +55,7 @@
     <string name="open_text_file">Textdatei öffnen</string>
     <string name="language_select">Sprache auswählen</string>
     <string name="voice_select">Stimme auswählen</string>
-    <string name="voice_default_note">Die Standardstimme des Geräts</string>
+    <string name="voice_default_note">Automatisch eine hochwertige Offline-Stimme bevorzugen</string>
     <string name="voice_label">Stimme %1$d</string>
     <string name="voice_high_quality">Hohe Qualität</string>
     <string name="voice_requires_network">Internet erforderlich</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">VOICEVOX-Nutzungsbedingungen</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">Diese Datei kann nicht gelesen werden. Unterstützt: Text, Markdown, PDF und Google Docs.</string>
+    <string name="home_recent_files">Zuletzt verwendete Dateien</string>
+    <string name="voice_recommended">Empfohlene Stimme</string>
+    <string name="voice_preview">Anhören</string>
+    <string name="voice_use">Diese Stimme verwenden</string>
+    <string name="my_voice_title">Meine Stimme (%1$s)</string>
+    <string name="my_voice_hint">Pro Sprache eine Stimme mit Einstellungen speichern.</string>
+    <string name="my_voice_save">Aktuelle Einstellungen speichern</string>
+    <string name="my_voice_update">Gespeicherte Einstellungen ersetzen</string>
+    <string name="my_voice_apply">Gespeicherte Stimme verwenden</string>
+    <string name="my_voice_delete">Gespeicherte Stimme löschen</string>
+    <string name="my_voice_unavailable">Gespeicherte Stimme nicht verfügbar.</string>
+    <string name="voice_preview_sample">Hallo. Dies ist eine Vorschau der Vorlesestimme.</string>
+    <string name="kokoro_title">Kokoro KI-Stimmen · Beta</string>
+    <string name="kokoro_note">5 japanische Stimmen. Nach dem Modelldownload (92 MB) erfolgt die Spracherzeugung auf dem Gerät ohne API-Gebühren. Keine Tonhöhenanpassung.</string>
+    <string name="kokoro_download">Sprachmodell herunterladen (92 MB)</string>
+    <string name="kokoro_downloading">Download läuft… %1$d%%</string>
+    <string name="kokoro_download_failed">Download fehlgeschlagen. Verbindung und freien Speicher prüfen und erneut versuchen.</string>
+    <string name="kokoro_failed">KI-Sprache konnte nicht erzeugt werden. Anderen Text oder eine Gerätestimme wählen.</string>
+    <string name="kokoro_generating">Sprache wird erzeugt… Jederzeit anhaltbar.</string>
+    <string name="kokoro_stop_preview">Vorschau stoppen</string>
+    <string name="voicevox_catalog_unavailable">Keine Stimme gefunden</string>
 </resources>

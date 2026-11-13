@@ -42,6 +42,48 @@ final class VoiceYourTextUITests: XCTestCase {
         verifyOnboarding(language: "ja", completeDemo: false)
     }
 
+    func testTextListeningJapanese() {
+        verifyTextListening(language: "ja")
+    }
+
+    func testTextListeningEnglish() {
+        verifyTextListening(language: "en")
+    }
+
+    private func verifyTextListening(language: String) {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "-HasCompletedOnboarding", "YES", "-IsPremiumUser", "YES", "-AppLaunchCount", "0",
+            "-AppleLanguages", "(\(language))", "-AppleLocale", language == "ja" ? "ja_JP" : "en_US"
+        ]
+        app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
+        app.launch()
+        let textButton = app.buttons[language == "ja" ? "テキスト" : "Text"]
+        XCTAssertTrue(textButton.waitForExistence(timeout: 30))
+        textButton.tap()
+        let editor = app.textViews["textInput.editor"]
+        XCTAssertTrue(editor.waitForExistence(timeout: 10))
+        let listen = app.buttons["textInput.listen"]
+        XCTAssertTrue(listen.exists)
+        XCTAssertFalse(listen.isEnabled)
+        XCTAssertTrue(app.buttons["textInput.paste"].exists)
+        editor.tap()
+        let keyboardTutorial = app.buttons.matching(NSPredicate(format: "label IN %@", ["Continue", "続ける"])).firstMatch
+        if keyboardTutorial.exists { keyboardTutorial.tap() }
+        editor.typeText(" \n")
+        XCTAssertFalse(listen.isEnabled)
+        editor.typeText("A short listening test.")
+        XCTAssertTrue(listen.isEnabled)
+        XCTAssertTrue(listen.isHittable)
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "text-listening-\(language)"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+        listen.tap()
+        XCTAssertTrue(listen.waitForNonExistence(timeout: 10))
+        XCTAssertTrue(app.buttons[language == "ja" ? "編集" : "Edit"].waitForExistence(timeout: 10))
+    }
+
     func testOnboardingEnglishCanFinishDemo() {
         verifyOnboarding(language: "en", completeDemo: true)
     }

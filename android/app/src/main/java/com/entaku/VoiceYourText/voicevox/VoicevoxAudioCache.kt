@@ -10,10 +10,10 @@ import java.util.Locale
  * 同じ文・同じ声・同じ速度なら保存済みの音声を再生し、サーバーを呼ばない（＝月の文字数を使わない）。
  * キャッシュ領域に置くので、端末の空き容量が少ないと OS に消されることがある（そのときは作り直す）。
  */
-class VoicevoxAudioCache(private val directory: File) {
+class VoicevoxAudioCache(private val directory: File, private val extension: String = "m4a") {
 
     fun file(text: String, speakerId: Int, speedScale: Double): File =
-        File(directory, key(text, speakerId, speedScale) + ".m4a")
+        File(directory, key(text, speakerId, speedScale) + ".$extension")
 
     fun load(text: String, speakerId: Int, speedScale: Double): File? =
         file(text, speakerId, speedScale).takeIf { it.isFile && it.length() > 0 }

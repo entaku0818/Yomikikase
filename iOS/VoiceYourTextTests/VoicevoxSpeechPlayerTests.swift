@@ -14,6 +14,12 @@ private final class FakeOutput: VoicevoxAudioOutput {
     func stop() {}
 }
 
+private func testConfiguration(maxChars: Int = 300, enabled: Bool = true) -> VoicevoxConfiguration {
+    VoicevoxConfiguration(schemaVersion: 1, revision: "test", voicevox: .init(
+        enabled: enabled, freeMonthlyChars: 5000, premiumMonthlyChars: 200000, maxRequestChars: maxChars
+    ))
+}
+
 private let exhaustedUsage = VoicevoxUsage(plan: "free", used: 5000, limit: 5000, remaining: 0, resetAt: .distantFuture)
 
 private func fakeAudio(_ text: String) -> VoicevoxAudio {
@@ -53,7 +59,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
 
     func testPlaysSentencesInOrderAndHighlightsEach() async {
         let output = FakeOutput()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in fakeAudio(text) }, cache: nil, output: output)
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in fakeAudio(text) }, cache: nil, output: output)
         let events = await run(player, "一文目。二文目。")
         XCTAssertEqual(output.played, ["一文目。", "二文目。"])
         XCTAssertEqual(events, [
@@ -67,7 +73,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
         let log = SynthLog()
         let cache = VoicevoxAudioCache(directory: cacheDir)
         let output = FakeOutput()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             await log.add(text)
             return fakeAudio(text)
         }, cache: cache, output: output)
@@ -81,7 +87,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
 
     func testQuotaExceededReportsWhereToResume() async {
         let output = FakeOutput()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             if text == "二文目。" { throw VoicevoxError.quotaExceeded(exhaustedUsage) }
             return fakeAudio(text)
         }, cache: nil, output: output)
@@ -91,7 +97,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
     }
 
     func testServerErrorReportsWhereToResume() async {
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             if text == "二文目。" { throw VoicevoxError.server(status: 502, code: "synthesis_failed") }
             return fakeAudio(text)
         }, cache: nil, output: FakeOutput())
@@ -102,14 +108,14 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
     func testPlaybackErrorReportsWhereToResume() async {
         let output = FakeOutput()
         output.failOn = "二文目。"
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in fakeAudio(text) }, cache: nil, output: output)
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in fakeAudio(text) }, cache: nil, output: output)
         let events = await run(player, "一文目。二文目。三文目。")
         XCTAssertEqual(events.last, .failed(resumeAt: 4))
         XCTAssertEqual(output.played, ["一文目。"])
     }
 
     func testEmptyTextFinishesWithoutCallingServer() async {
-        let player = VoicevoxSpeechPlayer(synthesize: { _, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { _, _, _ in
             XCTFail("記号だけの文章でサーバーを呼んではいけない")
             return fakeAudio("")
         }, cache: nil, output: FakeOutput())
@@ -119,7 +125,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
 
     func testStopPreventsFurtherEvents() async throws {
         let output = FakeOutput()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             try await Task.sleep(nanoseconds: 50_000_000)
             return fakeAudio(text)
         }, cache: nil, output: output)
@@ -134,7 +140,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
 
     func testImmediateStopDoesNotStartSynthesis() async {
         let log = SynthLog()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             await log.add(text)
             return fakeAudio(text)
         }, cache: nil, output: FakeOutput())
@@ -151,7 +157,7 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
     func testLateQuotaFailureAfterStopDoesNotEmitOrCancelNewPlayback() async {
         let gate = DelayedQuotaSynthesis()
         let output = FakeOutput()
-        let player = VoicevoxSpeechPlayer(synthesize: { text, _, _ in
+        let player = VoicevoxSpeechPlayer(configuration: { testConfiguration() }, synthesize: { text, _, _ in
             if text == "古い文章。" { return try await gate.synthesize() }
             return fakeAudio(text)
         }, cache: nil, output: output)
@@ -175,6 +181,72 @@ final class VoicevoxSpeechPlayerTests: XCTestCase {
         XCTAssertNotEqual(base, VoicevoxAudioCache.key(text: "こんにちは", speakerId: 14, speedScale: 1.5))
         XCTAssertNotEqual(base, VoicevoxAudioCache.key(text: "こんばんは", speakerId: 14, speedScale: 1))
     }
+
+    func testServerLimitIsReloadedForEveryPlayback() async {
+        let config = ChangingConfiguration()
+        let output = FakeOutput()
+        let player = VoicevoxSpeechPlayer(configuration: { await config.load() },
+            synthesize: { text, _, _ in fakeAudio(text) }, cache: nil, output: output)
+        _ = await run(player, "あいうえお")
+        await config.setLimit(2)
+        _ = await run(player, "あいうえお")
+        XCTAssertEqual(output.played, ["あいうえお", "あい", "うえ", "お"])
+    }
+
+    func testServerSelectedVoiceIsUsedForSynthesisAndCache() async {
+        let selected = SynthLog()
+        let cache = VoicevoxAudioCache(directory: cacheDir)
+        let player = VoicevoxSpeechPlayer(resolveSpeaker: { _ in 401 }, configuration: { testConfiguration() },
+            synthesize: { text, id, _ in
+                await selected.add("\(id)")
+                return fakeAudio(text)
+            }, cache: cache, output: FakeOutput())
+        _ = await run(player, "本文。")
+        _ = await run(player, "本文。")
+        let sent = await selected.texts
+        XCTAssertEqual(sent, ["401"])
+        XCTAssertNotNil(cache.load(text: "本文。", speakerId: 401, speedScale: 1))
+        XCTAssertNil(cache.load(text: "本文。", speakerId: 14, speedScale: 1))
+    }
+
+    func testUnavailableCatalogPreventsGeneration() async {
+        let player = VoicevoxSpeechPlayer(resolveSpeaker: { _ in throw VoicevoxError.invalidResponse },
+            configuration: { testConfiguration() }, synthesize: { _, _, _ in
+                XCTFail("Must not generate without a valid server catalog")
+                return fakeAudio("")
+            }, cache: nil, output: FakeOutput())
+        let events = await run(player, "本文。")
+        XCTAssertEqual(events, [.failed(resumeAt: 0)])
+    }
+
+    func testUnavailableOrDisabledConfigurationNeverSynthesizes() async {
+        let configurations: [VoicevoxSpeechPlayer.Configuration] = [
+            { throw VoicevoxError.server(status: 503, code: "policy_unavailable") },
+            { testConfiguration(enabled: false) },
+            { testConfiguration(maxChars: 0) },
+        ]
+        for config in configurations {
+            let player = VoicevoxSpeechPlayer(configuration: config, synthesize: { _, _, _ in
+                XCTFail("Invalid or disabled policy must not generate audio")
+                return fakeAudio("")
+            }, cache: nil, output: FakeOutput())
+            let events = await run(player, "文章。")
+            XCTAssertEqual(events, [.failed(resumeAt: 0)])
+        }
+    }
+
+    func testDecodesServerConfigurationWithoutRequiringInternalRules() throws {
+        let data = Data(#"{"schemaVersion":1,"revision":"2026-10-30.1","voicevox":{"enabled":true,"freeMonthlyChars":120,"premiumMonthlyChars":800,"maxRequestChars":40}}"#.utf8)
+        let config = try JSONDecoder().decode(VoicevoxConfiguration.self, from: data).validated()
+        XCTAssertEqual(config.voicevox.maxRequestChars, 40)
+        XCTAssertEqual(config.voicevox.premiumMonthlyChars, 800)
+    }
+}
+
+private actor ChangingConfiguration {
+    var limit = 300
+    func load() -> VoicevoxConfiguration { testConfiguration(maxChars: limit) }
+    func setLimit(_ value: Int) { limit = value }
 }
 
 private actor DelayedQuotaSynthesis {

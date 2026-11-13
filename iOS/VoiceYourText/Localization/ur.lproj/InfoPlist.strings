@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "دستاویزات کو اسکین کرنے اور متن کو بلند آواز میں پڑھنے کے لیے استعمال کیا جاتا ہے۔";
+
+NSPersonalVoiceUsageDescription = "آپ کی آواز میں بلند آواز میں پڑھنے کے لیے ذاتی آواز کا استعمال کرتا ہے۔";

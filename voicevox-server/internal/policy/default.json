@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "revision": "2026-10-30.2",
+  "voicevox": {
+    "enabled": true,
+    "freeMonthlyChars": 5000,
+    "premiumMonthlyChars": 200000,
+    "maxRequestChars": 300
+  },
+  "gemini": {
+    "enabled": false,
+    "freeMonthlyChars": 0,
+    "premiumMonthlyChars": 3000,
+    "maxRequestChars": 500,
+    "minimumChargeChars": 100,
+    "model": "gemini-3.8-flash-lite-tts",
+    "generationBudgetMilliJpyPer1000Chars": 25000,
+    "maxAttempts": 2,
+    "maxConcurrentRequestsPerAccount": 1
+  },
+  "topups": [
+    {
+      "id": "ai_chars_5000",
+      "chars": 5000,
+      "iosProductId": "",
+      "androidProductId": "",
+      "enabled": false
+    },
+    {
+      "id": "ai_chars_20000",
+      "chars": 20000,
+      "iosProductId": "",
+      "androidProductId": "",
+      "enabled": false
+    }
+  ],
+  "catalog": {
+    "defaultSpeakerId": 14,
+    "termsUrl": "https://voicevox.hiroshiba.jp/term/",
+    "voices": [
+      {
+        "speakerId": 14,
+        "character": "冥鳴ひまり",
+        "style": "ノーマル",
+        "credit": "VOICEVOX:冥鳴ひまり",
+        "termsUrl": "https://meimeihimari.wixsite.com/himari/terms-of-use",
+        "enabled": true
+      },
+      {
+        "speakerId": 3,
+        "character": "ずんだもん",
+        "style": "ノーマル",
+        "credit": "VOICEVOX:ずんだもん",
+        "termsUrl": "https://zunko.jp/con_ongen_kiyaku.html",
+        "enabled": true
+      },
+      {
+        "speakerId": 2,
+        "character": "四国めたん",
+        "style": "ノーマル",
+        "credit": "VOICEVOX:四国めたん",
+        "termsUrl": "https://zunko.jp/con_ongen_kiyaku.html",
+        "enabled": true
+      },
+      {
+        "speakerId": 11,
+        "character": "玄野武宏",
+        "style": "ノーマル",
+        "credit": "VOICEVOX:玄野武宏(CV:ガロ)",
+        "termsUrl": "https://www.virvoxproject.com/voicevoxの利用規約",
+        "enabled": true
+      },
+      {
+        "speakerId": 12,
+        "character": "白上虎太郎",
+        "style": "ふつう",
+        "credit": "VOICEVOX:白上虎太郎(CV:可愛ユウ)",
+        "termsUrl": "https://www.virvoxproject.com/voicevoxの利用規約",
+        "enabled": true
+      },
+      {
+        "speakerId": 9,
+        "character": "波音リツ",
+        "style": "ノーマル",
+        "credit": "VOICEVOX:波音リツ",
+        "termsUrl": "https://www.canon-voice.com/terms",
+        "enabled": true
+      }
+    ]
+  }
+}

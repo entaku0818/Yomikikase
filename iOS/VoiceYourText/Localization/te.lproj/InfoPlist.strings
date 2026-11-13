@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "పత్రాలను స్కాన్ చేయడానికి మరియు వచనాన్ని బిగ్గరగా చదవడానికి ఉపయోగిస్తారు.";
+
+NSPersonalVoiceUsageDescription = "మీ వాయిస్‌లో బిగ్గరగా చదవడానికి వ్యక్తిగత వాయిస్‌ని ఉపయోగిస్తుంది.";

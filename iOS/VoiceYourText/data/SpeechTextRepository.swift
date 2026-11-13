@@ -36,6 +36,14 @@ class SpeechTextRepository: NSObject {
     override init() {
 
         container = NSPersistentContainer(name: entityName)
+        #if DEBUG
+        // Batch screenshots use an isolated store, so each locale starts with its own samples.
+        if UserDefaults.standard.bool(forKey: "ScreenshotBatch") {
+            let description = NSPersistentStoreDescription()
+            description.type = NSInMemoryStoreType
+            container.persistentStoreDescriptions = [description]
+        }
+        #endif
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.

@@ -1,0 +1,4 @@
+CFBundleDisplayName = "文字朗读器";
+NSCameraUsageDescription = "用于扫描文档和朗读文本。";
+
+NSPersonalVoiceUsageDescription = "使用个人语音以您的声音大声朗读。";

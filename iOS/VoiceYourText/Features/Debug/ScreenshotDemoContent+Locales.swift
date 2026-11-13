@@ -376,5 +376,36 @@ extension ScreenshotDemoContent {
             ("ChatGPT", "chát-gi-pi-ti")
         ]
     )
+    static let ptBR = ScreenshotDemoContent(
+        texts: [
+            Item(title: "Ouvir no caminho", text: "O sol começava a iluminar a cidade quando Clara saiu para caminhar. Na mochila, levava um livro e um caderno com ideias para a semana. Enquanto seguia pelo parque, ouvia as anotações que havia preparado na noite anterior. Cada frase lembrava uma tarefa ou uma "
+                + "descoberta. Perto do lago, parou para observar os pássaros. Não havia pressa. Ao voltar para casa, preparou um café e abriu o caderno. As ideias pareciam mais claras depois daquele passeio. Ela decidiu reservar alguns minutos todos os dias para ouvir, pensar e aprender.", fileType: "epub"),
+            Item(title: "Notas da reunião", text: "Revisamos as tarefas da próxima semana. A revisão do projeto será na terça-feira e os testes na quarta-feira.", fileType: nil),
+            Item(title: "Uma manhã tranquila", text: "A janela estava aberta e uma brisa fresca entrava na sala. Era um bom momento para descansar e ouvir uma história.", fileType: "epub")
+        ],
+        pdf: PDF(fileName: "Sono e concentração.pdf", title: "Sono e concentração", body: "Ouvir textos pode ser uma maneira prática de revisar informações enquanto descansamos os olhos."),
+        dictionary: [("SQL", "ésse quê ele"), ("PDF", "pê dê éfe"), ("iOS", "ái ou ésse")]
+    )
+
+    static let ru = ScreenshotDemoContent(
+        texts: [
+            Item(title: "Слушать в дороге", text: "Утреннее солнце освещало город, когда Анна вышла на прогулку. В рюкзаке лежали книга и блокнот с планами на неделю. По дороге через парк она слушала заметки, подготовленные накануне. Каждая фраза напоминала о важном деле или новой идее. Возле "
+                + "озера Анна остановилась посмотреть на птиц. Торопиться было некуда. Вернувшись домой, она приготовила чай и открыла блокнот. После прогулки мысли стали яснее. Анна решила каждый день находить немного времени, чтобы слушать, размышлять и узнавать новое.", fileType: "epub"),
+            Item(title: "Заметки со встречи", text: "Мы обсудили задачи на следующую неделю. Во вторник проверим проект, а в среду начнём тестирование.", fileType: nil),
+            Item(title: "Тихое утро", text: "Окно было открыто, и в комнату проникал свежий ветер. Это было хорошее время для отдыха и новой истории.", fileType: "epub")
+        ],
+        pdf: PDF(fileName: "Сон и внимание.pdf", title: "Сон и внимание", body: "Прослушивание текста помогает повторять информацию, пока глаза отдыхают."),
+        dictionary: [("SQL", "эс кью эл"), ("PDF", "пи ди эф"), ("iOS", "ай оу эс")]
+    )
+
+    static let zhHans = ScreenshotDemoContent(
+        texts: [
+            Item(title: "在路上听故事", text: "清晨的阳光照亮了城市，小林背上书包出门散步。书包里放着一本书和记录本周计划的笔记本。走过公园时，她开始收听昨晚整理的笔记。每一句话都让她想起一件重要的事，或是一个刚刚发现的新想法。来到湖边，她停下来观察树上的小鸟。今天不必着急，可以慢慢走，慢慢听。回家之后，她泡了一杯茶，打开笔记本。散步让思路变得清晰，也让她有了继续学习的动力。她决定每天留出一点时间，用耳朵听，用心思考，在平凡的生活里发现新的乐趣。", fileType: "epub"),
+            Item(title: "会议笔记", text: "我们讨论了下周的工作安排。周二确认设计，周三开始测试，周五整理结果。", fileType: nil),
+            Item(title: "安静的早晨", text: "窗户开着，微风吹进房间。这是休息片刻、听一个故事的好时光。", fileType: "epub")
+        ],
+        pdf: PDF(fileName: "睡眠与专注.pdf", title: "睡眠与专注", body: "收听文本是一种方便的复习方式，也能让眼睛得到休息。"),
+        dictionary: [("重庆", "重 庆"), ("银行", "银 行"), ("音乐", "音 乐")]
+    )
 }
 #endif

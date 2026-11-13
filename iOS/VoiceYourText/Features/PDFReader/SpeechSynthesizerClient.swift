@@ -50,7 +50,7 @@ extension SpeechSynthesizerClient: DependencyKey {
                     }
                     do {
                         let data = try await kokoroTTS.synthesize(
-                            utterance.speechString, voice, utterance.rate
+                            utterance.speechString, voice, KokoroPlaybackParams.kokoroSpeed(fromSpeechRate: utterance.rate)
                         )
                         return try await speechSynthesizer.playWAVData(data)
                     } catch {

@@ -61,7 +61,7 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
-            WithViewStore(store, observe: { $0 }) { viewStore in
+            WithViewStore(store, observe: { $0.speechList }) { viewStore in
                 ScrollView {
                     VStack(spacing: 20) {
                         // サブタイトル（用途を一言）
@@ -211,7 +211,7 @@ struct HomeView: View {
                         .padding(.top)
                         
                         // 最近のファイル
-                        if !viewStore.speechList.isEmpty {
+                        if !viewStore.state.isEmpty {
                             VStack(alignment: .leading, spacing: 16) {
                                 HStack {
                                     Text("最近のファイル")
@@ -222,7 +222,7 @@ struct HomeView: View {
                                 .padding(.horizontal)
                                 
                                 LazyVStack(spacing: 8) {
-                                    ForEach(Array(viewStore.speechList.prefix(3))) { speech in
+                                    ForEach(Array(viewStore.state.prefix(3))) { speech in
                                         HStack {
                                             // fileTypeに応じてアイコンを切り替え（色はアクセント1色に統一）
                                             let iconName: String = speech.fileType == "scan" ? "camera.fill"

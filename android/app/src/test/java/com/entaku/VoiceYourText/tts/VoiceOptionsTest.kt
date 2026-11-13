@@ -5,6 +5,19 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class VoiceOptionsTest {
+    @Test
+    fun recommendationPrefersInstalledOfflineVoiceAndFallsBackToNetwork() {
+        val options = VoiceOptions.build(listOf(
+            v("missing", notInstalled = true, quality = Voice.QUALITY_VERY_HIGH),
+            v("network", network = true, quality = Voice.QUALITY_VERY_HIGH),
+            v("local", quality = Voice.QUALITY_HIGH),
+        ), "ja")
+        assertEquals("local", VoiceOptions.recommended(options)?.name)
+        assertEquals("network", VoiceOptions.recommended(options.filter { it.name != "local" })?.name)
+        assertEquals(null, VoiceOptions.recommended(options.filter { !it.selectable }))
+        assertEquals(null, VoiceOptions.recommended(emptyList()))
+    }
+
 
     private fun v(name: String, lang: String = "ja", quality: Int = Voice.QUALITY_NORMAL, network: Boolean = false, notInstalled: Boolean = false) =
         VoiceInfo(name, lang, quality, network, notInstalled)

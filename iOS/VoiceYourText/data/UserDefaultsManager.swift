@@ -11,8 +11,11 @@ class UserDefaultsManager {
 
     private let defaults: UserDefaults
 
-    private init() {
-        defaults = UserDefaults.standard
+    // Persisted booleans are not proof of a purchase. RevenueCat must verify each launch.
+    private var sessionPremiumUser = false
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
     }
 
     // オンボーディング完了フラグ
@@ -113,15 +116,14 @@ class UserDefaultsManager {
         }
     }
     
-    // プレミアムユーザーフラグを保存するプロパティ
+    // 起動中に確認されたプレミアム状態。永続化された旧フラグは権限判定に使わない。
     var isPremiumUser: Bool {
         get {
-            defaults.bool(forKey: "IsPremiumUser")
+            sessionPremiumUser
         }
         set {
-            defaults.set(newValue, forKey: "IsPremiumUser")
-            // 変更を即座に同期して他の場所でも反映されるようにする
-            defaults.synchronize()
+            sessionPremiumUser = newValue
+            defaults.removeObject(forKey: "IsPremiumUser")
             
             // 通知を送信して、アプリの他の部分に変更を知らせる
             NotificationCenter.default.post(

@@ -11,12 +11,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 import java.io.File
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.coroutineContext
 
 /** 音声ファイルを鳴らす先。テストでは偽物に差し替える */
 interface VoicevoxAudioOutput {
@@ -37,6 +39,8 @@ class VoicevoxSpeechPlayer(
     private val cache: VoicevoxAudioCache,
     private val output: VoicevoxAudioOutput,
     private val tempDir: File,
+    private val chunkText: suspend (String) -> List<VoicevoxTextChunker.Chunk>,
+    private val resolveSpeaker: suspend (Int) -> Int = { it },
     private val log: (String, Throwable) -> Unit = { message, e -> Log.w("Voicevox", message, e) },
 ) {
     sealed class Event {
@@ -60,8 +64,23 @@ class VoicevoxSpeechPlayer(
      */
     fun play(text: String, speakerId: Int, speedScale: Double, offset: Int = 0, onEvent: (Event) -> Unit) {
         stop()
-        val chunks = VoicevoxTextChunker.chunks(text)
-        job = scope.launch { run(chunks, speakerId, speedScale, offset, onEvent) }
+        job = scope.launch {
+            val chunks: List<VoicevoxTextChunker.Chunk>
+            val resolvedSpeaker: Int
+            try {
+                chunks = if (text.codePoints().noneMatch(Character::isLetterOrDigit)) emptyList() else chunkText(text)
+                resolvedSpeaker = if (chunks.isEmpty()) speakerId else resolveSpeaker(speakerId)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                coroutineContext.ensureActive()
+                log("configuration unavailable", e)
+                onEvent(Event.Failed(offset))
+                return@launch
+            }
+            coroutineContext.ensureActive()
+            run(chunks, resolvedSpeaker, speedScale, offset, onEvent)
+        }
     }
 
     fun stop() {

@@ -55,7 +55,7 @@
     <string name="open_text_file">Mở tệp văn bản</string>
     <string name="language_select">Chọn ngôn ngữ</string>
     <string name="voice_select">Chọn giọng đọc</string>
-    <string name="voice_default_note">Giọng mặc định của thiết bị</string>
+    <string name="voice_default_note">Tự động ưu tiên giọng ngoại tuyến chất lượng cao</string>
     <string name="voice_label">Giọng %1$d</string>
     <string name="voice_high_quality">Chất lượng cao</string>
     <string name="voice_requires_network">Cần kết nối internet</string>
@@ -216,4 +216,25 @@
     <string name="credits_voicevox_terms">Điều khoản sử dụng VOICEVOX</string>
     <string name="drive_title">Google Drive</string>
     <string name="drive_unsupported">Không đọc được tệp này. Hỗ trợ văn bản, Markdown, PDF và Google Tài liệu.</string>
+    <string name="home_recent_files">Tệp gần đây</string>
+    <string name="voice_recommended">Giọng đề xuất</string>
+    <string name="voice_preview">Nghe thử</string>
+    <string name="voice_use">Dùng giọng này</string>
+    <string name="my_voice_title">Giọng của tôi (%1$s)</string>
+    <string name="my_voice_hint">Lưu một giọng và cài đặt cho mỗi ngôn ngữ.</string>
+    <string name="my_voice_save">Lưu cài đặt hiện tại</string>
+    <string name="my_voice_update">Thay thế cài đặt đã lưu</string>
+    <string name="my_voice_apply">Dùng giọng đã lưu</string>
+    <string name="my_voice_delete">Xóa giọng đã lưu</string>
+    <string name="my_voice_unavailable">Giọng đã lưu không khả dụng.</string>
+    <string name="voice_preview_sample">Xin chào. Đây là bản nghe thử giọng đọc.</string>
+    <string name="kokoro_title">Giọng AI Kokoro · Beta</string>
+    <string name="kokoro_note">5 giọng tiếng Nhật. Sau khi tải mô hình (92 MB), giọng nói được tạo trên thiết bị mà không mất phí API. Không hỗ trợ chỉnh cao độ.</string>
+    <string name="kokoro_download">Tải mô hình giọng nói (92 MB)</string>
+    <string name="kokoro_downloading">Đang tải… %1$d%%</string>
+    <string name="kokoro_download_failed">Không tải được. Kiểm tra kết nối và dung lượng trống rồi thử lại.</string>
+    <string name="kokoro_failed">Không tạo được giọng AI. Hãy thử văn bản khác hoặc giọng của thiết bị.</string>
+    <string name="kokoro_generating">Đang tạo giọng nói… Có thể dừng bất cứ lúc nào.</string>
+    <string name="kokoro_stop_preview">Dừng nghe thử</string>
+    <string name="voicevox_catalog_unavailable">Không tìm thấy giọng nói</string>
 </resources>

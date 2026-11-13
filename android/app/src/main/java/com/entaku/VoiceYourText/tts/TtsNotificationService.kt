@@ -23,6 +23,7 @@ class TtsNotificationService : Service() {
     companion object {
         const val CHANNEL_ID = "tts_playback"
         const val NOTIFICATION_ID = 1
+        const val ACTION_DISMISS = "com.entaku.VoiceYourText.ACTION_DISMISS"
         const val ACTION_STOP = "com.entaku.VoiceYourText.ACTION_STOP"
         const val ACTION_PAUSE = "com.entaku.VoiceYourText.ACTION_PAUSE"
         const val ACTION_RESUME = "com.entaku.VoiceYourText.ACTION_RESUME"
@@ -48,6 +49,11 @@ class TtsNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
+            ACTION_DISMISS -> {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+                stopSelf(startId)
+                return START_NOT_STICKY
+            }
             ACTION_STOP -> {
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf()

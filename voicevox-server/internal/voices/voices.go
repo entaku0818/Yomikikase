@@ -1,40 +1,94 @@
-// Package voices は、アプリに公開する VOICEVOX の声の許可リスト。
-//
-// ここに載っているのは、有料アプリで申請なしに使えることを各キャラの利用規約で確認した声だけ
-// （2026-09-27 時点）。声を足すときは、キャラの規約（商用可否・申請要否・クレジット書式）を
-// 確認してから追加すること。
+// Package voices defines the server-owned character catalog. The actual entries
+// live in the policy JSON; adding a character never requires an app release.
 package voices
 
-// Voice は VOICEVOX の1スタイル。
+import (
+	"errors"
+	"net/url"
+	"strings"
+	"unicode/utf8"
+)
+
 type Voice struct {
-	// SpeakerID は VOICEVOX エンジンの style id。
-	SpeakerID int `json:"speakerId"`
-	// Character はキャラ名。
+	SpeakerID int    `json:"speakerId"`
 	Character string `json:"character"`
-	// Style はスタイル名（ノーマルなど）。
-	Style string `json:"style"`
-	// Credit はアプリ内に表示するクレジット表記（キャラ規約の指定どおり）。
-	Credit string `json:"credit"`
-	// TermsURL はキャラの利用規約。
-	TermsURL string `json:"termsUrl"`
+	Style     string `json:"style"`
+	Credit    string `json:"credit"`
+	TermsURL  string `json:"termsUrl"`
+	Enabled   bool   `json:"enabled"`
 }
 
-// All はアプリに公開する声。並び順はアプリの表示順。
-var All = []Voice{
-	{SpeakerID: 14, Character: "冥鳴ひまり", Style: "ノーマル", Credit: "VOICEVOX:冥鳴ひまり", TermsURL: "https://meimeihimari.wixsite.com/himari/terms-of-use"},
-	{SpeakerID: 3, Character: "ずんだもん", Style: "ノーマル", Credit: "VOICEVOX:ずんだもん", TermsURL: "https://zunko.jp/con_ongen_kiyaku.html"},
-	{SpeakerID: 2, Character: "四国めたん", Style: "ノーマル", Credit: "VOICEVOX:四国めたん", TermsURL: "https://zunko.jp/con_ongen_kiyaku.html"},
-	{SpeakerID: 11, Character: "玄野武宏", Style: "ノーマル", Credit: "VOICEVOX:玄野武宏(CV:ガロ)", TermsURL: "https://www.virvoxproject.com/voicevoxの利用規約"},
-	{SpeakerID: 12, Character: "白上虎太郎", Style: "ふつう", Credit: "VOICEVOX:白上虎太郎(CV:可愛ユウ)", TermsURL: "https://www.virvoxproject.com/voicevoxの利用規約"},
-	{SpeakerID: 9, Character: "波音リツ", Style: "ノーマル", Credit: "VOICEVOX:波音リツ", TermsURL: "https://www.canon-voice.com/terms"},
+type Catalog struct {
+	DefaultSpeakerID *int    `json:"defaultSpeakerId"`
+	TermsURL         string  `json:"termsUrl"`
+	Voices           []Voice `json:"voices"`
 }
 
-// Find は許可リストから声を探す。
-func Find(speakerID int) (Voice, bool) {
-	for _, v := range All {
-		if v.SpeakerID == speakerID {
+func httpsURL(raw string) bool {
+	u, err := url.Parse(raw)
+	return err == nil && u.Scheme == "https" && u.Hostname() != "" && u.User == nil && len(raw) <= 2048
+}
+
+func (c Catalog) Validate() error {
+	if !httpsURL(c.TermsURL) || len(c.Voices) > 128 {
+		return errors.New("invalid catalog")
+	}
+	seen := map[int]bool{}
+	active := 0
+	for _, v := range c.Voices {
+		if v.SpeakerID < 0 || seen[v.SpeakerID] || strings.TrimSpace(v.Character) == "" || strings.TrimSpace(v.Style) == "" || strings.TrimSpace(v.Credit) == "" || !httpsURL(v.TermsURL) || utf8.RuneCountInString(v.Character) > 100 || utf8.RuneCountInString(v.Style) > 100 || utf8.RuneCountInString(v.Credit) > 300 {
+			return errors.New("invalid or duplicate character")
+		}
+		seen[v.SpeakerID] = true
+		if v.Enabled {
+			active++
+		}
+	}
+	if active == 0 {
+		if c.DefaultSpeakerID != nil {
+			return errors.New("empty catalog must not have a default")
+		}
+	} else {
+		if c.DefaultSpeakerID == nil {
+			return errors.New("catalog default is missing")
+		}
+		if _, ok := c.Find(*c.DefaultSpeakerID); !ok {
+			return errors.New("catalog default is not enabled")
+		}
+	}
+	return nil
+}
+
+func (c Catalog) Find(speakerID int) (Voice, bool) {
+	for _, v := range c.Voices {
+		if v.SpeakerID == speakerID && v.Enabled {
 			return v, true
 		}
 	}
 	return Voice{}, false
+}
+
+// Disabled characters retain their attribution, but cannot be newly generated.
+type Response struct {
+	SchemaVersion    int     `json:"schemaVersion"`
+	Revision         string  `json:"revision"`
+	DefaultSpeakerID *int    `json:"defaultSpeakerId"`
+	TermsURL         string  `json:"termsUrl"`
+	Voices           []Voice `json:"voices"`
+	Credits          []Voice `json:"credits"`
+}
+
+func (c Catalog) Public(revision string, generationEnabled bool) Response {
+	active := []Voice{}
+	for _, v := range c.Voices {
+		if generationEnabled && v.Enabled {
+			active = append(active, v)
+		}
+	}
+	defaultID := c.DefaultSpeakerID
+	if !generationEnabled {
+		defaultID = nil
+	}
+	credits := append([]Voice{}, c.Voices...)
+	return Response{1, revision, defaultID, c.TermsURL, active, credits}
 }

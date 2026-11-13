@@ -1,0 +1,18 @@
+{
+  "ja": {
+    "description": "PDFの資料、Web記事、電子書籍を耳で読む。通勤や家事の時間を、読書や学習の時間に。ナレーターは、テキスト・PDF・Webページ・DRMフリーのEPUBを音声で読み上げます。\n\n■ 聴きたい文章を取り込む\n文章の貼り付け、PDF・TXT・EPUBファイルの読み込み、WebページのURL入力、印刷物のスキャンに対応。Googleドライブの対応ファイルも取り込めます。\nファイルの形式やWebページの構成によっては、文章を取り込めない場合があります。Googleドライブは「ファイル」アプリ経由で利用します。Googleドライブアプリの設定・ログインが必要です。\n\n■ 自分のペースで聴く\n読み上げ速度や声の高さを調整できます。標準音声では、読み上げ中の箇所をハイライト表示。スリープタイマーやファイル保存も利用できます。専門用語や固有名詞は、ユーザー辞書で読み方を登録できます。\n利用できる音声は言語や端末によって異なります。日本語のキャラクターボイスにはVOICEVOXを使用し、Kokoroの音声は日本語と英語に対応しています。\n\n■ プレミアムプラン\n広告なしでの利用、ファイルの無制限保存、4,000文字を超える長文の読み上げに対応。日本語のキャラクターボイスは月20万文字まで利用できます。\n月額・年額プランがあります。価格と無料トライアルの対象条件は、アプリ内の購入画面でご確認ください。サブスクリプションは自動更新されます。更新を希望しない場合は、現在の期間が終了する24時間前までに「設定」アプリのサブスクリプションから解約してください。\n\n■ 音声生成と通信について\n標準音声は端末内で生成します。VOICEVOXのキャラクターボイスでは、音声生成のために文章をサーバーへ送信します。Web記事の取得やGoogleドライブの利用にはインターネット接続が必要です。",
+    "keywords": "テキスト,TTS,EPUB,音読,記事,資料,倍速,辞書,スキャン,オフライン,バックグラウンド,リスニング,通勤,家事",
+    "subtitle": "電子書籍の朗読・聴く読書・ながら学習に",
+    "promotional_text": "読む時間が取れないときも、PDFの資料やWeb記事を耳で。文章を取り込んで再生し、声や速度を自分好みに。通勤や家事の合間に、読書や学習を進められます。",
+    "name": "読み上げアプリ ナレーター：PDF・本・Webを音声化",
+    "whats_new": "音声再生を改善し、ストアの紹介文をわかりやすく更新しました。"
+  },
+  "en-US": {
+    "description": "Turn PDFs, web articles and ebooks into listening time. Voice Narrator reads your text and DRM-free EPUB books aloud while you commute, do chores or rest your eyes.\n\nADD YOUR CONTENT\nPaste text, import PDF or TXT files, open EPUB books, paste web links, scan printed documents or import supported Google Drive files through the Files app. Some files and web pages may not support text extraction. Google Drive requires its app to be set up and signed in.\n\nLISTEN YOUR WAY\nAdjust reading speed and voice pitch. Follow highlighted text with standard voices, use the sleep timer and save content in My Files. Add words to your dictionary to customize pronunciation. Available voices depend on the language and your device. Japanese character voices use VOICEVOX; Kokoro AI voices support Japanese and English.\n\nPREMIUM\nListen without ads, save unlimited files and read texts longer than 4,000 characters to the end. Premium also includes up to 200,000 characters of Japanese character voices per month.\n\nMonthly and annual subscriptions are available. Prices and eligible free trials appear on the purchase screen. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel in Settings > Subscriptions.\n\nStandard voices are generated on your device. Character voices send text to our server to generate audio. Web articles and Google Drive require an internet connection.",
+    "keywords": "tts,reader,ebook,listen,study,notes,articles,scanner,offline,pronunciation,documents,commute",
+    "subtitle": "Read Aloud: PDF, EPUB & Web",
+    "promotional_text": "Listen to text, PDFs and books while you get on with your day. Adjust the speed, follow highlighted words and set a sleep timer.",
+    "name": "Voice Narrator: Text to Speech",
+    "whats_new": "Improved voice playback and updated the store information."
+  }
+}

@@ -20,6 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
@@ -34,6 +42,20 @@ import com.entaku.VoiceYourText.R
 @Composable
 fun CreditsScreen(onDismiss: () -> Unit) {
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    val client = remember { VoicevoxClient(catalogCache = VoicevoxCatalogCache(context)) }
+    var catalog by remember { mutableStateOf(client.cachedCatalog()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var reload by remember { mutableStateOf(0) }
+    LaunchedEffect(reload) {
+        loading = true
+        failed = false
+        try { catalog = client.catalog() }
+        catch (e: kotlinx.coroutines.CancellationException) { throw e }
+        catch (_: Exception) { failed = true }
+        finally { loading = false }
+    }
     Dialog(onDismissRequest = onDismiss, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Scaffold(
             topBar = {
@@ -59,7 +81,15 @@ fun CreditsScreen(onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 4.dp)
                 )
-                VoicevoxCatalog.voices.forEach { voice ->
+                LinkRow("Kokoro-82M · Apache 2.0") {
+                    runCatching { uriHandler.openUri("https://huggingface.co/hexgrad/Kokoro-82M") }
+                }
+                LinkRow("ONNX Runtime · MIT / Kuromoji · Apache 2.0") {
+                    runCatching { uriHandler.openUri("https://onnxruntime.ai/") }
+                }
+                if (loading && catalog == null) CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+                if (failed) TextButton(onClick = { reload++ }) { Text(stringResource(R.string.common_retry)) }
+                catalog?.credits.orEmpty().forEach { voice ->
                     LinkRow(voice.credit) { runCatching { uriHandler.openUri(voice.termsUrl) } }
                 }
                 Text(
@@ -69,8 +99,8 @@ fun CreditsScreen(onDismiss: () -> Unit) {
                     modifier = Modifier.padding(16.dp)
                 )
                 HorizontalDivider()
-                LinkRow(stringResource(R.string.credits_voicevox_terms)) {
-                    runCatching { uriHandler.openUri(VoicevoxCatalog.VOICEVOX_TERMS_URL) }
+                catalog?.termsUrl?.let { terms ->
+                    LinkRow(stringResource(R.string.credits_voicevox_terms)) { runCatching { uriHandler.openUri(terms) } }
                 }
             }
         }

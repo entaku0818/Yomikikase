@@ -1,1 +1,1 @@
-vorlesen,Sprachausgabe,PDF,EPUB,Hörbuch,Legasthenie,Webseite,Google Drive,Scanner,Barrierefreiheit
+Leser, Sprache, Text, PDF, Bücher, Stimme, zuhören, lernen

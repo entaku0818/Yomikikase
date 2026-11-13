@@ -1,2 +1,2 @@
-Melhoramos a estabilidade ao parar e reiniciar a leitura em voz alta.
-Melhoramos os textos em inglês da apresentação inicial.
+Melhoramos a reprodução de voz e atualizamos as informações na loja.
+Melhoramos a segurança e a confiabilidade da verificação de compras, com novas tentativas automáticas quando não for possível concluí-la.

@@ -82,6 +82,48 @@ enum VoiceResolver {
         return head
     }
 
+    /// 音声サービスを呼ばずに、自動選択の品質・言語・音声種別を検証するための情報。
+    struct Candidate {
+        let identifier: String
+        let language: String
+        let quality: AVSpeechSynthesisVoiceQuality
+        var requiresExplicitSelection = false
+
+        init(identifier: String, language: String, quality: AVSpeechSynthesisVoiceQuality,
+             requiresExplicitSelection: Bool = false) {
+            self.identifier = identifier
+            self.language = language
+            self.quality = quality
+            self.requiresExplicitSelection = requiresExplicitSelection
+        }
+
+        init(_ voice: AVSpeechSynthesisVoice) {
+            self.init(
+                identifier: voice.identifier,
+                language: voice.language,
+                quality: voice.quality,
+                requiresExplicitSelection: voice.voiceTraits.contains(.isNoveltyVoice)
+                    || voice.voiceTraits.contains(.isPersonalVoice)
+            )
+        }
+    }
+
+    /// OS が解決した言語・地域を保ったまま、ダウンロード済みの高品質音声を使う。
+    /// 同じ品質なら OS の既定を維持する。個人の声・効果音的な声には自動で切り替えない。
+    static func automaticVoiceIdentifier(defaultVoice: Candidate, availableVoices: [Candidate]) -> String {
+        guard !defaultVoice.requiresExplicitSelection else { return defaultVoice.identifier }
+        let locale = defaultVoice.language.replacingOccurrences(of: "_", with: "-").lowercased()
+        let upgrades = availableVoices.filter {
+            !$0.requiresExplicitSelection
+                && $0.language.replacingOccurrences(of: "_", with: "-").lowercased() == locale
+                && $0.quality.rawValue > defaultVoice.quality.rawValue
+        }
+        return upgrades.sorted {
+            if $0.quality != $1.quality { return $0.quality.rawValue > $1.quality.rawValue }
+            return $0.identifier < $1.identifier
+        }.first?.identifier ?? defaultVoice.identifier
+    }
+
     // MARK: - AVFoundation との接続
 
     /// 実際に読み上げに使う音声を返す。
@@ -93,20 +135,25 @@ enum VoiceResolver {
         savedIdentifier: String? = UserDefaultsManager.shared.selectedVoiceIdentifier,
         languageCode: String? = UserDefaultsManager.shared.languageSetting
     ) -> AVSpeechSynthesisVoice? {
-        switch selection(
-            savedIdentifier: savedIdentifier,
+        let target = normalizedTarget(
             languageCode: languageCode,
-            fallbackLanguageCode: AVSpeechSynthesisVoice.currentLanguageCode(),
-            voiceLanguage: { identifier in AVSpeechSynthesisVoice(identifier: identifier)?.language }
-        ) {
-        case .identifier(let identifier):
-            // selection が identifier を返した時点で存在は確認済みだが、
-            // 取得に失敗した場合に無音にならないよう language でも引き直す。
-            return AVSpeechSynthesisVoice(identifier: identifier)
-                ?? AVSpeechSynthesisVoice(language: languageCode)
-        case .language(let code):
-            return AVSpeechSynthesisVoice(language: code)
+            fallback: AVSpeechSynthesisVoice.currentLanguageCode()
+        )
+        if case .identifier(let identifier) = selection(
+            savedIdentifier: savedIdentifier,
+            languageCode: target,
+            fallbackLanguageCode: target,
+            voiceLanguage: { AVSpeechSynthesisVoice(identifier: $0)?.language }
+        ), let selected = AVSpeechSynthesisVoice(identifier: identifier) {
+            return selected
         }
+
+        guard let defaultVoice = AVSpeechSynthesisVoice(language: target) else { return nil }
+        let identifier = automaticVoiceIdentifier(
+            defaultVoice: Candidate(defaultVoice),
+            availableVoices: AVSpeechSynthesisVoice.speechVoices().map { Candidate($0) }
+        )
+        return AVSpeechSynthesisVoice(identifier: identifier) ?? defaultVoice
     }
 
     /// `AVSpeechUtterance` に音声・速度・ピッチ・音量をまとめて適用する。
@@ -151,6 +198,7 @@ enum VoiceResolver {
         AVSpeechSynthesisVoice.speechVoices()
             .filter { languagesMatch($0.language, languageCode) }
             .filter { $0.quality == .enhanced || $0.quality == .premium }
+            .filter { !Candidate($0).requiresExplicitSelection }
     }
 
     /// 現在選択中の音声が既定品質のままで、かつ高品質音声も未ダウンロードか。
@@ -163,9 +211,7 @@ enum VoiceResolver {
             fallback: AVSpeechSynthesisVoice.currentLanguageCode()
         )
         // すでに高品質音声を選んでいるなら誘導しない
-        if let identifier = UserDefaultsManager.shared.selectedVoiceIdentifier,
-           let selected = AVSpeechSynthesisVoice(identifier: identifier),
-           selected.quality != .default {
+        if let selected = voice(languageCode: target), selected.quality != .default {
             return false
         }
         return !hasHighQualityVoice(languageCode: target)

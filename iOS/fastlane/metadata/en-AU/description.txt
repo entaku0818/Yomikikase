@@ -1,0 +1,14 @@
+Voice Narrator reads text, PDFs, web pages and DRM-free EPUB books aloud. Listen while commuting, doing chores or resting your eyes.
+
+ADD YOUR CONTENT
+Paste text, import PDF or TXT files, open EPUB books, paste web links, scan printed documents or connect Google Drive. Some files and web pages may not support text extraction. Google Drive requires separate setup and sign-in.
+
+LISTEN YOUR WAY
+Adjust reading speed and voice pitch. Follow the highlighted text, use the sleep timer and save content in My Files. Add words to your dictionary to customize pronunciation. Available voices depend on the language and your device. Japanese character voices use VOICEVOX; Kokoro AI voices support Japanese and English.
+
+PREMIUM
+Listen without ads, save unlimited files and read texts longer than 4,000 characters to the end. Premium also includes up to 200,000 characters of Japanese character voices per month.
+
+Monthly and annual subscriptions are available. Prices and eligible free trials appear on the purchase screen. Subscriptions renew automatically unless cancelled at least 24 hours before the current period ends. Manage or cancel in Settings > Subscriptions.
+
+Standard voices are generated on your device. Character voices send text to our server to generate audio. Web articles and Google Drive require an internet connection.

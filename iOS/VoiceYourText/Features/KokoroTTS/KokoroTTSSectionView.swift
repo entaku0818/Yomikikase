@@ -8,6 +8,7 @@ struct KokoroTTSSection: View {
     let onToggle: (Bool) -> Void
     let onSelectVoice: (String) -> Void
 
+    @StateObject private var preview = KokoroVoicePreview()
     @State private var downloadStatus: KokoroDownloadStatus = .notDownloaded
     @State private var downloadTask: Task<Void, Never>?
 
@@ -30,7 +31,7 @@ struct KokoroTTSSection: View {
                             .foregroundStyle(.indigo)
                             .clipShape(Capsule())
                     }
-                    Text("MLX・完全オンデバイス生成")
+                    Text("ダウンロード後は端末内で生成・API料金なし")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
@@ -50,6 +51,15 @@ struct KokoroTTSSection: View {
             }
         } header: {
             Text(isJapanese ? "Kokoro AI音声（日本語）" : "Kokoro AI音声（英語）")
+        }
+        .onDisappear { preview.stop() }
+        .onChange(of: kokoroEnabled) { _, _ in preview.stop() }
+        .alert("エラー", isPresented: Binding(
+            get: { preview.errorMessage != nil }, set: { if !$0 { preview.errorMessage = nil } }
+        )) {
+            Button("OK") { preview.errorMessage = nil }
+        } message: {
+            Text(preview.errorMessage ?? "")
         }
         .task {
             for await status in await KokoroModelManager.shared.statusStream() {
@@ -133,8 +143,12 @@ struct KokoroTTSSection: View {
             ForEach(availableVoices) { voice in
                 VoiceCharacterCard(
                     voice: voice,
-                    isSelected: kokoroVoice == voice.rawValue,
-                    onSelect: { onSelectVoice(voice.rawValue) }
+                    isSelected: KokoroPlaybackParams.selectVoice(
+                        languageCode: isJapanese ? "ja" : "en", storedVoiceRaw: kokoroVoice
+                    ) == voice,
+                    onSelect: { preview.stop(); onSelectVoice(voice.rawValue) },
+                    isPlaying: preview.voice == voice,
+                    onPreview: { preview.toggle(voice) }
                 )
             }
         }
@@ -179,103 +193,82 @@ private struct VoiceCharacterCard: View {
     let isSelected: Bool
     let onSelect: () -> Void
 
-    @State private var isPlaying = false
-    @State private var audioPlayer: AVAudioPlayer?
+    let isPlaying: Bool
+    let onPreview: () -> Void
 
     var body: some View {
-        Button(action: onSelect) {
-            HStack(spacing: 12) {
-                // Gender icon
-                ZStack {
-                    Circle()
-                        .fill(isSelected ? Color.indigo : Color.indigo.opacity(0.1))
-                        .frame(width: 40, height: 40)
-                    Image(systemName: voice.gender.systemImage)
-                        .font(.system(size: 18))
-                        .foregroundStyle(isSelected ? .white : .indigo)
-                }
-
-                // Name + persona + accent
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        Text(voice.characterName)
-                            .font(.headline)
-                            .foregroundStyle(.primary)
-                        Text(voice.accent.label)
-                            .font(.caption2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color(.systemGray5))
-                            .clipShape(Capsule())
-                            .foregroundStyle(.secondary)
-                        // 公式VOICES.mdのグレード。学習データ量に開きがあるので、
-                        // 聴き比べる前の目安として出す。
-                        Text(voice.grade)
-                            .font(.caption2.weight(.semibold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color(.systemGray5))
-                            .clipShape(Capsule())
-                            .foregroundStyle(.secondary)
+        HStack(spacing: 12) {
+            Button(action: onSelect) {
+                HStack(spacing: 12) {
+                    // Gender icon
+                    ZStack {
+                        Circle()
+                            .fill(isSelected ? Color.indigo : Color.indigo.opacity(0.1))
+                            .frame(width: 40, height: 40)
+                        Image(systemName: voice.gender.systemImage)
+                            .font(.system(size: 18))
+                            .foregroundStyle(isSelected ? .white : .indigo)
                     }
-                    Text(voice.persona)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
 
-                Spacer()
+                    // Name + persona + accent
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack(spacing: 6) {
+                            Text(voice.characterName)
+                                .font(.headline)
+                                .foregroundStyle(.primary)
+                            Text(voice.accent.label)
+                                .font(.caption2)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color(.systemGray5))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.secondary)
+                            // 公式VOICES.mdのグレード。学習データ量に開きがあるので、
+                            // 聴き比べる前の目安として出す。
+                            Text(voice.grade)
+                                .font(.caption2.weight(.semibold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color(.systemGray5))
+                                .clipShape(Capsule())
+                                .foregroundStyle(.secondary)
+                        }
+                        Text(voice.persona)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(2)
+                    }
 
-                // Trial play button
-                Button {
-                    playPreview()
-                } label: {
-                    Image(systemName: isPlaying ? "waveform" : "play.circle")
-                        .font(.title3)
-                        .foregroundStyle(isPlaying ? Color.indigo : Color.secondary)
-                        .symbolEffect(.variableColor, isActive: isPlaying)
-                }
-                .buttonStyle(.plain)
-                .disabled(isPlaying)
+                    Spacer()
 
-                if isSelected {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.indigo)
-                        .font(.title3)
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill").foregroundStyle(.indigo)
+                    }
                 }
+                .contentShape(Rectangle())
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.indigo.opacity(0.07) : Color(.systemGray6))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(isSelected ? Color.indigo : Color.clear, lineWidth: 1.5)
-                    )
-            )
-        }
-        .buttonStyle(.plain)
-    }
+            .buttonStyle(.plain)
+            // Trial play button
+            Button(action: onPreview) {
+                Image(systemName: isPlaying ? "waveform" : "play.circle")
+                    .font(.title3)
+                    .foregroundStyle(isPlaying ? Color.indigo : Color.secondary)
+                    .symbolEffect(.variableColor, isActive: isPlaying)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(isPlaying ? String(localized: "停止") : String(localized: "再生"))
 
-    private func playPreview() {
-        guard !isPlaying else { return }
-        isPlaying = true
-        Task {
-            defer { isPlaying = false }
-            do {
-                let data = try await KokoroTTSClient.liveValue.synthesize(
-                    voice.sampleText,
-                    voice,
-                    1.0
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(isSelected ? Color.indigo.opacity(0.07) : Color(.systemGray6))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .strokeBorder(isSelected ? Color.indigo : Color.clear, lineWidth: 1.5)
                 )
-                await MainActor.run {
-                    audioPlayer = try? AVAudioPlayer(data: data)
-                    audioPlayer?.play()
-                }
-            } catch {
-                print("[KokoroVoiceCard] preview error: \(error)")
-            }
-        }
+        )
     }
+
 }

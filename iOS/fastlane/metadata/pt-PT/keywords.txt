@@ -1,0 +1,1 @@
+leitor,fala,texto,PDF,livros,voz,ouvir,estudar

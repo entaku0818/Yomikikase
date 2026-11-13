@@ -1,1 +1,1 @@
-tts,reader,ebook,books,listen,study,notes,articles,scanner,offline,dyslexia,pronunciation,documents
+tts,reader,ebook,listen,study,notes,articles,scanner,offline,pronunciation,documents,commute

@@ -1,0 +1,2 @@
+Hem millorat la reproducció de veu i actualitzat la informació de la botiga.
+Hem millorat la seguretat i la fiabilitat de la verificació de compres, amb reintents automàtics quan no es pot completar.

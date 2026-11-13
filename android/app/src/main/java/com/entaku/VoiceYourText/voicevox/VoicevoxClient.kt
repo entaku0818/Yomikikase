@@ -16,6 +16,15 @@ import java.time.Instant
 import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
 
+/** 表示と分割用の設定。生成の可否・使用量は常にサーバーが判定する。 */
+data class VoicevoxConfiguration(
+    val schemaVersion: Int,
+    val revision: String,
+    val voicevox: Rules,
+) {
+    data class Rules(val enabled: Boolean, val freeMonthlyChars: Int, val premiumMonthlyChars: Int, val maxRequestChars: Int)
+}
+
 /** 今月の使用量。plan は "free" / "premium" */
 data class VoicevoxUsage(
     val plan: String,
@@ -43,10 +52,34 @@ sealed class VoicevoxException(message: String, cause: Throwable? = null) : IOEx
  */
 class VoicevoxClient(
     private val baseUrl: String = BASE_URL,
+    private val catalogCache: VoicevoxCatalogCache? = null,
     private val httpClient: OkHttpClient = defaultHttpClient,
     private val appCheckToken: () -> String = ::firebaseAppCheckToken,
     private val userId: () -> String = ::revenueCatUserId,
 ) {
+    fun cachedCatalog(): VoicevoxCatalog? = catalogCache?.load()
+
+    suspend fun catalog(): VoicevoxCatalog = withContext(Dispatchers.IO) {
+        val request = Request.Builder().url(baseUrl.trimEnd('/') + "/v1/voices")
+            .header("Cache-Control", "no-cache").get().build()
+        val raw = send(request)
+        val catalog = parseCatalog(JSONObject(raw))
+        catalogCache?.store(raw)
+        catalog
+    }
+
+    suspend fun configuration(): VoicevoxConfiguration = withContext(Dispatchers.IO) {
+        val request = Request.Builder().url(baseUrl.trimEnd('/') + "/v1/config")
+            .header("Cache-Control", "no-cache").get().build()
+        parseConfiguration(JSONObject(send(request)))
+    }
+
+    suspend fun chunks(text: String): List<VoicevoxTextChunker.Chunk> {
+        val config = configuration()
+        if (!config.voicevox.enabled) throw VoicevoxException.Server(503, "generation_disabled")
+        return VoicevoxTextChunker.chunks(text, config.voicevox.maxRequestChars)
+    }
+
     suspend fun quota(): VoicevoxUsage = withContext(Dispatchers.IO) {
         parseUsage(JSONObject(send(authorized("v1/quota").get().build())))
     }
@@ -92,6 +125,33 @@ class VoicevoxClient(
     }
 
     companion object {
+        internal fun parseCatalog(json: JSONObject): VoicevoxCatalog {
+            fun voices(key: String): List<VoicevoxVoice> {
+                val array = json.getJSONArray(key)
+                return (0 until array.length()).map { index ->
+                    val v = array.getJSONObject(index)
+                    VoicevoxVoice(v.getInt("speakerId"), v.getString("character"), v.getString("style"),
+                        v.getString("credit"), v.getString("termsUrl"))
+                }
+            }
+            return VoicevoxCatalog(json.getInt("schemaVersion"), json.getString("revision"),
+                if (json.isNull("defaultSpeakerId")) null else json.getInt("defaultSpeakerId"),
+                json.getString("termsUrl"), voices("voices"), voices("credits")).validated()
+        }
+
+        internal fun parseConfiguration(json: JSONObject): VoicevoxConfiguration {
+            val rules = json.getJSONObject("voicevox")
+            val config = VoicevoxConfiguration(
+                json.getInt("schemaVersion"), json.getString("revision"),
+                VoicevoxConfiguration.Rules(rules.getBoolean("enabled"), rules.getInt("freeMonthlyChars"),
+                    rules.getInt("premiumMonthlyChars"), rules.getInt("maxRequestChars")),
+            )
+            require(config.schemaVersion == 1 && config.revision.isNotBlank()) { "unsupported policy" }
+            require(config.voicevox.maxRequestChars > 0 && config.voicevox.freeMonthlyChars >= 0 &&
+                config.voicevox.premiumMonthlyChars >= 0) { "invalid policy" }
+            return config
+        }
+
         const val BASE_URL = "https://voicevox-tts-990821915106.asia-northeast1.run.app"
         private val JSON = "application/json".toMediaType()
 

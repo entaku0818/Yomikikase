@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "Folosit pentru a scana documente și a citi textul cu voce tare.";
+
+NSPersonalVoiceUsageDescription = "Utilizează Vocea personală pentru a citi cu voce tare în vocea ta.";

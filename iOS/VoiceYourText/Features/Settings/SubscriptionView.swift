@@ -11,6 +11,8 @@ struct SubscriptionView: View {
     var showsCloseButton: Bool = true
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel = SubscriptionViewModel()
+    @Dependency(\.voicevox) private var voicevox
+    @State private var voicevoxConfiguration: VoicevoxConfiguration?
     @State private var isLoading = true
     @State private var didLogPaywallView = false
     @State private var showingAlert = false
@@ -91,6 +93,7 @@ struct SubscriptionView: View {
                 SafariView(url: url)
             }
         }
+        .task { voicevoxConfiguration = try? await voicevox.configuration() }
         .onAppear {
             if !didLogPaywallView {
                 didLogPaywallView = true
@@ -114,7 +117,11 @@ struct SubscriptionView: View {
             }
             .padding(.bottom, 4)
 
-            FeatureRow(icon: "person.wave.2.fill", title: String(localized: "キャラ音声を月20万字まで"), description: String(localized: "ずんだもんなどのキャラクターの声で読み上げられます（無料版は月5,000字まで）"))
+            if let rules = voicevoxConfiguration?.voicevox, rules.enabled {
+                FeatureRow(icon: "person.wave.2.fill",
+                           title: String(localized: "キャラ音声を月\(rules.premiumMonthlyChars.formatted())字まで"),
+                           description: String(localized: "ずんだもんなどのキャラクターの声で読み上げられます（無料版は月\(rules.freeMonthlyChars.formatted())字まで）"))
+            }
             FeatureRow(icon: "hand.thumbsup.fill", title: String(localized: "広告なしで快適に聴ける"), description: String(localized: "読み上げ中に広告バナーが表示されず、集中して聴き続けられます"))
             FeatureRow(icon: "doc.fill", title: String(localized: "ファイル無制限登録"), description: String(localized: "PDF・テキストファイルを無制限に登録できます（無料版は\(FileLimitsManager.maxFreeFileCount)個まで）"))
             FeatureRow(icon: "doc.text.fill", title: String(localized: "長文テキスト無制限"), description: String(localized: "4,000文字を超える長い文章も最後まで読み上げられます"))
@@ -591,7 +598,7 @@ class SubscriptionViewModel: ObservableObject {
             switch purchaseError {
             case .productNotFound:
                 return (false, String(localized: "商品が見つかりません"), String(localized: "サブスクリプション商品が見つかりませんでした。後ほど再度お試しください。"))
-            case .purchaseFailed:
+            case .purchaseFailed, .unverifiedEntitlements:
                 return (false, String(localized: "購入失敗"), String(localized: "購入処理を完了できませんでした。後ほど再度お試しください。"))
             case .noEntitlements:
                 return (false, String(localized: "購入履歴なし"), String(localized: "復元できる購入履歴が見つかりませんでした。"))

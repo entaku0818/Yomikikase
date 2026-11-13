@@ -1,0 +1,2 @@
+Mejoramos la reproducción de voz y actualizamos la información en la tienda.
+Mejoramos la seguridad y fiabilidad de la verificación de compras, con reintentos automáticos cuando no se puede completar.

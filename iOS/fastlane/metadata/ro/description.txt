@@ -1,0 +1,14 @@
+Voice Narrator citește cu voce tare text, PDF-uri, pagini web și cărți EPUB fără DRM. Ascultă în timp ce faci naveta, faci treburi sau îți odihnești ochii.
+
+ADĂUGAȚI CONȚINUTUL DVS
+Lipiți text, importați fișiere PDF sau TXT, deschideți cărți EPUB, lipiți linkuri web, scanați documente tipărite sau conectați Google Drive. Este posibil ca unele fișiere și pagini web să nu accepte extragerea textului. Google Drive necesită configurare și conectare separate.
+
+ASCULTĂ-ȚI CALUL
+Reglați viteza de citire și înălțimea vocii. Urmați textul evidențiat, utilizați temporizatorul de repaus și salvați conținutul în Fișierele mele. Adăugați cuvinte în dicționar pentru a personaliza pronunția. Vocile disponibile depind de limba și de dispozitivul dvs. Vocile caracterelor japoneze folosesc VOICEVOX; Vocile Kokoro AI acceptă japoneză și engleză.
+
+PREMIUM
+Ascultă fără reclame, salvează fișiere nelimitate și citește până la sfârșit texte mai lungi de 4.000 de caractere. Premium include, de asemenea, până la 200.000 de caractere de voci de caractere japoneze pe lună.
+
+Sunt disponibile abonamente lunare și anuale. Prețurile și perioadele de încercare gratuite eligibile apar pe ecranul de achiziție. Abonamentele se reînnoiesc automat, cu excepția cazului în care sunt anulate cu cel puțin 24 de ore înainte de încheierea perioadei curente. Gestionați sau anulați în Setări > Abonamente.
+
+Vocile standard sunt generate pe dispozitivul dvs. Vocile personajelor trimit text la serverul nostru pentru a genera sunet. Articolele web și Google Drive necesită o conexiune la internet.

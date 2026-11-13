@@ -1,0 +1,5 @@
+CFBundleDisplayName = "Voice Narrator";
+
+NSCameraUsageDescription = "દસ્તાવેજોને સ્કેન કરવા અને ટેક્સ્ટને મોટેથી વાંચવા માટે વપરાય છે.";
+
+NSPersonalVoiceUsageDescription = "તમારા અવાજમાં મોટેથી વાંચવા માટે વ્યક્તિગત અવાજનો ઉપયોગ કરે છે.";

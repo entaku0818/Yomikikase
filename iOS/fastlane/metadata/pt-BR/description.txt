@@ -1,38 +1,14 @@
-Voice Narrator é o aplicativo completo de texto para voz (TTS) que lê qualquer coisa em voz alta — PDFs, páginas web, livros EPUB, arquivos do Google Drive, documentos digitalizados e muito mais. Sem necessidade de conta. Tudo fica no seu dispositivo.
+O Voice Narrator lê em voz alta textos, PDFs, páginas da web e livros EPUB sem DRM. Ouça enquanto viaja, faz tarefas domésticas ou descansa os olhos.
 
-7 FORMAS DE ADICIONAR CONTEÚDO
-- Entrada de texto: digite ou cole qualquer texto e ouça imediatamente
-- PDF: importe documentos, livros e relatórios
-- Páginas web: cole uma URL — qualquer artigo lido em voz alta
-- EPUB: ouça e-books da sua biblioteca
-- Google Drive: transmita arquivos diretamente do armazenamento em nuvem
-- Scanner: aponte a câmera para um texto impresso e ouça
-- Arquivos TXT: importe texto simples de qualquer fonte
+ADICIONE SEU CONTEÚDO
+Cole texto, importe arquivos PDF ou TXT, abra livros EPUB, cole links da web, digitalize documentos impressos ou conecte o Google Drive. Alguns arquivos e páginas da web podem não suportar a extração de texto. O Google Drive requer configuração e login separados.
 
-DESTAQUE DE TEXTO EM TEMPO REAL
-Cada palavra é destacada conforme é lida em voz alta. A rolagem automática mantém você sincronizado com o áudio — ótimo para estudar, acompanhar ou verificar a pronúncia. Funciona em PDFs também.
-
-PENSADO PARA ACESSIBILIDADE
-Desenvolvido para usuários com dislexia, deficiência visual ou fadiga de leitura. Velocidade ajustável, tom e várias opções de voz ajudam todos a encontrar a experiência de escuta ideal.
-
-CONTROLES DE REPRODUÇÃO
-- Velocidade de leitura: 0,5x a 2x
-- Ajuste de tom de voz
-- Reprodução em segundo plano — continue ouvindo enquanto usa outros aplicativos
-
-PERSONALIZAÇÃO
-- Dicionário personalizado: corrija nomes, termos técnicos e marcas com pronúncia errada
-- Mais de 10 idiomas suportados
-- Salve textos usados com frequência para reprodução rápida
-
-PARA QUEM É
-- Estudantes revisando anotações ou livros didáticos sem usar as mãos
-- Profissionais acompanhando documentos durante o deslocamento
-- Aprendizes de idiomas melhorando a compreensão auditiva
-- Qualquer pessoa com dislexia, baixa visão ou fadiga de leitura
+OUÇA DO SEU CAMINHO
+Ajuste a velocidade de leitura e o tom da voz. Siga o texto destacado, use o temporizador e salve o conteúdo em Meus Arquivos. Adicione palavras ao seu dicionário para personalizar a pronúncia. As vozes disponíveis dependem do idioma e do seu dispositivo. As vozes dos caracteres japoneses usam VOICEVOX; As vozes Kokoro AI suportam japonês e inglês.
 
 PREMIUM
-- Remova todos os anúncios
-- Armazenamento ilimitado de PDF (plano gratuito: 3 arquivos)
+Ouça sem anúncios, salve arquivos ilimitados e leia textos com mais de 4.000 caracteres até o fim. Premium também inclui até 200.000 caracteres de vozes japonesas por mês.
 
-Privacidade: Nenhuma conta necessária. Todo o conteúdo é processado no dispositivo.
+Assinaturas mensais e anuais estão disponíveis. Os preços e avaliações gratuitas qualificadas aparecem na tela de compra. As assinaturas são renovadas automaticamente, a menos que sejam canceladas pelo menos 24 horas antes do término do período atual. Gerencie ou cancele em Configurações > Assinaturas.
+
+Vozes padrão são geradas no seu dispositivo. As vozes dos personagens enviam texto ao nosso servidor para gerar áudio. Os artigos da Web e o Google Drive requerem uma conexão com a Internet.
