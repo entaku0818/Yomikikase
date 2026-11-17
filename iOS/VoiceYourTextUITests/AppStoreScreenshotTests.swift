@@ -235,6 +235,13 @@ final class AppStoreScreenshotTests: XCTestCase {
         app.swipeUp()
         settle(1)
         app.buttons[label("ユーザー辞書")].firstMatch.tap()
+        if app.launchArguments.contains("-ScreenshotPlaybackFixture") {
+            let seededEntry = app.staticTexts.matching(NSPredicate(
+                format: "label IN %@", ["SQL", "GIF", "生成AI", "重庆"]
+            )).firstMatch
+            XCTAssertTrue(seededEntry.waitForExistence(timeout: 10), "Dictionary entries must load before capture")
+            Thread.sleep(forTimeInterval: 0.5)
+        }
         settle(5)
         snap("dictionary")
         // 戻るボタンは辞書画面の「＋」と取り違えやすいので、左端からのスワイプで戻る
