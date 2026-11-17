@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-11-17T13:28:22Z",
+  "version": "1.4.15",
+  "versionId": "696085e1-1091-4e04-85a9-dd127fd716ae",
+  "state": "WAITING_FOR_REVIEW",
+  "releaseType": "AFTER_APPROVAL",
+  "selectedBuild": {
+    "id": "82e1363a-7272-4ac9-8be4-97ec91a4a020",
+    "number": "53",
+    "processingState": "VALID"
+  },
+  "reviewSubmissions": [
+    {
+      "id": "fcc92cd5-b9e4-4553-99c3-dd70da92254e",
+      "state": "WAITING_FOR_REVIEW",
+      "appStoreVersionIds": [
+        "696085e1-1091-4e04-85a9-dd127fd716ae"
+      ]
+    }
+  ]
+}
