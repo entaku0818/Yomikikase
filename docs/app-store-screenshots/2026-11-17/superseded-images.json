@@ -1,0 +1,62 @@
+[
+  {
+    "key": "da/2_IPHONE_69.png",
+    "old": {
+      "id": "50800018-2254-8b81-801b-46b9293c6b47",
+      "sha256": "8f2fd1ff6640310b4edec7d2cc9bee9798506ef378f331d8b065347805426753",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "5bf6379d97d02c94b66c5866f41bde02a474bfe3cb5ca40349bc8886efbd559a",
+    "reason": "Visually verified correction to long-word caption wrapping"
+  },
+  {
+    "key": "de-DE/5_IPHONE_69.png",
+    "old": {
+      "id": "80800018-2254-8b81-8022-8eacabe72999",
+      "sha256": "b9a41e1185b9579e81ccaeb05bfad636c7c1e599e1dd010c634f5a7ce7afa7e8",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "53643079453dab29de2b17c453d23b9fa8edd66842ead701f38fa6bfdd0df83e",
+    "reason": "Visually verified correction to long-word caption wrapping"
+  },
+  {
+    "key": "nl-NL/5_IPHONE_69.png",
+    "old": {
+      "id": "c1c00018-2254-8b81-800a-692f4637748c",
+      "sha256": "45e4e4d0c831de054039290ff76b613ff837dab5cbc083c93b51d41065610f5e",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "0ce77da20546e673b0a62ac344984ae12685810b2e6a2299f9356a07c450c0c9",
+    "reason": "Visually verified correction to long-word caption wrapping"
+  },
+  {
+    "key": "ar-SA/1_IPAD_PRO_3GEN_129.png",
+    "old": {
+      "id": "22400018-2254-8b81-801a-551f113a81a2",
+      "sha256": "acddb119b78b04d42ecf0924f8aaf87235efe201f5f330f02f87e5a103bcb117",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "fa5c5b9eb0fc187f0900fc9dfc7a126cf9ca5bc56f9ad6efdb70b4e5c77bf8ff",
+    "reason": "Retook Arabic iPad set after waiting for dictionary entries and preserving the PDF store"
+  },
+  {
+    "key": "ar-SA/4_IPAD_PRO_3GEN_129.png",
+    "old": {
+      "id": "57400018-2254-8b81-8015-0cf147aa9397",
+      "sha256": "ac6f92badcebcd6ef996786a3fae8921d6889e35370be2e114b93af9fe6f181b",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "0c3e38e2fdcfe191276ce5e7bb220c383906dcad473707147ec811c5900c68d6",
+    "reason": "Retook Arabic iPad set after waiting for dictionary entries and preserving the PDF store"
+  },
+  {
+    "key": "ar-SA/5_IPAD_PRO_3GEN_129.png",
+    "old": {
+      "id": "90400018-2254-8b81-8004-2d418404c7b5",
+      "sha256": "d87d4cf0aa57a82c3d3f0c77d041ab109c29f57fb52b90096a853420166c2fb4",
+      "state": "PREPARE_FOR_SUBMISSION"
+    },
+    "newSha256": "a23713921ce9d40cf35b72881c49b6e9dc2cdfe86f3b441786c6eb48fd490a4e",
+    "reason": "Retook Arabic iPad set after waiting for dictionary entries and preserving the PDF store"
+  }
+]

@@ -1,0 +1,5402 @@
+[
+  {
+    "key": "ar-SA/0_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "3d241e18184b5d3374906b034d6cbac8a6270098ba9ec5abf70044b856a38913",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-0-3d241e18184b"
+  },
+  {
+    "key": "ar-SA/1_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "d382f9cd8bc51203805231e5d01da4b2387738b999c44eb211d6551654a855fa",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-1-d382f9cd8bc5"
+  },
+  {
+    "key": "ar-SA/2_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "59b30109132b26c5a9fb331d5d8b642c7cf8d64582317e295566eb5352dedfdd",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-2-59b30109132b"
+  },
+  {
+    "key": "ar-SA/3_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "5d54f1300da62d37fd4605574cec2bfbd5e6a54a24549e66206d7807c55b15c7",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-3-5d54f1300da6"
+  },
+  {
+    "key": "ar-SA/4_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "cbcf64bfaa90752dd07a7c2323d22c24a6f5a618e20947665b997683dd35ba4b",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-4-cbcf64bfaa90"
+  },
+  {
+    "key": "ar-SA/5_IPHONE_69.png",
+    "locale": "ar-SA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "c206a73aacccf46776b04da1596ab6ea5add4d944d0b002c9c328a8b6ada1f57",
+    "reference": "vyt-1.4.15-ar-SA-IPHONE_69-5-c206a73aaccc"
+  },
+  {
+    "key": "ar-SA/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "7088d9baa237272d7c23fe466aea78860cc418f1af06c76437de7b23f77148ae",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-0-7088d9baa237"
+  },
+  {
+    "key": "ar-SA/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "fa5c5b9eb0fc187f0900fc9dfc7a126cf9ca5bc56f9ad6efdb70b4e5c77bf8ff",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-1-fa5c5b9eb0fc"
+  },
+  {
+    "key": "ar-SA/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "208381362cc12bb0f95cbfe8eb3062a771747803c04ddb79f4f24c23e3350f66",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-2-208381362cc1"
+  },
+  {
+    "key": "ar-SA/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "e782ef2d155fe1a62f21ad5ec67bbfc0425530f96236e7734a33c279b3f7dea7",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-3-e782ef2d155f"
+  },
+  {
+    "key": "ar-SA/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "0c3e38e2fdcfe191276ce5e7bb220c383906dcad473707147ec811c5900c68d6",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-4-0c3e38e2fdcf"
+  },
+  {
+    "key": "ar-SA/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ar-SA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "a23713921ce9d40cf35b72881c49b6e9dc2cdfe86f3b441786c6eb48fd490a4e",
+    "reference": "vyt-1.4.15-ar-SA-IPAD_PRO_3GEN_129-5-a23713921ce9"
+  },
+  {
+    "key": "bn-BD/0_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5166affeeb628bfb6b5b53bfed7f0df8510e85780802b4706be9ec91540774a2",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-0-5166affeeb62"
+  },
+  {
+    "key": "bn-BD/1_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "aa850d4bf2bbb6e9653bf58b10640ee7845dafc09bb0f9788e83c0579095a72d",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-1-aa850d4bf2bb"
+  },
+  {
+    "key": "bn-BD/2_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "8113e6ca8b636e566d162e2278f765b17ab6bac80f0d89443f86bebe9968fea8",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-2-8113e6ca8b63"
+  },
+  {
+    "key": "bn-BD/3_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "ef8b068ed48ffb9f570b822485c488bccdc9195a1f97675dc7e61ea3d8839cd7",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-3-ef8b068ed48f"
+  },
+  {
+    "key": "bn-BD/4_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "f89ed3a6d55c0aa2418db3a2fceccda9012afc75c2abedaa92732f68dc6cd0fc",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-4-f89ed3a6d55c"
+  },
+  {
+    "key": "bn-BD/5_IPHONE_69.png",
+    "locale": "bn-BD",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "a3a690c4d2ff2ac8f7e541aafdfd923417a5ce2f57a2f407e6c875970008e974",
+    "reference": "vyt-1.4.15-bn-BD-IPHONE_69-5-a3a690c4d2ff"
+  },
+  {
+    "key": "bn-BD/0_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "f575cb362e574539586ae3d05c24637779fb3f5f804e2ff4cad79944c5d4ff19",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-0-f575cb362e57"
+  },
+  {
+    "key": "bn-BD/1_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "6a148f0c91d9bb06b973fc9902edb6d2ff16b357f26f38199ba58cec2ab6ee10",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-1-6a148f0c91d9"
+  },
+  {
+    "key": "bn-BD/2_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "1f080afb22fef1ee0142eabc97c963fcd91fa57a205bb031b867b67e66270392",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-2-1f080afb22fe"
+  },
+  {
+    "key": "bn-BD/3_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "fab62ec77a4823ade35a4ff3eeb2134e979f14094a64f1d13b7fe8b9a8d41e95",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-3-fab62ec77a48"
+  },
+  {
+    "key": "bn-BD/4_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "7c27bb11138cb59b7c7afc91de09e48e022fad2674ab9fdce620be88e40309c9",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-4-7c27bb11138c"
+  },
+  {
+    "key": "bn-BD/5_IPAD_PRO_3GEN_129.png",
+    "locale": "bn-BD",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "ae8bbc70ec05b0ec3a1ee4b84b99d5f2d3a78f2e9b8ac51575510ab7181da8d7",
+    "reference": "vyt-1.4.15-bn-BD-IPAD_PRO_3GEN_129-5-ae8bbc70ec05"
+  },
+  {
+    "key": "ca/0_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "33f6ae212322d3b03140a597b07a0c2bf1a8e50ca386591d5b2863d73b9066c4",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-0-33f6ae212322"
+  },
+  {
+    "key": "ca/1_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "66ee8b8030bc3d5d021e60271d29bf1869a082435f50d1daa5433f31579d3440",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-1-66ee8b8030bc"
+  },
+  {
+    "key": "ca/2_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "b768343a5ad9fdb083b869c133acafb9b5348c0594ad76bad999edb74d6b1bea",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-2-b768343a5ad9"
+  },
+  {
+    "key": "ca/3_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "73cfc75fff03a3db98f64a8ecd013f7eb15d33edb3c5666567cd931fcd88fc78",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-3-73cfc75fff03"
+  },
+  {
+    "key": "ca/4_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "42f4b035b89b6d296bdc907c84556b56671c5459a67edbc388e807c420444c02",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-4-42f4b035b89b"
+  },
+  {
+    "key": "ca/5_IPHONE_69.png",
+    "locale": "ca",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "c554af5857aff3ae3463b2b1ad38cdb82b52bc4224b336932d7c1e7a1959b4ba",
+    "reference": "vyt-1.4.15-ca-IPHONE_69-5-c554af5857af"
+  },
+  {
+    "key": "ca/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "8b9a1c77f487a9ec0d7b83dc9ba12c55ba010d4315ecff5207d5c3c20b4754b7",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-0-8b9a1c77f487"
+  },
+  {
+    "key": "ca/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "b837b672227f204b1e993d4dbbedb02e1d9f537cc1481a88a9e9b3cddae0762c",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-1-b837b672227f"
+  },
+  {
+    "key": "ca/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e959aa94e56ac4575b80aed7831c41cc6d750c0516573b3fa16580fb421343d2",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-2-e959aa94e56a"
+  },
+  {
+    "key": "ca/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "b8a4b35862bf091f23ce41f7d2cbec9ce90093bee878329e4725966a2b561dab",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-3-b8a4b35862bf"
+  },
+  {
+    "key": "ca/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "94436c0cbd315a003c60b571a754d2531beaa4e48f1244a8aa3e4106a0638c98",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-4-94436c0cbd31"
+  },
+  {
+    "key": "ca/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ca",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "b3f37d833aa662c1034b3e1243ea4423c4e387fd8cb99dfd8d1d36e9a3ab7019",
+    "reference": "vyt-1.4.15-ca-IPAD_PRO_3GEN_129-5-b3f37d833aa6"
+  },
+  {
+    "key": "cs/0_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "808f552fa8f2bb4e6fd4b85570e31279a49b0181a62accd0a91e0d9e6c730622",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-0-808f552fa8f2"
+  },
+  {
+    "key": "cs/1_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "582207d4e60484629c85e400012d5af5d678de420800f7d16756d40509b6ca91",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-1-582207d4e604"
+  },
+  {
+    "key": "cs/2_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "e03ada252951d22ed1c6a6f2da0a3d280cf3b0b0dfc6e082b4f83068c12f6a6c",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-2-e03ada252951"
+  },
+  {
+    "key": "cs/3_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "f178136e31b20a8962aba3a4f31c6bd080e6e5944a4d7294d83c9aa67404baa4",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-3-f178136e31b2"
+  },
+  {
+    "key": "cs/4_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "6e285c15ddbf49f486ab7184d3b18a9e956a5ff144f975f506963c239bd0079b",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-4-6e285c15ddbf"
+  },
+  {
+    "key": "cs/5_IPHONE_69.png",
+    "locale": "cs",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "befa48e570e89e15770912a0b80a227a5e6a8f8f64f536b0602e51a492f2f132",
+    "reference": "vyt-1.4.15-cs-IPHONE_69-5-befa48e570e8"
+  },
+  {
+    "key": "cs/0_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "092df35fb91c99c4d14b874399a413a48689679f58a644b137879932fdb7450d",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-0-092df35fb91c"
+  },
+  {
+    "key": "cs/1_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "e27f04466761cd6a7fb0f04ed02c0ec4280659d3bb0bc29af220e5e0621d8c62",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-1-e27f04466761"
+  },
+  {
+    "key": "cs/2_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "6d214f8dced199c4a7bd4eaceeae1d401389d5cb6690f948f0519a90d5ae7893",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-2-6d214f8dced1"
+  },
+  {
+    "key": "cs/3_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "583558f7f01d955ecae4fc09c33fb3b4cfbf1bddece88567c8ebcb0e869fdd0e",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-3-583558f7f01d"
+  },
+  {
+    "key": "cs/4_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "d2c609b3fefe278a2f1448e25a733e1daaac0a23ed5d3ee71cb2c0aca88557d2",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-4-d2c609b3fefe"
+  },
+  {
+    "key": "cs/5_IPAD_PRO_3GEN_129.png",
+    "locale": "cs",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "87cbafc534b1050c16819789aedc0d33645c158b1cc0727253217177c469b0f5",
+    "reference": "vyt-1.4.15-cs-IPAD_PRO_3GEN_129-5-87cbafc534b1"
+  },
+  {
+    "key": "da/0_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "58d7e7bb61336d6ce39f4bf05f49d13392b07daa9d677cd16a0471c394e924a4",
+    "reference": "vyt-1.4.15-da-IPHONE_69-0-58d7e7bb6133"
+  },
+  {
+    "key": "da/1_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "9edb2680e004046c371bd2cf259cd2124459e0984626f246fa1bb32eb7eeb17d",
+    "reference": "vyt-1.4.15-da-IPHONE_69-1-9edb2680e004"
+  },
+  {
+    "key": "da/2_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "5bf6379d97d02c94b66c5866f41bde02a474bfe3cb5ca40349bc8886efbd559a",
+    "reference": "vyt-1.4.15-da-IPHONE_69-2-5bf6379d97d0"
+  },
+  {
+    "key": "da/3_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "6d3f79db8679a214e8c662d2a31fc91d0555ce1f05d249f297aec1850f1a6a82",
+    "reference": "vyt-1.4.15-da-IPHONE_69-3-6d3f79db8679"
+  },
+  {
+    "key": "da/4_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "270736ab7114fed53e516340677b7b54140788364e4ade08aa0f6a7bfd411ac4",
+    "reference": "vyt-1.4.15-da-IPHONE_69-4-270736ab7114"
+  },
+  {
+    "key": "da/5_IPHONE_69.png",
+    "locale": "da",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "a079e213986cfeaf6c4779314faf0f30f74fafffe4c75fba7e332f4a26ab2fd8",
+    "reference": "vyt-1.4.15-da-IPHONE_69-5-a079e213986c"
+  },
+  {
+    "key": "da/0_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "0f40486d09d9c0d8c6c61c3e67074f2b96e97fe8f5d9a1454595954a984fc8ca",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-0-0f40486d09d9"
+  },
+  {
+    "key": "da/1_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "7431cd27b91788fa8200750e1599f19b5d611904fd7c681f4fb8680d45dd09e9",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-1-7431cd27b917"
+  },
+  {
+    "key": "da/2_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7e9defeadd6afaa5cb84faedf319d45d5dceb4eb24c4494a501d8af295559ce1",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-2-7e9defeadd6a"
+  },
+  {
+    "key": "da/3_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "ccd49c2034e0dc157bb8fc58121eb3e01af6253dd57f13417fdab36dd484651d",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-3-ccd49c2034e0"
+  },
+  {
+    "key": "da/4_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "11280e4cf2236c3ce5e035cb24c22dfd0cdee817acbaceb6558bdf703a2e954b",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-4-11280e4cf223"
+  },
+  {
+    "key": "da/5_IPAD_PRO_3GEN_129.png",
+    "locale": "da",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "f693584a082c3a95d76c15cf8a6d450a3a0cb66f163a79a261e70c1ff793a426",
+    "reference": "vyt-1.4.15-da-IPAD_PRO_3GEN_129-5-f693584a082c"
+  },
+  {
+    "key": "de-DE/0_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "d781d80783046b65b049cd32ef1d9a47cc5ecf4c32d4a1193d74a62c1d8ce246",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-0-d781d8078304"
+  },
+  {
+    "key": "de-DE/1_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "3e965ccf4cf3b140d5770bc124c4d62d9f0494b1739cb12ae0891ff0d1f5b623",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-1-3e965ccf4cf3"
+  },
+  {
+    "key": "de-DE/2_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "9c1ceb565529cfc05a17e890d0dbede6e159a38c90193d9062389a7df874a937",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-2-9c1ceb565529"
+  },
+  {
+    "key": "de-DE/3_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "f3c4d8f495d5d0ada3b14b2b50af94198d3b7ce763718fc853059ddc58a404da",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-3-f3c4d8f495d5"
+  },
+  {
+    "key": "de-DE/4_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "bc587952deb50ebdccbea7cb79dd452ce931a4da07a9034250fbff92b02482b3",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-4-bc587952deb5"
+  },
+  {
+    "key": "de-DE/5_IPHONE_69.png",
+    "locale": "de-DE",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "53643079453dab29de2b17c453d23b9fa8edd66842ead701f38fa6bfdd0df83e",
+    "reference": "vyt-1.4.15-de-DE-IPHONE_69-5-53643079453d"
+  },
+  {
+    "key": "de-DE/0_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "e6d1eecc278b104850223c4930d755d3767de6cbe770c28ebffbc0cc512f832c",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-0-e6d1eecc278b"
+  },
+  {
+    "key": "de-DE/1_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "a34bb814efd1d557ef276b939b990afa1300f9cf9cab694f5ee6e43d7a7c3059",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-1-a34bb814efd1"
+  },
+  {
+    "key": "de-DE/2_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "cad6e89d9743699a335ec9e0ab75729e6bf5fec96cf18a82d2fbcf0de2335306",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-2-cad6e89d9743"
+  },
+  {
+    "key": "de-DE/3_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "3e0e846f0fdff5f7ce0a39621b958e0f26a5e3e6dda6b5b181ab951bd5d4ba08",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-3-3e0e846f0fdf"
+  },
+  {
+    "key": "de-DE/4_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "64f780a09ac63f5842d55ebac1b915d7584e722bc635a9048139394aba6a3f46",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-4-64f780a09ac6"
+  },
+  {
+    "key": "de-DE/5_IPAD_PRO_3GEN_129.png",
+    "locale": "de-DE",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "3cf25b7f56d1b9573faa9e7d75eb73774f5f712b0164d74e954b606cd12792b0",
+    "reference": "vyt-1.4.15-de-DE-IPAD_PRO_3GEN_129-5-3cf25b7f56d1"
+  },
+  {
+    "key": "el/0_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "8bb26ecf32c5931709c2dcca751056d9a7878db8030988242988460701acda28",
+    "reference": "vyt-1.4.15-el-IPHONE_69-0-8bb26ecf32c5"
+  },
+  {
+    "key": "el/1_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "388e008eebb9ebca60ed7f7389af8163aa178486e005d9640723652c0dd150b4",
+    "reference": "vyt-1.4.15-el-IPHONE_69-1-388e008eebb9"
+  },
+  {
+    "key": "el/2_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "587b97a91c2e51ac1045345709871c2d6802206e749189cf4062492d78f93bc6",
+    "reference": "vyt-1.4.15-el-IPHONE_69-2-587b97a91c2e"
+  },
+  {
+    "key": "el/3_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "785162a342b4b4c37c414c4a4a979882db3363922479938e12a149d71b6cefd3",
+    "reference": "vyt-1.4.15-el-IPHONE_69-3-785162a342b4"
+  },
+  {
+    "key": "el/4_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "cce89868ffa242a208167f54690abca7ee36ea6abe9f244ed0f31385a97b899c",
+    "reference": "vyt-1.4.15-el-IPHONE_69-4-cce89868ffa2"
+  },
+  {
+    "key": "el/5_IPHONE_69.png",
+    "locale": "el",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "10df3d284ad69fad272ac18189733515b70903690306194aa86292ca2ad45865",
+    "reference": "vyt-1.4.15-el-IPHONE_69-5-10df3d284ad6"
+  },
+  {
+    "key": "el/0_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "eee88beba8fbf0de045904e140bd012cdf9b742f400500c53008168c65f0accb",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-0-eee88beba8fb"
+  },
+  {
+    "key": "el/1_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "6d8f335b7aac1c7532023f76b4a2b7afd7ccec1aa4f8a4ac314298400af8ebdf",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-1-6d8f335b7aac"
+  },
+  {
+    "key": "el/2_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "3a48e39b3cb9d663c844315d206be58847845efbe67b6ef7ca706032f932e84c",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-2-3a48e39b3cb9"
+  },
+  {
+    "key": "el/3_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "a7e5815e8de204c78c86ddcf610f722d07f02cbd3523993b5ebdbaf0cf7cf80d",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-3-a7e5815e8de2"
+  },
+  {
+    "key": "el/4_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "56d4b188a6223a3ca3090a44ed09a8ec11c3f3c7e01b94b7217eab2e37c9a4fe",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-4-56d4b188a622"
+  },
+  {
+    "key": "el/5_IPAD_PRO_3GEN_129.png",
+    "locale": "el",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "a2379e65ac4e3fdfca4054b80bb089c9dd91900df097e50edd32dc42546318d8",
+    "reference": "vyt-1.4.15-el-IPAD_PRO_3GEN_129-5-a2379e65ac4e"
+  },
+  {
+    "key": "en-AU/0_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "7d959dd98eead38659ef47ee6e20f7455ae20628f9cfe9669142fc1c25d13b47",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-0-7d959dd98eea"
+  },
+  {
+    "key": "en-AU/1_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "217bdc3658915584de00befd4b9b4f5272c0d1bbb73bcded1abee35c572ef620",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-1-217bdc365891"
+  },
+  {
+    "key": "en-AU/2_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "978b7bfe6290003dfd7e20588cd8dd0129e71aaaf70be9e09f7f3927c409d646",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-2-978b7bfe6290"
+  },
+  {
+    "key": "en-AU/3_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "6eddee5d5c1b4035fe76470be365352d0d174d2343a453d1fcccbde73315cea4",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-3-6eddee5d5c1b"
+  },
+  {
+    "key": "en-AU/4_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "cac311e95bd6f8962c83a604de60528ee9ec526da40cdff3bc8947e5047e04c4",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-4-cac311e95bd6"
+  },
+  {
+    "key": "en-AU/5_IPHONE_69.png",
+    "locale": "en-AU",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "b3b57cfd16e020453b1919fad2d408711c0f907193f7a30e7b3256f441d6c09b",
+    "reference": "vyt-1.4.15-en-AU-IPHONE_69-5-b3b57cfd16e0"
+  },
+  {
+    "key": "en-AU/0_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "4e63041b4cc059737a1e8e51b2c7a7a8a6298133d9c226d076219e4f12b93bba",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-0-4e63041b4cc0"
+  },
+  {
+    "key": "en-AU/1_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "1befe89517f681d2a48a7c79a85b94bcb23d5af5e46c21d3befc10a6d45b0eba",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-1-1befe89517f6"
+  },
+  {
+    "key": "en-AU/2_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "74df1650478d1d4ada972da350ba7807736acf92d04bbf38cf69378d7a79f83e",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-2-74df1650478d"
+  },
+  {
+    "key": "en-AU/3_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "5529559c7b6b95d5d871fe9825c83c4acbb67ba6a985368a1b7acf9d33df852a",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-3-5529559c7b6b"
+  },
+  {
+    "key": "en-AU/4_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "d80d9ca4289ec97cfb2b917e43066d040ce16b3c172ac84469ee383162c8f19a",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-4-d80d9ca4289e"
+  },
+  {
+    "key": "en-AU/5_IPAD_PRO_3GEN_129.png",
+    "locale": "en-AU",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "71e550fa9f457b4f4d5a6c4d2fe35e7f5e7803da2d2a0c5ce84438212c6a7af7",
+    "reference": "vyt-1.4.15-en-AU-IPAD_PRO_3GEN_129-5-71e550fa9f45"
+  },
+  {
+    "key": "en-CA/0_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "7d959dd98eead38659ef47ee6e20f7455ae20628f9cfe9669142fc1c25d13b47",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-0-7d959dd98eea"
+  },
+  {
+    "key": "en-CA/1_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "80f84ead496bdf84837cadbb6da26e4449a27bd79cbd737becfa5b925674ad06",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-1-80f84ead496b"
+  },
+  {
+    "key": "en-CA/2_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "978b7bfe6290003dfd7e20588cd8dd0129e71aaaf70be9e09f7f3927c409d646",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-2-978b7bfe6290"
+  },
+  {
+    "key": "en-CA/3_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "6eddee5d5c1b4035fe76470be365352d0d174d2343a453d1fcccbde73315cea4",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-3-6eddee5d5c1b"
+  },
+  {
+    "key": "en-CA/4_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "09544bddeebb8daff3561f22490d5ceea59f7fd9d9251cd23c3eba234c76eb33",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-4-09544bddeebb"
+  },
+  {
+    "key": "en-CA/5_IPHONE_69.png",
+    "locale": "en-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "bf214bace949e7b92245a82970f8d88fe02c7b22343418023efcd55a54ae4313",
+    "reference": "vyt-1.4.15-en-CA-IPHONE_69-5-bf214bace949"
+  },
+  {
+    "key": "en-CA/0_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "4e63041b4cc059737a1e8e51b2c7a7a8a6298133d9c226d076219e4f12b93bba",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-0-4e63041b4cc0"
+  },
+  {
+    "key": "en-CA/1_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "7ea78625004e1ba4bb419bf381eb7a21463389799cd8cfca45d63f3d4aa6c207",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-1-7ea78625004e"
+  },
+  {
+    "key": "en-CA/2_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "74df1650478d1d4ada972da350ba7807736acf92d04bbf38cf69378d7a79f83e",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-2-74df1650478d"
+  },
+  {
+    "key": "en-CA/3_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "5529559c7b6b95d5d871fe9825c83c4acbb67ba6a985368a1b7acf9d33df852a",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-3-5529559c7b6b"
+  },
+  {
+    "key": "en-CA/4_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "017040bc7c31162ac11e6ecc9571ccfb9a59b66d40c503e01e22c1adddff816c",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-4-017040bc7c31"
+  },
+  {
+    "key": "en-CA/5_IPAD_PRO_3GEN_129.png",
+    "locale": "en-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "7a40cff70be198c098b215bd7b5ab547db10f155dc562b217ccb542deb399112",
+    "reference": "vyt-1.4.15-en-CA-IPAD_PRO_3GEN_129-5-7a40cff70be1"
+  },
+  {
+    "key": "en-GB/0_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "7d959dd98eead38659ef47ee6e20f7455ae20628f9cfe9669142fc1c25d13b47",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-0-7d959dd98eea"
+  },
+  {
+    "key": "en-GB/1_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "1ca17d460f4e3f1fb1cad784f753c3db471650c9c7b1119b0a65dbba036d86f1",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-1-1ca17d460f4e"
+  },
+  {
+    "key": "en-GB/2_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "978b7bfe6290003dfd7e20588cd8dd0129e71aaaf70be9e09f7f3927c409d646",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-2-978b7bfe6290"
+  },
+  {
+    "key": "en-GB/3_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "6eddee5d5c1b4035fe76470be365352d0d174d2343a453d1fcccbde73315cea4",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-3-6eddee5d5c1b"
+  },
+  {
+    "key": "en-GB/4_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "f7152c4efdd5155e45e9742dfa693443d2364ea8e02e1f9b39cdf39ca7ed310c",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-4-f7152c4efdd5"
+  },
+  {
+    "key": "en-GB/5_IPHONE_69.png",
+    "locale": "en-GB",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "19d371e15d48260c3bf538db7f6509ee76b6fec8f29db8e60dc7cc87bf8e1db3",
+    "reference": "vyt-1.4.15-en-GB-IPHONE_69-5-19d371e15d48"
+  },
+  {
+    "key": "en-GB/0_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "4e63041b4cc059737a1e8e51b2c7a7a8a6298133d9c226d076219e4f12b93bba",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-0-4e63041b4cc0"
+  },
+  {
+    "key": "en-GB/1_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "1befe89517f681d2a48a7c79a85b94bcb23d5af5e46c21d3befc10a6d45b0eba",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-1-1befe89517f6"
+  },
+  {
+    "key": "en-GB/2_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "74df1650478d1d4ada972da350ba7807736acf92d04bbf38cf69378d7a79f83e",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-2-74df1650478d"
+  },
+  {
+    "key": "en-GB/3_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "5529559c7b6b95d5d871fe9825c83c4acbb67ba6a985368a1b7acf9d33df852a",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-3-5529559c7b6b"
+  },
+  {
+    "key": "en-GB/4_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "5fa5489a814d2b6b731a56f3ddc66587eb53f79cef7f39e98197dd7a92f4f168",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-4-5fa5489a814d"
+  },
+  {
+    "key": "en-GB/5_IPAD_PRO_3GEN_129.png",
+    "locale": "en-GB",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "f2df5317f0165445cdbcde848e05bc83da4e9cc1192ebc25208db7923a320b02",
+    "reference": "vyt-1.4.15-en-GB-IPAD_PRO_3GEN_129-5-f2df5317f016"
+  },
+  {
+    "key": "en-US/0_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "cf962c468595182116a04f88dfb6b6a3955455c5ddf25cb92042206d2a893127",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-0-cf962c468595"
+  },
+  {
+    "key": "en-US/1_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "93cc2cbf2d5d4eb7ae3565ed7ef8b1a2c0539d694f430ab2ac8eece9dbe15558",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-1-93cc2cbf2d5d"
+  },
+  {
+    "key": "en-US/2_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "1154461d52cecd6ce01a1742872688714ce02aab843cd5589c6dce12d7bf3bef",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-2-1154461d52ce"
+  },
+  {
+    "key": "en-US/3_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "f189a580bd12b6c1c9d854b85eb445d0af070cdf6ca1a6923ea0fa50a60969fe",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-3-f189a580bd12"
+  },
+  {
+    "key": "en-US/4_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "d890344fd3be82135d788a1ef6b6daf876d67ad7364d17ea0506f7dc63123f54",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-4-d890344fd3be"
+  },
+  {
+    "key": "en-US/5_IPHONE_69.png",
+    "locale": "en-US",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "9abfd1548d67b47ed484d2aecf598fd6d56f7956c1735ee23ffd17ad009e3bac",
+    "reference": "vyt-1.4.15-en-US-IPHONE_69-5-9abfd1548d67"
+  },
+  {
+    "key": "en-US/0_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "8c82ab8bae2f8d383fdfe6c1939c7d90a23fcb2e6f2206b188e81c2733cca041",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-0-8c82ab8bae2f"
+  },
+  {
+    "key": "en-US/1_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "061b3fab7c38d70f8a190d912c89171bb0f283008d8e36bf24582590ed70c26e",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-1-061b3fab7c38"
+  },
+  {
+    "key": "en-US/2_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "5a8ab5c8c27ca426b266b32aa46ebb0f17c41320be44b8c4fcfff6ad28ee270e",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-2-5a8ab5c8c27c"
+  },
+  {
+    "key": "en-US/3_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "0601cd3b194d46be996195cb1ff593389c423d8bb507ec7603828bb6462a0a5d",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-3-0601cd3b194d"
+  },
+  {
+    "key": "en-US/4_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "e695239a3709144951daac4201b8aa5ab013edd021ee2657dd572e638ef4cdb8",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-4-e695239a3709"
+  },
+  {
+    "key": "en-US/5_IPAD_PRO_3GEN_129.png",
+    "locale": "en-US",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "8ff8423747919658a5d013e2c9682a891b76e22d2dfc2d249d6011885db446cd",
+    "reference": "vyt-1.4.15-en-US-IPAD_PRO_3GEN_129-5-8ff842374791"
+  },
+  {
+    "key": "es-ES/0_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "8c86fe4b02348a935cfd78b708108c2c3827d14056ea04788aaa002f0a7f24f7",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-0-8c86fe4b0234"
+  },
+  {
+    "key": "es-ES/1_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "38edb37f8d84c8426e5f7f21722897e8e2d4e609110a8e7639fced2bdf34b756",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-1-38edb37f8d84"
+  },
+  {
+    "key": "es-ES/2_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "8c5b7111f2aa678d0f277e2ad1f433ed7fff6d4720d87e957df6aaabb63680a4",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-2-8c5b7111f2aa"
+  },
+  {
+    "key": "es-ES/3_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "bc8dd91cacad10765dd38500e9e46c09e08a83491e777882e0de31865fdca8e9",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-3-bc8dd91cacad"
+  },
+  {
+    "key": "es-ES/4_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "5645c7e3d17d6361392c947125bb95b5242c5a473a442954da17ed35a034813e",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-4-5645c7e3d17d"
+  },
+  {
+    "key": "es-ES/5_IPHONE_69.png",
+    "locale": "es-ES",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "d8ef05dcd61165398557ff53ea2c55738904e24dfc953be25436c4a51ddb58e4",
+    "reference": "vyt-1.4.15-es-ES-IPHONE_69-5-d8ef05dcd611"
+  },
+  {
+    "key": "es-ES/0_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "8960113ae58079437a617cc1a5eb237d1be13d2fc3b1ccbe990ce30b9702fd62",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-0-8960113ae580"
+  },
+  {
+    "key": "es-ES/1_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "816d3cf6cc27baaf6cadcbb5c4a459b15cc2f4cf8451d7f9bfc58075a56366d1",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-1-816d3cf6cc27"
+  },
+  {
+    "key": "es-ES/2_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "eb1c1abe253a0a7835022062001340f5703e3ba67d889b35e706268e45795dea",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-2-eb1c1abe253a"
+  },
+  {
+    "key": "es-ES/3_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "271bce70efa691dd971ef45c9782a4138dfa655ce8610fc39b280e8d09714ae6",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-3-271bce70efa6"
+  },
+  {
+    "key": "es-ES/4_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "bb719c387669ce8f05865f0a52804470692f985b0429b3256840478d389e2dc8",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-4-bb719c387669"
+  },
+  {
+    "key": "es-ES/5_IPAD_PRO_3GEN_129.png",
+    "locale": "es-ES",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "c20a9ed490c2c7b3c8f679bccd8d93bd3551ccea436c3ff15ca49fe802c20b45",
+    "reference": "vyt-1.4.15-es-ES-IPAD_PRO_3GEN_129-5-c20a9ed490c2"
+  },
+  {
+    "key": "es-MX/0_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "378dbd89edf3e7a73b71bd31aa2417572724f4267f5d741a8bae6c3f6c1ebb6f",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-0-378dbd89edf3"
+  },
+  {
+    "key": "es-MX/1_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "78b8bd69d036817284a0f154c2db61c4bec38bc34ef21e39194bf50161f19c13",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-1-78b8bd69d036"
+  },
+  {
+    "key": "es-MX/2_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "a7b9f33f8c8443bfada2f6a0b4b9a45817571cd1a1e7275ccc3742e5e5cbd14b",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-2-a7b9f33f8c84"
+  },
+  {
+    "key": "es-MX/3_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "07fed248ade3f9e2ca007b6aadf848ceacbab454ba6822aaea900752debb3c8d",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-3-07fed248ade3"
+  },
+  {
+    "key": "es-MX/4_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "c2fc3f0c6ef3135ecfc9d620615b853bddda91bcda7aed4663bfd31901259b84",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-4-c2fc3f0c6ef3"
+  },
+  {
+    "key": "es-MX/5_IPHONE_69.png",
+    "locale": "es-MX",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "1f8313f413df81ed80c626271e789e038a82eb2cb6e167e7fd54736202828d72",
+    "reference": "vyt-1.4.15-es-MX-IPHONE_69-5-1f8313f413df"
+  },
+  {
+    "key": "es-MX/0_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "4190def738ee06355ad69b99a975aea8f602aa337ce2ad3ae2baf783cc8485a9",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-0-4190def738ee"
+  },
+  {
+    "key": "es-MX/1_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "c7bc3964a23f524d298128797b299ebf7b86dbbb99ff828fcef46346bd802bdc",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-1-c7bc3964a23f"
+  },
+  {
+    "key": "es-MX/2_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7f7f751f875f614fc5d5a21ef23518db790f8c9be646d7688a463c34f1937b2a",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-2-7f7f751f875f"
+  },
+  {
+    "key": "es-MX/3_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "ef0326e5fec08d5e8dba8dee7fdb638ea935f09ce95bf3253d72346839517ed8",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-3-ef0326e5fec0"
+  },
+  {
+    "key": "es-MX/4_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "2c5d1acefdc6ffdeeee1e60323a88de1c349e7ea5eb51586edfe0ddb11bf9a08",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-4-2c5d1acefdc6"
+  },
+  {
+    "key": "es-MX/5_IPAD_PRO_3GEN_129.png",
+    "locale": "es-MX",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "aee700da98028803f597ffb8062692f657cf9cf2736de3a90a3d173c05f0d6f8",
+    "reference": "vyt-1.4.15-es-MX-IPAD_PRO_3GEN_129-5-aee700da9802"
+  },
+  {
+    "key": "fi/0_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "77ed85907591e6ecc61dfd0922ae26044ff63b606a9baeccca3514932b734f2a",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-0-77ed85907591"
+  },
+  {
+    "key": "fi/1_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "48517c80195d04ed0803901c8ddf3f8f89ae930138e4b10d86a4e51db427609f",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-1-48517c80195d"
+  },
+  {
+    "key": "fi/2_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "3d4476507d28274ffcc41d0b1dda7a45b51ee5f8432a4b4533dba6b7c8a7d09e",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-2-3d4476507d28"
+  },
+  {
+    "key": "fi/3_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "a683e472dcc5e99f5c95b4720c45120321c212fe1386063db8a33f3cb3c392b0",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-3-a683e472dcc5"
+  },
+  {
+    "key": "fi/4_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "d4891688f31efe5d63bc65224be98ee6ad664b74136f76c3a54b9d0cc992df33",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-4-d4891688f31e"
+  },
+  {
+    "key": "fi/5_IPHONE_69.png",
+    "locale": "fi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "2309ad3e0110b686f98c05709d7dfe4d119db446f6cc1e37e7aedc31d2ec9baf",
+    "reference": "vyt-1.4.15-fi-IPHONE_69-5-2309ad3e0110"
+  },
+  {
+    "key": "fi/0_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "7afebd73451d62da8f6c0145b1037839726c0b8b14dffeca1d2eb13265c11b0e",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-0-7afebd73451d"
+  },
+  {
+    "key": "fi/1_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "9bd20a503cb494a7c12becdfba37407072344896d1aab9cdcb1d54d310469416",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-1-9bd20a503cb4"
+  },
+  {
+    "key": "fi/2_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "28ca57c012801fc4b536c3a8e230ea21f7381cea448f9e890771ab062e5412af",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-2-28ca57c01280"
+  },
+  {
+    "key": "fi/3_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "66728037325e3007d8918ff2664a6a024c2a20b9f5fc9d78f6479d1f31acdd7a",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-3-66728037325e"
+  },
+  {
+    "key": "fi/4_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "e6b0af4f1facb086a7fd741b71df5a8b60b80e0f03fb93049c9b6f07861f784a",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-4-e6b0af4f1fac"
+  },
+  {
+    "key": "fi/5_IPAD_PRO_3GEN_129.png",
+    "locale": "fi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "67f3711a4c4c98b416169e85032f9cec7e5d513db190b677ee7ede3fcac219dd",
+    "reference": "vyt-1.4.15-fi-IPAD_PRO_3GEN_129-5-67f3711a4c4c"
+  },
+  {
+    "key": "fr-CA/0_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5179c315d194404b0627dd369ed1f323077f7aa375416eacaa23c29dfd42dbb5",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-0-5179c315d194"
+  },
+  {
+    "key": "fr-CA/1_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "b93bb7386e2177bde92026c642af8bd56d07c29f9544df4fd73f86cb9678d27d",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-1-b93bb7386e21"
+  },
+  {
+    "key": "fr-CA/2_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "3c5a285b01dfbad03b8cd4e04600f2f70a0724e5fe0629426cc96f368c74e16a",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-2-3c5a285b01df"
+  },
+  {
+    "key": "fr-CA/3_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "6ffae3a3152ce9d68e5ac3d997af839babdf5ddaeec02bbf50e96eb7ab423053",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-3-6ffae3a3152c"
+  },
+  {
+    "key": "fr-CA/4_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "cd7c7d839884cddea12326c36d757c0c7447465ea728909c21b93d04f23a82a2",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-4-cd7c7d839884"
+  },
+  {
+    "key": "fr-CA/5_IPHONE_69.png",
+    "locale": "fr-CA",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "aab20fee3f09663e30433765226e4921d95f3a9affbfa39bb15684a2f813b38c",
+    "reference": "vyt-1.4.15-fr-CA-IPHONE_69-5-aab20fee3f09"
+  },
+  {
+    "key": "fr-CA/0_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "2d084b3cc7b021683175cdd1f766675d411e4cc6d8f2bc3e5d680370e1229ed9",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-0-2d084b3cc7b0"
+  },
+  {
+    "key": "fr-CA/1_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "1a8d5fb953e44b80cf0279363048a213cb9660013a7c55964fea90ba1fa4105d",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-1-1a8d5fb953e4"
+  },
+  {
+    "key": "fr-CA/2_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "c8869c51990590d7b9002f64de410ce258b53919d71946ee15a7e22ab95d4250",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-2-c8869c519905"
+  },
+  {
+    "key": "fr-CA/3_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "a9e36d3cad1d0efbd4451bd7d16cd888024b96b6ea0d522222703b9e0b90cfdd",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-3-a9e36d3cad1d"
+  },
+  {
+    "key": "fr-CA/4_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "77e306977ddaacb8eac682e191ee795015fdbad91e1da5dc2f3c3b9e9f5acaa8",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-4-77e306977dda"
+  },
+  {
+    "key": "fr-CA/5_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-CA",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "7a9960195781666bf978132ec69fe8c43889887dee28c31296e067f0c955f74a",
+    "reference": "vyt-1.4.15-fr-CA-IPAD_PRO_3GEN_129-5-7a9960195781"
+  },
+  {
+    "key": "fr-FR/0_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "d2e0b41e2407a23894d1ea2ca0424eb35e6b8e88b764e2d40a7460faee06abe3",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-0-d2e0b41e2407"
+  },
+  {
+    "key": "fr-FR/1_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "858df9e7f3dbcc4492aecda14838b0fcb3487971cf01e211675fbe3f4bbf203f",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-1-858df9e7f3db"
+  },
+  {
+    "key": "fr-FR/2_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "37d6b5aa312e6509eceb99ba4fa530549162f5b3bc76dcc14b537614831a2a42",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-2-37d6b5aa312e"
+  },
+  {
+    "key": "fr-FR/3_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "d7ed30488e3d622beb55e7ebf994551417bd058b960cfbfdb3c132173b8834d9",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-3-d7ed30488e3d"
+  },
+  {
+    "key": "fr-FR/4_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "beb4e12236ae92e6813698d635b29896ee39dfa18158ed1ae1de7094848913fe",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-4-beb4e12236ae"
+  },
+  {
+    "key": "fr-FR/5_IPHONE_69.png",
+    "locale": "fr-FR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "8128005670951a73bfa1f3520dd8dc751364476279000976130899e46c8e2108",
+    "reference": "vyt-1.4.15-fr-FR-IPHONE_69-5-812800567095"
+  },
+  {
+    "key": "fr-FR/0_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "30703a790feaaf753c77938c6bd530fab013952621a79d56c1b6bfe0b18b0935",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-0-30703a790fea"
+  },
+  {
+    "key": "fr-FR/1_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "16dd9a81f6568f22b18e610c18a4db9746f42f705b91cf54ca1297477cb03631",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-1-16dd9a81f656"
+  },
+  {
+    "key": "fr-FR/2_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e99773d85c76a28e1fd85f61313b10fc4a1b0918f644418284d302610a0d9e56",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-2-e99773d85c76"
+  },
+  {
+    "key": "fr-FR/3_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "ce747e83edc76084ef9c3b756e4ec336c40525798836386e3b5d1a79e1d94e1a",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-3-ce747e83edc7"
+  },
+  {
+    "key": "fr-FR/4_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "12b5556756f7014d0a1361c930584867ca7fe2bd7762af28dc704421e53f069f",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-4-12b5556756f7"
+  },
+  {
+    "key": "fr-FR/5_IPAD_PRO_3GEN_129.png",
+    "locale": "fr-FR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "7114bb0d001d0d49b0180476c59c2ad349c7ceaf04ef96befbd5b3c7bf301f24",
+    "reference": "vyt-1.4.15-fr-FR-IPAD_PRO_3GEN_129-5-7114bb0d001d"
+  },
+  {
+    "key": "gu-IN/0_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5e53dba78cc22ddaf064937b0fd437c3a6e1b7c3b38149a140a174103813acff",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-0-5e53dba78cc2"
+  },
+  {
+    "key": "gu-IN/1_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "eb10304c7294cb0fb1bba1b4fbff5150efcfccd8807944de954b13b094f05dff",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-1-eb10304c7294"
+  },
+  {
+    "key": "gu-IN/2_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "fcd9f63a003feaf01904ee7f76dc63aaa314ede0df52e0613e4e5d4b2ea43f04",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-2-fcd9f63a003f"
+  },
+  {
+    "key": "gu-IN/3_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "310a9679f769bf01b57a7b65744f5e6649d7f46c767c6137db8ba611b60b77e6",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-3-310a9679f769"
+  },
+  {
+    "key": "gu-IN/4_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "82de2020f5ff3d37ebd326de00a7f929c3883b6626bc598ab89879ffba2736b8",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-4-82de2020f5ff"
+  },
+  {
+    "key": "gu-IN/5_IPHONE_69.png",
+    "locale": "gu-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "727bde9de52ada018f4138ca65199f7b9db9cb1a1fa1f607352d23549bb0951d",
+    "reference": "vyt-1.4.15-gu-IN-IPHONE_69-5-727bde9de52a"
+  },
+  {
+    "key": "gu-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "f0bfa0c45a79f899e4a5a2c1a18cfb0c3377b342a03a321aa81ff317d36ae18e",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-0-f0bfa0c45a79"
+  },
+  {
+    "key": "gu-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "b872d813b0c70e850095c11fe6d86aecec4b3c285b2b9e4434c63a628bde6e23",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-1-b872d813b0c7"
+  },
+  {
+    "key": "gu-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "df9fe748acdb039e7a69ab10fdfae4189347e806e9609e3151f76610a4ade63c",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-2-df9fe748acdb"
+  },
+  {
+    "key": "gu-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "29119156268eb8665f5a3a56be198f88e913bb2e2a73ce6c6355dd0ca4bc8276",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-3-29119156268e"
+  },
+  {
+    "key": "gu-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "b16c65237677c0df6e8955afe6f4a54abdd871d0d1a6fb4059ee4ae852cf204a",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-4-b16c65237677"
+  },
+  {
+    "key": "gu-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "gu-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "4ee20d1ac35157d5c6fbb7d27b3b495632ca3eb19b2b459c865ed9f6269efd76",
+    "reference": "vyt-1.4.15-gu-IN-IPAD_PRO_3GEN_129-5-4ee20d1ac351"
+  },
+  {
+    "key": "he/0_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "724b30f7407e226c229cfa7fb30bf94cd0402b14be5149703fbfb5d9f76706da",
+    "reference": "vyt-1.4.15-he-IPHONE_69-0-724b30f7407e"
+  },
+  {
+    "key": "he/1_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "2d22022596a7efbeb9ec285178d09b299df4b57f2726a97d8412b44ea11abc69",
+    "reference": "vyt-1.4.15-he-IPHONE_69-1-2d22022596a7"
+  },
+  {
+    "key": "he/2_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "3240120dd0333e629f897e4bff15d9b16e25e9e489e7d5e0f49ca76436b1fb61",
+    "reference": "vyt-1.4.15-he-IPHONE_69-2-3240120dd033"
+  },
+  {
+    "key": "he/3_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "940ae36aebc3d557683b30ac08dceafcd6d65dd1c340ef31a5734cc18a850f19",
+    "reference": "vyt-1.4.15-he-IPHONE_69-3-940ae36aebc3"
+  },
+  {
+    "key": "he/4_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "972af01a248ea8c482058b2af5027ee9cb30f5e81173e46be868ce92cd0f54f9",
+    "reference": "vyt-1.4.15-he-IPHONE_69-4-972af01a248e"
+  },
+  {
+    "key": "he/5_IPHONE_69.png",
+    "locale": "he",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "549ad9b3a4e07536136faf968eea70548f903c09ad48be2edfa3aed515f64f25",
+    "reference": "vyt-1.4.15-he-IPHONE_69-5-549ad9b3a4e0"
+  },
+  {
+    "key": "he/0_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "9b2e403b4081e9ea114c9c392297dba8d490751244cea7f1a6f7bd35bd381fe3",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-0-9b2e403b4081"
+  },
+  {
+    "key": "he/1_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "d9c155a7483cc13aff0486d599435701703978382c1a816d2342329f3e8c2868",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-1-d9c155a7483c"
+  },
+  {
+    "key": "he/2_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e955c6728757ce7c8f5e2fcf22bdcf8d579f918aa7bcb7ed6d5c31c44956bfb2",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-2-e955c6728757"
+  },
+  {
+    "key": "he/3_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "0e1a9212d0b32a46bfc8f60a816d5b82193d99818d9b8c42b6413aa4e3626f54",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-3-0e1a9212d0b3"
+  },
+  {
+    "key": "he/4_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "a51bf3141e2f004c3df19142b6d903ee1149758da64374494c860f60fed16a6b",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-4-a51bf3141e2f"
+  },
+  {
+    "key": "he/5_IPAD_PRO_3GEN_129.png",
+    "locale": "he",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "d94e114b72335ff5a4078aff615b001f69b22c451c52c244ddd327ad280c7840",
+    "reference": "vyt-1.4.15-he-IPAD_PRO_3GEN_129-5-d94e114b7233"
+  },
+  {
+    "key": "hi/0_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5294bfe1a9d1973735569f8b5bedd30b33c5b91c7f6e680dca213971a9d22930",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-0-5294bfe1a9d1"
+  },
+  {
+    "key": "hi/1_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "428929c14d012dfa9180005a2ab5466fb6d59289ea1d8a23b3b2876b70da1275",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-1-428929c14d01"
+  },
+  {
+    "key": "hi/2_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "c9a8c605f798935cd92ed0ea1aefeef1fa9d739d8942cd29db361aee74570e52",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-2-c9a8c605f798"
+  },
+  {
+    "key": "hi/3_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "9bc3fa193b33c89fcc757f98cba4f335fa78ccf9026a22751b6baa52f81747be",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-3-9bc3fa193b33"
+  },
+  {
+    "key": "hi/4_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "5852a53c2fc493be9746629f3567b225de0e509e3f71b0d46b607750755c006c",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-4-5852a53c2fc4"
+  },
+  {
+    "key": "hi/5_IPHONE_69.png",
+    "locale": "hi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "147977c0325fd81ae6065b83f8ba127c91ff011b02ad8ec4f9c1cd809f7a0969",
+    "reference": "vyt-1.4.15-hi-IPHONE_69-5-147977c0325f"
+  },
+  {
+    "key": "hi/0_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "d27369057390373d5ac900f577d08f31373d6cbc97ec116106680795dd699dca",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-0-d27369057390"
+  },
+  {
+    "key": "hi/1_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "bb9146d9420a8766b13968f139c4c4676692dba861f4fb27b4a2d2492c54dd2e",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-1-bb9146d9420a"
+  },
+  {
+    "key": "hi/2_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "a5f3229549eb7ae635b50db8cbbd38a7d5d49f980ed85f3bec84dcf6496fd83e",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-2-a5f3229549eb"
+  },
+  {
+    "key": "hi/3_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "f3e16d804993134fd313adac7235887f6e0b8d6794e11d2c56f61c0e33be720e",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-3-f3e16d804993"
+  },
+  {
+    "key": "hi/4_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "fdd815f6c41e340bf48f8825ddcab7828e91ba391ff4d9bbaa47199b6c20f3b0",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-4-fdd815f6c41e"
+  },
+  {
+    "key": "hi/5_IPAD_PRO_3GEN_129.png",
+    "locale": "hi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "1120e55865b1b1d4c7f6da820a33e6736a8c58e81b555e27d0141d5105d3cd84",
+    "reference": "vyt-1.4.15-hi-IPAD_PRO_3GEN_129-5-1120e55865b1"
+  },
+  {
+    "key": "hr/0_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "17b38465da48c8a30f592706c062f2978045cf27d195cfda10b4bce29763157b",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-0-17b38465da48"
+  },
+  {
+    "key": "hr/1_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "3e00546a1ba7d45759768ee5960a3a354e846c052d794c930a67a2752b1f5ff7",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-1-3e00546a1ba7"
+  },
+  {
+    "key": "hr/2_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "d2ca36c864bb03db39dae54c30d3be741528796b0ca5d719c33779aeaaa10f7b",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-2-d2ca36c864bb"
+  },
+  {
+    "key": "hr/3_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "dfcadaea94b985d1f08cb9d16639237a3dc1b3bbc424d6b82d745b0bfe0d02b5",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-3-dfcadaea94b9"
+  },
+  {
+    "key": "hr/4_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "f006c91f54de809a4e8ea003e671c47992d83b4d9b5d996677df17bef6cf4921",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-4-f006c91f54de"
+  },
+  {
+    "key": "hr/5_IPHONE_69.png",
+    "locale": "hr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "684d44626be7d0495969c87a143159a41b37ac9db51bf4427eae2a60635b244f",
+    "reference": "vyt-1.4.15-hr-IPHONE_69-5-684d44626be7"
+  },
+  {
+    "key": "hr/0_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "5f54b1d23d5e96786858e50a1077e628d388b9e98b05e379704b18fb49b310e9",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-0-5f54b1d23d5e"
+  },
+  {
+    "key": "hr/1_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "b1376fe6d0733f795f6786601eb2bd48909f7659eb269786db9b88e4da45bbab",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-1-b1376fe6d073"
+  },
+  {
+    "key": "hr/2_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "88e146bbac51385ecec1f8d49eae595340bd29b8bd41794d8e103f9d382eae7e",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-2-88e146bbac51"
+  },
+  {
+    "key": "hr/3_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "71fa0359e1135942ecf959589204141283d00674079148080e8edf132665c3e8",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-3-71fa0359e113"
+  },
+  {
+    "key": "hr/4_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "7c686c38c89d6347b6d2e1d9fa98d2983b3319b54096477fec5c63e32f749b49",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-4-7c686c38c89d"
+  },
+  {
+    "key": "hr/5_IPAD_PRO_3GEN_129.png",
+    "locale": "hr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "77e4dda1d05da1b09e9b8edefa9e5ab77100907a917325dea3a576c8a59ede04",
+    "reference": "vyt-1.4.15-hr-IPAD_PRO_3GEN_129-5-77e4dda1d05d"
+  },
+  {
+    "key": "hu/0_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "6069cdd6178211b6fb3d13ad4922f45ec30e155d515b792e106d7175c41f3794",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-0-6069cdd61782"
+  },
+  {
+    "key": "hu/1_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "68317ac92870aa9fb2fffb246cd264afcb0aace2ae1086aec9c9107c585d0141",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-1-68317ac92870"
+  },
+  {
+    "key": "hu/2_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "9a825b1447a63817e1f2a9d48596ee8e349080490e3cc41174018d2454db9598",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-2-9a825b1447a6"
+  },
+  {
+    "key": "hu/3_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "69e54f826545c4b12093e5b44f587dfb5d7841c1659a4bf456493ba9ce30e7f6",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-3-69e54f826545"
+  },
+  {
+    "key": "hu/4_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "e8fc6d55b83a3bb208802159d1380cb7c1b10ad6824fbcc98db831cbb4bcdc1d",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-4-e8fc6d55b83a"
+  },
+  {
+    "key": "hu/5_IPHONE_69.png",
+    "locale": "hu",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "4d8838d00e69a1b1e6425caab5c575d054f6453c9f9039a6adcd0bc839d2b188",
+    "reference": "vyt-1.4.15-hu-IPHONE_69-5-4d8838d00e69"
+  },
+  {
+    "key": "hu/0_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "b52ab27d52afb482fdf6199ecab29d21042b271370554ef33923162f210028f0",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-0-b52ab27d52af"
+  },
+  {
+    "key": "hu/1_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "7b284430816433d2019a303cceb826ba6ee82eb90d2ddd6948254ba6d1b4d447",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-1-7b2844308164"
+  },
+  {
+    "key": "hu/2_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e07d7273ffe316c77427028fe63b6dad16a8feaf45a80248e00a878aa8f5cf51",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-2-e07d7273ffe3"
+  },
+  {
+    "key": "hu/3_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "3573886efea5814f574810231bcbc3858328fc9ced58f9e41c3a204c764a52f5",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-3-3573886efea5"
+  },
+  {
+    "key": "hu/4_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "c733a50493a1dac4b8e05c2f836d3f0030a0d79699d26e3c08440809ad23674d",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-4-c733a50493a1"
+  },
+  {
+    "key": "hu/5_IPAD_PRO_3GEN_129.png",
+    "locale": "hu",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "0e6512e50dce4e2a3c594513ecf74e9ba991289f2f8628c3e27a1bddefdac848",
+    "reference": "vyt-1.4.15-hu-IPAD_PRO_3GEN_129-5-0e6512e50dce"
+  },
+  {
+    "key": "id/0_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "660232eb32da50cbba823bc39067c636d861fa7fb3345fa1ef5249f6bbe53ee9",
+    "reference": "vyt-1.4.15-id-IPHONE_69-0-660232eb32da"
+  },
+  {
+    "key": "id/1_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "44f5136e43a00e507d4b73231dd6df9240c1a2b534f2efacdea5aa1ba5793bcb",
+    "reference": "vyt-1.4.15-id-IPHONE_69-1-44f5136e43a0"
+  },
+  {
+    "key": "id/2_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "8d88058cfa3b275ba80b598b2915b5ed87a94bfc7c908b9a26934efbc3b1392e",
+    "reference": "vyt-1.4.15-id-IPHONE_69-2-8d88058cfa3b"
+  },
+  {
+    "key": "id/3_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "db96997a3eca0c2b55dbcd421e8c19c6d843fe8753a1f17ed84650fbeeda648e",
+    "reference": "vyt-1.4.15-id-IPHONE_69-3-db96997a3eca"
+  },
+  {
+    "key": "id/4_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "2f0b03f74e9ba4542903e3169853be27fbac7eebffbbe7b57b9128ef5a417f31",
+    "reference": "vyt-1.4.15-id-IPHONE_69-4-2f0b03f74e9b"
+  },
+  {
+    "key": "id/5_IPHONE_69.png",
+    "locale": "id",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "bdfceb799bef7240205b89008992170b0797a0f36d50a3bc797b8de73012305b",
+    "reference": "vyt-1.4.15-id-IPHONE_69-5-bdfceb799bef"
+  },
+  {
+    "key": "id/0_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "1c08918ac402a5e7a7ce99425fd25e6e271d545c3c2151c6b32a58a444829244",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-0-1c08918ac402"
+  },
+  {
+    "key": "id/1_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "f179d1de5c7ddb8976a1aa2e8185e00011e23b34295efd8db1b68613f26664a4",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-1-f179d1de5c7d"
+  },
+  {
+    "key": "id/2_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "423b8385624e9fee3a607b3a77da4ad5d498b9c181b03a71ea609fe661cd8354",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-2-423b8385624e"
+  },
+  {
+    "key": "id/3_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "f002299c618c779417da4064d277a5d3f167283031750d33f00619dc387949e2",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-3-f002299c618c"
+  },
+  {
+    "key": "id/4_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "0bd0fecefe4ce0e0777efb06f024c3f11211b33d5319ba76cb9746eada5290b6",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-4-0bd0fecefe4c"
+  },
+  {
+    "key": "id/5_IPAD_PRO_3GEN_129.png",
+    "locale": "id",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "6c3255b9e37dbf1d4cca7854a5da7a63153545f3e035d6fff82635f58affa30a",
+    "reference": "vyt-1.4.15-id-IPAD_PRO_3GEN_129-5-6c3255b9e37d"
+  },
+  {
+    "key": "it/0_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "4734b98111def9e7a155b671499a26f17e41d05a0d80728ef90b6f741252202b",
+    "reference": "vyt-1.4.15-it-IPHONE_69-0-4734b98111de"
+  },
+  {
+    "key": "it/1_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "baa5315e9932fea036ade707c9a911cefa0e3e274b1848d9e171edcbe690f03d",
+    "reference": "vyt-1.4.15-it-IPHONE_69-1-baa5315e9932"
+  },
+  {
+    "key": "it/2_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "15669e27195622f3cee1c9b40b3418c6693bc9e995d949321d47f6e939a4edc7",
+    "reference": "vyt-1.4.15-it-IPHONE_69-2-15669e271956"
+  },
+  {
+    "key": "it/3_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "bf22a0975e3fd411f16d48087ac283ccdb45caf39c29887cb9efe30f7129903a",
+    "reference": "vyt-1.4.15-it-IPHONE_69-3-bf22a0975e3f"
+  },
+  {
+    "key": "it/4_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "6feeade0edf5cf2f9868f6c3fdd1104391092a47982d466264c68da893ce34c2",
+    "reference": "vyt-1.4.15-it-IPHONE_69-4-6feeade0edf5"
+  },
+  {
+    "key": "it/5_IPHONE_69.png",
+    "locale": "it",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "9033d72385b50cb8687a34d6dd8291bfd714b064025ddf6d64f8fff021984bf1",
+    "reference": "vyt-1.4.15-it-IPHONE_69-5-9033d72385b5"
+  },
+  {
+    "key": "it/0_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "b9f6c1a45fb88b6571f1829122efa43685275bfd1864faf407da31e1646fc083",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-0-b9f6c1a45fb8"
+  },
+  {
+    "key": "it/1_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "2560b39dc428231bfed941c9811132689fe47cc960f17524fc0978bb3cf8de80",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-1-2560b39dc428"
+  },
+  {
+    "key": "it/2_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "24e600884ed92aa175814945b3179d44b2645d0ec8325a093c4bf5a58a1b178c",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-2-24e600884ed9"
+  },
+  {
+    "key": "it/3_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "3e8b210999dbd5e1ff4f97440cb4f2e04ea64cdcc1739dbb157fd4361d5944df",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-3-3e8b210999db"
+  },
+  {
+    "key": "it/4_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "1b6293afb54cfdf91fbfb6184e3de1ada75ebfb3e271a18dce58543f00740708",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-4-1b6293afb54c"
+  },
+  {
+    "key": "it/5_IPAD_PRO_3GEN_129.png",
+    "locale": "it",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "19e150944effdf464ffec4197ca2a6e92e33cc071bbe4255230d6a5450a573d0",
+    "reference": "vyt-1.4.15-it-IPAD_PRO_3GEN_129-5-19e150944eff"
+  },
+  {
+    "key": "ja/0_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "1f67775eb5d6ec00ddcbdd50aee23a377c1ff1ca448324b5885eaf4e41ae8c9f",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-0-1f67775eb5d6"
+  },
+  {
+    "key": "ja/1_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "cb19ecc1b0b1f9eb54102780e73b6953dbefd5ef4ce715e9f6c0bcf72ab03d57",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-1-cb19ecc1b0b1"
+  },
+  {
+    "key": "ja/2_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "99b1698af5b19b0d30f845158dc5192fcc3f9b1252087701c96e04cf0fa940d2",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-2-99b1698af5b1"
+  },
+  {
+    "key": "ja/3_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "f4c143d482b34f4b0450f4689c403165df14b97c9932658a1c2fbebfea43387c",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-3-f4c143d482b3"
+  },
+  {
+    "key": "ja/4_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "c1fe2b4d12b6b708498f12f5fef8e2e77c6ba6ef62ec41b3d5c3713b63cddeaa",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-4-c1fe2b4d12b6"
+  },
+  {
+    "key": "ja/5_IPHONE_69.png",
+    "locale": "ja",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "86c58bce76965ed96f97ec1477866e1dc7eded2ee957365d7fbe423a0628329c",
+    "reference": "vyt-1.4.15-ja-IPHONE_69-5-86c58bce7696"
+  },
+  {
+    "key": "ja/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "7529886ab72d8bf62282da1b56b8cdae0ed4a3bfc9f8fb37156fcfa36a110654",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-0-7529886ab72d"
+  },
+  {
+    "key": "ja/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "255ece35738f7ef713c4fed91fe3e75728ae4ea5314584a174dd02655ce9983f",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-1-255ece35738f"
+  },
+  {
+    "key": "ja/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7ceabb5d963e168bf290029ba6eb8b109d90fbebaac275ab4676088669fb1d3e",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-2-7ceabb5d963e"
+  },
+  {
+    "key": "ja/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "d8e14c08d41652b1924da8c14db0055880481b58a7be467b258d98d36693b5de",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-3-d8e14c08d416"
+  },
+  {
+    "key": "ja/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "920f6eabe9c295e9475522f1143d00648faf3412797bfe5959dc5de08ecd49e4",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-4-920f6eabe9c2"
+  },
+  {
+    "key": "ja/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ja",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "703fd0bd5516616652bcf6a64aa2798a87784959db4f4570cdc99f816044a4a0",
+    "reference": "vyt-1.4.15-ja-IPAD_PRO_3GEN_129-5-703fd0bd5516"
+  },
+  {
+    "key": "kn-IN/0_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "e09f675874e83e4efb3755372325ad54cff893d92df5076a30e30cdcc4cb550d",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-0-e09f675874e8"
+  },
+  {
+    "key": "kn-IN/1_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "0a7cece91ede9538b5ec361726dc1ec3cdb686194d02f03df9fa52da9e2d776b",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-1-0a7cece91ede"
+  },
+  {
+    "key": "kn-IN/2_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "c95cdd3757b495b0b2fb93a21b8b68e2c4c84b2a904f6b71352a09ac5b903c16",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-2-c95cdd3757b4"
+  },
+  {
+    "key": "kn-IN/3_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "ae677aa9befe4f44c26b9414d89452cf4b82b2c651e30b8ca43f580c70301024",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-3-ae677aa9befe"
+  },
+  {
+    "key": "kn-IN/4_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "276c55c4ac0a3e27b10a198c1ae4b49dc6e36568b1460badfb8bd5ecc00eb2b3",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-4-276c55c4ac0a"
+  },
+  {
+    "key": "kn-IN/5_IPHONE_69.png",
+    "locale": "kn-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "c705ba578200fd48ebf48a72c7714260886e59aff86541106f60132717248dac",
+    "reference": "vyt-1.4.15-kn-IN-IPHONE_69-5-c705ba578200"
+  },
+  {
+    "key": "kn-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "67f4bee5617745ac10e2c632ccc48683bf1491a8df93453c6b1a3089e3ae7559",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-0-67f4bee56177"
+  },
+  {
+    "key": "kn-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "875d3462408da2a2c270f770c5b1e88df1b960e3af3a36d18c226cd28c684aff",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-1-875d3462408d"
+  },
+  {
+    "key": "kn-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "d9babc6b828028a93e8ff8c66d5ec0378308fba0d5f574acf24c6d2a5d2b5f44",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-2-d9babc6b8280"
+  },
+  {
+    "key": "kn-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "e7f2e22915c6c0e40dd4f69c68f80c3b0a7eba91a2cb791bcf60276fe6f50bf5",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-3-e7f2e22915c6"
+  },
+  {
+    "key": "kn-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "97a59a8ac592f19bcf6bd13602c109fb90e77b579d5797957a1c1111f3ac0458",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-4-97a59a8ac592"
+  },
+  {
+    "key": "kn-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "kn-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "743ce7612b84736f2c9031daa9ab112bff165fcf6d754708c35b2b0866d9782c",
+    "reference": "vyt-1.4.15-kn-IN-IPAD_PRO_3GEN_129-5-743ce7612b84"
+  },
+  {
+    "key": "ko/0_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5ac4c3e0651035c393566e99094a0eb15cf468592ac41c18541f69b5d05f2d98",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-0-5ac4c3e06510"
+  },
+  {
+    "key": "ko/1_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "0a9dcd8714e6e4ab597198367fa1b74177b1a8e376d2e47486690c6205f2e493",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-1-0a9dcd8714e6"
+  },
+  {
+    "key": "ko/2_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "fa14c255a7445535d45107b8de60a52a64f82f3ca5f82c6675f5e6afd9f17e44",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-2-fa14c255a744"
+  },
+  {
+    "key": "ko/3_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "8f18250c01a6e523949546a5574a9691ee8168357f9ac9b683b029b00842c46b",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-3-8f18250c01a6"
+  },
+  {
+    "key": "ko/4_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "7ead32ccd952db344f02f6b964be6d70c6ae891d3fe0eb03138ec18b0b0e95d6",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-4-7ead32ccd952"
+  },
+  {
+    "key": "ko/5_IPHONE_69.png",
+    "locale": "ko",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "daacf995b1a7dc63dfb1c8d4b5661dc705a3880dc81f87a3d06191e1dbd42d0b",
+    "reference": "vyt-1.4.15-ko-IPHONE_69-5-daacf995b1a7"
+  },
+  {
+    "key": "ko/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "63d7c65075de27895fcee3507ee80823cee08310abd92186cb96d04cd9b6440a",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-0-63d7c65075de"
+  },
+  {
+    "key": "ko/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "d3d423de2305eb2889311b12daeee8baf4eb61710ccef79115a3af54df1dc91c",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-1-d3d423de2305"
+  },
+  {
+    "key": "ko/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "b5a96adbf7b9060cb95eca909b7e2cb11e9349f76fffbb83d6baa69993304632",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-2-b5a96adbf7b9"
+  },
+  {
+    "key": "ko/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "214d76f2ab7bddaa67bdfec635e7233e02f806e53d0cc9a3097d9f44784654ad",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-3-214d76f2ab7b"
+  },
+  {
+    "key": "ko/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "732667f4adccf2417cb70920651a8bb228fcb41934afb1e14db79f03806b9c3a",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-4-732667f4adcc"
+  },
+  {
+    "key": "ko/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ko",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "bf340c74152d4bcd2ab22c2d8d58a54da377adac862299291d7504e75d5eaa67",
+    "reference": "vyt-1.4.15-ko-IPAD_PRO_3GEN_129-5-bf340c74152d"
+  },
+  {
+    "key": "ml-IN/0_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "f500f2c3bd18665f694a4236140d21098c30501e7315780c3eabe8a9ec0685f1",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-0-f500f2c3bd18"
+  },
+  {
+    "key": "ml-IN/1_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "46dca0e7eb5f4874c7118b96a546d61c8b96bfaaddb794bcd5ac3afa1bdec3a8",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-1-46dca0e7eb5f"
+  },
+  {
+    "key": "ml-IN/2_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "73f876cee5dd18da842ad4b55889519a41c232891a2ca1edb79286561f89f58f",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-2-73f876cee5dd"
+  },
+  {
+    "key": "ml-IN/3_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "e58b1640814ffeaadd401b507a41a346e6c9311ea6dbc116d682953a2ec96aea",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-3-e58b1640814f"
+  },
+  {
+    "key": "ml-IN/4_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "c1dbfee6ebbad05a123aa4068bb0da98623ae07b911758317804a49de6e872f3",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-4-c1dbfee6ebba"
+  },
+  {
+    "key": "ml-IN/5_IPHONE_69.png",
+    "locale": "ml-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "4b2c822d67352212dfcf0a2d23174ec9277d83e59f2af3d123b5e877a207ae3c",
+    "reference": "vyt-1.4.15-ml-IN-IPHONE_69-5-4b2c822d6735"
+  },
+  {
+    "key": "ml-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "77d092a80a266f1862b316ee45fbbee70290b152237ec40dcdbb97a3a7ec9ed8",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-0-77d092a80a26"
+  },
+  {
+    "key": "ml-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "f57eabbd1a1b00d444c0085ac8686006a8104974dd258cf9925c4e605676173c",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-1-f57eabbd1a1b"
+  },
+  {
+    "key": "ml-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "032f17d2996c22b1439e90d9047f5d740aab7c1f1f58d9699488933620251988",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-2-032f17d2996c"
+  },
+  {
+    "key": "ml-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "be826a099e8fd6eef64333c08d318d8f4f1470e956729c4e51b8f0e85851c826",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-3-be826a099e8f"
+  },
+  {
+    "key": "ml-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "4e324be3d9d65e930af414473ee27995430baae1d57db38a7f0aeade62c01de7",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-4-4e324be3d9d6"
+  },
+  {
+    "key": "ml-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ml-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "c4d16e987f7a5ff26b5aea21f224023566303ecff991873ee376c7c8c2e74ed2",
+    "reference": "vyt-1.4.15-ml-IN-IPAD_PRO_3GEN_129-5-c4d16e987f7a"
+  },
+  {
+    "key": "mr-IN/0_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "0b62541dcdabc5fb2dc28fd20bd57819a07bda3f4620fecd7448add086eeb530",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-0-0b62541dcdab"
+  },
+  {
+    "key": "mr-IN/1_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "a5f91e54e3641d4c746450834db06a4e9897ad6b6cdebf4afbbcdb006209856e",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-1-a5f91e54e364"
+  },
+  {
+    "key": "mr-IN/2_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "8f7f8cf7a414fe85ac95ef4cb07a21d0a4dfe623ec4cdc44e40b212c7ba94d75",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-2-8f7f8cf7a414"
+  },
+  {
+    "key": "mr-IN/3_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "c1791787adb37f472b58dce3504d94375f1e93fe518ec463f3fc50851d49b088",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-3-c1791787adb3"
+  },
+  {
+    "key": "mr-IN/4_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "9dd4961fcd4760ae7e2ae38f315b199141ce8e4442326f24b43270f56493db9f",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-4-9dd4961fcd47"
+  },
+  {
+    "key": "mr-IN/5_IPHONE_69.png",
+    "locale": "mr-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "56f567da1c40b1fd3dd5678a800f5f7135c8c4e84e37f5ba88992b606374c758",
+    "reference": "vyt-1.4.15-mr-IN-IPHONE_69-5-56f567da1c40"
+  },
+  {
+    "key": "mr-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "9d9ad6396289fe1afa0b4643499c03a7500d1542b1f4aa0a580972db3d832e25",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-0-9d9ad6396289"
+  },
+  {
+    "key": "mr-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "9ad4652ffe7697066425fa6107cdf35a9006ddab6c0a54f41084794b880f6f0f",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-1-9ad4652ffe76"
+  },
+  {
+    "key": "mr-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e9ece597ff06dbe1663f1c79942f5f5fe0824d555b6705fa96a29417b33a74af",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-2-e9ece597ff06"
+  },
+  {
+    "key": "mr-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "2073487b20257a385489e09da62f0fb913d63a1ef92d0c56a9cb951f5828a6dd",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-3-2073487b2025"
+  },
+  {
+    "key": "mr-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "771ad6a9aa0916d72e8764f568959dfb083adb3e9b5453fb9682c9d51314e876",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-4-771ad6a9aa09"
+  },
+  {
+    "key": "mr-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "mr-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "eee8351c5b21e7164b4ea1df37fa78f45f92b4e81585cf28879beafb5424e7c6",
+    "reference": "vyt-1.4.15-mr-IN-IPAD_PRO_3GEN_129-5-eee8351c5b21"
+  },
+  {
+    "key": "ms/0_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "71f616f2990be9108efbdb6dcfacf41de82c89ebbc0d23fa5d2c18e0e98b1f02",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-0-71f616f2990b"
+  },
+  {
+    "key": "ms/1_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "7e410aa6e02c7cfbfe2e605a65ca3c59bf925834dd7b30fae9e07cfc630f4e36",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-1-7e410aa6e02c"
+  },
+  {
+    "key": "ms/2_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "cbc1b82ebba8ad91efcbdb6c234aee334210df647665664103f62bdaedfbd359",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-2-cbc1b82ebba8"
+  },
+  {
+    "key": "ms/3_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "52838871761a3f0dc02ff2b285c83175e9aea3ddc6abb660397f87f790cd433d",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-3-52838871761a"
+  },
+  {
+    "key": "ms/4_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "1e2dc725ecc76472d59b91a1d0db505c9545fb5db5491451803306289c26657a",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-4-1e2dc725ecc7"
+  },
+  {
+    "key": "ms/5_IPHONE_69.png",
+    "locale": "ms",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "89a52139bdc74dc590bc06aa4ff321aa6442140ed6d4ba0f78c5f4d859761029",
+    "reference": "vyt-1.4.15-ms-IPHONE_69-5-89a52139bdc7"
+  },
+  {
+    "key": "ms/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "69509045f63c8278e34273ffed85ce3bed57304faedc411de50e0de2ff7d702f",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-0-69509045f63c"
+  },
+  {
+    "key": "ms/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "38f9a577ade02c08a03b2a1e8759e7d11fcdc1be985d94d2d993a3d38b51941b",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-1-38f9a577ade0"
+  },
+  {
+    "key": "ms/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "18c7695c05cc555451066eb069eb6917bed8ce4146a07700f9ac38fcbe048523",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-2-18c7695c05cc"
+  },
+  {
+    "key": "ms/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "f1ab8ea9fd2b82058a92093d4cac491f43f26fa191a8ee92af22d132b2b0a186",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-3-f1ab8ea9fd2b"
+  },
+  {
+    "key": "ms/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "e5fcd2ad0f1d4d795f86aa1a6c09c451bce729331e17cea20806df36462af864",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-4-e5fcd2ad0f1d"
+  },
+  {
+    "key": "ms/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ms",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "a4fe45b46b66ac8db3ee0777d6c195b59980dc839692ee02cc7d0edf1e1fad87",
+    "reference": "vyt-1.4.15-ms-IPAD_PRO_3GEN_129-5-a4fe45b46b66"
+  },
+  {
+    "key": "nl-NL/0_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "7c1c59c9cff229d86c45cfcbcdcc142f006289f5b144f32af051ffc1c95d6ea9",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-0-7c1c59c9cff2"
+  },
+  {
+    "key": "nl-NL/1_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "0727ad0f00868e4ff2de8024a79469b1daa48529e6d7d473361abffed5b35f27",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-1-0727ad0f0086"
+  },
+  {
+    "key": "nl-NL/2_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "25eb69aa0336c47d07d4823c58a1b4ecd483a6edd73bbe32936f31a635a69965",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-2-25eb69aa0336"
+  },
+  {
+    "key": "nl-NL/3_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "0738250eb438dd3debfda54193e57ae6f5c3b62b9cd5530ac8e97eb7451faa51",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-3-0738250eb438"
+  },
+  {
+    "key": "nl-NL/4_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "2b5efeb52bebee885db5d77ccde06010decafdc41e1c948f97e0b549a4d5e1d5",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-4-2b5efeb52beb"
+  },
+  {
+    "key": "nl-NL/5_IPHONE_69.png",
+    "locale": "nl-NL",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "0ce77da20546e673b0a62ac344984ae12685810b2e6a2299f9356a07c450c0c9",
+    "reference": "vyt-1.4.15-nl-NL-IPHONE_69-5-0ce77da20546"
+  },
+  {
+    "key": "nl-NL/0_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "4c9234105cea07c6975a011fc3c3e857acb354607591fcb8f1819b5d9d1faa51",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-0-4c9234105cea"
+  },
+  {
+    "key": "nl-NL/1_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "5d89301385bac841e78ea3ae01288700de9dc33afc286ac39144c738289bee4e",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-1-5d89301385ba"
+  },
+  {
+    "key": "nl-NL/2_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "c4443f82178134feb806170887f0d2209162779452080e15cad36ed1d420eeb1",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-2-c4443f821781"
+  },
+  {
+    "key": "nl-NL/3_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "0d1df4bc9a88e05439bdc795cf618b92c25f88e6d0dc9721b37d70627cdaf055",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-3-0d1df4bc9a88"
+  },
+  {
+    "key": "nl-NL/4_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "b7dc5a5b24f5899c4edb21ca093d7d7595ad8c828c96d41abfe4fbf2e6225f19",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-4-b7dc5a5b24f5"
+  },
+  {
+    "key": "nl-NL/5_IPAD_PRO_3GEN_129.png",
+    "locale": "nl-NL",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "ed13091dcbd5d588b2224e087e898b2414b74f8926241110e12f24404e250073",
+    "reference": "vyt-1.4.15-nl-NL-IPAD_PRO_3GEN_129-5-ed13091dcbd5"
+  },
+  {
+    "key": "no/0_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5b8729ea089ff5ed23e9add24fd79a5910bb985a8a2f082267fe338a726fa240",
+    "reference": "vyt-1.4.15-no-IPHONE_69-0-5b8729ea089f"
+  },
+  {
+    "key": "no/1_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "6196ecbec3333f63cd04da46849d7230d99a8f6499177ac748532cc2d0a3c1c7",
+    "reference": "vyt-1.4.15-no-IPHONE_69-1-6196ecbec333"
+  },
+  {
+    "key": "no/2_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "1478865fc66fba54f6e99d0886bd4a18497bbdf0df218c0df2fc031c86df95a0",
+    "reference": "vyt-1.4.15-no-IPHONE_69-2-1478865fc66f"
+  },
+  {
+    "key": "no/3_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "2256fc3ed83a3c3ef4b9f981fc09629c675e9b0c7e2fb707c6150969caeb897f",
+    "reference": "vyt-1.4.15-no-IPHONE_69-3-2256fc3ed83a"
+  },
+  {
+    "key": "no/4_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "a631c6fd9f30876cbc9b61f2ccbafa966786d1e4634f181345964612b1d45ef4",
+    "reference": "vyt-1.4.15-no-IPHONE_69-4-a631c6fd9f30"
+  },
+  {
+    "key": "no/5_IPHONE_69.png",
+    "locale": "no",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "230bbb3fefc657f1e3b56afe069c715a7de19555864ce80d678e771b2b3e9bf6",
+    "reference": "vyt-1.4.15-no-IPHONE_69-5-230bbb3fefc6"
+  },
+  {
+    "key": "no/0_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "1ffc1fc0bda5c8c79b12bb7217318443b44720c62a9f1a2d1abbf8385986c942",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-0-1ffc1fc0bda5"
+  },
+  {
+    "key": "no/1_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "caff45b0ad1cb9ca8d2e9929975314a8e43ca31e90a6c75795847d7843aa941b",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-1-caff45b0ad1c"
+  },
+  {
+    "key": "no/2_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "55946b16cb49fe78f153acd9441ab8f57729131965a892947c408722e91087a0",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-2-55946b16cb49"
+  },
+  {
+    "key": "no/3_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "e6d54951bd8e46ed6e8dd17a89f79a1712f2d4d7003e987bf796e410c79d850d",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-3-e6d54951bd8e"
+  },
+  {
+    "key": "no/4_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "a53b470eca29efb9597cf04e434a4bb8446c6abe92f31a4ba7eb8f84274a048c",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-4-a53b470eca29"
+  },
+  {
+    "key": "no/5_IPAD_PRO_3GEN_129.png",
+    "locale": "no",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "fc8611079f93adb5a1f502ac41c5941922c5bb4c65ae1cad1ae5f0658c233d21",
+    "reference": "vyt-1.4.15-no-IPAD_PRO_3GEN_129-5-fc8611079f93"
+  },
+  {
+    "key": "or-IN/0_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "8c1870c22047607d3ea29debc50eb02ae2be8c63d2cf0a4e6087e401f28f526d",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-0-8c1870c22047"
+  },
+  {
+    "key": "or-IN/1_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "c6adb60b75056d09623ac35f42f3ee5338a5f2effa7fe5fe1c9968b12a8875d0",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-1-c6adb60b7505"
+  },
+  {
+    "key": "or-IN/2_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "4f7328360fb1af0a129d318e030eae445ec62da4467c663e0ea392abfe07a92d",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-2-4f7328360fb1"
+  },
+  {
+    "key": "or-IN/3_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "222f2862bf01b2e6d06dd874c73451854ae8748a7a132c200bb40684147717b9",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-3-222f2862bf01"
+  },
+  {
+    "key": "or-IN/4_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "1459c42d7b7ad312ee94fb7f5074dab20bf6fcea7dd540cb13f8b5bd7839ddf4",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-4-1459c42d7b7a"
+  },
+  {
+    "key": "or-IN/5_IPHONE_69.png",
+    "locale": "or-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "8bba9ad38ad416fad6b6cdf980ffe8391160d699b86be2b40c27db59e6b707fe",
+    "reference": "vyt-1.4.15-or-IN-IPHONE_69-5-8bba9ad38ad4"
+  },
+  {
+    "key": "or-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "a38a8b32df48efb148cf94b30fab9d98503935d1638242a8eb8392590fe7aee5",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-0-a38a8b32df48"
+  },
+  {
+    "key": "or-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "10fc9eecddb46c4665dbd32c777f85f64fcd7ba1fa5383c1002a0a83bacc2637",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-1-10fc9eecddb4"
+  },
+  {
+    "key": "or-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7bafa06b034858a9cd9cab63944f551948dad27183ea57574bb010ae74fce739",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-2-7bafa06b0348"
+  },
+  {
+    "key": "or-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "36410e8073d8d6fa2feb3e7458073a4671bc2518543c70b950b2c906bffd349c",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-3-36410e8073d8"
+  },
+  {
+    "key": "or-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "3b03d77706ffe35c2a9522c82fe9f02718eca3d38b1046913f813ea918255d96",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-4-3b03d77706ff"
+  },
+  {
+    "key": "or-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "or-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "c350248d63d0b31943501efe67fae8c8dc0537875c7bbcc9b8c4324e5c901160",
+    "reference": "vyt-1.4.15-or-IN-IPAD_PRO_3GEN_129-5-c350248d63d0"
+  },
+  {
+    "key": "pa-IN/0_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "5f0b7bd454f31985f0ae8a76c2c7131020871ca1ae26294eda0156575a8949b9",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-0-5f0b7bd454f3"
+  },
+  {
+    "key": "pa-IN/1_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "5ae1df5b3e40b23bfc5117db710ebfdea3821ae2ec01a539b8af69f6bf5ed9ef",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-1-5ae1df5b3e40"
+  },
+  {
+    "key": "pa-IN/2_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "68ffe5f3fc1c01183994086715c0c1e5f15706976448940eb47e59d8cc898993",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-2-68ffe5f3fc1c"
+  },
+  {
+    "key": "pa-IN/3_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "3b922bf985d2b87f896cb802c937de7b2a29deb88011ade7311d76c61c8a3ce4",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-3-3b922bf985d2"
+  },
+  {
+    "key": "pa-IN/4_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "5108030dbab815499b3fd060eddaba79957e0fc2c7177f5d377d51183deae8ad",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-4-5108030dbab8"
+  },
+  {
+    "key": "pa-IN/5_IPHONE_69.png",
+    "locale": "pa-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "fbd52ff3f99b3610a80d00cb73d6a865b9db64d56782395db5d4b8df02d5b83c",
+    "reference": "vyt-1.4.15-pa-IN-IPHONE_69-5-fbd52ff3f99b"
+  },
+  {
+    "key": "pa-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "cd3af24c188c52d83cba6f50d664f41ad18ebfe7870b3c9bbbeaaf3aa4171fe0",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-0-cd3af24c188c"
+  },
+  {
+    "key": "pa-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "2c152c781610698f8cae859fc995d4ed27e36cfc7dca2497ca9b6a3d9fc81c15",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-1-2c152c781610"
+  },
+  {
+    "key": "pa-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "a2351de6a2a7e06a0d92edea6babff1c80f1326614c64c58c4ddb185a4a437db",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-2-a2351de6a2a7"
+  },
+  {
+    "key": "pa-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "9995f3763a3fd52f7a19ed1459fa1968ba025690fbc76b9aa440cfa1d6085020",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-3-9995f3763a3f"
+  },
+  {
+    "key": "pa-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "6d56bea5bd2b26df403c373cea55ea4eac9f2f1ed943fab612ce98968c90acf7",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-4-6d56bea5bd2b"
+  },
+  {
+    "key": "pa-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "pa-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "63067252f908200f008b8269c4eaf9ca82cca2d9335a0baede4b57d073992365",
+    "reference": "vyt-1.4.15-pa-IN-IPAD_PRO_3GEN_129-5-63067252f908"
+  },
+  {
+    "key": "pl/0_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "401b6393726899f621f9a3186fd80c7aa8abb9fa2edf6c1ce9e9f69f64543db4",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-0-401b63937268"
+  },
+  {
+    "key": "pl/1_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "a28a408925545012119eaf576bdfd1609b9b74c23cae7712cebf22ebe0629754",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-1-a28a40892554"
+  },
+  {
+    "key": "pl/2_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "2507bacb1a5e371ec843af7cff9ac8d4f26e32dd1ac343891e1d88f7d6e8523c",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-2-2507bacb1a5e"
+  },
+  {
+    "key": "pl/3_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "d1e36277a355e27dc8555ea493431f9e07f64a83de1c3f72f51ef52185833782",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-3-d1e36277a355"
+  },
+  {
+    "key": "pl/4_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "4b4491074ed6abd189044f1169a6edb00a95ba79e3ca779daeed0e9a19837be4",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-4-4b4491074ed6"
+  },
+  {
+    "key": "pl/5_IPHONE_69.png",
+    "locale": "pl",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "e50233258d2b6514d8020dde3ba7de01850b19c8620abc76c40702ad59f73d98",
+    "reference": "vyt-1.4.15-pl-IPHONE_69-5-e50233258d2b"
+  },
+  {
+    "key": "pl/0_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "849f1f242ea19c4e09bbd6e753fc7ef29744cf85b4246c3372599d349b0ed6f2",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-0-849f1f242ea1"
+  },
+  {
+    "key": "pl/1_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "507b510e287de03fc9e01ab3336e3bda444eead5f0f0f8c1aaa3d3f0f74573ca",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-1-507b510e287d"
+  },
+  {
+    "key": "pl/2_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "68aa517da49f468b586c015a4930b356320df64c751c923151ba86c1a0314961",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-2-68aa517da49f"
+  },
+  {
+    "key": "pl/3_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "a2a66ce8b501b31cadb68f9d839f4ce4bb1424a2262e020c06f3f8e041b82c9d",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-3-a2a66ce8b501"
+  },
+  {
+    "key": "pl/4_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "b3a75ffd4f1477a8e835b57ee8fe039910633819d4dd6af4129bb3ff707a6d4d",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-4-b3a75ffd4f14"
+  },
+  {
+    "key": "pl/5_IPAD_PRO_3GEN_129.png",
+    "locale": "pl",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "44aca9c23dca59961776f1014932f00ee116e2c685d133a91579365e3590cb8e",
+    "reference": "vyt-1.4.15-pl-IPAD_PRO_3GEN_129-5-44aca9c23dca"
+  },
+  {
+    "key": "pt-BR/0_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "12fd8699227ee3627a6a41ab239ff93ec0de0eb07b2c5be8e550f19c57277ba8",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-0-12fd8699227e"
+  },
+  {
+    "key": "pt-BR/1_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "ccf79d4daaaa17acb59d732707388134e1636890a1bf7ad90f6cef8bce8f561d",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-1-ccf79d4daaaa"
+  },
+  {
+    "key": "pt-BR/2_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "5ebdd10a570a275a8c31a5a068d8cde437b472436c5abca02cf94668a66738a4",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-2-5ebdd10a570a"
+  },
+  {
+    "key": "pt-BR/3_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "db900cf658be6492922ab431099a62d82daee949ec578d3efd30261d94e21065",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-3-db900cf658be"
+  },
+  {
+    "key": "pt-BR/4_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "c71b6f9714ceb3b8c6e406736963c7eec69b1a7923a3c9926edff9b623e8bb3b",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-4-c71b6f9714ce"
+  },
+  {
+    "key": "pt-BR/5_IPHONE_69.png",
+    "locale": "pt-BR",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "b5cebcaae1b7d40058610b134632e8e4bc0477f7e34068747393e9dbe59172b7",
+    "reference": "vyt-1.4.15-pt-BR-IPHONE_69-5-b5cebcaae1b7"
+  },
+  {
+    "key": "pt-BR/0_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "50aa2a907fe4cc7438623b28ff61ca5d1a12f97dc5d84dbf018bc615d628588f",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-0-50aa2a907fe4"
+  },
+  {
+    "key": "pt-BR/1_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "58bdd2e289720b987f968a16435199b7c580310491ccc727cf56dc2458b1c7b2",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-1-58bdd2e28972"
+  },
+  {
+    "key": "pt-BR/2_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "c0b8647963121fe4bc14e6abb7c46053f3b94c0d549728293c6f8ab77c1f545f",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-2-c0b864796312"
+  },
+  {
+    "key": "pt-BR/3_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "d1fc20f8997b22918d338a4ab952afb61333a1e72d0f875a853891e976eff184",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-3-d1fc20f8997b"
+  },
+  {
+    "key": "pt-BR/4_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "10295f08950bdece2e47123a1c2b27dcac969a39b2c3df8ac23a7f49d127ec06",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-4-10295f08950b"
+  },
+  {
+    "key": "pt-BR/5_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-BR",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "b60ba0394acb467615fe21dae0cdc4a006fda3ed6649ed76b93e4516e56b7ca8",
+    "reference": "vyt-1.4.15-pt-BR-IPAD_PRO_3GEN_129-5-b60ba0394acb"
+  },
+  {
+    "key": "pt-PT/0_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "bdd6cc91c0d42bd5cd7b037c4b000dba93d3f4090780ab6bb812b6380841f230",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-0-bdd6cc91c0d4"
+  },
+  {
+    "key": "pt-PT/1_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "f07753646895a56d211710b51b50eba232311709efa6085444ca9ed061162694",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-1-f07753646895"
+  },
+  {
+    "key": "pt-PT/2_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "fe368436cd5401e89052794200b82ad47cc71d12ff38099e712f52ecbb6a0039",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-2-fe368436cd54"
+  },
+  {
+    "key": "pt-PT/3_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "c5641835fbf3d9bfe373886bbd4225418a75420452950c37478219ef1713b6cc",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-3-c5641835fbf3"
+  },
+  {
+    "key": "pt-PT/4_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "572fd3da210af294b5ce553880b48cb4e1cddf613a353afad301d06314f0ade0",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-4-572fd3da210a"
+  },
+  {
+    "key": "pt-PT/5_IPHONE_69.png",
+    "locale": "pt-PT",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "c5f095238b0f612db3318fcd6fbeba914b33083b7aaffb653f6a957b3858ae72",
+    "reference": "vyt-1.4.15-pt-PT-IPHONE_69-5-c5f095238b0f"
+  },
+  {
+    "key": "pt-PT/0_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "747a172b08fdfc7f01fccd7286806e8972f29d1dd4ade7e4a7c1b396a55947ca",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-0-747a172b08fd"
+  },
+  {
+    "key": "pt-PT/1_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "6a8ac38d26179bf87d21366adbc6b37fe43c1afba8610c51db2febab1227a3da",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-1-6a8ac38d2617"
+  },
+  {
+    "key": "pt-PT/2_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "a40b45ae35150580edfd282e983f9b77c153fd86122cadf8f3ba1dfe7b120edb",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-2-a40b45ae3515"
+  },
+  {
+    "key": "pt-PT/3_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "02974a24caced815f588eac97ace915bbabdff9996bd707514db83c12277dcea",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-3-02974a24cace"
+  },
+  {
+    "key": "pt-PT/4_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "88c48e41c777535e3e0af502d85329cb55b1dcd0fe1ad5e33d5ee8d7b9293f4f",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-4-88c48e41c777"
+  },
+  {
+    "key": "pt-PT/5_IPAD_PRO_3GEN_129.png",
+    "locale": "pt-PT",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "34bb75406f33f53b7ad97cef7e4517bb33e15a6412029d2d9d9cff45882aabcf",
+    "reference": "vyt-1.4.15-pt-PT-IPAD_PRO_3GEN_129-5-34bb75406f33"
+  },
+  {
+    "key": "ro/0_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "221dc467906c3b6d61dfcd5afd3e80b7d75e661c8f31d7f4e9fc3232bd9387ab",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-0-221dc467906c"
+  },
+  {
+    "key": "ro/1_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "cdb50ecdbf0f10c9cfd1788711a70f842b21b92366a8d77e116b3947bdd0811d",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-1-cdb50ecdbf0f"
+  },
+  {
+    "key": "ro/2_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "a8852b6488ea20c5240f0cff8db263299f379cb4f327aded29da3294dc5fa3d3",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-2-a8852b6488ea"
+  },
+  {
+    "key": "ro/3_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "4bd0758c20083b465c8e7d4b28673323bb28a31407013bdd056f1459137be1c5",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-3-4bd0758c2008"
+  },
+  {
+    "key": "ro/4_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "08170eb48bbd0cd16f37c82cda52851ec9cb2c66bb66ee04dd8a8129e7cc8bda",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-4-08170eb48bbd"
+  },
+  {
+    "key": "ro/5_IPHONE_69.png",
+    "locale": "ro",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "b52a0deef0e3cf5997713ea151b51e02d020d72be847969dc6f8187396b88bd4",
+    "reference": "vyt-1.4.15-ro-IPHONE_69-5-b52a0deef0e3"
+  },
+  {
+    "key": "ro/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "641c8a690fe29e761693937d66e3f67f7ae47990ebebb98cefec88d0ca9ab44a",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-0-641c8a690fe2"
+  },
+  {
+    "key": "ro/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "9cc3a1b9de22b52b80c875ca1dcf1ab49470c7cc0bc8cd9b77a5c5ceee6c0757",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-1-9cc3a1b9de22"
+  },
+  {
+    "key": "ro/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "e87602761f85561d0ce33b6b246edfc156a112c1df2b9c57ac8011cb46e5c38b",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-2-e87602761f85"
+  },
+  {
+    "key": "ro/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "7fe77e2dfc60e49410c91b97f8de8b0023f0ac6a0aef6ae5bc387ccb1a4d9c5c",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-3-7fe77e2dfc60"
+  },
+  {
+    "key": "ro/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "b3e5a4fc0cb481bf7bee4938814bb4a07ea1dd37a9e9b9ac9f127d4cbfec7326",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-4-b3e5a4fc0cb4"
+  },
+  {
+    "key": "ro/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ro",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "1796020a3d39a8dbac68221c5f7ab45eb56d743cb71452b91c3a09fa7357b3ef",
+    "reference": "vyt-1.4.15-ro-IPAD_PRO_3GEN_129-5-1796020a3d39"
+  },
+  {
+    "key": "ru/0_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "d5ef452a9acf018b385bca5f6585ae5a9ccf85fd020d90bdb6df0e4bbc7cc530",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-0-d5ef452a9acf"
+  },
+  {
+    "key": "ru/1_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "9ff98780e1c5af21d2a439e5ee87fa90852e9b17d169bffa00cc767ec60dada7",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-1-9ff98780e1c5"
+  },
+  {
+    "key": "ru/2_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "7e584380559b2d7dfbc6cfe52efbd97a373fac0f711d8f4f8765f012298d8d4e",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-2-7e584380559b"
+  },
+  {
+    "key": "ru/3_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "fad3d4ef0fa9d3730d4a84224bceb4726b4f41511b69f49a1bc54c31ea606fa3",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-3-fad3d4ef0fa9"
+  },
+  {
+    "key": "ru/4_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "bace14b9a8674eecd5d804ed525a398b93f7039782c38243373b4305d34ed32a",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-4-bace14b9a867"
+  },
+  {
+    "key": "ru/5_IPHONE_69.png",
+    "locale": "ru",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "37dd783150695700634e8d7d256dea579950e5edc27c3ab07987147f02169600",
+    "reference": "vyt-1.4.15-ru-IPHONE_69-5-37dd78315069"
+  },
+  {
+    "key": "ru/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "7a3d4954de4046819a63eff435bcaeaa32af474c1b62abcf1bb504941a772051",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-0-7a3d4954de40"
+  },
+  {
+    "key": "ru/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "c633427cdf65d1db774927ae6d1ff0abd61968ec6983608f97050e1a5d160f63",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-1-c633427cdf65"
+  },
+  {
+    "key": "ru/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7c7dcc5b0264183a0b027ca8206af373258af78ec0711a7e476500d5176c511f",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-2-7c7dcc5b0264"
+  },
+  {
+    "key": "ru/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "1e8446f4275c36f322874ce73a185c91d8869732718aa1beb3db4ae9fe330fb9",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-3-1e8446f4275c"
+  },
+  {
+    "key": "ru/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "c8bfd0fddd476ecd0da7705fe76946b95a116f870056d31319bd5531731f108b",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-4-c8bfd0fddd47"
+  },
+  {
+    "key": "ru/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ru",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "bc283c8a7cab0a50bddb2db08b6ed3c8320040bff32c0f558c1ee078e56abffb",
+    "reference": "vyt-1.4.15-ru-IPAD_PRO_3GEN_129-5-bc283c8a7cab"
+  },
+  {
+    "key": "sk/0_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "3872ee680b6a76810685eef3bb074c93f9ffb948af81a4378195c963988d7ac0",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-0-3872ee680b6a"
+  },
+  {
+    "key": "sk/1_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "2b2165d8f8367ce9a6e5c213d2b6919a75fc898bf7200dab469fbdf78b35583d",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-1-2b2165d8f836"
+  },
+  {
+    "key": "sk/2_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "694cd53435b3b84b9cbebc70a649130d04fb6fe30973a18cbf9f2e2939d5fd3f",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-2-694cd53435b3"
+  },
+  {
+    "key": "sk/3_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "0c4a1acb831310c5499752c545a94475303a5b8b22dd75a2b9cbe0947ee3b0c1",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-3-0c4a1acb8313"
+  },
+  {
+    "key": "sk/4_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "af288177383e0c0f60935e278cc8450cbe4081efbfc8ff03876d163766a07b14",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-4-af288177383e"
+  },
+  {
+    "key": "sk/5_IPHONE_69.png",
+    "locale": "sk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "2a645eba2d6a2f1bbc27887196f4a8fb67dec41f5cdb10f1adcc78bee5d04b0b",
+    "reference": "vyt-1.4.15-sk-IPHONE_69-5-2a645eba2d6a"
+  },
+  {
+    "key": "sk/0_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "ca86939b0a95467dcf972e4338e3ef669fc3511c2ddfaa7d0be7f61924a07245",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-0-ca86939b0a95"
+  },
+  {
+    "key": "sk/1_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "a312d3e6731db919e8a63bde521680a5ddac3ca34193fc8b78f5706c84040110",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-1-a312d3e6731d"
+  },
+  {
+    "key": "sk/2_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "f9a3e9a7c1d43cb732815cc4eaf56c3222443cad532666aff8368f06028050a9",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-2-f9a3e9a7c1d4"
+  },
+  {
+    "key": "sk/3_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "be2ae8a09f381d4c48287d7cebe5cfcd0a289d8f09d087f18dc4ad342c7024ce",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-3-be2ae8a09f38"
+  },
+  {
+    "key": "sk/4_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "9193fece7e0b785ada052c6993885613bf23f49fb808892b13c2fbe28633d550",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-4-9193fece7e0b"
+  },
+  {
+    "key": "sk/5_IPAD_PRO_3GEN_129.png",
+    "locale": "sk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "3d584d867a03cb76652f40190a73e66f8d1e58d9107fd983c197edf5f498ca5b",
+    "reference": "vyt-1.4.15-sk-IPAD_PRO_3GEN_129-5-3d584d867a03"
+  },
+  {
+    "key": "sl-SI/0_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "ac51672268ac4710f43132d7cca8d5846ea0af9f47fc3c6d5b9cd786311180c6",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-0-ac51672268ac"
+  },
+  {
+    "key": "sl-SI/1_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "f144281ff7832ccee54d7ac02ff6232910324aafc5f86bedd831b4ea30df4b6e",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-1-f144281ff783"
+  },
+  {
+    "key": "sl-SI/2_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "3e7239e6f856990a0b903cd62e50e61586d2afc55032d3be6b7b48c0d57b3eb1",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-2-3e7239e6f856"
+  },
+  {
+    "key": "sl-SI/3_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "76b26e4219afc6c7397162770459ef5c6f1e41e190d801832c8848e71e86f683",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-3-76b26e4219af"
+  },
+  {
+    "key": "sl-SI/4_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "cdf333ae41e91420ba78c759e67971bdebf2dc7919f031428abc41b234617737",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-4-cdf333ae41e9"
+  },
+  {
+    "key": "sl-SI/5_IPHONE_69.png",
+    "locale": "sl-SI",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "7823e2bd41af511cd15e8a653a1b7500b1b055e611b3f2d0ee0e06f76d271797",
+    "reference": "vyt-1.4.15-sl-SI-IPHONE_69-5-7823e2bd41af"
+  },
+  {
+    "key": "sl-SI/0_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "6d6212247c58545b11f9d0dec93946fa6f7f0330700255e806f89ae88f7621cf",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-0-6d6212247c58"
+  },
+  {
+    "key": "sl-SI/1_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "d0904003e6e5e8ea63d032ce43a7562830cffad4c04998f1349405e496170828",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-1-d0904003e6e5"
+  },
+  {
+    "key": "sl-SI/2_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "4c22fcf83d655f6a022cb195e889328f066fceb7eefd29a23f6e32e114e5bab3",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-2-4c22fcf83d65"
+  },
+  {
+    "key": "sl-SI/3_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "53d52450d501e98e5a6a4a14dcdb37f94cffc221ebdb82d9f93c90fdf19ec3b8",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-3-53d52450d501"
+  },
+  {
+    "key": "sl-SI/4_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "204ce4a7f9abb140ff40bf9df793e5a4cb1293f0d72252db9784a15625523a1a",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-4-204ce4a7f9ab"
+  },
+  {
+    "key": "sl-SI/5_IPAD_PRO_3GEN_129.png",
+    "locale": "sl-SI",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "373157daaad9e1eba8172842926db0ab9a40dd2298c030393b12e68a1723af32",
+    "reference": "vyt-1.4.15-sl-SI-IPAD_PRO_3GEN_129-5-373157daaad9"
+  },
+  {
+    "key": "sv/0_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "ee96f1dae5e709a5a721ae55610f0a35081503afa17116c504082bac58374a4b",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-0-ee96f1dae5e7"
+  },
+  {
+    "key": "sv/1_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "7d7968e1a19026f9647a93ed34d17fed0c1d765578f9e6df20a040c646a47903",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-1-7d7968e1a190"
+  },
+  {
+    "key": "sv/2_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "885ffd01af982ee0f8b650cac46c7e05013b658c4756ceed98ced44e3e40990d",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-2-885ffd01af98"
+  },
+  {
+    "key": "sv/3_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "1d562b73d12f1aca94e7a6036d74d0195ab01b742effbea4b790407007c9cd46",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-3-1d562b73d12f"
+  },
+  {
+    "key": "sv/4_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "67c5e9a2333a8624bfc24395f8a9bb03a57cdb46f1be44cfe7be6421ccf19f1b",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-4-67c5e9a2333a"
+  },
+  {
+    "key": "sv/5_IPHONE_69.png",
+    "locale": "sv",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "d289380743840772945e54b7aeb82cf5a8649ff1353cea9ebf0d82f3311253d7",
+    "reference": "vyt-1.4.15-sv-IPHONE_69-5-d28938074384"
+  },
+  {
+    "key": "sv/0_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "eb71da165d109f66451b176dfedb0fe0c30c38c9d85e9fb6f0a21a38da9c2cd8",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-0-eb71da165d10"
+  },
+  {
+    "key": "sv/1_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "6322286f4074c594c8dc1695476f2122d34805dc64ea00c09a220c254f76f8fe",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-1-6322286f4074"
+  },
+  {
+    "key": "sv/2_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "02a9cee502303dbc76d1ddc5a7737ad1562d0dcdabf279b888e4a8b6171607d2",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-2-02a9cee50230"
+  },
+  {
+    "key": "sv/3_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "3b23b5ce807daf83775278d8c2d386687e5bf1aa52d5f595c7d0057a57c8781e",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-3-3b23b5ce807d"
+  },
+  {
+    "key": "sv/4_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "f6784d8104e48f63d617cf666146b6f61e3a83dc07518396d645402a874f1fd5",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-4-f6784d8104e4"
+  },
+  {
+    "key": "sv/5_IPAD_PRO_3GEN_129.png",
+    "locale": "sv",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "769882ea47e4382bb840a4b467478a2044d1f69f4425d5c1542995f98ad2799d",
+    "reference": "vyt-1.4.15-sv-IPAD_PRO_3GEN_129-5-769882ea47e4"
+  },
+  {
+    "key": "ta-IN/0_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "b42e428b95a78b113537d2cd89c082ea3ed3d531483ed1d09c41bf300e993f87",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-0-b42e428b95a7"
+  },
+  {
+    "key": "ta-IN/1_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "e8cab0e4fb90b94da1f17473b84a6f8712e9f8034966b807458fdbd6c55b9ba1",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-1-e8cab0e4fb90"
+  },
+  {
+    "key": "ta-IN/2_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "7ba38045db5e9a8955b52e4f6f74d8675d99c66415a3f2daa29552f600acce13",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-2-7ba38045db5e"
+  },
+  {
+    "key": "ta-IN/3_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "3a4d86859bf1f09808e37814a1e5513b3d606f58cd20e22e1f2e0a45ba3a623f",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-3-3a4d86859bf1"
+  },
+  {
+    "key": "ta-IN/4_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "a7ed6b3a17b2b8e2d0f7fbc6f586aed1c93832b3bd26f3f768569cb2c0fb2783",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-4-a7ed6b3a17b2"
+  },
+  {
+    "key": "ta-IN/5_IPHONE_69.png",
+    "locale": "ta-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "24edfe9e94efde6c98705c34a615c8624a72e649b88dbcfe26e7d7455647e6aa",
+    "reference": "vyt-1.4.15-ta-IN-IPHONE_69-5-24edfe9e94ef"
+  },
+  {
+    "key": "ta-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "b0db976c3b3aa1f82419a0487c5273f8c3bddbe2bccc9a9a054d23ae48eeba24",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-0-b0db976c3b3a"
+  },
+  {
+    "key": "ta-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "bf887492dd20b52010cc1914c0078f94a611e50e3f133a6b50405a7d45967f2b",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-1-bf887492dd20"
+  },
+  {
+    "key": "ta-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "09befeb17bb1a0c874391f65ac9e6a45f673ae991e6efb5149350c6bc85b3145",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-2-09befeb17bb1"
+  },
+  {
+    "key": "ta-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "adac145838a1c21f0cbadba6293b581b843543dbc091ed5c3faa0885e35cd783",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-3-adac145838a1"
+  },
+  {
+    "key": "ta-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "47ff85e8942d269b80f7e2b755034879649d7900838c1c036fec2b99fbff16dd",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-4-47ff85e8942d"
+  },
+  {
+    "key": "ta-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ta-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "8f91472dd0e55cecda2f5e3955d421da7aafadae18e0e4c1cedeec09af5015d4",
+    "reference": "vyt-1.4.15-ta-IN-IPAD_PRO_3GEN_129-5-8f91472dd0e5"
+  },
+  {
+    "key": "te-IN/0_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "d37c1561f78b0ba716d20a19241eb11f3e2448b07ec58ee7ce5fef9285ebc0d7",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-0-d37c1561f78b"
+  },
+  {
+    "key": "te-IN/1_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "9a9f097b5adb3b2d1434810437fa85d41aeec0c1771947e4de565dd9f4f84df0",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-1-9a9f097b5adb"
+  },
+  {
+    "key": "te-IN/2_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "329ac717c29e97711b7cf1ab90094ad2d0ade9fe6c3872f0457ea6f1f973dcf5",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-2-329ac717c29e"
+  },
+  {
+    "key": "te-IN/3_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "0d1de9b1421f676e833a5e232f99ecb2508810f0e6fc07174ded606bbf603aaf",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-3-0d1de9b1421f"
+  },
+  {
+    "key": "te-IN/4_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "3eccb66aa32fb07a1d6fbec0114639d1df8917cfea34d73e4ba33acb1627bb5a",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-4-3eccb66aa32f"
+  },
+  {
+    "key": "te-IN/5_IPHONE_69.png",
+    "locale": "te-IN",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "aaf25f94dd1380e6f8f9734b2de289756476ebafb36cef2bc49c4e9805838aca",
+    "reference": "vyt-1.4.15-te-IN-IPHONE_69-5-aaf25f94dd13"
+  },
+  {
+    "key": "te-IN/0_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "35ed690b35cd3ddac702f062aa05752f08f8dfb682f24ab52c0388bdf70f751d",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-0-35ed690b35cd"
+  },
+  {
+    "key": "te-IN/1_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "0646f7115f8b475f1a9b0d3dce4e3adc74600eb215d213cdc81f1d72b262fec9",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-1-0646f7115f8b"
+  },
+  {
+    "key": "te-IN/2_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "7e86a6d3fa5a53cdb388401e1e84d5a0ef8aa8939b407ba27f87c91780bf2f5e",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-2-7e86a6d3fa5a"
+  },
+  {
+    "key": "te-IN/3_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "25cfc684f721498a93716a3a0a00c23be0ccf008e7e1f712d5543cf778c1a236",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-3-25cfc684f721"
+  },
+  {
+    "key": "te-IN/4_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "a34d2bdc7bda15cf64fdf3dc10c7bc570a5323d1d38ff703a78f7c12a41d27ab",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-4-a34d2bdc7bda"
+  },
+  {
+    "key": "te-IN/5_IPAD_PRO_3GEN_129.png",
+    "locale": "te-IN",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "211c1a98e4f325e60a83cf7eca03172fb8815528cee6021315f72a677f74e7b9",
+    "reference": "vyt-1.4.15-te-IN-IPAD_PRO_3GEN_129-5-211c1a98e4f3"
+  },
+  {
+    "key": "th/0_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "6a5ff3a5f7c14f5e19715ea7bf3755696aa6feaf83973c504a455bb9f729fc23",
+    "reference": "vyt-1.4.15-th-IPHONE_69-0-6a5ff3a5f7c1"
+  },
+  {
+    "key": "th/1_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "972efdf84426dfb53fc8569fdbd0a5834aaecd344d5ef511a331624631bfac58",
+    "reference": "vyt-1.4.15-th-IPHONE_69-1-972efdf84426"
+  },
+  {
+    "key": "th/2_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "1d7deaab783c674435ab6e196f137f48c621c08ebf939cb971234ddec8ddc9ca",
+    "reference": "vyt-1.4.15-th-IPHONE_69-2-1d7deaab783c"
+  },
+  {
+    "key": "th/3_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "0b86907c76c0806f359f0cfb94c111155c2d74af3e51fc876d91686f41d1e14f",
+    "reference": "vyt-1.4.15-th-IPHONE_69-3-0b86907c76c0"
+  },
+  {
+    "key": "th/4_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "349140e55ccf0d72242eff7ee366c47c6dae6022b8d506e2a2ba5e96c7aedf57",
+    "reference": "vyt-1.4.15-th-IPHONE_69-4-349140e55ccf"
+  },
+  {
+    "key": "th/5_IPHONE_69.png",
+    "locale": "th",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "3e3e3a68d99f66c60eb96a3bb5c79ab0034a04c5b2fcfc27ad683d13cbe557c1",
+    "reference": "vyt-1.4.15-th-IPHONE_69-5-3e3e3a68d99f"
+  },
+  {
+    "key": "th/0_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "563581be710d253e80007c67cfdadee30e5bf6ef3fb36718772aa3666ac8ffaa",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-0-563581be710d"
+  },
+  {
+    "key": "th/1_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "ddfc15f16c24e288017a74e3c6f6360736e7f8ed4082f24bdb40ceb623d02df8",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-1-ddfc15f16c24"
+  },
+  {
+    "key": "th/2_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "a9e9c526bf2982a3ef483dda70f388a7c3c8d38c63b4e7fc509846d6bb4927b1",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-2-a9e9c526bf29"
+  },
+  {
+    "key": "th/3_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "3ce0438c8fbb9ee0bb80479db0c73d2872f0dc6d4c7662d0f3dc70f8bb77fd92",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-3-3ce0438c8fbb"
+  },
+  {
+    "key": "th/4_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "f85691d73a54a2d15db52cfa066d260b335e4326f0f95662130d3ae6d3daa872",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-4-f85691d73a54"
+  },
+  {
+    "key": "th/5_IPAD_PRO_3GEN_129.png",
+    "locale": "th",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "cb0a1a2d9d6a9edd2d2f91da1c12cc7e15a8bcdc943dc41906be8580f9bb6eb0",
+    "reference": "vyt-1.4.15-th-IPAD_PRO_3GEN_129-5-cb0a1a2d9d6a"
+  },
+  {
+    "key": "tr/0_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "189384cd3f8f7f6c631d322cfa1fc644bc2cd5cfcdf0daa524703e86eba0cb58",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-0-189384cd3f8f"
+  },
+  {
+    "key": "tr/1_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "80fe1dbfc5e593df766aaa956d6bb7312fe8187f41371a0d9b677645724a7595",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-1-80fe1dbfc5e5"
+  },
+  {
+    "key": "tr/2_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "0488a8a4dd208fa15a250a5f4c2909168511cfbc0b586145b90d794092bfe842",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-2-0488a8a4dd20"
+  },
+  {
+    "key": "tr/3_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "74074ea5f876932b61eb5787f9e4bd2ab2e1e2724431658a1bc550f4ae43534e",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-3-74074ea5f876"
+  },
+  {
+    "key": "tr/4_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "438f2ef33d7cb263dfebfca92c367861f3daf9ee40bc09f9287f0d0d25c57a55",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-4-438f2ef33d7c"
+  },
+  {
+    "key": "tr/5_IPHONE_69.png",
+    "locale": "tr",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "0d827b677546fe3a96eb98c9e1db8ec34b39f6868c1fe6784904903ffe187a47",
+    "reference": "vyt-1.4.15-tr-IPHONE_69-5-0d827b677546"
+  },
+  {
+    "key": "tr/0_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "cc40b4d4c71b567d9980feb5f92b875149e41226e8748d8ddf20a71ab78935db",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-0-cc40b4d4c71b"
+  },
+  {
+    "key": "tr/1_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "2da37a8610fa2e0e77249f1b6250a9ed9c0531fbb71b5f59021cd2c1644331ef",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-1-2da37a8610fa"
+  },
+  {
+    "key": "tr/2_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "c3c1006cf908c4f56aa1a33f933e4c88bfbe9a9fa53b598671270a6fcb5754ae",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-2-c3c1006cf908"
+  },
+  {
+    "key": "tr/3_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "7fe6cc6c81a61c2617ec955a04c9fb9775f5a1eb904656d218af92b7fa6a1de8",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-3-7fe6cc6c81a6"
+  },
+  {
+    "key": "tr/4_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "387a3fdde28a74cd8337cebb73dac1ba5f06c6ac1248927b9701fbe65d7f11fb",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-4-387a3fdde28a"
+  },
+  {
+    "key": "tr/5_IPAD_PRO_3GEN_129.png",
+    "locale": "tr",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "c621d80f7b624e9b6c09781752be3e139b08e104832749701cb3198f87f979de",
+    "reference": "vyt-1.4.15-tr-IPAD_PRO_3GEN_129-5-c621d80f7b62"
+  },
+  {
+    "key": "uk/0_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "0c9f360c6e0e799f3a730a9ab08d6b58828092e8b065f2bd69a616d49bf3c7a8",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-0-0c9f360c6e0e"
+  },
+  {
+    "key": "uk/1_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "bb028e99159dc6e07cfb2ac07172a4ad14bfd48a36ef10a3e89c7b87447f2f68",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-1-bb028e99159d"
+  },
+  {
+    "key": "uk/2_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "06238bad205799b4df4aff6f83931f89f2c7cf7331cea07e5267d7bdb2bda69f",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-2-06238bad2057"
+  },
+  {
+    "key": "uk/3_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "78db799dd648b657d9a0f251df1bb89684b02c11dfb9ec977ca9a4306940bae2",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-3-78db799dd648"
+  },
+  {
+    "key": "uk/4_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "5b444d3754dd87769538fa1736bf1958ebdeec2e967bb24ed113b7b8d20129ca",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-4-5b444d3754dd"
+  },
+  {
+    "key": "uk/5_IPHONE_69.png",
+    "locale": "uk",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "6d132946c3b2ad0399d2d2cbc775241b4303929aac98c62e1308d476b41683e4",
+    "reference": "vyt-1.4.15-uk-IPHONE_69-5-6d132946c3b2"
+  },
+  {
+    "key": "uk/0_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "e37d6b3c04aa10af2cabe737f2aa8a0f1eed946316a56bb3f1d50f16f222dc11",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-0-e37d6b3c04aa"
+  },
+  {
+    "key": "uk/1_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "05bcaffaef1f88d4932969782f8d9e3acbb2f23d6dbc555d2c05f309367c014a",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-1-05bcaffaef1f"
+  },
+  {
+    "key": "uk/2_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "ccb41441822034395faf0017584be1774b2b16ffd3e707563ddf72f2b1c243d9",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-2-ccb414418220"
+  },
+  {
+    "key": "uk/3_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "1a26f36481700a4e9f5cfd6f29f1f76d1ed98214a745c41aebc04427a81acad5",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-3-1a26f3648170"
+  },
+  {
+    "key": "uk/4_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "e5aae17dba0a40f0b584a57e6e6ec100e1c669e8d624afaecd977f9a026300ae",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-4-e5aae17dba0a"
+  },
+  {
+    "key": "uk/5_IPAD_PRO_3GEN_129.png",
+    "locale": "uk",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "e840a71f39ddc5409ddbc0b8c0ba779960a5a6425ab4a5b4d5bad13d714d0825",
+    "reference": "vyt-1.4.15-uk-IPAD_PRO_3GEN_129-5-e840a71f39dd"
+  },
+  {
+    "key": "ur-PK/0_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "d2146bb699497603d5804c0c3982cfd2d04b1d91170b46f69a6e2bbe2c441972",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-0-d2146bb69949"
+  },
+  {
+    "key": "ur-PK/1_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "590c942598c9d074bbf16083417762aefe0a8592520db13b942c7f69bc35a750",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-1-590c942598c9"
+  },
+  {
+    "key": "ur-PK/2_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "46f3b38456e3e949876648f4e37ac5ccba9c94455d34d0d7f635d81caaba4c87",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-2-46f3b38456e3"
+  },
+  {
+    "key": "ur-PK/3_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "de2f80a4738eb6ab4e904e397b288bc067b96fd652ce1c11dee5a15f91915f24",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-3-de2f80a4738e"
+  },
+  {
+    "key": "ur-PK/4_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "ce7812ffd2f123c01501c7ea04a347060173cff44fb3f9e532cd278649a6ab59",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-4-ce7812ffd2f1"
+  },
+  {
+    "key": "ur-PK/5_IPHONE_69.png",
+    "locale": "ur-PK",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "bc05925d2eff23c086b2d03cbf5d8d8fb2ae2172380074fa2c0cbc8fca0ba54f",
+    "reference": "vyt-1.4.15-ur-PK-IPHONE_69-5-bc05925d2eff"
+  },
+  {
+    "key": "ur-PK/0_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "a99f423e92c8544e345a0ac091772b776ac86411b372d57b3ab9ee77195d5d4c",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-0-a99f423e92c8"
+  },
+  {
+    "key": "ur-PK/1_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "135a45612b5e3fec451ef4a8d578396d73cd706be1bc31ea074735a8529b3aeb",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-1-135a45612b5e"
+  },
+  {
+    "key": "ur-PK/2_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "b6810675d15084e74f107ad12f19cb83c6d2bcfabf7b631be65ac9fcbf1cd789",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-2-b6810675d150"
+  },
+  {
+    "key": "ur-PK/3_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "eb3e435bd9df061e8a2a63872f3bedfa5a275308b2020ec5ac2499336acb35d2",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-3-eb3e435bd9df"
+  },
+  {
+    "key": "ur-PK/4_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "22c8358b5acbef09cd7a925bd078eba2f3ec135bc67413ceef62dfda83740bf0",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-4-22c8358b5acb"
+  },
+  {
+    "key": "ur-PK/5_IPAD_PRO_3GEN_129.png",
+    "locale": "ur-PK",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "dcbaaddc0f328536188461785758cbc34bb4863e6c7edd5e7abe4fa45b952a3c",
+    "reference": "vyt-1.4.15-ur-PK-IPAD_PRO_3GEN_129-5-dcbaaddc0f32"
+  },
+  {
+    "key": "vi/0_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "2cfedf6370c965ea9d4ce8be0f1b350267b2b68fea844a76a27013eca65ccfe5",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-0-2cfedf6370c9"
+  },
+  {
+    "key": "vi/1_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "1b84cd81eb9f6ab270ecad394b7b38b85649553021d0e039d296071d164a9727",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-1-1b84cd81eb9f"
+  },
+  {
+    "key": "vi/2_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "805b342931c7376f43a042de51c022d9ed1169033660e582e5449717441715a1",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-2-805b342931c7"
+  },
+  {
+    "key": "vi/3_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "301acf289fb1c4668df304f092ee7507c77b3e8069064896f16df4205a86889a",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-3-301acf289fb1"
+  },
+  {
+    "key": "vi/4_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "e0193d9a987f8218f73ca5f140fcbed102e29ace99e190d281538b6e8946b3ac",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-4-e0193d9a987f"
+  },
+  {
+    "key": "vi/5_IPHONE_69.png",
+    "locale": "vi",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "c1e61b98fddc3b48a5b94f4b4d3b276e96fb743fd0007c9a9c44c05643d2b29e",
+    "reference": "vyt-1.4.15-vi-IPHONE_69-5-c1e61b98fddc"
+  },
+  {
+    "key": "vi/0_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "5adc4ff48995e175a6e034d6e236e9e34b5a2bbbd4e4e1011d8b3ca570cc1ab5",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-0-5adc4ff48995"
+  },
+  {
+    "key": "vi/1_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "8d9e2314f73aae0738439d15aadb6101424417a529d0679e5330ccf6069e26ad",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-1-8d9e2314f73a"
+  },
+  {
+    "key": "vi/2_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "b17996c32033fc04e153f885ce5f945c939a3f08b4c622308527f70f88a4b39f",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-2-b17996c32033"
+  },
+  {
+    "key": "vi/3_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "db27b23537a7857e620bdbe708a5e2586b12ea0b5b1b60d1eae61c1f33d1a562",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-3-db27b23537a7"
+  },
+  {
+    "key": "vi/4_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "07c7d9396bffd796e5f09d18b2df044bd816e1b371a299b0805a700c899795fa",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-4-07c7d9396bff"
+  },
+  {
+    "key": "vi/5_IPAD_PRO_3GEN_129.png",
+    "locale": "vi",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "3ce7225cdb7f98d1f41009afe425adeb627f49d1dedd07cdd70452728f5cd69e",
+    "reference": "vyt-1.4.15-vi-IPAD_PRO_3GEN_129-5-3ce7225cdb7f"
+  },
+  {
+    "key": "zh-Hans/0_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "b19b6cf1b7c85fd787fe2be935d5636bf101599d470c0412857bdad712bb7425",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-0-b19b6cf1b7c8"
+  },
+  {
+    "key": "zh-Hans/1_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "303b9bc6fd14d58d7a7db7ae0228078c849050d7e407ece18782869de19f664b",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-1-303b9bc6fd14"
+  },
+  {
+    "key": "zh-Hans/2_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "1f858f369c86b5f144c87efad3ec1e575ed2730479bd4f73fff778a58404ef2d",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-2-1f858f369c86"
+  },
+  {
+    "key": "zh-Hans/3_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "2d20337c8e29fc39709da2384629507a6a7720e46ac3b59a42c4f0c359dc77d2",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-3-2d20337c8e29"
+  },
+  {
+    "key": "zh-Hans/4_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "e15749e6ddf2066d4b71db2084bf086dc1f59bec612812ef7cee455a9b6dab4f",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-4-e15749e6ddf2"
+  },
+  {
+    "key": "zh-Hans/5_IPHONE_69.png",
+    "locale": "zh-Hans",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "8f5bb09241a8e2689f50eea4d2fc23e77e00a9aa8263365fcb5c2e2eb232c0e3",
+    "reference": "vyt-1.4.15-zh-Hans-IPHONE_69-5-8f5bb09241a8"
+  },
+  {
+    "key": "zh-Hans/0_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "0b8ff0181ca8c3c41446e682de3926a0c4edee3648997557f733fe8222fa973b",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-0-0b8ff0181ca8"
+  },
+  {
+    "key": "zh-Hans/1_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "4152d91d4508e6de0bb0086111b4eb2c142ff22d1415510327ce6066391cc862",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-1-4152d91d4508"
+  },
+  {
+    "key": "zh-Hans/2_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "0eb15b17e5e21310da4572386dbd0cfce09cfbd28d76bfcee9053c2e5a784bdc",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-2-0eb15b17e5e2"
+  },
+  {
+    "key": "zh-Hans/3_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "8d60ed409cc6ea42297f5ac10f0661dd44fd71f98004f03c08875db5347e8b6e",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-3-8d60ed409cc6"
+  },
+  {
+    "key": "zh-Hans/4_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "27cd3944f7997dc5d3cda45c32a03c9b49d84107aa1645152d574dfb11acfea3",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-4-27cd3944f799"
+  },
+  {
+    "key": "zh-Hans/5_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hans",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "8441dd4edc4800e48febdbda1cc6c0a157c28ab423917d4a71437121fc004b09",
+    "reference": "vyt-1.4.15-zh-Hans-IPAD_PRO_3GEN_129-5-8441dd4edc48"
+  },
+  {
+    "key": "zh-Hant/0_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 0,
+    "sha256": "b757a5380665740dfb6cd0331d064aaf745c06e1954713fb8ba13acb3f876d42",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-0-b757a5380665"
+  },
+  {
+    "key": "zh-Hant/1_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 1,
+    "sha256": "997de21cf068344666ee1e1933ea173078965920459dbe1a33c83f9f30324fde",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-1-997de21cf068"
+  },
+  {
+    "key": "zh-Hant/2_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 2,
+    "sha256": "d3a2b2852952630100790628dd2491f519057a653a7c71274c286b1d2a8ddc3c",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-2-d3a2b2852952"
+  },
+  {
+    "key": "zh-Hant/3_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 3,
+    "sha256": "5be7d26ef9a42e95e48600b66f3ed95f0395e839ca099ff31b874e4957ffede9",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-3-5be7d26ef9a4"
+  },
+  {
+    "key": "zh-Hant/4_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 4,
+    "sha256": "e4ac69d3fc51f509c3ce4b9f4538f02fedf1686ef5878867a863e1b759a0c49a",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-4-e4ac69d3fc51"
+  },
+  {
+    "key": "zh-Hant/5_IPHONE_69.png",
+    "locale": "zh-Hant",
+    "device": "IPHONE_69",
+    "group": "IPHONE_DYNAMIC_ISLAND_LARGE_PROFILE",
+    "index": 5,
+    "sha256": "76b47548c7dbf86e6c92bc46c3f0023479a1588c1ad3a3fbfe3711f9399aae01",
+    "reference": "vyt-1.4.15-zh-Hant-IPHONE_69-5-76b47548c7db"
+  },
+  {
+    "key": "zh-Hant/0_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 0,
+    "sha256": "60b03d02a3619695f50cd7c7a4fad668db202645b0d60447a8e97cdb174f2d22",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-0-60b03d02a361"
+  },
+  {
+    "key": "zh-Hant/1_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 1,
+    "sha256": "df349b548578f1b3ce297bf88ae60600cd5eec64ff3b4ee14c57a9ee447d13ac",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-1-df349b548578"
+  },
+  {
+    "key": "zh-Hant/2_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 2,
+    "sha256": "0c6ec1d1a9cbfd6eed5cb1eeab03a1eb88631a81791e432bbd7ad93cb94ddd4e",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-2-0c6ec1d1a9cb"
+  },
+  {
+    "key": "zh-Hant/3_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 3,
+    "sha256": "21668f32f9a3c50fcb9c2a1fe04e3ec2eaabbc7a39a318c72fe2c21fc1391ee4",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-3-21668f32f9a3"
+  },
+  {
+    "key": "zh-Hant/4_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 4,
+    "sha256": "242344253c3ad3e5b55a82b03b99e02269f82b42d600208a61d0bd986911fda2",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-4-242344253c3a"
+  },
+  {
+    "key": "zh-Hant/5_IPAD_PRO_3GEN_129.png",
+    "locale": "zh-Hant",
+    "device": "IPAD_PRO_3GEN_129",
+    "group": "IPAD_13_PROFILE",
+    "index": 5,
+    "sha256": "d13d5d5b8a6e32c61916ef5c1ba5e2c1c3cb4223be0298ead62b451b458fe977",
+    "reference": "vyt-1.4.15-zh-Hant-IPAD_PRO_3GEN_129-5-d13d5d5b8a6e"
+  }
+]
