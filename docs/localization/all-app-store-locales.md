@@ -3,6 +3,8 @@
 2026-10-29。アプリ内翻訳・ストア情報・スクリーンショットをApp Storeの全50ロケールに展開。
 Apple公式一覧: https://developer.apple.com/documentation/appstoreconnectapi/managing-metadata-in-your-app-by-using-locale-shortcodes
 
+2026-11-17追記: 1.4.15向けの各端末6枚構成と再生成手順は [スクリーンショット更新手順](../app-store-screenshots/2026-11-17/README.md) を参照。以下の3画面構成と300枚の検証記録は、2026-10-29時点のもの。
+
 ## 管理するファイル
 
 - `iOS/fastlane/locales.json`: 50のストアロケールとアプリの言語コードの対応。
