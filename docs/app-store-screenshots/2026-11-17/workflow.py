@@ -247,6 +247,9 @@ def place():
                     "type": "appAssetLibraryPlacements", "attributes": {"placementType": "APP_SCREENSHOT", "placementGroup": group},
                     "relationships": {"image": relationship("appAssetLibraryImages", aid),
                     "appStoreVersionLocalization": relationship("appStoreVersionLocalizations", identifier)}}})["data"]
+                # Creation responses omit relationships; retain the image ID we just sent
+                # so the next slide can inspect this newly created placement too.
+                existing.setdefault("relationships", {})["image"] = relationship("appAssetLibraryImages", aid)
                 current.append(existing)
             desired.append(existing["id"])
             with LOCK:
