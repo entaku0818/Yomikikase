@@ -1,0 +1,39 @@
+{
+  "verifiedAt": "2026-11-17T13:27:27.936312+00:00",
+  "version": "1.4.15",
+  "build": "53",
+  "method": "Native Chrome / App Store Connect media manager and header tab",
+  "locales": {
+    "ja": {
+      "iPhoneLargeDisplay": {
+        "count": "6/10",
+        "actualImagesAndOrderSeen": true
+      },
+      "iPad13": {
+        "count": "6/10",
+        "actualImagesAndOrderSeen": true
+      },
+      "header": {
+        "count": "1/1",
+        "actualImageSeen": true
+      }
+    },
+    "en-US": {
+      "iPhoneLargeDisplay": {
+        "count": "6/10",
+        "actualImagesAndOrderSeen": true
+      },
+      "iPad13": {
+        "count": "6/10",
+        "actualImagesAndOrderSeen": true
+      },
+      "header": {
+        "count": "1/1",
+        "actualImageSeen": true
+      }
+    }
+  },
+  "mediumIPhoneUsesInheritedLargeDisplayAssets": true,
+  "publicStoreVerified": false,
+  "devicePreviewVerified": false
+}
