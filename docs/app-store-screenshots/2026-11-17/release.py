@@ -9,7 +9,7 @@ import workflow as asc
 
 def build():
     result = asc.call("GET", "builds", params={
-        "filter[app]": asc.APP, "filter[version]": "52", "include": "preReleaseVersion"})
+        "filter[app]": asc.APP, "filter[version]": "53", "include": "preReleaseVersion"})
     matches = [row for row in result["data"] if any(
         version["id"] == row["relationships"]["preReleaseVersion"]["data"]["id"]
         and version["attributes"]["version"] == "1.4.15" for version in result.get("included", []))]
@@ -55,7 +55,7 @@ def select_build():
     selected = asc.call("GET", f"appStoreVersions/{asc.VERSION}/build")["data"]
     assert selected["id"] == value["id"]
     asc.save("build-selected", selected)
-    print("Selected 1.4.15 build 52, VALID", flush=True)
+    print("Selected 1.4.15 build 53, VALID", flush=True)
 
 
 def submit():
