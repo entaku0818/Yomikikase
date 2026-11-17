@@ -125,12 +125,8 @@ struct MyFilesView: View {
             )
         }
         .fullScreenCover(item: $selectedPDFFile) { pdfFile in
-            PDFReaderView(
-                store: Store(
-                    initialState: PDFReaderFeature.State(currentPDFURL: pdfFile.url)
-                ) {
-                    PDFReaderFeature()
-                },
+            PDFReaderPresentation(
+                url: pdfFile.url,
                 parentStore: store
             )
         }

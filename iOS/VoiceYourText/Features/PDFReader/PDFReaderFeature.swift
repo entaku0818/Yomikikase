@@ -235,6 +235,24 @@ struct PDFReaderFeature: Reducer {
     }
 }
 
+/// Own the reader store for the presentation's lifetime. Updating the parent mini-player
+/// must not replace the loaded document and playback state with a fresh store.
+struct PDFReaderPresentation: View {
+    @State private var store: StoreOf<PDFReaderFeature>
+    let parentStore: Store<Speeches.State, Speeches.Action>?
+
+    init(url: URL, parentStore: Store<Speeches.State, Speeches.Action>? = nil) {
+        self._store = State(initialValue: Store(initialState: PDFReaderFeature.State(currentPDFURL: url)) {
+            PDFReaderFeature()
+        })
+        self.parentStore = parentStore
+    }
+
+    var body: some View {
+        PDFReaderView(store: store, parentStore: parentStore)
+    }
+}
+
 // PDFReaderView.swift
 struct PDFReaderView: View {
     @Environment(\.dismiss) private var dismiss

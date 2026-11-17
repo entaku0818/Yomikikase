@@ -135,12 +135,8 @@ struct NavigationDestinationView: View {
                 fileId: fileId
             )
         case .pdf(_, let url):
-            PDFReaderView(
-                store: Store(
-                    initialState: PDFReaderFeature.State(currentPDFURL: url)
-                ) {
-                    PDFReaderFeature()
-                },
+            PDFReaderPresentation(
+                url: url,
                 parentStore: store
             )
         case .speech:

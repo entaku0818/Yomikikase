@@ -218,13 +218,7 @@ struct PDFListView: View {
             VStack {
                 List {
                     ForEach(viewStore.pdfFiles) { file in
-                        NavigationLink(destination: PDFReaderView(
-                            store: Store(
-                                initialState: PDFReaderFeature.State(currentPDFURL: file.url)
-                            ) {
-                                PDFReaderFeature()
-                            }
-                        )) {
+                        NavigationLink(destination: PDFReaderPresentation(url: file.url)) {
                             VStack(alignment: .leading) {
                                 Text(file.fileName)
                                     .font(.headline)
