@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>1.4.15 スクリーンショット一覧</title>
+<style>
+:root{font-family:system-ui,sans-serif;color:#232238;background:#f4f4fb}body{margin:0;padding:24px}header{position:sticky;top:0;background:#f4f4fbef;padding:12px 0;z-index:2;backdrop-filter:blur(12px)}h1{font-size:22px;margin:0 0 14px}select{font:inherit;padding:9px;border:1px solid #c8c7df;border-radius:8px;margin-right:16px}label{display:inline-block;margin-bottom:6px}h2{font-size:18px}.grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}figure{margin:0}img{width:100%;height:auto;border-radius:10px;box-shadow:0 4px 14px #2222}figcaption{font-size:13px;margin:6px 0 20px}p{font-size:14px;color:#57566c}@media(max-width:850px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:450px){body{padding:12px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<header><h1>1.4.15 スクリーンショット一覧</h1>
+<label>言語 <select id="locale"></select></label><label>端末 <select id="device"><option value="both">iPhone / iPad</option><option value="phone">iPhone</option><option value="pad">iPad</option></select></label>
+<p>全50言語・各端末6枚。画像をクリックすると原寸で開きます。</p></header><main id="screens"></main>
+<script>
+const locales=["ar-SA", "bn-BD", "ca", "zh-Hans", "zh-Hant", "hr", "cs", "da", "nl-NL", "en-AU", "en-CA", "en-GB", "en-US", "fi", "fr-FR", "fr-CA", "de-DE", "el", "gu-IN", "he", "hi", "hu", "id", "it", "ja", "kn-IN", "ko", "ms", "ml-IN", "mr-IN", "no", "or-IN", "pl", "pt-BR", "pt-PT", "pa-IN", "ro", "ru", "sk", "sl-SI", "es-MX", "es-ES", "sv", "ta-IN", "te-IN", "th", "tr", "uk", "ur-PK", "vi"];
+const localeSelect=document.querySelector('#locale'),deviceSelect=document.querySelector('#device');
+for(const locale of locales){const option=document.createElement('option');option.value=locale;option.textContent=locale;localeSelect.append(option)}
+localeSelect.value=new URLSearchParams(location.search).get('locale')||'ja';
+const titles=['読み上げ中','ホーム','速度調整','PDF','スリープタイマー','ユーザー辞書'];
+function render(){
+ const locale=localeSelect.value,device=deviceSelect.value,main=document.querySelector('#screens');main.replaceChildren();
+ for(const [key,name,suffix] of [['phone','iPhone','IPHONE_69'],['pad','iPad','IPAD_PRO_3GEN_129']]){
+  if(device!=='both'&&device!==key)continue;
+  const heading=document.createElement('h2');heading.textContent=locale+' / '+name;main.append(heading);
+  const grid=document.createElement('section');grid.className='grid';main.append(grid);
+  titles.forEach((title,index)=>{const figure=document.createElement('figure'),link=document.createElement('a'),image=document.createElement('img'),caption=document.createElement('figcaption');
+   link.href='../../../iOS/fastlane/screenshots/'+encodeURIComponent(locale)+'/'+index+'_'+suffix+'.png';link.target='_blank';link.rel='noopener';image.src=link.href;image.alt=locale+' '+name+' '+title;image.loading='lazy';caption.textContent=(index+1)+'. '+title;link.append(image);figure.append(link,caption);grid.append(figure)});
+ }
+}
+localeSelect.addEventListener('change',render);deviceSelect.addEventListener('change',render);render();
+</script></html>
