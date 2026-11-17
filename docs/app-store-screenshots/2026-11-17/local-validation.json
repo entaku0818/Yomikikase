@@ -31,7 +31,14 @@
     "build-stable-pdf.log": "caec02682ff200aa4a96526e3010c8073ada30283b11c04f235b7e6c204ea031",
     "archive-53.log": "17a3221fd47c30b6b43226e3d8c51beb12261dbc219b7d298f5ac1f723762cd4",
     "export-53.log": "c44667f2dd3c82e070b5c14ff16bec64b6143f75f127a7898d688da019b205ab",
-    "upload-build53.log": "0bb1775d002ff3bbc2901e54154865c7ecfb254987508f16d0f8510c8ab50471"
+    "upload-build53.log": "0bb1775d002ff3bbc2901e54154865c7ecfb254987508f16d0f8510c8ab50471",
+    "localization-validation-final.log": "7b499018f66f39946a1d505b193bd209cc08ba3b24737823a76e68cbf75b7b71"
   },
-  "distributionBuild": "53"
+  "distributionBuild": "53",
+  "localizationValidation": {
+    "locales": 50,
+    "catalogEntries": 403,
+    "errors": 0
+  },
+  "trackedScreenshotsMatchFinal": 600
 }

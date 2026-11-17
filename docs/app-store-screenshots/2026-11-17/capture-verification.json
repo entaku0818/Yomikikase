@@ -1,0 +1,14 @@
+{
+  "iphone": {
+    "completeLocales": 50,
+    "distinctCaptureMarkers": 50,
+    "latestCaptureSucceeded": true,
+    "logSha256": "37f31cd8c1810e7d0bbd395e99afdd3f5a1f7be59907702c74177848b437e350"
+  },
+  "ipad": {
+    "completeLocales": 50,
+    "distinctCaptureMarkers": 50,
+    "latestCaptureSucceeded": true,
+    "logSha256": "4138f733dc795541b8cb5bf33d9800b16679bdcd1be1a624d510e669333a82b9"
+  }
+}
