@@ -2,6 +2,11 @@
 
 ユーザー指摘「小さくて文字見えん」に対応した日本語・英語の比較案。**ローカルの案であり、App Store Connectへ未登録・未提出・未反映**。
 
+追記: 「シンプルでいい」というフィードバックを受け、スマホ画像と波模様も外した文字中心の案を追加した。背景グラデーションと見出し2行だけに絞り、文字を270px（390px幅で27.42px相当）へ拡大。安全領域内に収まることを検証済み。
+
+- [日本語・文字だけの案（390px幅）](ja-simple-390.png)／[原稿](simple/ja.png)
+- [英語・文字だけの案（390px幅）](en-US-simple-390.png)／[原稿](simple/en-US.png)
+
 ## 比較と変更
 
 1. 現行原稿は中央に小さく構図を収めており、390px幅では日本語の見出し・副文が読みにくい。特に日本語は既存の検索画像全体を縮小していた。
@@ -22,6 +27,8 @@
 ```sh
 swiftc iOS/scripts/compose_readable_store_header.swift -o /tmp/narrator-readable-header
 /tmp/narrator-readable-header docs/app-store-banners/2026-11-17
+# 文字だけのシンプルな案
+/tmp/narrator-readable-header docs/app-store-banners/2026-11-17 --text-only
 ```
 
 見た目と文字の大きさを確認してから、他言語の文言・表示幅へ展開する。今回の変更はバナー案のみで、提出済み1.4.15（53）の600枚のスクショや審査状態には書き込んでいない。

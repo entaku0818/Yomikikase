@@ -1,0 +1,20 @@
+[
+  {
+    "headline" : "Text to\nspeech.",
+    "headlineAt390Width" : 27.421875,
+    "headlineFontPixels" : 270,
+    "locale" : "en-US",
+    "phoneIncluded" : false,
+    "safeAreaPass" : true,
+    "status" : "LOCAL_PROPOSAL_NOT_UPLOADED"
+  },
+  {
+    "headline" : "文章を、\n耳で読む。",
+    "headlineAt390Width" : 27.421875,
+    "headlineFontPixels" : 270,
+    "locale" : "ja",
+    "phoneIncluded" : false,
+    "safeAreaPass" : true,
+    "status" : "LOCAL_PROPOSAL_NOT_UPLOADED"
+  }
+]
