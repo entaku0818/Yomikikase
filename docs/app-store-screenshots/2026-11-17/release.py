@@ -62,6 +62,7 @@ def submit():
     current = status()
     if current["state"] == "WAITING_FOR_REVIEW":
         assert len(current["reviewSubmissions"]) == 1
+        assert current["selectedBuild"]["id"] == build()["id"]
         return
     assert current["state"] == "PREPARE_FOR_SUBMISSION"
     assert current["releaseType"] == asc.read("version-1.4.15")["attributes"]["releaseType"] == "AFTER_APPROVAL"
