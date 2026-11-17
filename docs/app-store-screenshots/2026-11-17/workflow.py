@@ -157,6 +157,8 @@ def upload(ready_only=False):
         content = (ASSETS / row["key"]).read_bytes()
         if row["key"] in checkpoint:
             assert checkpoint[row["key"]]["sha256"] == row["sha256"], (row["key"], "A previously uploaded file changed")
+            if ready_only and checkpoint[row["key"]].get("state") in ["PREPARE_FOR_SUBMISSION", "APPROVED"]:
+                return
         existing = checkpoint.get(row["key"]) or library.get(row["reference"])
         if existing:
             asset = call("GET", "appAssetLibraryImages/" + existing["id"])["data"]
@@ -186,7 +188,10 @@ def upload(ready_only=False):
             assert offset == len(content)
             call("PATCH", "appAssetLibraryImages/" + asset["id"], {"data": {"type": "appAssetLibraryImages",
                  "id": asset["id"], "attributes": {"uploaded": True}}})
+        state = asset["attributes"]["state"]
         for _ in range(30):
+            if state in ["PREPARE_FOR_SUBMISSION", "APPROVED"]:
+                break
             asset = call("GET", "appAssetLibraryImages/" + asset["id"])["data"]
             state = asset["attributes"]["state"]
             if state in ["PREPARE_FOR_SUBMISSION", "APPROVED"]:
