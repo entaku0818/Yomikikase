@@ -1,2 +1,1 @@
-Sprachwiedergabe verbessert und Store-Informationen aktualisiert.
-Die Sicherheit und Zuverlässigkeit der Kaufprüfung wurden verbessert. Wenn die Prüfung nicht abgeschlossen werden kann, wird sie automatisch wiederholt.
+Die Screenshots im App Store wurden aktualisiert.

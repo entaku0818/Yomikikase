@@ -1,2 +1,1 @@
-Ulepszono odtwarzanie głosu i zaktualizowano informacje w sklepie.
-Poprawiliśmy bezpieczeństwo i niezawodność weryfikacji zakupów. Jeśli nie można jej ukończyć, nastąpi automatyczna ponowna próba.
+Zaktualizowaliśmy zrzuty ekranu w App Store.

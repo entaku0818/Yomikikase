@@ -1,2 +1,1 @@
-Migliorata la riproduzione vocale e aggiornata la presentazione nello store.
-Migliorate la sicurezza e l’affidabilità della verifica degli acquisti, con nuovi tentativi automatici quando non può essere completata.
+Abbiamo aggiornato gli screenshot sull’App Store.

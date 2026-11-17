@@ -1,2 +1,1 @@
-Pemutaran suara ditingkatkan dan informasi di toko diperbarui.
-Keamanan dan keandalan verifikasi pembelian ditingkatkan, dengan percobaan ulang otomatis jika verifikasi tidak dapat diselesaikan.
+Memperbarui tangkapan layar di App Store.

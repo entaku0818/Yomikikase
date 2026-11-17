@@ -1,2 +1,1 @@
-Izboljšali smo predvajanje govora in posodobili informacije v trgovini.
-Izboljšali smo varnost in zanesljivost preverjanja nakupov s samodejnimi ponovnimi poskusi, kadar preverjanja ni mogoče dokončati.
+Posodobili smo posnetke zaslona v trgovini App Store.

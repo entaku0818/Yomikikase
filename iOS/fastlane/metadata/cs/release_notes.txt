@@ -1,2 +1,1 @@
-Vylepšili jsme přehrávání hlasu a aktualizovali informace v obchodě.
-Zlepšili jsme zabezpečení a spolehlivost ověřování nákupů. Pokud ověření nelze dokončit, automaticky se zopakuje.
+Aktualizovali jsme snímky obrazovky v App Storu.

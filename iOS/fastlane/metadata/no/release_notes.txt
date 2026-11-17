@@ -1,2 +1,1 @@
-Forbedret stemmeavspilling og oppdatert informasjonen i butikken.
-Forbedret sikkerhet og pålitelighet ved kjøpsbekreftelse, med automatiske nye forsøk når bekreftelsen ikke kan fullføres.
+Oppdaterte skjermbildene i App Store.

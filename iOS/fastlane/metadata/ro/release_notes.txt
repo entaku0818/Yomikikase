@@ -1,2 +1,1 @@
-Am îmbunătățit redarea vocală și am actualizat informațiile din magazin.
-Am îmbunătățit securitatea și fiabilitatea verificării achizițiilor, cu reîncercări automate atunci când verificarea nu poate fi finalizată.
+Am actualizat capturile de ecran din App Store.

@@ -1,2 +1,1 @@
-Melhoramos a reprodução de voz e atualizamos as informações na loja.
-Melhoramos a segurança e a confiabilidade da verificação de compras, com novas tentativas automáticas quando não for possível concluí-la.
+Atualizámos as capturas de ecrã da App Store.

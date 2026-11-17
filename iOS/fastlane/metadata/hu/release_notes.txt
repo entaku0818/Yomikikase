@@ -1,2 +1,1 @@
-Javítottuk a hangfelolvasást és frissítettük az áruházban megjelenő információkat.
-Javítottuk a vásárlásellenőrzés biztonságát és megbízhatóságát. Ha az ellenőrzés nem fejezhető be, automatikusan újrapróbáljuk.
+Frissítettük az App Store képernyőképeit.

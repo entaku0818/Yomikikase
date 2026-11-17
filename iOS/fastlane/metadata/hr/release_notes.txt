@@ -1,2 +1,1 @@
-Poboljšana reprodukcija govora i ažurirane informacije u trgovini.
-Poboljšali smo sigurnost i pouzdanost provjere kupnji, uz automatske ponovne pokušaje kada se provjera ne može dovršiti.
+Ažurirane su snimke zaslona u App Storeu.

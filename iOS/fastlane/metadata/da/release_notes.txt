@@ -1,2 +1,1 @@
-Forbedret stemmeafspilning og opdateret oplysningerne i butikken.
-Forbedret sikkerhed og pålidelighed ved købskontrol med automatiske genforsøg, når kontrollen ikke kan fuldføres.
+Opdaterede skærmbillederne i App Store.

@@ -1,2 +1,1 @@
-Cải thiện tính năng phát giọng nói và cập nhật thông tin trên cửa hàng.
-Cải thiện tính bảo mật và độ tin cậy của việc xác minh giao dịch mua, tự động thử lại khi không thể hoàn tất xác minh.
+Đã cập nhật ảnh chụp màn hình trên App Store.

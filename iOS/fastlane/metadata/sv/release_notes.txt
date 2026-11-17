@@ -1,2 +1,1 @@
-Förbättrad röstuppspelning och uppdaterad information i butiken.
-Förbättrad säkerhet och tillförlitlighet vid köpverifiering, med automatiska nya försök när verifieringen inte kan slutföras.
+Uppdaterade skärmbilderna i App Store.
