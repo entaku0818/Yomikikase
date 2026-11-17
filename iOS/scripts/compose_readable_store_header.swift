@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 // Recompose the existing captured UI and brand style at a readable headline size.
 // Coordinates below use the top-left origin from Apple's header template.
 let root = URL(fileURLWithPath: CommandLine.arguments[1])
+let textOnly = CommandLine.arguments.contains("--text-only")
 let width = 3840, height = 1646
 let safe = CGRect(x: 1097, y: 493, width: 1646, height: 661)
 let titles = ["ja": "文章を、\n耳で読む。", "en-US": "Text to\nspeech."]
@@ -25,7 +26,7 @@ for locale in titles.keys.sorted() {
                ending: NSColor(srgbRed: 52/255, green: 48/255, blue: 170/255, alpha: 1))!
         .draw(in: CGRect(x: 0, y: 0, width: width, height: height), angle: -90)
     // Preserve the established background; no essential content lives outside safe.
-    for index in 0..<18 {
+    for index in 0..<(textOnly ? 0 : 18) {
         let x = CGFloat(index) * 240 - 160
         NSColor(white: 1, alpha: 0.045).setStroke()
         let wave = NSBezierPath()
@@ -37,10 +38,12 @@ for locale in titles.keys.sorted() {
         wave.stroke()
     }
 
-    let titleBox = CGRect(x: 1129, y: 535, width: 1120, height: 580)
+    let titleBox = textOnly ? CGRect(x: 1130, y: 493, width: 1580, height: 661)
+        : CGRect(x: 1129, y: 535, width: 1120, height: 580)
     let paragraph = NSMutableParagraphStyle()
+    paragraph.alignment = textOnly ? .center : .left
     paragraph.lineSpacing = 4
-    let fontSize: CGFloat = 220
+    let fontSize: CGFloat = textOnly ? 270 : 220
     let title = NSAttributedString(string: titles[locale]!, attributes: [
         .font: NSFont.systemFont(ofSize: fontSize, weight: .bold),
         .foregroundColor: NSColor.white, .paragraphStyle: paragraph
@@ -53,37 +56,39 @@ for locale in titles.keys.sorted() {
     precondition(safe.contains(titleDraw))
     title.draw(with: bottomRect(titleDraw), options: [.usesLineFragmentOrigin, .usesFontLeading])
 
-    let sourceURL = root.appendingPathComponent("source/\(locale)-playing.png")
-    let image = NSImage(contentsOf: sourceURL)!
-    let detail = NSImage(contentsOf: root.appendingPathComponent("source/\(locale)-highlight.png"))!
-    let info = try JSONSerialization.jsonObject(with: Data(contentsOf:
-        root.appendingPathComponent("source/\(locale)-highlight.json"))) as! [String: Any]
-    let phoneTop = CGRect(x: 2380, y: 510, width: 288, height: 288 * image.size.height / image.size.width)
-    precondition(safe.contains(phoneTop.insetBy(dx: -12, dy: -12)))
-    let phone = bottomRect(phoneTop)
-    NSColor(srgbRed: 0.06, green: 0.06, blue: 0.10, alpha: 1).setFill()
-    NSBezierPath(roundedRect: phone.insetBy(dx: -12, dy: -12), xRadius: 44, yRadius: 44).fill()
-    NSGraphicsContext.saveGraphicsState()
-    NSBezierPath(roundedRect: phone, xRadius: 34, yRadius: 34).addClip()
-    image.draw(in: phone, from: .zero, operation: .copy, fraction: 1)
-    NSGraphicsContext.restoreGraphicsState()
-    let factor = phone.width / 440
-    NSColor.black.setFill()
-    let island = CGRect(x: phone.midX - 63 * factor, y: phone.maxY - 48 * factor,
-                        width: 126 * factor, height: 37 * factor)
-    NSBezierPath(roundedRect: island, xRadius: 18.5 * factor, yRadius: 18.5 * factor).fill()
-    let detailWidth: CGFloat = 392
-    let detailHeight = detail.size.height * detailWidth / detail.size.width
-    let center = phoneTop.minY + (info["centerY"] as! Double) * phoneTop.height
-    let detailTop = CGRect(x: phoneTop.midX - detailWidth / 2, y: center - detailHeight / 2,
-                           width: detailWidth, height: detailHeight)
-    precondition(safe.contains(detailTop.insetBy(dx: -12, dy: -12)))
-    NSColor.white.setFill()
-    NSBezierPath(roundedRect: bottomRect(detailTop).insetBy(dx: -12, dy: -12), xRadius: 16, yRadius: 16).fill()
-    detail.draw(in: bottomRect(detailTop))
+    if !textOnly {
+        let sourceURL = root.appendingPathComponent("source/\(locale)-playing.png")
+        let image = NSImage(contentsOf: sourceURL)!
+        let detail = NSImage(contentsOf: root.appendingPathComponent("source/\(locale)-highlight.png"))!
+        let info = try JSONSerialization.jsonObject(with: Data(contentsOf:
+            root.appendingPathComponent("source/\(locale)-highlight.json"))) as! [String: Any]
+        let phoneTop = CGRect(x: 2380, y: 510, width: 288, height: 288 * image.size.height / image.size.width)
+        precondition(safe.contains(phoneTop.insetBy(dx: -12, dy: -12)))
+        let phone = bottomRect(phoneTop)
+        NSColor(srgbRed: 0.06, green: 0.06, blue: 0.10, alpha: 1).setFill()
+        NSBezierPath(roundedRect: phone.insetBy(dx: -12, dy: -12), xRadius: 44, yRadius: 44).fill()
+        NSGraphicsContext.saveGraphicsState()
+        NSBezierPath(roundedRect: phone, xRadius: 34, yRadius: 34).addClip()
+        image.draw(in: phone, from: .zero, operation: .copy, fraction: 1)
+        NSGraphicsContext.restoreGraphicsState()
+        let factor = phone.width / 440
+        NSColor.black.setFill()
+        let island = CGRect(x: phone.midX - 63 * factor, y: phone.maxY - 48 * factor,
+                            width: 126 * factor, height: 37 * factor)
+        NSBezierPath(roundedRect: island, xRadius: 18.5 * factor, yRadius: 18.5 * factor).fill()
+        let detailWidth: CGFloat = 392
+        let detailHeight = detail.size.height * detailWidth / detail.size.width
+        let center = phoneTop.minY + (info["centerY"] as! Double) * phoneTop.height
+        let detailTop = CGRect(x: phoneTop.midX - detailWidth / 2, y: center - detailHeight / 2,
+                               width: detailWidth, height: detailHeight)
+        precondition(safe.contains(detailTop.insetBy(dx: -12, dy: -12)))
+        NSColor.white.setFill()
+        NSBezierPath(roundedRect: bottomRect(detailTop).insetBy(dx: -12, dy: -12), xRadius: 16, yRadius: 16).fill()
+        detail.draw(in: bottomRect(detailTop))
+    }
     NSGraphicsContext.restoreGraphicsState()
 
-    let output = root.appendingPathComponent("after/\(locale).png")
+    let output = root.appendingPathComponent("\(textOnly ? "simple" : "after")/\(locale).png")
     try FileManager.default.createDirectory(at: output.deletingLastPathComponent(), withIntermediateDirectories: true)
     let rgb = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
                         space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
@@ -93,7 +98,7 @@ for locale in titles.keys.sorted() {
     precondition(CGImageDestinationFinalize(encoder))
     measurements.append(["locale": locale, "headline": titles[locale]!, "headlineFontPixels": fontSize,
                          "headlineAt390Width": fontSize * 390 / CGFloat(width), "safeAreaPass": true,
-                         "phonePixelsPreserved": true, "status": "LOCAL_PROPOSAL_NOT_UPLOADED"])
+                         "phoneIncluded": !textOnly, "status": "LOCAL_PROPOSAL_NOT_UPLOADED"])
 }
 try JSONSerialization.data(withJSONObject: measurements, options: [.prettyPrinted, .sortedKeys])
-    .write(to: root.appendingPathComponent("layout-validation.json"))
+    .write(to: root.appendingPathComponent(textOnly ? "layout-validation-simple.json" : "layout-validation.json"))
