@@ -45,6 +45,11 @@ final class AppStoreScreenshotTests: XCTestCase {
         app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
     }
 
+    override func tearDown() {
+        app?.terminate()
+        super.tearDown()
+    }
+
     /// Capture the real app in every requested locale on either iPhone or iPad.
     func testCaptureAllLocales() throws {
         let env = ProcessInfo.processInfo.environment
@@ -84,7 +89,7 @@ final class AppStoreScreenshotTests: XCTestCase {
                 if index == 2 {
                     XCTAssertTrue(application.sliders.firstMatch.waitForExistence(timeout: 30), "Settings did not appear for \(locale.store)")
                 }
-                sleep(2) // Allow the tab transition to finish before capturing pixels.
+                settle(2) // Allow the tab transition to finish before capturing pixels.
                 let filename = "\(index)_\(env["SHOT_DEVICE"] ?? "IPHONE").png"
                 try XCUIScreen.main.screenshot().pngRepresentation.write(to: directory.appendingPathComponent(filename))
             }
@@ -94,41 +99,76 @@ final class AppStoreScreenshotTests: XCTestCase {
     }
 
     /// 撮る画面（素材名）。どれを何枚目に使うかは compose_screenshots.py が決める
+    func testCaptureExpandedLocales() throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let manifest = env["SHOT_MANIFEST"], let output = env["SHOT_OUTPUT"] else {
+            throw XCTSkip("Expanded screenshot manifest not provided")
+        }
+        struct Locale: Decodable {
+            let store: String
+            let ui: String
+            let labels: [String: String]
+        }
+        let locales = try JSONDecoder().decode([Locale].self, from: Data(contentsOf: URL(fileURLWithPath: manifest)))
+        continueAfterFailure = false
+        for locale in locales {
+            shotDir = URL(fileURLWithPath: output).appendingPathComponent(locale.store)
+            try FileManager.default.createDirectory(at: shotDir, withIntermediateDirectories: true)
+            let names = ["playing", "home", "speed", "pdf", "sleeptimer", "dictionary"]
+            if names.allSatisfy({ FileManager.default.fileExists(atPath: shotDir.appendingPathComponent($0 + ".png").path) }) {
+                continue
+            }
+            lang = locale.ui
+            labels = locale.labels
+            app = XCUIApplication()
+            app.launchArguments = [
+                "-ScreenshotBatch", "YES", "-ScreenshotPlaybackFixture", "YES", "-ScreenshotSeed", locale.ui,
+                "-HasCompletedOnboarding", "YES", "-AppleLanguages", "(\(locale.ui))",
+                "-AppleLocale", locale.store.replacingOccurrences(of: "-", with: "_")
+            ]
+            app.launchEnvironment["SWIFT_DEPENDENCIES_CONTEXT"] = "live"
+            try testCaptureScreens()
+            print("CAPTURED_EXPANDED \(locale.store)")
+        }
+    }
+
     func testCaptureScreens() throws {
         let ja = lang == "ja"
         app.launch()
-        sleep(3)
+        settle(3)
 
         // マイファイル（デモデータの一覧）
-        app.buttons[label("マイファイル")].tap()
-        sleep(2)
+        app.buttons[label("マイファイル")].firstMatch.tap()
+        settle(2)
         snap("myfiles")
 
         // 読み上げ中のハイライト。端末の声が単語を追い始めるまで待つ
         app.staticTexts[label("_playTitle")].firstMatch.tap()
-        sleep(2)
-        app.buttons["play.fill"].firstMatch.tap()
+        settle(2)
+        app.buttons["reader.play"].firstMatch.tap()
         // Mac が重いと再生開始が遅れる。停止ボタンが出る（=再生が始まる）のを待ってから、ハイライトが進むまで待つ
-        _ = app.buttons["stop.fill"].firstMatch.waitForExistence(timeout: 30)
-        sleep(8)
+        XCTAssertTrue(app.buttons["reader.stop"].firstMatch.waitForExistence(timeout: 30),
+                      "The reading state must be visible before capturing it")
+        settle(8)
         snap("playing")
 
         captureSpeedAndVoices(ja: ja)
         captureMiniPlayer(ja: ja)
 
         // ホーム（取り込める種類の一覧）
-        app.buttons[label("ホーム")].tap()
-        sleep(2)
+        app.buttons[label("ホーム")].firstMatch.tap()
+        settle(2)
         snap("home")
 
         captureSettings(ja: ja)
-        app.buttons[label("ホーム")].tap()
-        sleep(1)
+        capturePDF()
+        app.buttons[label("ホーム")].firstMatch.tap()
+        settle(1)
 
         // 名作（青空文庫・日本語のみ）
-        if ja {
-            app.buttons[label("名作")].tap()
-            sleep(4)
+        if ja && !app.launchArguments.contains("-ScreenshotPlaybackFixture") {
+            app.buttons[label("名作")].firstMatch.tap()
+            settle(4)
             snap("classics")
         }
         // 再生中のまま終えると、テスト後の診断収集が10分タイムアウトするまで xcodebuild が返らない
@@ -138,67 +178,99 @@ final class AppStoreScreenshotTests: XCTestCase {
     private func captureSpeedAndVoices(ja: Bool) {
         // 再生速度の選択
         app.buttons["1x"].firstMatch.tap()
-        sleep(2)
+        settle(2)
         snap("speed")
         // iOS 27 では速度の選択がポップオーバーになり、キャンセルボタンが無い。外側をタップして閉じる
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.72)).tap()
-        sleep(1)
+        settle(1)
 
         // 声を選ぶ前に止める（再生中だと停止ボタンの光がシート越しに写る。ミニプレイヤーの手前で再開する）
-        if app.buttons["stop.fill"].firstMatch.exists {
-            app.buttons["stop.fill"].firstMatch.tap()
-            sleep(1)
+        if app.buttons["reader.stop"].firstMatch.exists {
+            app.buttons["reader.stop"].firstMatch.tap()
+            settle(1)
         }
         // キャラ音声（VOICEVOX）は日本語のみなので、英語では撮らない
-        if ja {
+        if ja && !app.launchArguments.contains("-ScreenshotPlaybackFixture") {
             app.buttons["声を選ぶ"].firstMatch.tap()
-            sleep(2)
+            settle(2)
             // シートを全画面まで引き上げて一覧を多く見せる
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.49))
                 .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.08)))
-            sleep(3)
+            settle(3)
+            XCTAssertTrue(app.staticTexts["ずんだもん"].firstMatch.waitForExistence(timeout: 20),
+                          "Wait for the real voice catalog before capturing it")
             snap("voices")
             app.buttons["完了"].firstMatch.tap()
-            sleep(2)
+            settle(2)
         }
     }
 
     private func captureMiniPlayer(ja: Bool) {
         // ミニプレイヤー＋スリープタイマー（再生中のまま画面を閉じる）
-        if app.buttons["play.fill"].firstMatch.exists {
-            app.buttons["play.fill"].firstMatch.tap()
-            sleep(3)
+        if app.buttons["reader.play"].firstMatch.exists {
+            app.buttons["reader.play"].firstMatch.tap()
+            settle(3)
         }
         app.buttons["chevron.down"].firstMatch.tap()
-        sleep(2)
+        settle(2)
         // 画面を閉じると一時停止になるので、ミニプレイヤーから再開して「再生中」の見た目にする
-        let resume = app.buttons["play.fill"].firstMatch
+        let resume = app.buttons["mini.resume"].firstMatch
         if resume.exists {
             resume.tap()
-            sleep(3)
+            settle(3)
         }
         // メニューを開いたままだと一覧に重なって見づらいので、30分を選んで残り時間が出た状態を撮る
         app.buttons[label("スリープタイマー")].firstMatch.tap()
-        sleep(2)
+        settle(2)
         app.buttons[label("_sleep30")].firstMatch.tap()
-        sleep(3)
+        settle(3)
         snap("sleeptimer")
     }
 
     private func captureSettings(ja: Bool) {
         // ユーザー辞書（デモの単語が入っている）。6枚目に使う
-        app.buttons[label("設定")].tap()
-        sleep(2)
+        app.buttons[label("設定")].firstMatch.tap()
+        settle(2)
         // 辞書の行がミニプレイヤーの下に隠れて、タップがミニプレイヤーに当たるのでスクロールしておく
         app.swipeUp()
-        sleep(1)
+        settle(1)
         app.buttons[label("ユーザー辞書")].firstMatch.tap()
-        sleep(5)
+        settle(5)
         snap("dictionary")
         // 戻るボタンは辞書画面の「＋」と取り違えやすいので、左端からのスワイプで戻る
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
             .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.5)))
-        sleep(1)
+        settle(1)
+    }
+
+    private func capturePDF() {
+        app.buttons[label("マイファイル")].firstMatch.tap()
+        let sample = app.staticTexts.matching(NSPredicate(format: "label ENDSWITH[c] '.pdf'")).firstMatch
+        XCTAssertTrue(sample.waitForExistence(timeout: 10), "The seeded PDF must be visible")
+        sample.tap()
+        let play = app.buttons["reader.play"].firstMatch
+        XCTAssertTrue(play.waitForExistence(timeout: 15), "The PDF reader must finish loading")
+        let enabled = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true"), object: play)
+        let ready = XCTWaiter.wait(for: [enabled], timeout: 20)
+        if ready != .completed { snap("pdf-not-ready"); dump("pdf-not-ready") }
+        XCTAssertEqual(ready, .completed, "Wait for extracted PDF text before starting playback")
+        play.tap()
+        let stop = app.buttons["reader.stop"].firstMatch
+        let playing = stop.waitForExistence(timeout: 5)
+        if !playing { snap("pdf-not-playing"); dump("pdf-not-playing") }
+        XCTAssertTrue(playing, "Capture the PDF while it is reading")
+        settle(2)
+        snap("pdf")
+        stop.tap()
+        app.buttons["chevron.down"].firstMatch.tap()
+    }
+
+    private func settle(_ seconds: UInt32) {
+        if app?.launchArguments.contains("-ScreenshotPlaybackFixture") == true {
+            Thread.sleep(forTimeInterval: 0.25)
+        } else {
+            sleep(seconds)
+        }
     }
 
     // MARK: - helpers

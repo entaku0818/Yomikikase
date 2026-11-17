@@ -5,7 +5,9 @@
     "shot.myfiles.title": "كل مستنداتك في مكان واحد",
     "shot.myfiles.subtitle": "احفظ مستنداتك في ملفاتي",
     "shot.settings.title": "استمع بالطريقة التي تناسبك",
-    "shot.settings.subtitle": "اختر صوتًا واضبط سرعة القراءة"
+    "shot.settings.subtitle": "اختر صوتًا واضبط سرعة القراءة",
+    "shot.playing.title": "استمع أثناء انشغالك",
+    "shot.playing.subtitle": "تابع النص المميز أثناء القراءة بصوت عالٍ"
   },
   "bn-BD": {
     "shot.home.title": "আপনার নথি, জোরে পড়ুন",
@@ -13,7 +15,9 @@
     "shot.myfiles.title": "একসাথে আপনার পড়া রাখুন",
     "shot.myfiles.subtitle": "আমার ফাইলে আপনার নথি সংরক্ষণ করুন",
     "shot.settings.title": "আপনার উপায় শুনুন",
-    "shot.settings.subtitle": "একটি ভয়েস চয়ন করুন এবং পড়ার গতি সামঞ্জস্য করুন"
+    "shot.settings.subtitle": "একটি ভয়েস চয়ন করুন এবং পড়ার গতি সামঞ্জস্য করুন",
+    "shot.playing.title": "কাজের ফাঁকে শুনুন",
+    "shot.playing.subtitle": "পড়ার সময় হাইলাইট করা লেখা অনুসরণ করুন"
   },
   "ca": {
     "shot.home.title": "Els vostres documents, llegiu en veu alta",
@@ -21,7 +25,9 @@
     "shot.myfiles.title": "Continueu la lectura junts",
     "shot.myfiles.subtitle": "Deseu els vostres documents a Els meus fitxers",
     "shot.settings.title": "Escolta la teva manera",
-    "shot.settings.subtitle": "Trieu una veu i ajusteu la velocitat de lectura"
+    "shot.settings.subtitle": "Trieu una veu i ajusteu la velocitat de lectura",
+    "shot.playing.title": "Escolta mentre fas altres coses",
+    "shot.playing.subtitle": "Segueix el text ressaltat durant la lectura"
   },
   "zh-Hans": {
     "shot.home.title": "您的文件，大声朗读",
@@ -29,7 +35,9 @@
     "shot.myfiles.title": "一起阅读",
     "shot.myfiles.subtitle": "将您的文档保存在“我的文件”中",
     "shot.settings.title": "听你的方式",
-    "shot.settings.subtitle": "选择声音并调整阅读速度"
+    "shot.settings.subtitle": "选择声音并调整阅读速度",
+    "shot.playing.title": "做家务、通勤时，随时听。",
+    "shot.playing.subtitle": "朗读时高亮显示当前文字"
   },
   "zh-Hant": {
     "shot.home.title": "您的文件，大聲朗讀",
@@ -37,7 +45,9 @@
     "shot.myfiles.title": "一起閱讀",
     "shot.myfiles.subtitle": "將您的文件儲存在「我的文件」中",
     "shot.settings.title": "聽你的方式",
-    "shot.settings.subtitle": "選擇聲音並調整閱讀速度"
+    "shot.settings.subtitle": "選擇聲音並調整閱讀速度",
+    "shot.playing.title": "做家事、通勤時，隨時聽。",
+    "shot.playing.subtitle": "朗讀時反白顯示目前的文字"
   },
   "hr": {
     "shot.home.title": "Vaši dokumenti, pročitajte naglas",
@@ -45,7 +55,9 @@
     "shot.myfiles.title": "Držite svoje čitanje zajedno",
     "shot.myfiles.subtitle": "Spremite svoje dokumente u Moje datoteke",
     "shot.settings.title": "Slušaj svoj put",
-    "shot.settings.subtitle": "Odaberite glas i prilagodite brzinu čitanja"
+    "shot.settings.subtitle": "Odaberite glas i prilagodite brzinu čitanja",
+    "shot.playing.title": "Slušajte dok obavljate druge stvari",
+    "shot.playing.subtitle": "Pratite označeni tekst tijekom čitanja"
   },
   "cs": {
     "shot.home.title": "Vaše dokumenty, čtěte nahlas",
@@ -53,7 +65,9 @@
     "shot.myfiles.title": "Udržujte čtení pohromadě",
     "shot.myfiles.subtitle": "Uložte své dokumenty do složky Moje soubory",
     "shot.settings.title": "Poslouchej svou cestu",
-    "shot.settings.subtitle": "Vyberte hlas a upravte rychlost čtení"
+    "shot.settings.subtitle": "Vyberte hlas a upravte rychlost čtení",
+    "shot.playing.title": "Poslouchejte při dalších činnostech",
+    "shot.playing.subtitle": "Sledujte zvýrazněný text během čtení"
   },
   "da": {
     "shot.home.title": "Dine dokumenter, læs højt",
@@ -61,7 +75,9 @@
     "shot.myfiles.title": "Fortsæt med at læse sammen",
     "shot.myfiles.subtitle": "Gem dine dokumenter i Mine filer",
     "shot.settings.title": "Lyt på din måde",
-    "shot.settings.subtitle": "Vælg en stemme og juster læsehastigheden"
+    "shot.settings.subtitle": "Vælg en stemme og juster læsehastigheden",
+    "shot.playing.title": "Lyt, mens du laver andre ting",
+    "shot.playing.subtitle": "Følg den fremhævede tekst under oplæsningen"
   },
   "nl-NL": {
     "shot.home.title": "Uw documenten, voorlezen",
@@ -69,7 +85,9 @@
     "shot.myfiles.title": "Houd uw leeswerk bij elkaar",
     "shot.myfiles.subtitle": "Bewaar uw documenten in Mijn bestanden",
     "shot.settings.title": "Luister op jouw manier",
-    "shot.settings.subtitle": "Kies een stem en pas de leessnelheid aan"
+    "shot.settings.subtitle": "Kies een stem en pas de leessnelheid aan",
+    "shot.playing.title": "Luister terwijl je iets anders doet",
+    "shot.playing.subtitle": "Volg de gemarkeerde tekst tijdens het voorlezen"
   },
   "en-AU": {
     "shot.home.title": "Your documents, read aloud",
@@ -77,7 +95,9 @@
     "shot.myfiles.title": "Keep your reading together",
     "shot.myfiles.subtitle": "Save your documents in My Files",
     "shot.settings.title": "Listen your way",
-    "shot.settings.subtitle": "Choose a voice and adjust reading speed"
+    "shot.settings.subtitle": "Choose a voice and adjust reading speed",
+    "shot.playing.title": "Listen while you do anything",
+    "shot.playing.subtitle": "Follow the highlighted text as it’s read aloud"
   },
   "en-CA": {
     "shot.home.title": "Your documents, read aloud",
@@ -85,7 +105,9 @@
     "shot.myfiles.title": "Keep your reading together",
     "shot.myfiles.subtitle": "Save your documents in My Files",
     "shot.settings.title": "Listen your way",
-    "shot.settings.subtitle": "Choose a voice and adjust reading speed"
+    "shot.settings.subtitle": "Choose a voice and adjust reading speed",
+    "shot.playing.title": "Listen while you do anything",
+    "shot.playing.subtitle": "Follow the highlighted text as it’s read aloud"
   },
   "en-GB": {
     "shot.home.title": "Your documents, read aloud",
@@ -93,7 +115,9 @@
     "shot.myfiles.title": "Keep your reading together",
     "shot.myfiles.subtitle": "Save your documents in My Files",
     "shot.settings.title": "Listen your way",
-    "shot.settings.subtitle": "Choose a voice and adjust reading speed"
+    "shot.settings.subtitle": "Choose a voice and adjust reading speed",
+    "shot.playing.title": "Listen while you do anything",
+    "shot.playing.subtitle": "Follow the highlighted text as it’s read aloud"
   },
   "en-US": {
     "shot.home.title": "Your documents, read aloud",
@@ -101,7 +125,9 @@
     "shot.myfiles.title": "Keep your reading together",
     "shot.myfiles.subtitle": "Save your documents in My Files",
     "shot.settings.title": "Listen your way",
-    "shot.settings.subtitle": "Choose a voice and adjust reading speed"
+    "shot.settings.subtitle": "Choose a voice and adjust reading speed",
+    "shot.playing.title": "Listen while you do anything",
+    "shot.playing.subtitle": "Follow the highlighted text as it’s read aloud"
   },
   "fi": {
     "shot.home.title": "Asiakirjasi, lue ääneen",
@@ -109,7 +135,9 @@
     "shot.myfiles.title": "Pidä lukemasi yhdessä",
     "shot.myfiles.subtitle": "Tallenna asiakirjasi Omiin tiedostoihin",
     "shot.settings.title": "Kuuntele tapaasi",
-    "shot.settings.subtitle": "Valitse ääni ja säädä lukunopeutta"
+    "shot.settings.subtitle": "Valitse ääni ja säädä lukunopeutta",
+    "shot.playing.title": "Kuuntele muiden askareiden lomassa",
+    "shot.playing.subtitle": "Seuraa korostettua tekstiä ääneen luettaessa"
   },
   "fr-FR": {
     "shot.home.title": "Vos documents, lus à haute voix",
@@ -117,7 +145,9 @@
     "shot.myfiles.title": "Continuez votre lecture ensemble",
     "shot.myfiles.subtitle": "Enregistrez vos documents dans Mes fichiers",
     "shot.settings.title": "Écoute à ta façon",
-    "shot.settings.subtitle": "Choisissez une voix et ajustez la vitesse de lecture"
+    "shot.settings.subtitle": "Choisissez une voix et ajustez la vitesse de lecture",
+    "shot.playing.title": "Écoutez tout en faisant autre chose",
+    "shot.playing.subtitle": "Suivez le texte surligné pendant la lecture"
   },
   "fr-CA": {
     "shot.home.title": "Vos documents, lus à voix haute",
@@ -125,7 +155,9 @@
     "shot.myfiles.title": "Poursuivez votre lecture ensemble",
     "shot.myfiles.subtitle": "Sauvegardez vos documents dans Mes fichiers",
     "shot.settings.title": "Écoute à ta manière",
-    "shot.settings.subtitle": "Choisissez une voix et ajustez la vitesse de lecture"
+    "shot.settings.subtitle": "Choisissez une voix et ajustez la vitesse de lecture",
+    "shot.playing.title": "Écoutez tout en faisant autre chose",
+    "shot.playing.subtitle": "Suivez le texte surligné pendant la lecture"
   },
   "de-DE": {
     "shot.home.title": "Ihre Unterlagen, vorlesen",
@@ -133,7 +165,9 @@
     "shot.myfiles.title": "Lesen Sie weiter",
     "shot.myfiles.subtitle": "Speichern Sie Ihre Dokumente in „Meine Dateien“.",
     "shot.settings.title": "Hören Sie auf Ihre Art zu",
-    "shot.settings.subtitle": "Wählen Sie eine Stimme und passen Sie die Lesegeschwindigkeit an"
+    "shot.settings.subtitle": "Wählen Sie eine Stimme und passen Sie die Lesegeschwindigkeit an",
+    "shot.playing.title": "Nebenbei hören – überall",
+    "shot.playing.subtitle": "Folgen Sie dem markierten Text beim Vorlesen"
   },
   "el": {
     "shot.home.title": "Τα έγγραφά σας, διαβάστε δυνατά",
@@ -141,7 +175,9 @@
     "shot.myfiles.title": "Συνεχίστε να διαβάζετε μαζί",
     "shot.myfiles.subtitle": "Αποθηκεύστε τα έγγραφά σας στο My Files",
     "shot.settings.title": "Ακούστε τον τρόπο σας",
-    "shot.settings.subtitle": "Επιλέξτε μια φωνή και προσαρμόστε την ταχύτητα ανάγνωσης"
+    "shot.settings.subtitle": "Επιλέξτε μια φωνή και προσαρμόστε την ταχύτητα ανάγνωσης",
+    "shot.playing.title": "Ακούστε ενώ κάνετε άλλα πράγματα",
+    "shot.playing.subtitle": "Ακολουθήστε το επισημασμένο κείμενο κατά την ανάγνωση"
   },
   "gu-IN": {
     "shot.home.title": "તમારા દસ્તાવેજો, મોટેથી વાંચો",
@@ -149,7 +185,9 @@
     "shot.myfiles.title": "તમારું વાંચન સાથે રાખો",
     "shot.myfiles.subtitle": "તમારા દસ્તાવેજોને મારી ફાઇલમાં સાચવો",
     "shot.settings.title": "તમારી રીતે સાંભળો",
-    "shot.settings.subtitle": "અવાજ પસંદ કરો અને વાંચવાની ઝડપને સમાયોજિત કરો"
+    "shot.settings.subtitle": "અવાજ પસંદ કરો અને વાંચવાની ઝડપને સમાયોજિત કરો",
+    "shot.playing.title": "કામ કરતાં કરતાં સાંભળો",
+    "shot.playing.subtitle": "વાંચન દરમિયાન હાઇલાઇટ થયેલું લખાણ અનુસરો"
   },
   "he": {
     "shot.home.title": "המסמכים שלך, קרא בקול",
@@ -157,7 +195,9 @@
     "shot.myfiles.title": "המשיכו לקרוא ביחד",
     "shot.myfiles.subtitle": "שמור את המסמכים שלך ב-My Files",
     "shot.settings.title": "תקשיב בדרך שלך",
-    "shot.settings.subtitle": "בחר קול והתאם את מהירות הקריאה"
+    "shot.settings.subtitle": "בחר קול והתאם את מהירות הקריאה",
+    "shot.playing.title": "האזינו תוך כדי עיסוקים אחרים",
+    "shot.playing.subtitle": "עקבו אחר הטקסט המודגש בזמן ההקראה"
   },
   "hi": {
     "shot.home.title": "आपके दस्तावेज़, ज़ोर से पढ़ें",
@@ -165,7 +205,9 @@
     "shot.myfiles.title": "अपना पढ़ना साथ-साथ रखें",
     "shot.myfiles.subtitle": "अपने दस्तावेज़ मेरी फ़ाइलें में सहेजें",
     "shot.settings.title": "अपना रास्ता सुनो",
-    "shot.settings.subtitle": "एक आवाज़ चुनें और पढ़ने की गति समायोजित करें"
+    "shot.settings.subtitle": "एक आवाज़ चुनें और पढ़ने की गति समायोजित करें",
+    "shot.playing.title": "दूसरे काम करते हुए सुनें",
+    "shot.playing.subtitle": "पढ़ते समय हाइलाइट किए गए पाठ का अनुसरण करें"
   },
   "hu": {
     "shot.home.title": "A dokumentumokat, olvassa fel hangosan",
@@ -173,7 +215,9 @@
     "shot.myfiles.title": "Olvassátok együtt",
     "shot.myfiles.subtitle": "Mentse el dokumentumait a Saját fájlok mappába",
     "shot.settings.title": "Hallgasd meg az utat",
-    "shot.settings.subtitle": "Válasszon hangot, és állítsa be az olvasási sebességet"
+    "shot.settings.subtitle": "Válasszon hangot, és állítsa be az olvasási sebességet",
+    "shot.playing.title": "Hallgassa más tevékenységek közben",
+    "shot.playing.subtitle": "Kövesse a kiemelt szöveget felolvasás közben"
   },
   "id": {
     "shot.home.title": "Dokumen Anda, bacalah dengan lantang",
@@ -181,7 +225,9 @@
     "shot.myfiles.title": "Pertahankan bacaan Anda bersama-sama",
     "shot.myfiles.subtitle": "Simpan dokumen Anda di File Saya",
     "shot.settings.title": "Dengarkan jalanmu",
-    "shot.settings.subtitle": "Pilih suara dan sesuaikan kecepatan membaca"
+    "shot.settings.subtitle": "Pilih suara dan sesuaikan kecepatan membaca",
+    "shot.playing.title": "Dengarkan sambil beraktivitas",
+    "shot.playing.subtitle": "Ikuti teks yang disorot saat dibacakan"
   },
   "it": {
     "shot.home.title": "I tuoi documenti, leggi ad alta voce",
@@ -189,7 +235,9 @@
     "shot.myfiles.title": "Continua a leggere insieme",
     "shot.myfiles.subtitle": "Salva i tuoi documenti in I miei file",
     "shot.settings.title": "Ascolta a modo tuo",
-    "shot.settings.subtitle": "Scegli una voce e regola la velocità di lettura"
+    "shot.settings.subtitle": "Scegli una voce e regola la velocità di lettura",
+    "shot.playing.title": "Ascolta mentre fai altro",
+    "shot.playing.subtitle": "Segui il testo evidenziato durante la lettura"
   },
   "ja": {
     "shot.home.title": "書類を読み上げてください",
@@ -197,7 +245,9 @@
     "shot.myfiles.title": "読書を一緒にしましょう",
     "shot.myfiles.subtitle": "ドキュメントを「マイ ファイル」に保存する",
     "shot.settings.title": "あなたのやり方を聞いてください",
-    "shot.settings.subtitle": "音声を選択し、読み上げ速度を調整します"
+    "shot.settings.subtitle": "音声を選択し、読み上げ速度を調整します",
+    "shot.playing.title": "家事も通勤も、ながら聴き。",
+    "shot.playing.subtitle": "読んでいる所をハイライトしながら読み上げ"
   },
   "kn-IN": {
     "shot.home.title": "ನಿಮ್ಮ ದಾಖಲೆಗಳು, ಗಟ್ಟಿಯಾಗಿ ಓದಿ",
@@ -205,7 +255,9 @@
     "shot.myfiles.title": "ನಿಮ್ಮ ಓದುವಿಕೆಯನ್ನು ಒಟ್ಟಿಗೆ ಇರಿಸಿ",
     "shot.myfiles.subtitle": "ನನ್ನ ಫೈಲ್‌ಗಳಲ್ಲಿ ನಿಮ್ಮ ಡಾಕ್ಯುಮೆಂಟ್‌ಗಳನ್ನು ಉಳಿಸಿ",
     "shot.settings.title": "ನಿಮ್ಮ ಮಾರ್ಗವನ್ನು ಆಲಿಸಿ",
-    "shot.settings.subtitle": "ಧ್ವನಿಯನ್ನು ಆರಿಸಿ ಮತ್ತು ಓದುವ ವೇಗವನ್ನು ಹೊಂದಿಸಿ"
+    "shot.settings.subtitle": "ಧ್ವನಿಯನ್ನು ಆರಿಸಿ ಮತ್ತು ಓದುವ ವೇಗವನ್ನು ಹೊಂದಿಸಿ",
+    "shot.playing.title": "ಬೇರೆ ಕೆಲಸ ಮಾಡುತ್ತಾ ಕೇಳಿ",
+    "shot.playing.subtitle": "ಓದುವಾಗ ಹೈಲೈಟ್ ಮಾಡಿದ ಪಠ್ಯವನ್ನು ಅನುಸರಿಸಿ"
   },
   "ko": {
     "shot.home.title": "문서를 소리내어 읽어보세요",
@@ -213,7 +265,9 @@
     "shot.myfiles.title": "계속해서 함께 읽으세요",
     "shot.myfiles.subtitle": "내 파일에 문서를 저장하세요",
     "shot.settings.title": "원하는 대로 들어보세요",
-    "shot.settings.subtitle": "음성을 선택하고 읽기 속도를 조정하세요"
+    "shot.settings.subtitle": "음성을 선택하고 읽기 속도를 조정하세요",
+    "shot.playing.title": "집안일하면서, 이동하면서 듣기",
+    "shot.playing.subtitle": "읽는 부분을 하이라이트로 표시"
   },
   "ms": {
     "shot.home.title": "Dokumen anda, baca dengan kuat",
@@ -221,7 +275,9 @@
     "shot.myfiles.title": "Teruskan bacaan anda bersama-sama",
     "shot.myfiles.subtitle": "Simpan dokumen anda dalam Fail Saya",
     "shot.settings.title": "Dengar cara anda",
-    "shot.settings.subtitle": "Pilih suara dan laraskan kelajuan membaca"
+    "shot.settings.subtitle": "Pilih suara dan laraskan kelajuan membaca",
+    "shot.playing.title": "Dengar sambil melakukan aktiviti lain",
+    "shot.playing.subtitle": "Ikuti teks yang diserlahkan semasa dibaca"
   },
   "ml-IN": {
     "shot.home.title": "നിങ്ങളുടെ പ്രമാണങ്ങൾ, ഉറക്കെ വായിക്കുക",
@@ -229,7 +285,9 @@
     "shot.myfiles.title": "നിങ്ങളുടെ വായന ഒരുമിച്ച് സൂക്ഷിക്കുക",
     "shot.myfiles.subtitle": "എൻ്റെ ഫയലുകളിൽ നിങ്ങളുടെ പ്രമാണങ്ങൾ സംരക്ഷിക്കുക",
     "shot.settings.title": "നിങ്ങളുടെ വഴി ശ്രദ്ധിക്കുക",
-    "shot.settings.subtitle": "ഒരു ശബ്ദം തിരഞ്ഞെടുത്ത് വായനയുടെ വേഗത ക്രമീകരിക്കുക"
+    "shot.settings.subtitle": "ഒരു ശബ്ദം തിരഞ്ഞെടുത്ത് വായനയുടെ വേഗത ക്രമീകരിക്കുക",
+    "shot.playing.title": "മറ്റു ജോലികൾക്കിടയിലും കേൾക്കാം",
+    "shot.playing.subtitle": "വായിക്കുമ്പോൾ ഹൈലൈറ്റ് ചെയ്ത വാചകം പിന്തുടരുക"
   },
   "mr-IN": {
     "shot.home.title": "तुमची कागदपत्रे, मोठ्याने वाचा",
@@ -237,7 +295,9 @@
     "shot.myfiles.title": "आपले वाचन एकत्र ठेवा",
     "shot.myfiles.subtitle": "तुमची कागदपत्रे My Files मध्ये सेव्ह करा",
     "shot.settings.title": "तुमचा मार्ग ऐका",
-    "shot.settings.subtitle": "आवाज निवडा आणि वाचन गती समायोजित करा"
+    "shot.settings.subtitle": "आवाज निवडा आणि वाचन गती समायोजित करा",
+    "shot.playing.title": "इतर कामे करताना ऐका",
+    "shot.playing.subtitle": "वाचताना ठळक केलेल्या मजकुराचा मागोवा घ्या"
   },
   "no": {
     "shot.home.title": "Dokumentene dine, les høyt",
@@ -245,15 +305,19 @@
     "shot.myfiles.title": "Fortsett å lese sammen",
     "shot.myfiles.subtitle": "Lagre dokumentene dine i Mine filer",
     "shot.settings.title": "Lytt på din måte",
-    "shot.settings.subtitle": "Velg en stemme og juster lesehastigheten"
+    "shot.settings.subtitle": "Velg en stemme og juster lesehastigheten",
+    "shot.playing.title": "Lytt mens du gjør andre ting",
+    "shot.playing.subtitle": "Følg den markerte teksten under opplesningen"
   },
   "or-IN": {
-    "shot.home.title": "ତୁମର ଡକ୍ୟୁମେଣ୍ଟ୍, ଉଚ୍ଚ ସ୍ୱରରେ ପ read |",
+    "shot.home.title": "ଆପଣଙ୍କ ଡକ୍ୟୁମେଣ୍ଟଗୁଡ଼ିକୁ ଉଚ୍ଚସ୍ୱରରେ ପଢ଼ନ୍ତୁ",
     "shot.home.subtitle": "ପାଠ୍ୟ, ପିଡିଏଫ୍, ବହି, ୱେବ୍ ପୃଷ୍ଠା ଏବଂ ସ୍କାନ୍ |",
     "shot.myfiles.title": "ଏକତ୍ର ପ reading ଼ନ୍ତୁ |",
     "shot.myfiles.subtitle": "ମୋ ଫାଇଲ୍ ରେ ତୁମର ଡକ୍ୟୁମେଣ୍ଟ୍ ସେଭ୍ କର |",
     "shot.settings.title": "ତୁମର ବାଟ ଶୁଣ",
-    "shot.settings.subtitle": "ଏକ ସ୍ୱର ବାଛନ୍ତୁ ଏବଂ ପ reading ଼ିବା ବେଗକୁ ସଜାଡନ୍ତୁ |"
+    "shot.settings.subtitle": "ଏକ ସ୍ୱର ବାଛନ୍ତୁ ଏବଂ ପ reading ଼ିବା ବେଗକୁ ସଜାଡନ୍ତୁ |",
+    "shot.playing.title": "ଅନ୍ୟ କାମ କରିବା ସମୟରେ ଶୁଣନ୍ତୁ",
+    "shot.playing.subtitle": "ପଢ଼ିବା ସମୟରେ ହାଇଲାଇଟ୍ ହୋଇଥିବା ଲେଖା ଅନୁସରଣ କରନ୍ତୁ"
   },
   "pl": {
     "shot.home.title": "Twoje dokumenty, czytaj na głos",
@@ -261,7 +325,9 @@
     "shot.myfiles.title": "Trzymajcie się razem, czytając",
     "shot.myfiles.subtitle": "Zapisz swoje dokumenty w Moich plikach",
     "shot.settings.title": "Słuchaj na swój sposób",
-    "shot.settings.subtitle": "Wybierz głos i dostosuj prędkość czytania"
+    "shot.settings.subtitle": "Wybierz głos i dostosuj prędkość czytania",
+    "shot.playing.title": "Słuchaj, robiąc inne rzeczy",
+    "shot.playing.subtitle": "Śledź wyróżniony tekst podczas czytania"
   },
   "pt-BR": {
     "shot.home.title": "Seus documentos, lidos em voz alta",
@@ -269,7 +335,9 @@
     "shot.myfiles.title": "Mantenha sua leitura em conjunto",
     "shot.myfiles.subtitle": "Salve seus documentos em Meus Arquivos",
     "shot.settings.title": "Ouça do seu jeito",
-    "shot.settings.subtitle": "Escolha uma voz e ajuste a velocidade de leitura"
+    "shot.settings.subtitle": "Escolha uma voz e ajuste a velocidade de leitura",
+    "shot.playing.title": "Ouça enquanto faz outras coisas",
+    "shot.playing.subtitle": "Acompanhe o texto destacado durante a leitura"
   },
   "pt-PT": {
     "shot.home.title": "Os seus documentos, lidos em voz alta",
@@ -277,7 +345,9 @@
     "shot.myfiles.title": "Mantenha a sua leitura em conjunto",
     "shot.myfiles.subtitle": "Guarde os seus documentos em Meus Arquivos",
     "shot.settings.title": "Ouça à sua maneira",
-    "shot.settings.subtitle": "Escolha uma voz e ajuste a velocidade de leitura"
+    "shot.settings.subtitle": "Escolha uma voz e ajuste a velocidade de leitura",
+    "shot.playing.title": "Ouça enquanto faz outras coisas",
+    "shot.playing.subtitle": "Acompanhe o texto realçado durante a leitura"
   },
   "pa-IN": {
     "shot.home.title": "ਤੁਹਾਡੇ ਦਸਤਾਵੇਜ਼, ਉੱਚੀ ਆਵਾਜ਼ ਵਿੱਚ ਪੜ੍ਹੋ",
@@ -285,7 +355,9 @@
     "shot.myfiles.title": "ਆਪਣੇ ਪੜ੍ਹਨ ਨੂੰ ਇਕੱਠੇ ਰੱਖੋ",
     "shot.myfiles.subtitle": "ਮਾਈ ਫਾਈਲਾਂ ਵਿੱਚ ਆਪਣੇ ਦਸਤਾਵੇਜ਼ ਸੁਰੱਖਿਅਤ ਕਰੋ",
     "shot.settings.title": "ਆਪਣੇ ਤਰੀਕੇ ਨਾਲ ਸੁਣੋ",
-    "shot.settings.subtitle": "ਇੱਕ ਆਵਾਜ਼ ਚੁਣੋ ਅਤੇ ਪੜ੍ਹਨ ਦੀ ਗਤੀ ਨੂੰ ਵਿਵਸਥਿਤ ਕਰੋ"
+    "shot.settings.subtitle": "ਇੱਕ ਆਵਾਜ਼ ਚੁਣੋ ਅਤੇ ਪੜ੍ਹਨ ਦੀ ਗਤੀ ਨੂੰ ਵਿਵਸਥਿਤ ਕਰੋ",
+    "shot.playing.title": "ਹੋਰ ਕੰਮ ਕਰਦੇ ਹੋਏ ਸੁਣੋ",
+    "shot.playing.subtitle": "ਪੜ੍ਹਦੇ ਸਮੇਂ ਹਾਈਲਾਈਟ ਕੀਤੇ ਪਾਠ ਨੂੰ ਦੇਖੋ"
   },
   "ro": {
     "shot.home.title": "Documentele dvs., citiți cu voce tare",
@@ -293,7 +365,9 @@
     "shot.myfiles.title": "Continuați să citiți împreună",
     "shot.myfiles.subtitle": "Salvați documentele în Fișierele mele",
     "shot.settings.title": "Ascultă-ți în felul tău",
-    "shot.settings.subtitle": "Alegeți o voce și reglați viteza de citire"
+    "shot.settings.subtitle": "Alegeți o voce și reglați viteza de citire",
+    "shot.playing.title": "Ascultă în timp ce faci alte lucruri",
+    "shot.playing.subtitle": "Urmărește textul evidențiat în timpul lecturii"
   },
   "ru": {
     "shot.home.title": "Ваши документы, читать вслух",
@@ -301,7 +375,9 @@
     "shot.myfiles.title": "Продолжайте читать вместе",
     "shot.myfiles.subtitle": "Сохраняйте свои документы в Моих файлах",
     "shot.settings.title": "Слушай по-своему",
-    "shot.settings.subtitle": "Выберите голос и отрегулируйте скорость чтения"
+    "shot.settings.subtitle": "Выберите голос и отрегулируйте скорость чтения",
+    "shot.playing.title": "Слушайте, занимаясь своими делами",
+    "shot.playing.subtitle": "Следите за подсвеченным текстом во время чтения"
   },
   "sk": {
     "shot.home.title": "Vaše dokumenty, čítajte nahlas",
@@ -309,7 +385,9 @@
     "shot.myfiles.title": "Čítajte spolu",
     "shot.myfiles.subtitle": "Uložte svoje dokumenty do priečinka Moje súbory",
     "shot.settings.title": "Počúvaj svoju cestu",
-    "shot.settings.subtitle": "Vyberte hlas a upravte rýchlosť čítania"
+    "shot.settings.subtitle": "Vyberte hlas a upravte rýchlosť čítania",
+    "shot.playing.title": "Počúvajte pri iných činnostiach",
+    "shot.playing.subtitle": "Sledujte zvýraznený text počas čítania"
   },
   "sl-SI": {
     "shot.home.title": "Vaši dokumenti, preberite na glas",
@@ -317,7 +395,9 @@
     "shot.myfiles.title": "Berite skupaj",
     "shot.myfiles.subtitle": "Shranite svoje dokumente v Moje datoteke",
     "shot.settings.title": "Poslušaj svoj način",
-    "shot.settings.subtitle": "Izberite glas in prilagodite hitrost branja"
+    "shot.settings.subtitle": "Izberite glas in prilagodite hitrost branja",
+    "shot.playing.title": "Poslušajte med drugimi opravili",
+    "shot.playing.subtitle": "Spremljajte označeno besedilo med branjem"
   },
   "es-MX": {
     "shot.home.title": "Tus documentos, lee en voz alta",
@@ -325,7 +405,9 @@
     "shot.myfiles.title": "Mantengan sus lecturas juntas",
     "shot.myfiles.subtitle": "Guarde sus documentos en Mis archivos",
     "shot.settings.title": "Escucha a tu manera",
-    "shot.settings.subtitle": "Elige una voz y ajusta la velocidad de lectura."
+    "shot.settings.subtitle": "Elige una voz y ajusta la velocidad de lectura.",
+    "shot.playing.title": "Escucha mientras haces otras cosas",
+    "shot.playing.subtitle": "Sigue el texto resaltado durante la lectura"
   },
   "es-ES": {
     "shot.home.title": "Tus documentos, lee en voz alta",
@@ -333,7 +415,9 @@
     "shot.myfiles.title": "Mantengan sus lecturas juntas",
     "shot.myfiles.subtitle": "Guarde sus documentos en Mis archivos",
     "shot.settings.title": "Escucha a tu manera",
-    "shot.settings.subtitle": "Elige una voz y ajusta la velocidad de lectura."
+    "shot.settings.subtitle": "Elige una voz y ajusta la velocidad de lectura.",
+    "shot.playing.title": "Escucha mientras haces otras cosas",
+    "shot.playing.subtitle": "Sigue el texto resaltado durante la lectura"
   },
   "sv": {
     "shot.home.title": "Dina dokument, läs högt",
@@ -341,7 +425,9 @@
     "shot.myfiles.title": "Fortsätt att läsa tillsammans",
     "shot.myfiles.subtitle": "Spara dina dokument i Mina filer",
     "shot.settings.title": "Lyssna på ditt sätt",
-    "shot.settings.subtitle": "Välj en röst och justera läshastigheten"
+    "shot.settings.subtitle": "Välj en röst och justera läshastigheten",
+    "shot.playing.title": "Lyssna medan du gör annat",
+    "shot.playing.subtitle": "Följ den markerade texten under uppläsningen"
   },
   "ta-IN": {
     "shot.home.title": "உங்கள் ஆவணங்களை, உரக்கப் படிக்கவும்",
@@ -349,7 +435,9 @@
     "shot.myfiles.title": "உங்கள் வாசிப்பை ஒன்றாக வைத்திருங்கள்",
     "shot.myfiles.subtitle": "உங்கள் ஆவணங்களை எனது கோப்புகளில் சேமிக்கவும்",
     "shot.settings.title": "உங்கள் வழியைக் கேளுங்கள்",
-    "shot.settings.subtitle": "ஒரு குரலைத் தேர்ந்தெடுத்து வாசிப்பு வேகத்தை சரிசெய்யவும்"
+    "shot.settings.subtitle": "ஒரு குரலைத் தேர்ந்தெடுத்து வாசிப்பு வேகத்தை சரிசெய்யவும்",
+    "shot.playing.title": "மற்ற வேலைகளைச் செய்யும்போதே கேளுங்கள்",
+    "shot.playing.subtitle": "வாசிக்கும்போது முன்னிலைப்படுத்திய உரையைப் பின்தொடருங்கள்"
   },
   "te-IN": {
     "shot.home.title": "మీ పత్రాలు, బిగ్గరగా చదవండి",
@@ -357,7 +445,9 @@
     "shot.myfiles.title": "మీ పఠనాన్ని కలిసి ఉంచండి",
     "shot.myfiles.subtitle": "మీ పత్రాలను నా ఫైల్‌లలో సేవ్ చేయండి",
     "shot.settings.title": "మీ మార్గం వినండి",
-    "shot.settings.subtitle": "వాయిస్‌ని ఎంచుకోండి మరియు పఠన వేగాన్ని సర్దుబాటు చేయండి"
+    "shot.settings.subtitle": "వాయిస్‌ని ఎంచుకోండి మరియు పఠన వేగాన్ని సర్దుబాటు చేయండి",
+    "shot.playing.title": "ఇతర పనులు చేస్తూనే వినండి",
+    "shot.playing.subtitle": "చదివేటప్పుడు హైలైట్ చేసిన వచనాన్ని అనుసరించండి"
   },
   "th": {
     "shot.home.title": "เอกสารของคุณอ่านออกเสียง",
@@ -365,7 +455,9 @@
     "shot.myfiles.title": "เก็บไว้อ่านด้วยกัน",
     "shot.myfiles.subtitle": "บันทึกเอกสารของคุณในไฟล์ของฉัน",
     "shot.settings.title": "ฟังทางของคุณ",
-    "shot.settings.subtitle": "เลือกเสียงและปรับความเร็วในการอ่าน"
+    "shot.settings.subtitle": "เลือกเสียงและปรับความเร็วในการอ่าน",
+    "shot.playing.title": "ฟังได้ทุกที่ ระหว่างทำอย่างอื่น",
+    "shot.playing.subtitle": "ติดตามข้อความที่ไฮไลต์ขณะอ่านออกเสียง"
   },
   "tr": {
     "shot.home.title": "Belgeleriniz yüksek sesle okuyun",
@@ -373,7 +465,9 @@
     "shot.myfiles.title": "Okumalarınızı bir arada tutun",
     "shot.myfiles.subtitle": "Belgelerinizi Dosyalarım'a kaydedin",
     "shot.settings.title": "Yolunu dinle",
-    "shot.settings.subtitle": "Bir ses seçin ve okuma hızını ayarlayın"
+    "shot.settings.subtitle": "Bir ses seçin ve okuma hızını ayarlayın",
+    "shot.playing.title": "Başka işler yaparken dinleyin",
+    "shot.playing.subtitle": "Okunan metni vurgulanan sözcüklerden takip edin"
   },
   "uk": {
     "shot.home.title": "Ваші документи, читайте вголос",
@@ -381,7 +475,9 @@
     "shot.myfiles.title": "Читайте разом",
     "shot.myfiles.subtitle": "Збережіть документи в папці «Мої файли».",
     "shot.settings.title": "Слухай свій шлях",
-    "shot.settings.subtitle": "Виберіть голос і налаштуйте швидкість читання"
+    "shot.settings.subtitle": "Виберіть голос і налаштуйте швидкість читання",
+    "shot.playing.title": "Слухайте, займаючись своїми справами",
+    "shot.playing.subtitle": "Стежте за підсвіченим текстом під час читання"
   },
   "ur-PK": {
     "shot.home.title": "آپ کے دستاویزات، بلند آواز سے پڑھیں",
@@ -389,7 +485,9 @@
     "shot.myfiles.title": "اپنی پڑھائی کو ساتھ رکھیں",
     "shot.myfiles.subtitle": "اپنی دستاویزات کو مائی فائلز میں محفوظ کریں۔",
     "shot.settings.title": "اپنا طریقہ سنو",
-    "shot.settings.subtitle": "آواز کا انتخاب کریں اور پڑھنے کی رفتار کو ایڈجسٹ کریں۔"
+    "shot.settings.subtitle": "آواز کا انتخاب کریں اور پڑھنے کی رفتار کو ایڈجسٹ کریں۔",
+    "shot.playing.title": "دوسرے کام کرتے ہوئے سنیں",
+    "shot.playing.subtitle": "پڑھتے وقت نمایاں کیے گئے متن کو دیکھیں"
   },
   "vi": {
     "shot.home.title": "Tài liệu của bạn, đọc to",
@@ -397,6 +495,8 @@
     "shot.myfiles.title": "Giữ việc đọc của bạn cùng nhau",
     "shot.myfiles.subtitle": "Lưu tài liệu của bạn trong Tệp của tôi",
     "shot.settings.title": "Hãy lắng nghe theo cách của bạn",
-    "shot.settings.subtitle": "Chọn giọng nói và điều chỉnh tốc độ đọc"
+    "shot.settings.subtitle": "Chọn giọng nói và điều chỉnh tốc độ đọc",
+    "shot.playing.title": "Vừa làm việc khác vừa nghe",
+    "shot.playing.subtitle": "Theo dõi phần văn bản được tô sáng khi đọc"
   }
 }

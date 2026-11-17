@@ -74,6 +74,7 @@ struct PlayerControlView: View {
                     .shadow(color: AppTheme.primary.opacity(isTextEmpty && !isSpeaking ? 0 : 0.25), radius: 8, x: 0, y: 4)
             }
             .disabled(isTextEmpty && !isSpeaking)
+            .accessibilityIdentifier(isSpeaking ? "reader.stop" : "reader.play")
 
             // スピード表示（右端・アクセントの丸ピル）
             HStack {

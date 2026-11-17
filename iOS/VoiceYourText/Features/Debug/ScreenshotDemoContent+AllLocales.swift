@@ -27,7 +27,7 @@ extension ScreenshotDemoContent {
                 Item(title: sample.title3, text: sample.text3, fileType: "epub")
             ],
             pdf: PDF(fileName: sample.pdfTitle + ".pdf", title: sample.pdfTitle, body: sample.pdfText),
-            dictionary: []
+            dictionary: [("SQL", "sequel"), ("OpenAI", "open A I")]
         )
     }
 }

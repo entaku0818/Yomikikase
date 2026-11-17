@@ -398,6 +398,23 @@ struct TextInputView: View {
             warningLog("TextInputView: Cannot speak - text is empty")
             return
         }
+        #if DEBUG
+        // Render the real player with a fixed sample range; simulator audio can block its main thread.
+        if UserDefaults.standard.bool(forKey: "ScreenshotPlaybackFixture") {
+            guard !isSpeaking else { return }
+            var ranges: [NSRange] = []
+            text.enumerateSubstrings(in: text.startIndex..<text.endIndex, options: .byWords) { _, range, _, stop in
+                ranges.append(NSRange(range, in: text))
+                if ranges.count == 3 { stop = true }
+            }
+            highlightedRange = ranges.last ?? (text as NSString).rangeOfComposedCharacterSequence(at: 0)
+            isSpeaking = true
+            store.send(.nowPlaying(.startPlaying(
+                title: String(text.prefix(30)), text: text, source: .textInput(fileId: fileId, text: text)
+            )))
+            return
+        }
+        #endif
         // re-entry防止: isSpeaking=true を先に立てて二重起動をブロック
         // stopSpeaking() を呼ぶと isSpeaking=false になるので、inline で stop 処理を行う
         guard !isSpeaking else { return }

@@ -69,6 +69,7 @@ private struct PlayPauseButton: View {
                 .foregroundColor(AppTheme.primary)
                 .frame(width: 44, height: 44)
         }
+        .accessibilityIdentifier(isPlaying ? "mini.pause" : "mini.resume")
     }
 }
 

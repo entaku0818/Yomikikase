@@ -21,6 +21,9 @@ extension NowPlayingFeature {
         }
 
         state.sleepTimer = SleepTimerState(option: option)
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "ScreenshotPlaybackFixture") { return .none }
+        #endif
 
         guard option.totalSeconds != nil else {
             // 「この章の終わりで停止」は時間で切らないのでカウントダウンしない。

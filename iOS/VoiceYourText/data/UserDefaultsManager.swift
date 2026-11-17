@@ -119,7 +119,10 @@ class UserDefaultsManager {
     // 起動中に確認されたプレミアム状態。永続化された旧フラグは権限判定に使わない。
     var isPremiumUser: Bool {
         get {
-            sessionPremiumUser
+            #if DEBUG
+            if defaults.bool(forKey: "ScreenshotBatch") { return true }
+            #endif
+            return sessionPremiumUser
         }
         set {
             sessionPremiumUser = newValue

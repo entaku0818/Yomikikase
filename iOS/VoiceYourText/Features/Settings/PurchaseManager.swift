@@ -272,6 +272,9 @@ class PurchaseManager: PurchaseManagerProtocol {
 
     @MainActor
     func checkPremiumStatus() async {
+        #if DEBUG
+        if UserDefaults.standard.bool(forKey: "ScreenshotBatch") { return }
+        #endif
         await Self.statusRefresh.run { forceRefresh in
             do {
                 let customerInfo = try await Purchases.shared.customerInfo(

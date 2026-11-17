@@ -227,6 +227,10 @@ struct VoiceYourTextApp: App {
             }
         }
         .task {
+            #if DEBUG
+            // Capture batches relaunch for every locale; keep review and paywall prompts out of the sample UI.
+            if UserDefaults.standard.bool(forKey: "ScreenshotBatch") { return }
+            #endif
             guard !AppDelegate.isRunningTests, !Self.hasHandledColdStart else { return }
             Self.hasHandledColdStart = true
             // 起動回数はオンボーディング中の初回起動も含めて数える（レビュー依頼の起動時判定で使う）

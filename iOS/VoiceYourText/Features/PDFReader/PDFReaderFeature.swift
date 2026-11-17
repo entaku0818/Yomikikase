@@ -110,6 +110,14 @@ struct PDFReaderFeature: Reducer {
                 guard !state.isReading else { return .none }
                 guard !state.pdfText.isEmpty else { return .none }
 
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "ScreenshotPlaybackFixture") {
+                    state.isReading = true
+                    state.highlightedText = String(state.pdfText.prefix(60))
+                    return .none
+                }
+                #endif
+
                 let pdfText = state.pdfText
                 let safeStart = min(state.startCharacterIndex, pdfText.count)
                 let startStringIndex = pdfText.index(pdfText.startIndex, offsetBy: safeStart)

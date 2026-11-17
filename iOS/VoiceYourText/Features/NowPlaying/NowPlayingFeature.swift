@@ -84,6 +84,9 @@ struct NowPlayingFeature {
                 state.currentText = text
                 state.source = source
                 state.progress = 0.0
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "ScreenshotPlaybackFixture") { return .none }
+                #endif
                 nowPlayingClient.updateNowPlayingInfo(title, true)
                 return .run { send in
                     // SpeechSynthesizer 内部で stop() を呼ぶため、ここでの stopSpeaking() は不要かつレースコンディションの原因になる
@@ -94,6 +97,9 @@ struct NowPlayingFeature {
                 // ミニプレイヤーから再生を再開
                 guard !state.currentText.isEmpty else { return .none }
                 state.isPlaying = true
+                #if DEBUG
+                if UserDefaults.standard.bool(forKey: "ScreenshotPlaybackFixture") { return .none }
+                #endif
                 nowPlayingClient.updateNowPlayingInfo(state.currentTitle, true)
 
                 let text = state.currentText
