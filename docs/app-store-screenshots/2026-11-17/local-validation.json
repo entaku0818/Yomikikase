@@ -2,7 +2,8 @@
   "appUnitTests": {
     "executed": 546,
     "skipped": 3,
-    "failures": 0
+    "failures": 0,
+    "rerunAfterPDFStateFix": true
   },
   "paywallPackageTests": {
     "executed": 22,
@@ -11,7 +12,7 @@
   "swiftLint": {
     "version": "0.65.1",
     "errors": 0,
-    "warnings": 831,
+    "warnings": 830,
     "cache": false
   },
   "releaseArchiveVerified": true,
@@ -24,6 +25,13 @@
     "export.log": "fddeae4f9ece7973c7f9f1144f78ae13321a5d6cdc7ed41a3f6573c129833498",
     "upload-build.log": "0b00ba37660523da1e50f933977564f5c97bda938f5a0e297a32342392ac72f7",
     "build-dictionary-wait.log": "c1704bccef88aa1282eda70c947bb734215be318985d74f5c9d61e4c6e4c8e80",
-    "archive-inputs-fixed.log": "5458684e06b159d345579fb37336e5dbd452f50bb81edfec0d595cf3a1572636"
-  }
+    "archive-inputs-fixed.log": "5458684e06b159d345579fb37336e5dbd452f50bb81edfec0d595cf3a1572636",
+    "unit-tests-stable-pdf.log": "dcde155548da69ef4ca12916f93907f2cc40241307b4fc93189cbab203f613d9",
+    "swiftlint-final.json": "d0314b311466ffa0cf5ecc472c9fcfa7422d3b5da7d4d1543e01ab3345cbac4c",
+    "build-stable-pdf.log": "caec02682ff200aa4a96526e3010c8073ada30283b11c04f235b7e6c204ea031",
+    "archive-53.log": "17a3221fd47c30b6b43226e3d8c51beb12261dbc219b7d298f5ac1f723762cd4",
+    "export-53.log": "c44667f2dd3c82e070b5c14ff16bec64b6143f75f127a7898d688da019b205ab",
+    "upload-build53.log": "0bb1775d002ff3bbc2901e54154865c7ecfb254987508f16d0f8510c8ab50471"
+  },
+  "distributionBuild": "53"
 }

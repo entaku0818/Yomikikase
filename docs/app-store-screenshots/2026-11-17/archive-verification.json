@@ -1,11 +1,13 @@
 {
   "version": "1.4.15",
-  "build": "52",
+  "build": "53",
   "bundleId": "com.entaku.VoiceYourText",
-  "ipaSha256": "36e6c219d833c975d5d8d5c1168425eb0d7dc2245f13e651a764827ce00f946d",
-  "ipaBytes": 41563640,
+  "ipaSha256": "a99cb4e0ab35aa6b4d9095d9eb10bf5ce5d7f744ecc847f38857aa38aae52b7b",
+  "ipaBytes": 41562683,
   "getTaskAllow": false,
-  "sourceCommit": "d74f222",
+  "sourceCommit": "7416fac",
   "codeSignatureValid": true,
-  "screenshotPlaybackFixtureExcluded": true
+  "screenshotPlaybackFixtureExcluded": true,
+  "supersedesBuild": "52",
+  "pdfPresentationStoreRetained": true
 }
