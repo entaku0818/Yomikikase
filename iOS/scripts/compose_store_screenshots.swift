@@ -20,14 +20,21 @@ func text(_ value: String, in rect: CGRect, maximum: CGFloat, color: NSColor, bo
     var size = maximum
     var string: NSAttributedString
     var bounds: CGRect
+    let unbrokenWords = value.components(separatedBy: .whitespacesAndNewlines).filter {
+        $0.range(of: #"^[\p{Latin}\p{Greek}\p{Cyrillic}\p{M}’'-]{12,}$"#, options: .regularExpression) != nil
+    }
     repeat {
+        let font = NSFont.systemFont(ofSize: size, weight: bold ? .bold : .medium)
         string = NSAttributedString(string: value, attributes: [
-            .font: NSFont.systemFont(ofSize: size, weight: bold ? .bold : .medium),
+            .font: font,
             .foregroundColor: color, .paragraphStyle: paragraph
         ])
         bounds = string.boundingRect(with: CGSize(width: rect.width, height: .greatestFiniteMagnitude),
                                      options: [.usesLineFragmentOrigin, .usesFontLeading])
-        if bounds.height <= rect.height { break }
+        let wordsFit = unbrokenWords.allSatisfy {
+            NSAttributedString(string: $0, attributes: [.font: font]).size().width <= rect.width
+        }
+        if bounds.height <= rect.height && wordsFit { break }
         size -= 2
     } while size >= 30
     precondition(bounds.height <= rect.height + 1, "Caption overflow: \(value)")
