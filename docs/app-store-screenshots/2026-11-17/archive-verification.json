@@ -1,0 +1,11 @@
+{
+  "version": "1.4.15",
+  "build": "52",
+  "bundleId": "com.entaku.VoiceYourText",
+  "ipaSha256": "36e6c219d833c975d5d8d5c1168425eb0d7dc2245f13e651a764827ce00f946d",
+  "ipaBytes": 41563640,
+  "getTaskAllow": false,
+  "sourceCommit": "d74f222",
+  "codeSignatureValid": true,
+  "screenshotPlaybackFixtureExcluded": true
+}

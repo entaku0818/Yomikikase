@@ -1,0 +1,29 @@
+{
+  "appUnitTests": {
+    "executed": 546,
+    "skipped": 3,
+    "failures": 0
+  },
+  "paywallPackageTests": {
+    "executed": 22,
+    "failures": 0
+  },
+  "swiftLint": {
+    "version": "0.65.1",
+    "errors": 0,
+    "warnings": 831,
+    "cache": false
+  },
+  "releaseArchiveVerified": true,
+  "ipaExportSucceeded": true,
+  "binaryUploadSucceeded": true,
+  "dictionaryWaitUITestCompiled": true,
+  "logs": {
+    "unit-tests.log": "671045abaf675eeb437bcd12dbf53cc887de1d028a6193aa2df09b163e3c9b04",
+    "paywall-tests.log": "18a9b2d8c653474b16cfca73499b67b0910715f632bb62537d2cfa274c11f38d",
+    "export.log": "fddeae4f9ece7973c7f9f1144f78ae13321a5d6cdc7ed41a3f6573c129833498",
+    "upload-build.log": "0b00ba37660523da1e50f933977564f5c97bda938f5a0e297a32342392ac72f7",
+    "build-dictionary-wait.log": "c1704bccef88aa1282eda70c947bb734215be318985d74f5c9d61e4c6e4c8e80",
+    "archive-inputs-fixed.log": "5458684e06b159d345579fb37336e5dbd452f50bb81edfec0d595cf3a1572636"
+  }
+}

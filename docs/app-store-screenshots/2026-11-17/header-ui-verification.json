@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-11-17T12:32:05Z",
+  "browser": "Google Chrome",
+  "appId": "6478449537",
+  "version": "1.4.14",
+  "url": "https://appstoreconnect.apple.com/apps/6478449537/distribution/ios/version/deliverable",
+  "locales": [
+    {
+      "locale": "en-US",
+      "headerCount": 1,
+      "headerLimit": 1,
+      "actualHeaderImageVisible": true
+    },
+    {
+      "locale": "ja",
+      "headerCount": 1,
+      "headerLimit": 1,
+      "actualHeaderImageVisible": true
+    }
+  ],
+  "devicePreviewVerified": false,
+  "publicStoreScreenVerified": false
+}
