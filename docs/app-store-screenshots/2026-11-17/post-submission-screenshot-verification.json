@@ -1,0 +1,563 @@
+{
+  "verifiedAt": "2026-11-17T13:29:23Z",
+  "version": "1.4.15",
+  "build": "53",
+  "state": "WAITING_FOR_REVIEW",
+  "publicVersion": "1.4.14",
+  "publicState": "READY_FOR_SALE",
+  "locales": 50,
+  "screenshots": 600,
+  "creativePlacements": 100,
+  "rows": [
+    {
+      "locale": "sv",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "pa-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "el",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "it",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "sk",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "fi",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "en-CA",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "fr-FR",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "te-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ur-PK",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "bn-BD",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "fr-CA",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "tr",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "es-MX",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ru",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "pt-PT",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "de-DE",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ro",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "hi",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "en-GB",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "kn-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "es-ES",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "hu",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "uk",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ko",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "en-AU",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "id",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "he",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "nl-NL",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ml-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "zh-Hant",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ca",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "hr",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "en-US",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "th",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ms",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "pt-BR",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "gu-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ar-SA",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ja",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "mr-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "no",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "sl-SI",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "cs",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "vi",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "or-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "pl",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "ta-IN",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    },
+    {
+      "locale": "da",
+      "IPHONE_69": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      },
+      "IPAD_PRO_3GEN_129": {
+        "count": 6,
+        "orderAndImageIdsMatch": true
+      }
+    }
+  ]
+}
