@@ -189,7 +189,7 @@ struct SpeechView: View {
                     )
 
                     if !isPremium {
-                        AdmobBannerView(placement: .speech).frame(width: .infinity, height: 50)
+                        AdmobBannerView(placement: .speech)
                     }
                 }
                 .confirmationDialog("再生速度", isPresented: $showingSpeedPicker, titleVisibility: .visible) {

@@ -71,7 +71,7 @@ struct PDFPickerView: View {
             
             // 広告バナーを追加
             if !UserDefaultsManager.shared.isPremiumUser {
-                AdmobBannerView(placement: .pdfPicker).frame(width: .infinity, height: 50)
+                AdmobBannerView(placement: .pdfPicker)
             }
         }
         .navigationTitle("PDFファイル")

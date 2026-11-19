@@ -13,6 +13,7 @@ struct MainView: View {
     let store: Store<Speeches.State, Speeches.Action>
     @State private var showingDevelopmentAlert = false
     @State private var developmentFeatureName = ""
+    @State private var adBannerHeight: CGFloat = 0
     
     // 設定画面用のストアを作成
     let settingStore = Store(
@@ -72,13 +73,16 @@ struct MainView: View {
                             action: Speeches.Action.nowPlaying
                         )
                     )
-                    // TabBarの高さ + 広告の高さ（非プレミアムユーザーの場合）
-                    .padding(.bottom, UserDefaultsManager.shared.isPremiumUser ? 49 : 107)
+                    // Keep playback controls above the actual adaptive banner, with an 8pt gap.
+                    .padding(.bottom, 49 + (adBannerHeight > 0 ? adBannerHeight + 8 : 0))
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .zIndex(1) // 広告より前面に表示
             .animation(.easeInOut(duration: 0.3), value: store.withState { !$0.nowPlaying.currentTitle.isEmpty })
+        }
+        .onPreferenceChange(AdBannerHeightPreferenceKey.self) { height in
+            adBannerHeight = height
         }
         .alert("機能開発中", isPresented: $showingDevelopmentAlert) {
             Button("OK") { }

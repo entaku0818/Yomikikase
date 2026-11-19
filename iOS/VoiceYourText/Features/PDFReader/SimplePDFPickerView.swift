@@ -99,7 +99,6 @@ struct SimplePDFPickerView: View {
                 // 広告バナー
                 if !UserDefaultsManager.shared.isPremiumUser {
                     AdmobBannerView(placement: .simplePDFPicker)
-                        .frame(height: 50)
                 }
             }
             .navigationTitle("PDF追加")

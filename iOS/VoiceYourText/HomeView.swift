@@ -280,7 +280,6 @@ struct HomeView: View {
                 // 広告バナー（最下部）
                 if !isPremium {
                     AdmobBannerView(placement: .home)
-                        .frame(height: 50)
                 }
             }
             .navigationTitle("Voice Narrator")

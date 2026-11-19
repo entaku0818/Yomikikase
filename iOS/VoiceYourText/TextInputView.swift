@@ -312,7 +312,6 @@ struct TextInputView: View {
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
                 AdmobBannerView(placement: .textInput)
-                    .frame(height: 50)
             }
 
             // 今の声。押すと端末の音声とキャラ音声から選べる（キャラ音声は日本語だけ）

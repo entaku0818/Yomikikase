@@ -257,7 +257,7 @@ struct PDFListView: View {
                 
                 // 広告バナーを追加
                 if !viewStore.isPremiumUser {
-                    AdmobBannerView(placement: .pdfList).frame(width: .infinity, height: 50)
+                    AdmobBannerView(placement: .pdfList)
                 }
             }
             .navigationTitle("PDFファイル")

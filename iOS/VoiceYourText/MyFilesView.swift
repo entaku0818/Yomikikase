@@ -72,7 +72,6 @@ struct MyFilesView: View {
                 // 広告バナー（最下部）
                 if !isPremium {
                     AdmobBannerView(placement: .myFiles)
-                        .frame(height: 50)
                 }
             }
             .navigationTitle("マイファイル")

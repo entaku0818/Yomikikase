@@ -235,7 +235,7 @@ struct LanguageSettingView: View {
             }
             Spacer()
             if !isPremium {
-                AdmobBannerView(placement: .languageSettings).frame(width: .infinity, height: 50)
+                AdmobBannerView(placement: .languageSettings)
             }
         }
         .navigationBarTitle("設定")

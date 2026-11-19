@@ -318,7 +318,6 @@ struct PDFReaderView: View {
             // 広告バナー
             if !UserDefaultsManager.shared.isPremiumUser {
                 AdmobBannerView(placement: .pdfReader)
-                    .frame(height: 50)
             }
 
             // プレイヤーコントロール
