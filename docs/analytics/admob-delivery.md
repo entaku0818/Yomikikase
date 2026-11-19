@@ -2,6 +2,8 @@
 
 2026-11-19の変更で、バナーの表示領域に合うadaptiveサイズと、広告の取得・表示までのイベントを追加する。広告枠、課金者の除外、App Openの表示頻度は変更しない。公開済みの版・公開日はリリース後に記録し、分析はそのアプリ版に限定する。
 
+この変更を含む1.4.16（54）は2026-11-19に審査提出済み。審査待ち・承認後自動公開で、一般公開日は未確認。[リリース記録](../releases/1.4.16.md)を参照し、公開後は1.4.16以降を区別して集計する。
+
 実装: [AdmobBannerView.swift](../../iOS/VoiceYourText/Features/Ads/AdmobBannerView.swift)、[AppOpenAdManager.swift](../../iOS/VoiceYourText/Features/Ads/AppOpenAdManager.swift)。
 
 ## バナー
