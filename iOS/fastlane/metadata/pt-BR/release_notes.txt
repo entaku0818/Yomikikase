@@ -1,1 +1,1 @@
-Atualizamos as capturas de tela da App Store.
+Melhoramos o layout dos banners de anúncios para se ajustar ao tamanho da sua tela.

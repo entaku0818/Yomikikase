@@ -1,1 +1,1 @@
-Zaktualizowaliśmy zrzuty ekranu w App Store.
+Ulepszyliśmy układ banerów reklamowych, aby dopasowywał się do rozmiaru ekranu.

@@ -1,1 +1,1 @@
-Posodobili smo posnetke zaslona v trgovini App Store.
+Izboljšali smo postavitev oglasnih pasic, da se prilagaja velikosti zaslona.

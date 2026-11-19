@@ -1,1 +1,1 @@
-App Store ekran görüntüleri güncellendi.
+Banner reklamların yerleşimi, ekran boyutunuza uyacak şekilde iyileştirildi.

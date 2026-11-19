@@ -1,1 +1,1 @@
-App Storen näyttökuvat on päivitetty.
+Mainosbannerien asettelua on parannettu vastaamaan näytön kokoa.

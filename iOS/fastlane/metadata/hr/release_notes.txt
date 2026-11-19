@@ -1,1 +1,1 @@
-Ažurirane su snimke zaslona u App Storeu.
+Poboljšan je raspored reklamnih bannera kako bi se prilagodio veličini vašeg zaslona.

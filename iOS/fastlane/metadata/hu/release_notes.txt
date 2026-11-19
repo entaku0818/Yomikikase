@@ -1,1 +1,1 @@
-Frissítettük az App Store képernyőképeit.
+Javítottuk a hirdetési szalagok elrendezését, hogy igazodjon a képernyő méretéhez.

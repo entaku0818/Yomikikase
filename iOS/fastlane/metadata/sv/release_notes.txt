@@ -1,1 +1,1 @@
-Uppdaterade skärmbilderna i App Store.
+Förbättrad layout för annonsbannrar så att de passar din skärmstorlek.
