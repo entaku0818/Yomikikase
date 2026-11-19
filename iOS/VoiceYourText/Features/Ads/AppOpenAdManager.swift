@@ -100,8 +100,16 @@ final class AppOpenAdManager: NSObject {
     private var loadTime: Date?
     private var isLoading = false
     private var isShowingAd = false
+    /// SDKの表示コールバックに、この表示を開始した起動回数を引き継ぐ。
+    private var presentationLaunchCount: Int?
     /// cold start の処理を二重に走らせない
     private var hasHandledColdStart = false
+
+    private enum LoadOutcome {
+        case ready
+        case failed
+        case timedOut
+    }
 
     override private init() {
         super.init()
@@ -114,7 +122,7 @@ final class AppOpenAdManager: NSObject {
 
     /// 起動時に一度だけ呼ぶ。表示回であればロードを待って全画面広告を表示する。
     /// 表示回でなければロード要求すら行わない（共通ルール5）。
-    /// - Returns: この起動で広告を表示したか（起動時のレビュー依頼を被せないために使う）
+    /// - Returns: 表示を開始したか（起動時のレビュー依頼を被せないために使う）。実表示の計測はSDKのコールバックで行う。
     @MainActor
     @discardableResult
     func showAdOnColdStartIfEligible() async -> Bool {
@@ -156,13 +164,16 @@ final class AppOpenAdManager: NSObject {
 
         // 共通ルール1: SDK初期化を待ってからロードし、最大 loadTimeout 秒待つ
         await AdMobInitializer.shared.waitUntilReady()
-        beginLoadIfNeeded(unitID: unitID)
+        beginLoadIfNeeded(unitID: unitID, launchCount: launchCount)
 
-        if await waitForAd(timeout: loadTimeout) {
+        switch await waitForAd(timeout: loadTimeout) {
+        case .ready:
             return present(launchCount: launchCount)
-        } else {
-            // ここで諦めてもロードは継続させる。次の表示回に間に合わせるため
-            // キャッシュを捨てない（共通ルール1）。
+        case .failed:
+            logSkipped(reason: "load_failed", launchCount: launchCount)
+            return false
+        case .timedOut:
+            // 待機を終えてもSDKのロードは継続する。この起動で後追い表示はしない。
             debugLog("App open ad not ready within \(loadTimeout)s - skipping this launch")
             logSkipped(reason: "load_timeout", launchCount: launchCount)
             return false
@@ -171,39 +182,56 @@ final class AppOpenAdManager: NSObject {
 
     // MARK: - Load
 
-    private func beginLoadIfNeeded(unitID: String) {
+    private func beginLoadIfNeeded(unitID: String, launchCount: Int) {
         guard !isLoading, !hasValidAd else { return }
         isLoading = true
+        let loadStartedAt = Date()
+        // アプリからの明示的なload呼び出しを数える。SDK・アダプタ内部の再試行は個別には数えない。
+        Analytics.logEvent("app_open_ad_requested", parameters: ["launch_count": launchCount])
 
         GADAppOpenAd.load(withAdUnitID: unitID, request: GADRequest()) { [weak self] ad, error in
             Task { @MainActor in
                 guard let self else { return }
                 self.isLoading = false
+                let durationMilliseconds = Int(max(0, Date().timeIntervalSince(loadStartedAt) * 1_000))
 
-                if let error {
-                    errorLog("App open ad failed to load: \(error.localizedDescription)")
+                guard error == nil, let ad else {
+                    if let error {
+                        errorLog("App open ad failed to load: \(error.localizedDescription)")
+                    }
+                    self.logLoadFailure(error, launchCount: launchCount, durationMilliseconds: durationMilliseconds)
                     self.appOpenAd = nil
                     self.loadTime = nil
                     return
                 }
-
                 self.appOpenAd = ad
                 self.loadTime = Date()
+                Analytics.logEvent("app_open_ad_loaded", parameters: [
+                    "launch_count": launchCount,
+                    "load_duration_ms": durationMilliseconds
+                ])
                 debugLog("App open ad loaded")
             }
         }
     }
 
-    /// ロード完了を最大 timeout 秒待つ。ロードが失敗して終わった場合は待たずに false を返す。
+    /// ロード完了を最大 timeout 秒待ち、ロード失敗と待機時間超過を区別する。
     @MainActor
-    private func waitForAd(timeout: TimeInterval) async -> Bool {
+    private func waitForAd(timeout: TimeInterval) async -> LoadOutcome {
         let deadline = Date().addingTimeInterval(timeout)
         while Date() < deadline {
-            if hasValidAd { return true }
-            if !isLoading { return false }
+            if hasValidAd {
+                return .ready
+            }
+            if !isLoading {
+                return .failed
+            }
             try? await Task.sleep(nanoseconds: UInt64(pollInterval * 1_000_000_000))
         }
-        return hasValidAd
+        if hasValidAd {
+            return .ready
+        }
+        return isLoading ? .timedOut : .failed
     }
 
     // MARK: - Present
@@ -218,6 +246,7 @@ final class AppOpenAdManager: NSObject {
             try ad.canPresent(fromRootViewController: nil)
         } catch {
             errorLog("App open ad cannot be presented: \(error.localizedDescription)")
+            logPresentationFailure(error, launchCount: launchCount, stage: "preflight")
             logSkipped(reason: "cannot_present", launchCount: launchCount)
             clearAd()
             return false
@@ -227,13 +256,15 @@ final class AppOpenAdManager: NSObject {
         // 表示1回ごとの推定収益（AdMob の「インプレッション単位の広告収益」が有効なときだけ届く）
         ad.paidEventHandler = { adValue in
             Analytics.logEvent("ad_app_open_paid", parameters: [
+                "launch_count": launchCount,
                 "value": adValue.value.doubleValue,
                 "currency": adValue.currencyCode,
                 "precision": adValue.precision.rawValue
             ])
         }
         isShowingAd = true
-        Analytics.logEvent("app_open_ad_shown", parameters: ["launch_count": launchCount])
+        presentationLaunchCount = launchCount
+        Analytics.logEvent("app_open_ad_present_attempt", parameters: ["launch_count": launchCount])
         ad.present(fromRootViewController: nil)
         return true
     }
@@ -241,9 +272,35 @@ final class AppOpenAdManager: NSObject {
     private func clearAd() {
         appOpenAd = nil
         loadTime = nil
+        presentationLaunchCount = nil
     }
 
-    /// 表示率を監視できるようにしておく。実装後30日で shown / skipped の比率を確認する。
+    private func logLoadFailure(_ error: Error?, launchCount: Int, durationMilliseconds: Int) {
+        var parameters: [String: Any] = [
+            "launch_count": launchCount,
+            "load_duration_ms": durationMilliseconds
+        ]
+        if let error {
+            let nsError = error as NSError
+            parameters["error_code"] = nsError.code
+            parameters["error_domain"] = nsError.domain
+        } else {
+            parameters["reason"] = "empty_response"
+        }
+        Analytics.logEvent("app_open_ad_load_failed", parameters: parameters)
+    }
+
+    private func logPresentationFailure(_ error: Error, launchCount: Int, stage: String) {
+        let nsError = error as NSError
+        Analytics.logEvent("app_open_ad_present_failed", parameters: [
+            "launch_count": launchCount,
+            "stage": stage,
+            "error_code": nsError.code,
+            "error_domain": nsError.domain
+        ])
+    }
+
+    /// shownは実インプレッション、skippedはその起動で表示を開始しなかった理由として比較する。
     private func logSkipped(reason: String, launchCount: Int) {
         Analytics.logEvent(
             "app_open_ad_skipped",
@@ -257,14 +314,25 @@ final class AppOpenAdManager: NSObject {
 extension AppOpenAdManager: GADFullScreenContentDelegate {
     func adDidRecordImpression(_ ad: GADFullScreenPresentingAd) {
         debugLog("App open ad recorded impression")
+        guard let launchCount = presentationLaunchCount else {
+            return
+        }
+        Analytics.logEvent("app_open_ad_shown", parameters: ["launch_count": launchCount])
     }
 
     func adDidRecordClick(_ ad: GADFullScreenPresentingAd) {
         debugLog("App open ad was clicked")
+        guard let launchCount = presentationLaunchCount else {
+            return
+        }
+        Analytics.logEvent("app_open_ad_click", parameters: ["launch_count": launchCount])
     }
 
     func ad(_ ad: GADFullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
         errorLog("App open ad failed to present: \(error.localizedDescription)")
+        if let launchCount = presentationLaunchCount {
+            logPresentationFailure(error, launchCount: launchCount, stage: "presentation")
+        }
         isShowingAd = false
         clearAd()
     }
@@ -277,7 +345,7 @@ extension AppOpenAdManager: GADFullScreenContentDelegate {
         debugLog("App open ad dismissed")
         isShowingAd = false
         // 一度表示したAdは再利用できないので破棄する。
-        // 次の表示回（5回後）にあらためてロードする。
+        // 次の表示回にあらためてロードする。
         clearAd()
     }
 }
